@@ -1,0 +1,7 @@
+name: VCFDelta
+channels:
+  - https://repo.anaconda.com/pkgs/main
+  - https://repo.anaconda.com/pkgs/r
+dependencies:
+  - python
+prefix: /home/jourdain/miniconda3/envs/VCFDelta
