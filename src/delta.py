@@ -6,7 +6,15 @@ def delta(params: object) -> int:
 
     assert len(params.vcfs) == 2, "Two VCF files are required"
 
-    if(utils.verify_files(files=params.vcfs)):
-        pass
+    utils.verify_files(files=params.vcfs)
+
+    if(params.indexes):
+
+        assert len(params.indexes) == 2; "Two indexes files are required"
+        
+        utils.verify_files(files=params.indexes)
+            
     else:
-        return 1
+        pass
+    
+    return 1

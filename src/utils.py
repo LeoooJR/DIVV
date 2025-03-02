@@ -14,18 +14,12 @@ def verify_files(files: list[str]):
     assert len(files) == 2, "Two files are required"
     assert isinstance(files[0],str) and isinstance(files[1],str), "Values must be of string instance"
 
-    checks = {files[0]: False,
-              files[1]: False}
-
     for file in files:
 
-        if is_file(file):
+        if not is_file(file):
 
-            if not is_empty(file):
-                checks[file] = True
-            else:
-                pass
-        else:
-            pass
+            raise FileNotFoundError(f"Error: The file '{file}' does not exist.")
 
-    return any(checks.values())
+        if is_empty(file):
+            
+            raise ValueError(f"Error: The file '{file}' is empty.")
