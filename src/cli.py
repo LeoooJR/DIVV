@@ -1,7 +1,9 @@
 from __init__ import __version__
 import argparse
 from delta import delta
+from psutil import cpu_count
 import sys
+import utils
 
 class Programm:
 
@@ -14,13 +16,19 @@ class Programm:
         self.parser.add_argument("-v", "--version", 
                                  action="version", 
                                  version="VCFDelta v" + __version__)
-        self.parser.add_argument('--vcf', 
-                                 dest="vcf", 
+        self.parser.add_argument('--vcfs', 
+                                 dest="vcfs", 
                                  nargs=2, 
                                  type=str, 
                                  metavar='', 
                                  required=True, 
-                                 help='Path to the inputs VCF files')
+                                 help='Paths to the inputs VCF files')
+        self.parser.add_argument('-i','--indexes', 
+                                 dest='indexes', 
+                                 nargs=2, 
+                                 type=str, 
+                                 required=False, 
+                                 help='Paths to the index of the VCF files')
         self.parser.add_argument('-o', '--output', 
                                  dest="out", 
                                  type=str, 
@@ -28,7 +36,13 @@ class Programm:
                                  required=False,
                                  default="delta",
                                  help='prefix of the outputs files')
-        self.parser.add_argument('-t', '--threshold', 
+        self.parser.add_argument('-t', '--threads',
+                                 dest='threads',
+                                 type=int, 
+                                 required=False, 
+                                 default=0,
+                                 help="Number of threads to use in addition to the current one")
+        self.parser.add_argument('--threshold', 
                                  dest="threshold",
                                  type=float, 
                                  default=0.01, 
@@ -87,9 +101,9 @@ class Programm:
 
         self.parser.set_defaults(func=self.FUNC["delta"])
 
-    def launch(self):
+    def launch(self) -> int:
         cmd = self.parser.parse_args(args=sys.argv[1:])
-        return cmd.func(vcf=cmd.vcf)
+        return cmd.func(params=cmd)
 
     def __str__(self):
         pass
