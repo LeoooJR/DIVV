@@ -1,7 +1,12 @@
 import utils
 
-def delta(vcf: list):
+def delta(params: object) -> int:
 
-    print(vcf)
-    
-    assert len(vcf) == 2, "Two VCF files are required"
+    print(params.vcfs)
+
+    assert len(params.vcfs) == 2, "Two VCF files are required"
+
+    if(utils.verify_files(files=params.vcfs)):
+        pass
+    else:
+        return 1
