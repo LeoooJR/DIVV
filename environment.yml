@@ -1,7 +1,10 @@
 name: VCFDelta
 channels:
+  - bioconda
   - https://repo.anaconda.com/pkgs/main
   - https://repo.anaconda.com/pkgs/r
 dependencies:
   - python
+  - bcftools
+  - samtools
 prefix: /home/jourdain/miniconda3/envs/VCFDelta
