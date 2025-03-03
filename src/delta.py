@@ -5,8 +5,12 @@ import utils
 import subprocess
 
 @logger.catch
-def process_chromosome():
-    pass
+def process_chromosome(chrom: str, file: VCF) -> dict:
+    
+    logger.debug(f"Processing chromosome {chrom} for file {file}")
+
+    for v in file(f'{chrom}'):
+        pass
 
 @logger.catch
 def process_files(file: str, index: str = None) -> dict:
@@ -48,7 +52,20 @@ def process_files(file: str, index: str = None) -> dict:
 
     logger.debug(f"File {file} is composed of {chromosomes} chromosomes")
 
-    return {}
+    result = {}
+
+    with concurrent.futures.ProcessPoolExecutor(max_workers=2) as pool:
+
+        futures = {pool.submit(process_chromosome, chrom, vcf):chrom for chrom in chromosomes}
+
+        for future in concurrent.futures.as_completed(futures):
+
+            try:
+                result[futures[future]] = future.result()
+            except Exception as e:
+                logger.warning(f"Chromosome {futures[future]} generated an exception: {e}")
+
+    return result
 
 def delta(params: object) -> int:
 
@@ -58,12 +75,21 @@ def delta(params: object) -> int:
 
     assert len(params.vcfs) == 2, "Two VCF files are required"
 
-    result = []
+    assert isinstance(params.vcfs[0],str) and isinstance(params.vcfs[1],str), "Input vcf should be string instance"
+
+    result = {}
 
     with concurrent.futures.ProcessPoolExecutor(max_workers=2) as pool:
 
-        result = [pool.submit(process_files, vcf, index) for vcf, index in zip(params.vcfs,params.indexes)]
+        futures = {pool.submit(process_files, vcf, index):vcf for vcf, index in zip(params.vcfs,params.indexes)}
 
+        for future in concurrent.futures.as_completed(futures):
+
+            try:
+                result[futures[future]] = future.result
+            except Exception as e:
+                logger.error(f"File {futures[future]} generated an exception: {e}")
+                
     print(result[0])
     
     return 1
