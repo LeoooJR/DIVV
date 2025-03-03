@@ -9,17 +9,14 @@ def is_empty(path: str) -> bool:
 def is_indexed(path: str) -> bool:
     pass
 
-def verify_files(files: list[str]):
+def verify_file(file: str):
 
-    assert len(files) == 2, "Two files are required"
-    assert isinstance(files[0],str) and isinstance(files[1],str), "Values must be of string instance"
+    assert isinstance(file,str), "Values must be of string instance"
 
-    for file in files:
+    if not is_file(file):
 
-        if not is_file(file):
+        raise FileNotFoundError(f"Error: The file '{file}' does not exist.")
 
-            raise FileNotFoundError(f"Error: The file '{file}' does not exist.")
-
-        if is_empty(file):
+    if is_empty(file):
             
-            raise ValueError(f"Error: The file '{file}' is empty.")
+        raise ValueError(f"Error: The file '{file}' is empty.")

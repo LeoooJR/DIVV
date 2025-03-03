@@ -27,7 +27,8 @@ class Programm:
                                  dest='indexes', 
                                  nargs=2, 
                                  type=str, 
-                                 required=False, 
+                                 required=False,
+                                 default=[None,None],
                                  help='Paths to the index of the VCF files')
         self.parser.add_argument('-o', '--output', 
                                  dest="out", 
