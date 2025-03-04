@@ -140,19 +140,22 @@ def delta(params: object) -> int:
             except Exception as e:
                 logger.error(f"File {futures_to_vcf[future]} generated an exception: {e}")
 
+    common_variants, unique_variants_to_left, unique_variants_to_right = {}, {}, {}
+
     for chrom in result[params.vcfs[0]]:
                 
-        unique_variants_to_left = {k: result[params.vcfs[0]][chrom][k] 
+        unique_variants_to_left[chrom] = {k: result[params.vcfs[0]][chrom][k] 
                                    for k in difference(a=set(result[params.vcfs[0]][chrom].keys()), 
                                                        b=set(result[params.vcfs[1]][chrom].keys()))}
 
-        unique_variants_to_right = {k: result[params.vcfs[1]][chrom][k] 
+        unique_variants_to_right[chrom] = {k: result[params.vcfs[1]][chrom][k] 
                                     for k in difference(a=set(result[params.vcfs[1]][chrom].keys()), 
                                                         b=set(result[params.vcfs[0]][chrom].keys()))}
 
-        common_variants = {k: result[params.vcfs[0]][chrom][k] 
-                           for k in intersect(a=set(result[params.vcfs[0]][chrom].keys()), 
-                                              b=set(result[params.vcfs[1]][chrom].keys()))}
+        common_variants[chrom] = {k: result[params.vcfs[0]][chrom][k]
+                                  for k in intersect(a=set(result[params.vcfs[0]][chrom].keys()), 
+                                                     b=set(result[params.vcfs[1]][chrom].keys()))}
+        
     if(params.serialize):
         path : str = '/'.join(params.vcfs[0].split('/')[:-1])
         logger.debug(f'Results are seralized to {path}')
