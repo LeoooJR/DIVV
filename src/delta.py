@@ -2,23 +2,29 @@ import concurrent.futures
 from cyvcf2 import VCF
 from hashlib import sha256
 from loguru import logger
+import numpy as np
 import utils
 import subprocess
+
 
 class VCFLibrary:
 
     def __init__(self, **kwargs):
 
         self.library = []
-        
+
         for key, value in kwargs.items():
             setattr(self, key, value)
 
+
 @logger.catch
-def process_chromosome(chrom: str, FILES: dict[str:str], filters: dict = None) -> dict:
-    
-    logger.debug(f"Processing chromosome {chrom} for file {FILES['compression']}")
-    logger.debug(f"Filters used: {filters}")
+def process_chromosome(
+    chrom: str, FILES: dict[str:str], filters: dict = None, stats: bool = False
+) -> dict:
+
+    logger.debug(
+        f"Processing chromosome {chrom} for file {FILES['compression']}"
+    )
 
     try:
         vcf = VCF(FILES["compression"], lazy=True)
@@ -26,31 +32,68 @@ def process_chromosome(chrom: str, FILES: dict[str:str], filters: dict = None) -
     except FileNotFoundError as e:
         logger.error(e)
 
-    result = {}
-
     try:
 
         exclude: bool = False
 
-        for v in vcf(f'{chrom}'):
+        result, filtered = {}, {"snp": 0, "indel": 0, "other": 0}
+
+        if stats:
+            values = {
+                "variant": 0,
+                "depth": [],
+                "quality": [],
+                "GQ": [],
+                "ref": 0,
+                "het": 0,
+                "hom": 0,
+            }
+
+        for v in vcf(f"{chrom}"):
 
             if filters:
 
-                exclude: bool = ((v.is_indel and filters["exclude"]["exclude_indels"]) 
-                                 or (v.is_snp and filters["exclude"]["exclude_snps"]))
-            
+                exclude: bool = (
+                    v.is_indel and filters["exclude"]["exclude_indels"]
+                ) or (v.is_snp and filters["exclude"]["exclude_snps"])
+
             if not exclude:
 
-                hash = sha256(string=f"{v.CHROM}:{v.POS}:{v.REF}:{'|'.join(v.ALT)}".encode()).hexdigest()
+                hash = sha256(
+                    string=f"{v.CHROM}:{v.POS}:{v.REF}:{'|'.join(v.ALT)}".encode()
+                ).hexdigest()
                 result[hash] = str(v)
-    
+
+                if stats:
+                    values["quality"].append(v.QUAL)
+
+            else:
+
+                filtered[
+                    "snp" if filters["exclude"]["exclude_snps"] else "indel"
+                ] += 1
+
     except UserWarning as e:
         logger.warning(e)
 
-    return result
+    logger.debug(
+        f"Filtered: {filtered['snp']} SNP(s), {filtered['indel']} INDEL(s), {filtered['other']} other(s) variant(s) for chromosome {chrom} in file {FILES['compression']}"
+    )
+
+    if stats:
+        values["depth"], values["quality"], values["GQ"] = (
+            np.array(values["depth"], dtype=np.uint8),
+            np.array(values["quality"], dtype=np.float32),
+            np.array(values["GQ"]),
+        )
+
+    return result, filtered
+
 
 @logger.catch
-def process_files(file: str, index: str = None, filters: dict = None) -> dict:
+def process_files(
+    file: str, index: str = None, filters: dict = None, stats: bool = False
+) -> dict:
 
     logger.debug(f"Processing file: {file}")
 
@@ -59,18 +102,17 @@ def process_files(file: str, index: str = None, filters: dict = None) -> dict:
     except (FileNotFoundError, ValueError) as e:
         logger.error(e)
 
-    FILES = {"compression": f"{file}.gz", 
-            "index": f"{file}.gz.tbi"}
+    FILES = {"compression": f"{file}.gz", "index": f"{file}.gz.tbi"}
 
-    if(index):
+    if index:
 
         try:
             utils.verify_file(file=index)
         except (FileNotFoundError, ValueError) as e:
             logger.error(e)
-            
+
     else:
-        #Try to look for indexing files
+        # Try to look for indexing files
         try:
             utils.verify_file(FILES["compression"])
             utils.is_indexed(FILES["index"])
@@ -81,10 +123,15 @@ def process_files(file: str, index: str = None, filters: dict = None) -> dict:
             logger.debug(f"Indexing file: {file}")
 
             try:
-                code = subprocess.run(["./src/indexing.sh", file], capture_output=True, text=True, check=True)
+                code = subprocess.run(
+                    ["./src/indexing.sh", file],
+                    capture_output=True,
+                    text=True,
+                    check=True,
+                )
             except (subprocess.CalledProcessError, FileNotFoundError) as e:
                 logger.error(e.stderr)
-    
+
             try:
                 utils.verify_file(file=FILES["compression"])
             except (FileNotFoundError, ValueError) as e:
@@ -100,28 +147,37 @@ def process_files(file: str, index: str = None, filters: dict = None) -> dict:
 
     logger.debug(f"File {file} is composed of {chromosomes} chromosomes")
 
-    result = {}
+    result, filtered = {}, {}
 
-    with concurrent.futures.ProcessPoolExecutor(max_workers=2) as chrom_executor:
+    with concurrent.futures.ProcessPoolExecutor(
+        max_workers=2
+    ) as chrom_executor:
 
-        futures_to_chrom = {chrom_executor.submit(process_chromosome, chrom, FILES, filters): chrom for chrom in chromosomes}
+        futures_to_chrom = {
+            chrom_executor.submit(
+                process_chromosome, chrom, FILES, filters, stats
+            ): chrom
+            for chrom in chromosomes
+        }
 
         for future in concurrent.futures.as_completed(futures_to_chrom):
 
-            logger.success(f"Process {future} for chromosome {futures_to_chrom[future]} in file {FILES['compression']} has completed.")
+            logger.success(
+                f"Process {future} for chromosome {futures_to_chrom[future]} in file {FILES['compression']} has completed."
+            )
 
             try:
-                result[futures_to_chrom[future]] = future.result()
+                (
+                    result[futures_to_chrom[future]],
+                    filtered[futures_to_chrom[future]],
+                ) = future.result()
             except Exception as e:
-                logger.warning(f"Chromosome {futures_to_chrom[future]} generated an exception: {e}")
+                logger.warning(
+                    f"Chromosome {futures_to_chrom[future]} generated an exception: {e}"
+                )
 
-    return result
+    return result, filtered
 
-def intersect(a: set[str], b: set[str]) -> set:
-    return a & b
-
-def difference(a: set[str], b: set[str]) -> set:
-    return a - b
 
 def delta(params: object) -> int:
 
@@ -131,55 +187,105 @@ def delta(params: object) -> int:
 
     logger.debug(f"Serialize output: {params.serialize}")
 
+    logger.debug(f"Compute statistics: {params.stats}")
+
     assert len(params.vcfs) == 2, "Two VCF files are required"
 
-    assert isinstance(params.vcfs[0],str) and isinstance(params.vcfs[1],str), "Input vcf should be string instance"
+    assert isinstance(params.vcfs[0], str) and isinstance(
+        params.vcfs[1], str
+    ), "Input vcf should be string instance"
 
-    result = {}
+    result, filtered = {}, {}
 
-    FILTERS = {'threshold': params.threshold,
-               'exclude': {"exclude_snps": params.exclude_snps,
-                           "exclude_indels": params.exclude_indels},
-                           "exclude_vars": params.exclude_vars} if any([params.threshold, 
-                                                                        params.exclude_snps, 
-                                                                        params.exclude_indels, 
-                                                                        params.exclude_vars]) else None
+    FILTERS = (
+        {
+            "threshold": params.threshold,
+            "exclude": {
+                "exclude_snps": params.exclude_snps,
+                "exclude_indels": params.exclude_indels,
+            },
+            "exclude_vars": params.exclude_vars,
+        }
+        if any(
+            [
+                params.threshold,
+                params.exclude_snps,
+                params.exclude_indels,
+                params.exclude_vars,
+            ]
+        )
+        else None
+    )
+
+    logger.debug(f"Filters used: {FILTERS}")
 
     with concurrent.futures.ProcessPoolExecutor(max_workers=2) as files_pool:
 
-        futures_to_vcf = {files_pool.submit(process_files, vcf, index, FILTERS): vcf for vcf, index in zip(params.vcfs,params.indexes)}
+        futures_to_vcf = {
+            files_pool.submit(
+                process_files, vcf, index, FILTERS, params.stats
+            ): vcf
+            for vcf, index in zip(params.vcfs, params.indexes)
+        }
 
         for future in concurrent.futures.as_completed(futures_to_vcf):
 
-            logger.success(f"Process {future} for file {futures_to_vcf[future]} has completed.")
+            logger.success(
+                f"Process {future} for file {futures_to_vcf[future]} has completed."
+            )
 
             try:
-                result[futures_to_vcf[future]] = future.result()
+                (
+                    result[futures_to_vcf[future]],
+                    filtered[futures_to_vcf[future]],
+                ) = future.result()
             except Exception as e:
-                logger.error(f"File {futures_to_vcf[future]} generated an exception: {e}")
+                logger.error(
+                    f"File {futures_to_vcf[future]} generated an exception: {e}"
+                )
 
-    common_variants, unique_variants_to_left, unique_variants_to_right = {}, {}, {}
+    common_variants, unique_variants_to_left, unique_variants_to_right = (
+        {},
+        {},
+        {},
+    )
 
     for chrom in result[params.vcfs[0]]:
-                
-        unique_variants_to_left[chrom] = {k: result[params.vcfs[0]][chrom][k] 
-                                   for k in difference(a=set(result[params.vcfs[0]][chrom].keys()), 
-                                                       b=set(result[params.vcfs[1]][chrom].keys()))}
 
-        unique_variants_to_right[chrom] = {k: result[params.vcfs[1]][chrom][k] 
-                                    for k in difference(a=set(result[params.vcfs[1]][chrom].keys()), 
-                                                        b=set(result[params.vcfs[0]][chrom].keys()))}
+        unique_variants_to_left[chrom] = {
+            k: result[params.vcfs[0]][chrom][k]
+            for k in utils.difference(
+                a=set(result[params.vcfs[0]][chrom].keys()),
+                b=set(result[params.vcfs[1]][chrom].keys()),
+            )
+        }
 
-        common_variants[chrom] = {k: result[params.vcfs[0]][chrom][k]
-                                  for k in intersect(a=set(result[params.vcfs[0]][chrom].keys()), 
-                                                     b=set(result[params.vcfs[1]][chrom].keys()))}
-        
-    if(params.serialize):
-        path : str = '/'.join(params.vcfs[0].split('/')[:-1])
-        logger.debug(f'Results are seralized to {path}')
+        unique_variants_to_right[chrom] = {
+            k: result[params.vcfs[1]][chrom][k]
+            for k in utils.difference(
+                a=set(result[params.vcfs[1]][chrom].keys()),
+                b=set(result[params.vcfs[0]][chrom].keys()),
+            )
+        }
+
+        common_variants[chrom] = {
+            k: result[params.vcfs[0]][chrom][k]
+            for k in utils.intersect(
+                a=set(result[params.vcfs[0]][chrom].keys()),
+                b=set(result[params.vcfs[1]][chrom].keys()),
+            )
+        }
+
+    if params.serialize:
+        path: str = "/".join(params.vcfs[0].split("/")[:-1])
+        logger.debug(f"Results are seralized to {path}")
         try:
-            utils.save(obj=common_variants, prefixe=f"{path}/common",format=params.serialize)
+            utils.save(
+                obj=common_variants,
+                prefixe=f"{path}/common",
+                format=params.serialize,
+            )
         except ValueError as e:
             logger.error(e)
-    
+
     return 1

@@ -1,6 +1,7 @@
 from cli import Programm
 from sys import exit
 
+
 def main():
 
     prog = Programm()
@@ -10,6 +11,6 @@ def main():
         print(e)
         exit(1)
 
+
 if __name__ == "__main__":
     main()
-
