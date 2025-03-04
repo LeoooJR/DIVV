@@ -37,6 +37,12 @@ class Programm:
                                  required=False,
                                  default="delta",
                                  help='prefix of the outputs files')
+        self.parser.add_argument('-s','--serialize',
+                                 dest='serialize',
+                                 type=str,
+                                 choices=["json","pickle"],
+                                 required=False,
+                                 help="Should the result be seralized")
         self.parser.add_argument('-t', '--threads',
                                  dest='threads',
                                  type=int, 
@@ -99,6 +105,11 @@ class Programm:
                                  dest="truth_flag",       
                                  action="store_true",      
                                  help="Additional metrics are generated assuming the first VCF file is the truth. This also triggers extra analysis of filtered calls.")
+        self.parser.add_argument("-r", "--report",
+                                 dest="report",
+                                 action="store_true",
+                                 help="Should a report be generated.",
+                                 default=False)
 
         self.parser.set_defaults(func=self.FUNC["delta"])
 

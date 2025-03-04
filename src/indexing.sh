@@ -1,7 +1,5 @@
 #!/bin/bash
 
-echo "Starting indexing"
-
 which bgzip > /dev/null
 bgzip=$?
 
