@@ -130,8 +130,10 @@ def delta(params: object) -> int:
 
     for chrom in result[params.vcfs[0]]:
                 
-        print(difference(a=set(result[params.vcfs[0]][chrom].keys()), b=set(result[params.vcfs[1]][chrom].keys())))
+        unique_variants_to_left = difference(a=set(result[params.vcfs[0]][chrom].keys()), b=set(result[params.vcfs[1]][chrom].keys()))
 
-        print(intersect(a=set(result[params.vcfs[0]][chrom].keys()), b=set(result[params.vcfs[1]][chrom].keys())))
+        unique_variants_to_right = difference(a=set(result[params.vcfs[1]][chrom].keys()), b=set(result[params.vcfs[0]][chrom].keys()))
+
+        common_variants = intersect(a=set(result[params.vcfs[0]][chrom].keys()), b=set(result[params.vcfs[1]][chrom].keys()))
     
     return 1
