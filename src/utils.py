@@ -17,8 +17,11 @@ def save(obj: object, prefixe: str = "output", format: str = "pickle"):
         
         with open(file=f"{prefixe}.{FILES[format]['ext']}", mode=FILES[format]['mode']) as f:
             FILES[format]['func'](obj,f)
+
+        assert os.path.isfile(f"{prefixe}.{FILES[format]['ext']}"), "File was not created"
     else:
         raise ValueError(f"Error: The file format {format} is not supported.")
+    
 
 def is_file(path: str) -> bool:
     return os.path.isfile(path)

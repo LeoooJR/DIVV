@@ -15,9 +15,10 @@ class VCFLibrary:
             setattr(self, key, value)
 
 @logger.catch
-def process_chromosome(chrom: str, FILES: dict[str:str]) -> dict:
+def process_chromosome(chrom: str, FILES: dict[str:str], filters: dict = None) -> dict:
     
     logger.debug(f"Processing chromosome {chrom} for file {FILES['compression']}")
+    logger.debug(f"Filters used: {filters}")
 
     try:
         vcf = VCF(FILES["compression"], lazy=True)
@@ -29,10 +30,19 @@ def process_chromosome(chrom: str, FILES: dict[str:str]) -> dict:
 
     try:
 
+        exclude: bool = False
+
         for v in vcf(f'{chrom}'):
 
-            hash = sha256(string=f"{v.CHROM}:{v.POS}:{v.REF}:{'|'.join(v.ALT)}".encode()).hexdigest()
-            result[hash] = str(v)
+            if filters:
+
+                exclude: bool = ((v.is_indel and filters["exclude"]["exclude_indels"]) 
+                                 or (v.is_snp and filters["exclude"]["exclude_snps"]))
+            
+            if not exclude:
+
+                hash = sha256(string=f"{v.CHROM}:{v.POS}:{v.REF}:{'|'.join(v.ALT)}".encode()).hexdigest()
+                result[hash] = str(v)
     
     except UserWarning as e:
         logger.warning(e)
@@ -40,7 +50,7 @@ def process_chromosome(chrom: str, FILES: dict[str:str]) -> dict:
     return result
 
 @logger.catch
-def process_files(file: str, index: str = None) -> dict:
+def process_files(file: str, index: str = None, filters: dict = None) -> dict:
 
     logger.debug(f"Processing file: {file}")
 
@@ -94,7 +104,7 @@ def process_files(file: str, index: str = None) -> dict:
 
     with concurrent.futures.ProcessPoolExecutor(max_workers=2) as chrom_executor:
 
-        futures_to_chrom = {chrom_executor.submit(process_chromosome, chrom, FILES): chrom for chrom in chromosomes}
+        futures_to_chrom = {chrom_executor.submit(process_chromosome, chrom, FILES, filters): chrom for chrom in chromosomes}
 
         for future in concurrent.futures.as_completed(futures_to_chrom):
 
@@ -127,9 +137,17 @@ def delta(params: object) -> int:
 
     result = {}
 
+    FILTERS = {'threshold': params.threshold,
+               'exclude': {"exclude_snps": params.exclude_snps,
+                           "exclude_indels": params.exclude_indels},
+                           "exclude_vars": params.exclude_vars} if any([params.threshold, 
+                                                                        params.exclude_snps, 
+                                                                        params.exclude_indels, 
+                                                                        params.exclude_vars]) else None
+
     with concurrent.futures.ProcessPoolExecutor(max_workers=2) as files_pool:
 
-        futures_to_vcf = {files_pool.submit(process_files, vcf, index): vcf for vcf, index in zip(params.vcfs,params.indexes)}
+        futures_to_vcf = {files_pool.submit(process_files, vcf, index, FILTERS): vcf for vcf, index in zip(params.vcfs,params.indexes)}
 
         for future in concurrent.futures.as_completed(futures_to_vcf):
 
@@ -160,7 +178,7 @@ def delta(params: object) -> int:
         path : str = '/'.join(params.vcfs[0].split('/')[:-1])
         logger.debug(f'Results are seralized to {path}')
         try:
-            utils.save(obj=common_variants, prefixe=f"{path}/common",format='json')
+            utils.save(obj=common_variants, prefixe=f"{path}/common",format=params.serialize)
         except ValueError as e:
             logger.error(e)
     
