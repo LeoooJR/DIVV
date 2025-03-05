@@ -1,3 +1,4 @@
+from datetime import datetime, timezone
 import json
 import os
 import _pickle as cPickle
@@ -55,6 +56,13 @@ def verify_file(file: str):
     if is_empty(file):
 
         raise ValueError(f"Error: The file '{file}' is empty.")
+    
+def file_stats(path: str) -> dict:
+    
+    statinfo = os.stat(path)
+
+    return {"size": statinfo.st_size,
+            "mtime": datetime.fromtimestamp(statinfo.st_mtime, tz=timezone.utc)}
 
 
 # SETS
@@ -83,3 +91,19 @@ def exclude(v: object, filters: dict = None) -> bool:
         ) or (
             v.is_transition and filters["exclude"]["exclude_transitions"]
         ) if filters else False
+
+def format_to_values(format: str, values: str|list[str]) -> dict:
+
+    format = format.split(":")
+
+    if isinstance(values,list):
+
+        values = list(map(lambda x: x.split(":"), values))
+
+        return {f"sample{s}": {f: v} for s in range(len(values)) for f, v in zip(format,values[s])}
+
+    else:
+
+        values = values.split(":")
+
+        return {f: v for f, v in zip(format,values)}

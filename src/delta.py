@@ -70,6 +70,7 @@ def process_chromosome(
                 hash = sha256(
                     string=f"{v.CHROM}:{v.POS}:{v.REF}:{'|'.join(v.ALT)}".encode()
                 ).hexdigest()
+                
                 result[hash] = str(v)
 
                 if stats:
@@ -178,7 +179,9 @@ def process_files(
                     f"Chromosome {futures_to_chrom[future]} generated an exception: {e}"
                 )
 
-    return result, filtered
+    return {"info": utils.file_stats(file),
+            "data": result, 
+            "filter": filtered}
 
 
 def delta(params: object) -> int:
@@ -197,7 +200,7 @@ def delta(params: object) -> int:
         params.vcfs[1], str
     ), "Input vcf should be string instance"
 
-    result, filtered = {}, {}
+    result = {}
 
     FILTERS = (
         {
@@ -244,8 +247,7 @@ def delta(params: object) -> int:
 
             try:
                 (
-                    result[futures_to_vcf[future]],
-                    filtered[futures_to_vcf[future]],
+                    result[futures_to_vcf[future]]
                 ) = future.result()
             except Exception as e:
                 logger.error(
@@ -258,29 +260,31 @@ def delta(params: object) -> int:
         {},
     )
 
-    for chrom in result[params.vcfs[0]]:
+    print(result[params.vcfs[0]])
+
+    for chrom in result[params.vcfs[0]]["data"]:
 
         unique_variants_to_left[chrom] = {
-            k: result[params.vcfs[0]][chrom][k]
+            k: result[params.vcfs[0]]["data"][chrom][k]
             for k in utils.difference(
-                a=set(result[params.vcfs[0]][chrom].keys()),
-                b=set(result[params.vcfs[1]][chrom].keys()),
+                a=set(result[params.vcfs[0]]["data"][chrom].keys()),
+                b=set(result[params.vcfs[1]]["data"][chrom].keys()),
             )
         }
 
         unique_variants_to_right[chrom] = {
-            k: result[params.vcfs[1]][chrom][k]
+            k: result[params.vcfs[1]]["data"][chrom][k]
             for k in utils.difference(
-                a=set(result[params.vcfs[1]][chrom].keys()),
-                b=set(result[params.vcfs[0]][chrom].keys()),
+                a=set(result[params.vcfs[1]]["data"][chrom].keys()),
+                b=set(result[params.vcfs[0]]["data"][chrom].keys()),
             )
         }
 
         common_variants[chrom] = {
-            k: result[params.vcfs[0]][chrom][k]
+            k: result[params.vcfs[0]]["data"][chrom][k]
             for k in utils.intersect(
-                a=set(result[params.vcfs[0]][chrom].keys()),
-                b=set(result[params.vcfs[1]][chrom].keys()),
+                a=set(result[params.vcfs[0]]["data"][chrom].keys()),
+                b=set(result[params.vcfs[1]]["data"][chrom].keys()),
             )
         }
 
