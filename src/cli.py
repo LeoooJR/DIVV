@@ -66,8 +66,8 @@ class Programm:
             dest="process",
             type=int,
             required=False,
-            default=0,
-            help="Number of process to use in addition to the current one",
+            default=1,
+            help="Number of process to use.",
         )
         self.parser.add_argument(
             "--threshold",
@@ -106,7 +106,14 @@ class Programm:
             dest="exclude_snps",
             action="store_true",
             default=False,
-            help="Exclude snp calls. A heterozygous call with both snp and indel is not excluded unless both snps and indels are excluded.",
+            help="Exclude single nucleotide polymorphisme calls. A heterozygous call with both snp and indel is not excluded unless both snps and indels are excluded.",
+        )
+        self.parser.add_argument(
+            "--exclude_mnps",
+            dest="exclude_mnps",
+            action="store_true",
+            default=False,
+            help="Exclude mutliple nucleotide polymorphisme calls.",
         )
         self.parser.add_argument(
             "--exclude_indels",
@@ -121,6 +128,20 @@ class Programm:
             action="store_true",
             default=False,
             help="Exclude variants other than snps and indels.",
+        )
+        self.parser.add_argument(
+            "--exclude_svs",
+            dest="exclude_svs",
+            action="store_true",
+            default=False,
+            help="Exclude structural variant calls.",
+        )
+        self.parser.add_argument(
+            "--exclude_transitions",
+            dest="exclude_trans",
+            action="store_true",
+            default=False,
+            help="Exclude transition calls.",
         )
         self.parser.add_argument(
             "--exclude_refs",

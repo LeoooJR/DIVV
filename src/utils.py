@@ -4,8 +4,7 @@ import _pickle as cPickle
 
 # I/O
 
-
-def save(obj: object, prefixe: str = "output", format: str = "pickle"):
+def save(obj: object, prefixe: str = "output", format: str = "pickle") -> int:
 
     assert (
         format == "json" or format == "pickle"
@@ -27,6 +26,8 @@ def save(obj: object, prefixe: str = "output", format: str = "pickle"):
         assert os.path.isfile(
             f"{prefixe}.{FILES[format]['ext']}"
         ), "File was not created"
+
+        return 1
     else:
         raise ValueError(f"Error: The file format {format} is not supported.")
 
@@ -65,3 +66,20 @@ def intersect(a: set[str], b: set[str]) -> set:
 
 def difference(a: set[str], b: set[str]) -> set:
     return a - b
+
+
+# Variants
+
+def exclude(v: object, filters: dict = None) -> bool:
+
+    return (
+            v.is_indel and filters["exclude"]["exclude_indels"]
+        ) or (
+            v.is_snp and filters["exclude"]["exclude_snps"]
+        ) or (
+            v.is_mnp and filters["exclude"]["exclude_mnps"]
+        ) or (
+            v.is_sv and filters["exclude"]["exclude_svs"]
+        ) or (
+            v.is_transition and filters["exclude"]["exclude_transitions"]
+        ) if filters else False

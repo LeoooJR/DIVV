@@ -36,7 +36,11 @@ def process_chromosome(
 
         exclude: bool = False
 
-        result, filtered = {}, {"snp": 0, "indel": 0, "other": 0}
+        result, filtered = {}, {"snp": 0,
+                                "mnp": 0, 
+                                "indel": 0, 
+                                "sv": 0,
+                                "transition": 0}
 
         if stats:
             values = {
@@ -53,11 +57,15 @@ def process_chromosome(
 
             if filters:
 
-                exclude: bool = (
-                    v.is_indel and filters["exclude"]["exclude_indels"]
-                ) or (v.is_snp and filters["exclude"]["exclude_snps"])
+                exclude: bool = utils.exclude(v,filters)
 
-            if not exclude:
+            if exclude:
+
+                filtered[
+                    v.var_type
+                ] += 1
+
+            else:
 
                 hash = sha256(
                     string=f"{v.CHROM}:{v.POS}:{v.REF}:{'|'.join(v.ALT)}".encode()
@@ -67,17 +75,11 @@ def process_chromosome(
                 if stats:
                     values["quality"].append(v.QUAL)
 
-            else:
-
-                filtered[
-                    "snp" if filters["exclude"]["exclude_snps"] else "indel"
-                ] += 1
-
     except UserWarning as e:
         logger.warning(e)
 
     logger.debug(
-        f"Filtered: {filtered['snp']} SNP(s), {filtered['indel']} INDEL(s), {filtered['other']} other(s) variant(s) for chromosome {chrom} in file {FILES['compression']}"
+        f"Filtered: {filtered['snp']} SNP(s), {filtered['indel']} INDEL(s), {filtered['sv']} structural variant(s) variant(s) for chromosome {chrom} in file {FILES['compression']}"
     )
 
     if stats:
@@ -203,8 +205,11 @@ def delta(params: object) -> int:
             "exclude": {
                 "exclude_snps": params.exclude_snps,
                 "exclude_indels": params.exclude_indels,
-            },
-            "exclude_vars": params.exclude_vars,
+                "exclude_vars": params.exclude_vars,
+                "exclude_mnps": params.exclude_mnps,
+                "exclude_transitions": params.exclude_trans,
+                "exclude_svs": params.exclude_svs
+            }
         }
         if any(
             [
@@ -212,6 +217,9 @@ def delta(params: object) -> int:
                 params.exclude_snps,
                 params.exclude_indels,
                 params.exclude_vars,
+                params.exclude_mnps,
+                params.exclude_trans,
+                params.exclude_svs
             ]
         )
         else None
