@@ -19,7 +19,7 @@ class VCFLibrary:
 
 @logger.catch
 def process_chromosome(
-    chrom: str, FILES: dict[str:str], filters: dict = None, stats: bool = False
+    chrom: str, samples: list, header: dict, FILES: dict[str:str], filters: dict = None, stats: bool = False
 ) -> dict:
 
     logger.debug(
@@ -53,7 +53,17 @@ def process_chromosome(
                 "hom": 0,
             }
 
-        for v in vcf(f"{chrom}"):
+        for i, v in enumerate(vcf(f"{chrom}")):
+
+            v_list = str(v).split('\t')
+
+            if not i:
+
+                format = v_list[header["FORMAT"]]
+
+                logger.debug(f"FORMAT for chromosome {chrom}: {format}")
+
+            samples_data = {s: utils.format_to_values(format=format, values=v_list[header[s]]) for s in samples}
 
             if filters:
 
@@ -74,6 +84,9 @@ def process_chromosome(
                 result[hash] = str(v)
 
                 if stats:
+                    values["variant"] += 1
+                    values["hom"] += sum(list(map(lambda x: utils.is_homozygous(GT=samples_data[x]['GT']),samples)))
+                    values["het"] += sum(list(map(lambda x: utils.is_heterozygous(GT=samples_data[x]['GT']),samples)))
                     values["quality"].append(v.QUAL)
 
     except UserWarning as e:
@@ -148,7 +161,25 @@ def process_files(
 
     chromosomes = vcf.seqnames
 
+    samples = vcf.samples
+
+    HEADER = {"CHROM": 0,
+              "POS": 1,
+              "ID": 2,
+              "REF": 3,
+              "ALT": 4,
+              "QUAL": 5,
+              "FILTER": 6,
+              "INFO": 7,
+              "FORMAT": 8}
+        
+    HEADER.update({s: i for i, s in zip(range((HEADER["FORMAT"]+1),(HEADER["FORMAT"]+1)+len(samples)), samples)})
+
+    logger.debug(f"{len(samples)} samples have been found in {file}: {samples}")
+
     logger.debug(f"File {file} is composed of {chromosomes} chromosomes")
+
+    logger.debug(f"Header for {file} has such format: {' '.join(HEADER.keys())}")
 
     result, filtered = {}, {}
 
@@ -158,7 +189,7 @@ def process_files(
 
         futures_to_chrom = {
             chrom_executor.submit(
-                process_chromosome, chrom, FILES, filters, stats
+                process_chromosome, chrom, samples, HEADER, FILES, filters, stats
             ): chrom
             for chrom in chromosomes
         }
@@ -259,8 +290,6 @@ def delta(params: object) -> int:
         {},
         {},
     )
-
-    print(result[params.vcfs[0]])
 
     for chrom in result[params.vcfs[0]]["data"]:
 

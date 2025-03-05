@@ -79,12 +79,6 @@ class Programm:
             help="Threshold at which differences in ARR and other raise error",
         )
         self.parser.add_argument(
-            "--skip_perl_error_pvalue",
-            action="store_true",
-            required=False,
-            help="Skip pvalue comparison if perl script return an error score (-1). Set to 1 to activate.",
-        )
-        self.parser.add_argument(
             "--specific_threshold_pvalue",
             type=float,
             default=0.0,
@@ -170,6 +164,13 @@ class Programm:
             action="store_true",
             default=False,
             help="Exclude calls with all data elements missing.",
+        )
+        self.parser.add_argument(
+            "--pass_only",
+            dest="pass_only",
+            action="store_true",
+            default=False,
+            help="Keep only PASS calls.",
         )
         self.parser.add_argument(
             "--truth",

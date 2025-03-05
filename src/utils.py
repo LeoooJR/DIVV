@@ -75,8 +75,33 @@ def intersect(a: set[str], b: set[str]) -> set:
 def difference(a: set[str], b: set[str]) -> set:
     return a - b
 
+# Variables
+
+def convert(a: object) -> object:
+
+    try:
+        return a if any(list(map(lambda x: x in a,('/','|')))) else eval(a)
+    except Exception:
+        return a
+
 
 # Variants
+
+def is_homozygous(GT: str):
+    if '/' in GT:
+        alleles = GT.split('/')
+    elif '|' in GT:
+        alleles = GT.split('|')
+    
+    return alleles[0] == alleles[1]
+
+def is_heterozygous(GT: str):
+    if '/' in GT:
+        alleles = GT.split('/')
+    elif '|' in GT:
+        alleles = GT.split('|')
+    
+    return alleles[0] != alleles[1]
 
 def exclude(v: object, filters: dict = None) -> bool:
 
@@ -100,10 +125,10 @@ def format_to_values(format: str, values: str|list[str]) -> dict:
 
         values = list(map(lambda x: x.split(":"), values))
 
-        return {f"sample{s}": {f: v} for s in range(len(values)) for f, v in zip(format,values[s])}
+        return {f"sample{s}": {f: convert(v)} for s in range(len(values)) for f, v in zip(format,values[s])}
 
     else:
 
         values = values.split(":")
 
-        return {f: v for f, v in zip(format,values)}
+        return {f: convert(v) for f, v in zip(format,values)}
