@@ -89,6 +89,10 @@ def visualization(stats: object):
                      x="Chromosome",
                      y="Depth")
         
+        #fig.show()
+
+        fig = px.histogram(data_frame=df, x="Depth")
+
         fig.show()
 
     if stats[key]["quality"].size:
