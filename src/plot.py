@@ -39,7 +39,7 @@ def histogram(data: list, nominal: str, y: str, color: str, title: str, prefix: 
 def boxplot(data: list, nominal: str, y: str, color: str, title: str, prefix: str):
     pass
 
-def visualization(stats: object):
+def visualization(file: str, stats: object):
 
     data = []
 

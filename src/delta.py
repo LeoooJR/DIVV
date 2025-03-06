@@ -475,5 +475,5 @@ def delta(params: object) -> int:
         except ValueError as e:
             logger.error(e)
     #pprint.pprint(result[params.vcfs[0]]["stats"])
-    plot.visualization(stats=result[params.vcfs[0]]["stats"])
+    plot.visualization(file=params.vcfs[0], stats=result[params.vcfs[0]]["stats"])
     return 1
