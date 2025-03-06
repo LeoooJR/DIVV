@@ -1,3 +1,5 @@
 loguru==0.7.3
 psutil==7.0.0
 cyvcf2==0.31.1
+plotly==6.0.0
+pandas==2.2.3

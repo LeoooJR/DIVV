@@ -3,8 +3,10 @@ from cyvcf2 import VCF
 from hashlib import sha256
 from loguru import logger
 import numpy as np
-import utils
+import plot
 import subprocess
+import pprint
+import utils
 
 
 class VCFLibrary:
@@ -315,6 +317,9 @@ def process_files(
                     filtered[futures_to_chrom[future]],
                     stats[futures_to_chrom[future]],
                 ) = future.result()
+
+                stats[futures_to_chrom[future]]["length"] = vcf.seqlens[chromosomes.index(futures_to_chrom[future])]
+                
             except Exception as e:
                 logger.warning(
                     f"Chromosome {futures_to_chrom[future]} generated an exception: {e}"
@@ -469,5 +474,6 @@ def delta(params: object) -> int:
             )
         except ValueError as e:
             logger.error(e)
-
+    #pprint.pprint(result[params.vcfs[0]]["stats"])
+    plot.visualization(stats=result[params.vcfs[0]]["stats"])
     return 1
