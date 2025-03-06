@@ -19,7 +19,12 @@ class VCFLibrary:
 
 @logger.catch
 def process_chromosome(
-    chrom: str, samples: list, header: dict, FILES: dict[str:str], filters: dict = None, compute: bool = False
+    chrom: str,
+    samples: list,
+    header: dict,
+    FILES: dict[str:str],
+    filters: dict = None,
+    compute: bool = False,
 ) -> dict:
 
     logger.debug(
@@ -32,44 +37,39 @@ def process_chromosome(
     except FileNotFoundError as e:
         logger.error(e)
 
-    FORMAT = {"genotype": ["GT"],
-              "genotype_quality": ["GQ"],
-              "depth": ["DP","TRC"]}
+    FORMAT = {
+        "genotype": ["GT"],
+        "genotype_quality": ["GQ"],
+        "depth": ["DP", "TRC"],
+    }
 
     try:
 
         exclude: bool = False
 
-        variants, filtered = {}, {"snp": 0,
-                                "mnp": 0, 
-                                "indel": 0, 
-                                "sv": 0,
-                                "transition": 0}
+        variants, filtered = {}, {
+            "snp": 0,
+            "mnp": 0,
+            "indel": 0,
+            "sv": 0,
+            "transition": 0,
+        }
 
         if compute:
             stats = {
-                "variant": {"snp": {"transition": 0,
-                                    "transversion": 0,
-                                    "A": {"A": 0,
-                                          "T": 0,
-                                          "C": 0,
-                                          "G": 0},
-                                    "T": {"A": 0,
-                                          "T": 0,
-                                          "C": 0,
-                                          "G": 0},
-                                    "C": {"A": 0,
-                                          "T": 0,
-                                          "C": 0,
-                                          "G": 0},
-                                    "G": {"A": 0,
-                                          "T": 0,
-                                          "C": 0,
-                                          "G": 0}},
-                            "mnp": 0,
-                            "indel": {"insertion": 0,
-                                      "deletion": 0},
-                            "sv": 0},
+                "variant": {
+                    "snp": {
+                        "transition": 0,
+                        "transversion": 0,
+                        "A": {"A": 0, "T": 0, "C": 0, "G": 0},
+                        "T": {"A": 0, "T": 0, "C": 0, "G": 0},
+                        "C": {"A": 0, "T": 0, "C": 0, "G": 0},
+                        "G": {"A": 0, "T": 0, "C": 0, "G": 0},
+                    },
+                    "mnp": 0,
+                    "indel": {"insertion": 0, "deletion": 0},
+                    "sv": 0,
+                },
                 "depth": [],
                 "quality": [],
                 "GQ": [],
@@ -80,7 +80,7 @@ def process_chromosome(
 
         for i, v in enumerate(vcf(f"{chrom}")):
 
-            v_list = str(v).split('\t')
+            v_list = str(v).split("\t")
 
             if not i:
 
@@ -88,30 +88,32 @@ def process_chromosome(
 
                 logger.debug(f"FORMAT for chromosome {chrom}: {format}")
 
-            samples_data = {s: utils.format_to_values(format=format, values=v_list[header[s]]) for s in samples}
+            samples_data = {
+                s: utils.format_to_values(
+                    format=format, values=v_list[header[s]]
+                )
+                for s in samples
+            }
 
             if filters:
 
-                exclude: bool = utils.exclude(v,filters)
+                exclude: bool = utils.exclude(v, filters)
 
             if exclude:
 
-                filtered[
-                    v.var_type
-                ] += 1
+                filtered[v.var_type] += 1
 
             else:
 
                 hash = sha256(
                     string=f"{v.CHROM}:{v.POS}:{v.REF}:{'|'.join(v.ALT)}".encode()
                 ).hexdigest()
-                
+
                 variants[hash] = str(v)
 
                 if compute:
 
                     if v.var_type == "snp":
-                        print(v.ALT)
                         if v.is_transition:
                             mutation = "transition"
                         else:
@@ -127,16 +129,51 @@ def process_chromosome(
                     else:
                         stats["variant"][v.var_type] += 1
 
-                    if FORMAT["genotype_quality"][0] in samples_data[samples[0]].keys():
-                        stats[FORMAT["genotype_quality"][0]].append([samples_data[s][FORMAT["genotype_quality"][0]] for s in samples])
+                    if (
+                        FORMAT["genotype_quality"][0]
+                        in samples_data[samples[0]].keys()
+                    ):
+                        stats[FORMAT["genotype_quality"][0]].append(
+                            [
+                                samples_data[s][FORMAT["genotype_quality"][0]]
+                                for s in samples
+                            ]
+                        )
 
-                    stats["hom"] += sum(list(map(lambda x: utils.is_homozygous(GT=samples_data[x][FORMAT["genotype"][0]]),samples)))
-                    stats["het"] += sum(list(map(lambda x: utils.is_heterozygous(GT=samples_data[x][FORMAT["genotype"][0]]),samples)))
-                    
+                    stats["hom"] += sum(
+                        list(
+                            map(
+                                lambda x: utils.is_homozygous(
+                                    GT=samples_data[x][FORMAT["genotype"][0]]
+                                ),
+                                samples,
+                            )
+                        )
+                    )
+                    stats["het"] += sum(
+                        list(
+                            map(
+                                lambda x: utils.is_heterozygous(
+                                    GT=samples_data[x][FORMAT["genotype"][0]]
+                                ),
+                                samples,
+                            )
+                        )
+                    )
+
                     if v.QUAL:
                         stats["quality"].append(v.QUAL)
 
-                    stats["depth"].append([samples_data[s][FORMAT["depth"][0]] if FORMAT["depth"][0] in samples_data[s] else [samples_data[s][FORMAT["depth"][1]]] for s in samples])
+                    stats["depth"].append(
+                        [
+                            (
+                                samples_data[s][FORMAT["depth"][0]]
+                                if FORMAT["depth"][0] in samples_data[s]
+                                else [samples_data[s][FORMAT["depth"][1]]]
+                            )
+                            for s in samples
+                        ]
+                    )
 
     except UserWarning as e:
         logger.warning(e)
@@ -212,23 +249,40 @@ def process_files(
 
     samples = vcf.samples
 
-    HEADER = {"CHROM": 0,
-              "POS": 1,
-              "ID": 2,
-              "REF": 3,
-              "ALT": 4,
-              "QUAL": 5,
-              "FILTER": 6,
-              "INFO": 7,
-              "FORMAT": 8}
-        
-    HEADER.update({s: i for i, s in zip(range((HEADER["FORMAT"]+1),(HEADER["FORMAT"]+1)+len(samples)), samples)})
+    HEADER = {
+        "CHROM": 0,
+        "POS": 1,
+        "ID": 2,
+        "REF": 3,
+        "ALT": 4,
+        "QUAL": 5,
+        "FILTER": 6,
+        "INFO": 7,
+        "FORMAT": 8,
+    }
 
-    logger.debug(f"{len(samples)} samples have been found in {file}: {samples}")
+    HEADER.update(
+        {
+            s: i
+            for i, s in zip(
+                range(
+                    (HEADER["FORMAT"] + 1),
+                    (HEADER["FORMAT"] + 1) + len(samples),
+                ),
+                samples,
+            )
+        }
+    )
+
+    logger.debug(
+        f"{len(samples)} samples have been found in {file}: {samples}"
+    )
 
     logger.debug(f"File {file} is composed of {chromosomes} chromosomes")
 
-    logger.debug(f"Header for {file} has such format: {' '.join(HEADER.keys())}")
+    logger.debug(
+        f"Header for {file} has such format: {' '.join(HEADER.keys())}"
+    )
 
     variants, filtered, stats = {}, {}, {}
 
@@ -238,7 +292,13 @@ def process_files(
 
         futures_to_chrom = {
             chrom_executor.submit(
-                process_chromosome, chrom, samples, HEADER, FILES, filters, compute
+                process_chromosome,
+                chrom,
+                samples,
+                HEADER,
+                FILES,
+                filters,
+                compute,
             ): chrom
             for chrom in chromosomes
         }
@@ -253,17 +313,19 @@ def process_files(
                 (
                     variants[futures_to_chrom[future]],
                     filtered[futures_to_chrom[future]],
-                    stats[futures_to_chrom[future]]
+                    stats[futures_to_chrom[future]],
                 ) = future.result()
             except Exception as e:
                 logger.warning(
                     f"Chromosome {futures_to_chrom[future]} generated an exception: {e}"
                 )
 
-    return {"info": utils.file_stats(file),
-            "variants": variants, 
-            "filter": filtered,
-            "stats": stats}
+    return {
+        "info": utils.file_stats(file),
+        "variants": variants,
+        "filter": filtered,
+        "stats": stats,
+    }
 
 
 def delta(params: object) -> int:
@@ -295,8 +357,8 @@ def delta(params: object) -> int:
                 "exclude_vars": params.exclude_vars,
                 "exclude_mnps": params.exclude_mnps,
                 "exclude_transitions": params.exclude_trans,
-                "exclude_svs": params.exclude_svs
-            }
+                "exclude_svs": params.exclude_svs,
+            },
         }
         if any(
             [
@@ -306,7 +368,7 @@ def delta(params: object) -> int:
                 params.exclude_vars,
                 params.exclude_mnps,
                 params.exclude_trans,
-                params.exclude_svs
+                params.exclude_svs,
             ]
         )
         else None
@@ -330,9 +392,7 @@ def delta(params: object) -> int:
             )
 
             try:
-                (
-                    result[futures_to_vcf[future]]
-                ) = future.result()
+                (result[futures_to_vcf[future]]) = future.result()
             except Exception as e:
                 logger.error(
                     f"File {futures_to_vcf[future]} generated an exception: {e}"
@@ -344,7 +404,11 @@ def delta(params: object) -> int:
         {},
     )
 
-    print(result[params.vcfs[0]]["stats"])
+    result["delta"] = {
+        "common": {},
+        "unique": {params.vcfs[0]: {}, 
+                   params.vcfs[1]: {}},
+    }
 
     for chrom in result[params.vcfs[0]]["variants"]:
 
@@ -371,6 +435,28 @@ def delta(params: object) -> int:
                 b=set(result[params.vcfs[1]]["variants"][chrom].keys()),
             )
         }
+
+        (
+            result["delta"]["common"][chrom],
+            result["delta"]["unique"][params.vcfs[0]][chrom],
+            result["delta"]["unique"][params.vcfs[1]][chrom],
+        ) = (
+            len(common_variants[chrom]),
+            len(unique_variants_to_left[chrom]),
+            len(unique_variants_to_right[chrom]),
+        )
+
+        logger.debug(
+            f"{result['delta']['common'][chrom]} variant(s) is/are commom for chromosome {chrom} in both files"
+        )
+
+        logger.debug(
+            f"{result['delta']['unique'][params.vcfs[0]][chrom]} variant(s) is/are unique for chromosme {chrom} in files {params.vcfs[0]}"
+        )
+
+        logger.debug(
+            f"{result['delta']['unique'][params.vcfs[1]][chrom]} variant(s) is/are unique for chromosome {chrom} in files {params.vcfs[1]}"
+        )
 
     if params.serialize:
         path: str = "/".join(params.vcfs[0].split("/")[:-1])
