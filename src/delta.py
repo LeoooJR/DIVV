@@ -19,7 +19,7 @@ class VCFLibrary:
 
 @logger.catch
 def process_chromosome(
-    chrom: str, samples: list, header: dict, FILES: dict[str:str], filters: dict = None, stats: bool = False
+    chrom: str, samples: list, header: dict, FILES: dict[str:str], filters: dict = None, compute: bool = False
 ) -> dict:
 
     logger.debug(
@@ -32,19 +32,44 @@ def process_chromosome(
     except FileNotFoundError as e:
         logger.error(e)
 
+    FORMAT = {"genotype": ["GT"],
+              "genotype_quality": ["GQ"],
+              "depth": ["DP","TRC"]}
+
     try:
 
         exclude: bool = False
 
-        result, filtered = {}, {"snp": 0,
+        variants, filtered = {}, {"snp": 0,
                                 "mnp": 0, 
                                 "indel": 0, 
                                 "sv": 0,
                                 "transition": 0}
 
-        if stats:
-            values = {
-                "variant": 0,
+        if compute:
+            stats = {
+                "variant": {"snp": {"transition": 0,
+                                    "transversion": 0,
+                                    "A": {"A": 0,
+                                          "T": 0,
+                                          "C": 0,
+                                          "G": 0},
+                                    "T": {"A": 0,
+                                          "T": 0,
+                                          "C": 0,
+                                          "G": 0},
+                                    "C": {"A": 0,
+                                          "T": 0,
+                                          "C": 0,
+                                          "G": 0},
+                                    "G": {"A": 0,
+                                          "T": 0,
+                                          "C": 0,
+                                          "G": 0}},
+                            "mnp": 0,
+                            "indel": {"insertion": 0,
+                                      "deletion": 0},
+                            "sv": 0},
                 "depth": [],
                 "quality": [],
                 "GQ": [],
@@ -81,13 +106,37 @@ def process_chromosome(
                     string=f"{v.CHROM}:{v.POS}:{v.REF}:{'|'.join(v.ALT)}".encode()
                 ).hexdigest()
                 
-                result[hash] = str(v)
+                variants[hash] = str(v)
 
-                if stats:
-                    values["variant"] += 1
-                    values["hom"] += sum(list(map(lambda x: utils.is_homozygous(GT=samples_data[x]['GT']),samples)))
-                    values["het"] += sum(list(map(lambda x: utils.is_heterozygous(GT=samples_data[x]['GT']),samples)))
-                    values["quality"].append(v.QUAL)
+                if compute:
+
+                    if v.var_type == "snp":
+                        print(v.ALT)
+                        if v.is_transition:
+                            mutation = "transition"
+                        else:
+                            mutation = "transversion"
+                        stats["variant"][v.var_type][mutation] += 1
+                        stats["variant"][v.var_type][v.REF][v.ALT[0]] += 1
+                    elif v.var_type == "indel":
+                        if v.is_deletion:
+                            mutation = "deletion"
+                        else:
+                            mutation = "insertion"
+                        stats["variant"][v.var_type][mutation] += 1
+                    else:
+                        stats["variant"][v.var_type] += 1
+
+                    if FORMAT["genotype_quality"][0] in samples_data[samples[0]].keys():
+                        stats[FORMAT["genotype_quality"][0]].append([samples_data[s][FORMAT["genotype_quality"][0]] for s in samples])
+
+                    stats["hom"] += sum(list(map(lambda x: utils.is_homozygous(GT=samples_data[x][FORMAT["genotype"][0]]),samples)))
+                    stats["het"] += sum(list(map(lambda x: utils.is_heterozygous(GT=samples_data[x][FORMAT["genotype"][0]]),samples)))
+                    
+                    if v.QUAL:
+                        stats["quality"].append(v.QUAL)
+
+                    stats["depth"].append([samples_data[s][FORMAT["depth"][0]] if FORMAT["depth"][0] in samples_data[s] else [samples_data[s][FORMAT["depth"][1]]] for s in samples])
 
     except UserWarning as e:
         logger.warning(e)
@@ -96,19 +145,19 @@ def process_chromosome(
         f"Filtered: {filtered['snp']} SNP(s), {filtered['indel']} INDEL(s), {filtered['sv']} structural variant(s) variant(s) for chromosome {chrom} in file {FILES['compression']}"
     )
 
-    if stats:
-        values["depth"], values["quality"], values["GQ"] = (
-            np.array(values["depth"], dtype=np.uint8),
-            np.array(values["quality"], dtype=np.float32),
-            np.array(values["GQ"]),
+    if compute:
+        stats["depth"], stats["quality"], stats["GQ"] = (
+            np.array(stats["depth"], dtype=np.uint16),
+            np.array(stats["quality"], dtype=np.float32),
+            np.array(stats["GQ"]),
         )
 
-    return result, filtered
+    return (variants, filtered, stats) if compute else (variants, filtered, {})
 
 
 @logger.catch
 def process_files(
-    file: str, index: str = None, filters: dict = None, stats: bool = False
+    file: str, index: str = None, filters: dict = None, compute: bool = False
 ) -> dict:
 
     logger.debug(f"Processing file: {file}")
@@ -181,7 +230,7 @@ def process_files(
 
     logger.debug(f"Header for {file} has such format: {' '.join(HEADER.keys())}")
 
-    result, filtered = {}, {}
+    variants, filtered, stats = {}, {}, {}
 
     with concurrent.futures.ProcessPoolExecutor(
         max_workers=2
@@ -189,7 +238,7 @@ def process_files(
 
         futures_to_chrom = {
             chrom_executor.submit(
-                process_chromosome, chrom, samples, HEADER, FILES, filters, stats
+                process_chromosome, chrom, samples, HEADER, FILES, filters, compute
             ): chrom
             for chrom in chromosomes
         }
@@ -202,8 +251,9 @@ def process_files(
 
             try:
                 (
-                    result[futures_to_chrom[future]],
+                    variants[futures_to_chrom[future]],
                     filtered[futures_to_chrom[future]],
+                    stats[futures_to_chrom[future]]
                 ) = future.result()
             except Exception as e:
                 logger.warning(
@@ -211,11 +261,14 @@ def process_files(
                 )
 
     return {"info": utils.file_stats(file),
-            "data": result, 
-            "filter": filtered}
+            "variants": variants, 
+            "filter": filtered,
+            "stats": stats}
 
 
 def delta(params: object) -> int:
+
+    logger.add("VCFDelta.log")
 
     logger.debug(f"VCFS: {params.vcfs}")
 
@@ -291,29 +344,31 @@ def delta(params: object) -> int:
         {},
     )
 
-    for chrom in result[params.vcfs[0]]["data"]:
+    print(result[params.vcfs[0]]["stats"])
+
+    for chrom in result[params.vcfs[0]]["variants"]:
 
         unique_variants_to_left[chrom] = {
-            k: result[params.vcfs[0]]["data"][chrom][k]
+            k: result[params.vcfs[0]]["variants"][chrom][k]
             for k in utils.difference(
-                a=set(result[params.vcfs[0]]["data"][chrom].keys()),
-                b=set(result[params.vcfs[1]]["data"][chrom].keys()),
+                a=set(result[params.vcfs[0]]["variants"][chrom].keys()),
+                b=set(result[params.vcfs[1]]["variants"][chrom].keys()),
             )
         }
 
         unique_variants_to_right[chrom] = {
-            k: result[params.vcfs[1]]["data"][chrom][k]
+            k: result[params.vcfs[1]]["variants"][chrom][k]
             for k in utils.difference(
-                a=set(result[params.vcfs[1]]["data"][chrom].keys()),
-                b=set(result[params.vcfs[0]]["data"][chrom].keys()),
+                a=set(result[params.vcfs[1]]["variants"][chrom].keys()),
+                b=set(result[params.vcfs[0]]["variants"][chrom].keys()),
             )
         }
 
         common_variants[chrom] = {
-            k: result[params.vcfs[0]]["data"][chrom][k]
+            k: result[params.vcfs[0]]["variants"][chrom][k]
             for k in utils.intersect(
-                a=set(result[params.vcfs[0]]["data"][chrom].keys()),
-                b=set(result[params.vcfs[1]]["data"][chrom].keys()),
+                a=set(result[params.vcfs[0]]["variants"][chrom].keys()),
+                b=set(result[params.vcfs[1]]["variants"][chrom].keys()),
             )
         }
 
