@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VCF File Comparison Tool</title>
+  <link rel="stylesheet" href="file.css" />
+</head>
+<body>
+  <div class="container">
+    
+    <div class="comparison-container">
+      <div class="file1-view">
+        <div class="file-title">{{ First VCF | required }}</div>
+        <div class="file1-content" id="content1">
+          <div class="line header">
+            <div class="line-number">0</div>
+              <span class="header column">
+                {{ header | required }}
+              </span>
+          </div>
+          {% for row in rows %}
+            {% if row.match %}
+              <div class="line match">
+                <div class="line-number">{{ loop.index }}</div>
+                <span class="match column">
+                  {{ row }}
+                </span>
+              </div>
+            {% else %}
+              <div class="line diff">
+                <div class="line-number">{{ loop.index }}</div>
+                <span class="diff column">
+                  {{ row }}
+                </span>
+              </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+      <div class="file2-view">
+        <div class="file-title">{{ Second VCF | required }}</div>
+        <div class="file2-content" id="content2">
+          <div class="line header">
+            <div class="line-number">0</div>
+              <span class="column">
+                {{ header | required }}
+              </span>
+          </div>
+          {% for row in rows %}
+            {% if row.match %}
+              <div class="line match">
+                <div class="line-number">{{ loop.index }}</div>
+                <span class="match column">
+                  {{ row }}
+                </span>
+              </div>
+            {% else %}
+              <div class="line diff">
+                <div class="line-number">{{ loop.index }}</div>
+                <span class="diff column">
+                  {{ row }}
+                </span>
+              </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+    
+    <div class="stats" id="stats">
+      <h3>Comparison Stats</h3>
+      <p>Total match: {{ common }}</p>
+      <p>Matching lines: <span style="color: green">{{ matches }}</span></p>
+      <p>Different lines: <span style="color: red">{{ diffs }}</span></p>
+      <p>Match percentage: {{ common }}</p>
+    </div>
+  </div>
+
+  <script>
+    const content1El = document.getElementById('content1');
+    const content2El = document.getElementById('content2');
+    
+    // Sync scrolling between panels
+    content1El.addEventListener('scroll', () => {
+      content2El.scrollTop = content1El.scrollTop;
+    });
+    
+    content2El.addEventListener('scroll', () => {
+      content1El.scrollTop = content2El.scrollTop;
+    });
+    
+    function interpretTabs(className) {
+      document.querySelectorAll("." + className).forEach(element => {
+          element.innerHTML = element.innerHTML.split("\\t").join('&nbsp;&nbsp;&nbsp;&nbsp;');
+      });
+    }
+    interpretTabs("header.column")
+    interpretTabs("match.column");
+    interpretTabs("diff.column");
+    
+  </script>
+</body>
+</html>

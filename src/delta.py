@@ -493,4 +493,10 @@ def delta(params: object) -> int:
 
     if params.stats:
         plot.visualization(file=params.vcfs[0], stats=result[params.vcfs[0]]["stats"])
+
+    values = list(map(lambda chrom: list(common_variants[chrom].values()), common_variants.keys()))
+
+    for chrom in values:
+        chrom.sort(key=lambda s: s.split('\t')[1])
+
     return 1

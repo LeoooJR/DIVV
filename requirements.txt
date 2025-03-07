@@ -3,3 +3,4 @@ psutil==7.0.0
 cyvcf2==0.31.1
 plotly==6.0.0
 pandas==2.2.3
+jinja2==3.1.6
