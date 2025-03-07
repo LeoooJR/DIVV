@@ -3,6 +3,21 @@ import plotly.express as px
 import pandas as pd
 import pprint
 
+def set_layout(fig: object) -> object:
+
+    fig.update_layout(
+        font=dict(
+            size = 15
+        ),
+        title=dict(
+            x = 0.5,
+            xanchor= 'center',
+            yanchor= 'top'
+        )
+    )
+
+    return fig
+
 def barplot(data: list, nominal: str, y: str, color: str, title: str, prefix: str):
 
     if isinstance(data[0],pd.DataFrame):
@@ -15,6 +30,8 @@ def barplot(data: list, nominal: str, y: str, color: str, title: str, prefix: st
                  y=y, 
                  color=color,
                  title=title)
+    
+    fig.update_xaxes(ticklabelstep=1)
     
     fig.update_layout(
         updatemenus=[
@@ -31,13 +48,33 @@ def barplot(data: list, nominal: str, y: str, color: str, title: str, prefix: st
     ]
     )
 
-    fig.write_html(f"{prefix}.html")
+    set_layout(fig).write_html(f"{prefix}.html")
 
-def histogram(data: list, nominal: str, y: str, color: str, title: str, prefix: str):
-    pass
+def histogram(data: list, x: str, color: str, title: str, prefix: str):
+
+    if isinstance(data[0],pd.DataFrame):
+        df = pd.concat(data, ignore_index=True)
+    elif isinstance(data[0],dict):
+        df = pd.DataFrame(data)
+
+    fig = px.histogram(data_frame=df, x=x, title=title)
+
+    set_layout(fig).write_html(f"{prefix}.html")
 
 def boxplot(data: list, nominal: str, y: str, color: str, title: str, prefix: str):
-    pass
+
+    if isinstance(data[0],pd.DataFrame):
+        df = pd.concat(data, ignore_index=True)
+    elif isinstance(data[0],dict):
+        df = pd.DataFrame(data)
+
+    fig = px.box(data_frame=df,
+                     x=nominal,
+                     y=y,
+                     color=color,
+                     title=title)
+    
+    set_layout(fig).write_html(f"{prefix}.html")
 
 def visualization(file: str, stats: object):
 
@@ -46,6 +83,7 @@ def visualization(file: str, stats: object):
     chromsomes = stats.keys()
 
     for k in chromsomes:
+
         data.append({"Chromosome": k, "Type": "Indel", "Count": stats[k]["variant"]["indel"]["deletion"] + stats[k]["variant"]["indel"]["insertion"]})
         data.append({"Chromosome": k, "Type": "SNP", "Count": stats[k]["variant"]["snp"]["transition"] + stats[k]["variant"]["snp"]["transversion"]})
         data.append({"Chromosome": k, "Type": "SV", "Count": stats[k]["variant"]["sv"]})
@@ -62,12 +100,12 @@ def visualization(file: str, stats: object):
 
     data.clear()
 
-    key = list(stats.keys())[0]
+    chromosome = list(chromsomes)[0]
 
-    if stats[key]["GQ"].size:
+    if stats[chromosome]["GQ"].size:
         pass
 
-    if stats[key]["depth"].size:
+    if stats[chromosome]["depth"].size:
 
         for k in chromsomes:
             data.append({"Chromosome": k, "Depth": numpy.mean(stats[k]["depth"])})
@@ -82,18 +120,12 @@ def visualization(file: str, stats: object):
                                 "Depth": stats[k]["depth"].flatten()})
 
             data.append(tmp)
-        
-        df = pd.concat(data, ignore_index=True)
 
-        fig = px.box(data_frame=df,
-                     x="Chromosome",
-                     y="Depth")
-        
-        #fig.show()
+        boxplot(data, "Chromosome", "Depth", "Chromosome", "Depth by chromosome", "DepthByChromosome")
 
-        fig = px.histogram(data_frame=df, x="Depth")
+        histogram(data, "Depth", None, "Depth", "DepthHist")
 
-        fig.show()
+        data.clear()
 
-    if stats[key]["quality"].size:
+    if stats[chromosome]["quality"].size:
         pass

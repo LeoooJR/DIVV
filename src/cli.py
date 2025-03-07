@@ -194,6 +194,13 @@ class Programm:
             help="Should a report be generated.",
             default=False,
         )
+        self.parser.add_argument(
+            "--verbosity",
+            dest="verbosity",
+            action="store_true",
+            help="Should logs be printed to the shell.",
+            default=False,
+        )
 
         self.parser.set_defaults(func=self.FUNC["delta"])
 

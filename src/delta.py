@@ -318,7 +318,9 @@ def process_files(
                     stats[futures_to_chrom[future]],
                 ) = future.result()
 
-                stats[futures_to_chrom[future]]["length"] = vcf.seqlens[chromosomes.index(futures_to_chrom[future])]
+                if compute:
+
+                    stats[futures_to_chrom[future]]["length"] = vcf.seqlens[chromosomes.index(futures_to_chrom[future])]
                 
             except Exception as e:
                 logger.warning(
@@ -335,7 +337,11 @@ def process_files(
 
 def delta(params: object) -> int:
 
-    logger.add("VCFDelta.log")
+    if not params.verbosity:
+
+        logger.remove(0)
+
+        logger.add("VCFDelta.log")
 
     logger.debug(f"VCFS: {params.vcfs}")
 
@@ -363,6 +369,7 @@ def delta(params: object) -> int:
                 "exclude_mnps": params.exclude_mnps,
                 "exclude_transitions": params.exclude_trans,
                 "exclude_svs": params.exclude_svs,
+                "pass_only": params.pass_only
             },
         }
         if any(
@@ -374,6 +381,7 @@ def delta(params: object) -> int:
                 params.exclude_mnps,
                 params.exclude_trans,
                 params.exclude_svs,
+                params.pass_only
             ]
         )
         else None
@@ -413,6 +421,7 @@ def delta(params: object) -> int:
         "common": {},
         "unique": {params.vcfs[0]: {}, 
                    params.vcfs[1]: {}},
+        "jaccard": {}
     }
 
     for chrom in result[params.vcfs[0]]["variants"]:
@@ -455,6 +464,13 @@ def delta(params: object) -> int:
             f"{result['delta']['common'][chrom]} variant(s) is/are commom for chromosome {chrom} in both files"
         )
 
+        result["delta"]["jaccard"][chrom] = utils.jaccard_index(shared=result["delta"]["common"][chrom], 
+                                                                total=(result["delta"]["common"][chrom]+
+                                                                        result["delta"]["unique"][params.vcfs[0]][chrom]+
+                                                                        result["delta"]["unique"][params.vcfs[1]][chrom]))
+
+        logger.debug(f"Jaccard index for chromosome {chrom}: {result['delta']['jaccard'][chrom]}")
+
         logger.debug(
             f"{result['delta']['unique'][params.vcfs[0]][chrom]} variant(s) is/are unique for chromosme {chrom} in files {params.vcfs[0]}"
         )
@@ -474,6 +490,7 @@ def delta(params: object) -> int:
             )
         except ValueError as e:
             logger.error(e)
-    #pprint.pprint(result[params.vcfs[0]]["stats"])
-    plot.visualization(file=params.vcfs[0], stats=result[params.vcfs[0]]["stats"])
+
+    if params.stats:
+        plot.visualization(file=params.vcfs[0], stats=result[params.vcfs[0]]["stats"])
     return 1

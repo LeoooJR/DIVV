@@ -1,5 +1,6 @@
 from datetime import datetime, timezone
 import json
+import numpy as np
 import os
 import _pickle as cPickle
 
@@ -75,6 +76,12 @@ def intersect(a: set[str], b: set[str]) -> set:
 def difference(a: set[str], b: set[str]) -> set:
     return a - b
 
+def jaccard_index(shared: int, total: dict) -> float:
+    try:
+        return shared / total
+    except ZeroDivisionError:
+        return None
+
 # Variables
 
 def convert(a: object) -> object:
@@ -86,6 +93,12 @@ def convert(a: object) -> object:
 
 
 # Variants
+
+def hamming_distance(a: np.ndarray, b: np.ndarray) -> float:
+    try:
+        return 1 - ((np.sum(np.not_equal(a, b))) / (a.size + b.size))
+    except ZeroDivisionError:
+        return None
 
 def is_homozygous(GT: str):
     if '/' in GT:
@@ -115,6 +128,8 @@ def exclude(v: object, filters: dict = None) -> bool:
             v.is_sv and filters["exclude"]["exclude_svs"]
         ) or (
             v.is_transition and filters["exclude"]["exclude_transitions"]
+        ) or (
+            (v.FILTER != None) and filters["exclude"]["pass_only"]
         ) if filters else False
 
 def format_to_values(format: str, values: str|list[str]) -> dict:
