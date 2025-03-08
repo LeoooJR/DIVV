@@ -2,6 +2,7 @@ from datetime import datetime, timezone
 import json
 import numpy as np
 import os
+from pandas import DataFrame
 import _pickle as cPickle
 
 # I/O
@@ -13,6 +14,9 @@ def save(obj: object, prefixe: str = "output", format: str = "pickle") -> int:
     ), "File format is not supported"
 
     if format in ["json", "pickle"]:
+
+        if isinstance(obj,DataFrame):
+            obj = obj.to_dict(orient='list')
 
         FILES = {
             "json": {"ext": "json", "mode": "w", "func": json.dump},

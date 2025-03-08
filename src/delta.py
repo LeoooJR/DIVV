@@ -472,18 +472,6 @@ def delta(params: object) -> int:
             f"{result['delta']['unique'][params.vcfs[1]][chrom]} variant(s) is/are unique for chromosome {chrom} in files {params.vcfs[1]}"
         )
 
-    if params.serialize:
-        path: str = "/".join(params.vcfs[0].split("/")[:-1])
-        logger.debug(f"Results are seralized to {path}")
-        try:
-            utils.save(
-                obj=common,
-                prefixe=f"{path}/common",
-                format=params.serialize,
-            )
-        except ValueError as e:
-            logger.error(e)
-
     if params.stats:
         plot.visualization(file=params.vcfs[0], stats=result[params.vcfs[0]]["stats"])
 
@@ -494,6 +482,18 @@ def delta(params: object) -> int:
     list(map((lambda x, n: x.rename(columns={c: f'{c}_vcf{n}' for c in x.columns}, inplace=True)), dfs_files, [1,2]))
 
     df: pd.DataFrame = pd.concat(dfs_files, axis=1, join='outer', sort=False)
+
+    if params.serialize:
+        path: str = "/".join(params.vcfs[0].split("/")[:-1])
+        logger.debug(f"Results are seralized to {path}")
+        try:
+            utils.save(
+                obj=df,
+                prefixe=f"{path}/common",
+                format=params.serialize,
+            )
+        except ValueError as e:
+            logger.error(e)
 
     if params.report:
 
