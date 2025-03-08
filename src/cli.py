@@ -3,8 +3,6 @@ import argparse
 from delta import delta
 from psutil import cpu_count
 import sys
-import utils
-
 
 class Programm:
 
@@ -177,7 +175,7 @@ class Programm:
             dest="truth_flag",
             action="store_true",
             default=False,
-            help="Additional metrics are generated assuming the first VCF file is the truth. This also triggers extra analysis of filtered calls.",
+            help="Additional metrics are generated assuming the first VCF file is the truth.",
         )
         self.parser.add_argument(
             "--stats",

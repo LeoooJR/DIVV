@@ -3,6 +3,14 @@ import plotly.express as px
 import pandas as pd
 import pprint
 
+class Plot:
+
+    def __init__(self, type: str):
+        pass
+
+    def __str__(self):
+        pass
+
 def set_layout(fig: object) -> object:
 
     fig.update_layout(

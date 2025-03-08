@@ -1,5 +1,6 @@
 name: VCFDelta
 channels:
+  - conda-forge
   - bioconda
   - https://repo.anaconda.com/pkgs/main
   - https://repo.anaconda.com/pkgs/r
