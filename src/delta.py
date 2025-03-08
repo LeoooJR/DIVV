@@ -115,8 +115,10 @@ def process_chromosome(
                     string=f"{v.CHROM}:{v.POS}:{v.REF}:{'|'.join(v.ALT)}".encode()
                 ).hexdigest()
 
-                variants[hash] = str(v)
-
+                variants[hash] = [v.CHROM,
+                                  v.POS,
+                                  str(v)
+]
                 if compute:
 
                     if v.var_type == "snp":
@@ -183,6 +185,8 @@ def process_chromosome(
 
     except UserWarning as e:
         logger.warning(e)
+
+    variants = pd.DataFrame.from_dict(variants, orient='index', columns=["Chromosome","Position","Variant"])
 
     logger.debug(
         f"Filtered: {filtered['snp']} SNP(s), {filtered['indel']} INDEL(s), {filtered['sv']} structural variant(s) variant(s) for chromosome {chrom} in file {FILES['compression']}"
@@ -430,14 +434,14 @@ def delta(params: object) -> int:
 
     for chrom in result[params.vcfs[0]]["variants"]:
 
-        unique_vcf0[chrom] = utils.difference(a=set(result[params.vcfs[0]]["variants"][chrom].keys()),
-                                              b=set(result[params.vcfs[1]]["variants"][chrom].keys()))
+        unique_vcf0[chrom] = utils.difference(a=set(result[params.vcfs[0]]["variants"][chrom].index),
+                                              b=set(result[params.vcfs[1]]["variants"][chrom].index))
 
-        unique_vcf1[chrom] = utils.difference(a=set(result[params.vcfs[1]]["variants"][chrom].keys()),
-                                              b=set(result[params.vcfs[0]]["variants"][chrom].keys()))
+        unique_vcf1[chrom] = utils.difference(a=set(result[params.vcfs[1]]["variants"][chrom].index),
+                                              b=set(result[params.vcfs[0]]["variants"][chrom].index))
 
-        common[chrom] = utils.intersect(a=set(result[params.vcfs[0]]["variants"][chrom].keys()),
-                                        b=set(result[params.vcfs[1]]["variants"][chrom].keys()))
+        common[chrom] = utils.intersect(a=set(result[params.vcfs[0]]["variants"][chrom].index),
+                                        b=set(result[params.vcfs[1]]["variants"][chrom].index))
 
         (
             result["delta"]["common"][chrom],
@@ -483,28 +487,16 @@ def delta(params: object) -> int:
     if params.stats:
         plot.visualization(file=params.vcfs[0], stats=result[params.vcfs[0]]["stats"])
 
-    values = list(map(lambda chrom: list(itemgetter(*list(common[chrom]))(result[params.vcfs[0]]["variants"][chrom])) 
-                      if result["delta"]["common"][chrom] > 0 
-                      else [], 
-                      sorted(common.keys())))
-    
-    dfs: list[pd.DataFrame] = []
+    dfs_chroms: list[pd.DataFrame] = list(map(lambda vcf: list(itemgetter(*list(sorted(result[vcf]["variants"].keys())))(result[vcf]["variants"])), params.vcfs))
 
-    for chrom in values:
+    dfs_files: list[pd.DataFrame] = list(map(lambda x: pd.concat(x), dfs_chroms))
 
-        chrom.sort(key=lambda s: s.split('\t')[1])
+    list(map((lambda x, n: x.rename(columns={c: f'{c}_vcf{n}' for c in x.columns}, inplace=True)), dfs_files, [1,2]))
 
-        df = pd.DataFrame({
-            "Chromosome": list(repeat(chrom,len(chrom))),
-            "VCF1": chrom,
-            "VCF2": chrom,
-            "State": list(repeat(True,len(chrom)))
-        })
+    df: pd.DataFrame = pd.concat(dfs_files, axis=1, join='outer', sort=False)
 
-        dfs.append(df)
+    if params.report:
 
-    df = pd.concat(dfs)
-
-    Report(vcfs=params.vcfs, df=df).create()
+        Report(vcfs=params.vcfs, df=df).create()
 
     return 1

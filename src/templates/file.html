@@ -20,18 +20,20 @@
               </span>
           </div>
           {% for index, series in df.iterrows() %}
-            {% if series['State'] %}
+            {% if series['Variant_vcf1']|is_nan or series['Variant_vcf2']|is_nan %}
+              <div class="line diff">
+                <div class="line-number">{{ loop.index }}</div>
+                {% if not series['Variant_vcf1']|is_nan %}
+                  <span class="diff column">
+                    {{ series['Variant_vcf1'] }}
+                  </span>
+                {% endif %}
+              </div>
+            {% else %}
               <div class="line match">
                 <div class="line-number">{{ loop.index }}</div>
                 <span class="match column">
-                  {{ series['VCF1'] }}
-                </span>
-              </div>
-            {% else %}
-              <div class="line diff">
-                <div class="line-number">{{ loop.index }}</div>
-                <span class="diff column">
-                  {{ series['VCF1'] }}
+                  {{ series['Variant_vcf1'] }}
                 </span>
               </div>
             {% endif %}    
@@ -48,18 +50,20 @@
               </span>
           </div>
           {% for index, series in df.iterrows() %}
-            {% if series['State'] %}
+            {% if series['Variant_vcf1']|is_nan or series['Variant_vcf2']|is_nan %}
+              <div class="line diff">
+                <div class="line-number">{{ loop.index }}</div>
+                {% if not series['Variant_vcf2']|is_nan %}
+                  <span class="diff column">
+                    {{ series['Variant_vcf2'] }}
+                  </span>
+                {% endif %}
+              </div>
+            {% else %}
               <div class="line match">
                 <div class="line-number">{{ loop.index }}</div>
                 <span class="match column">
-                  {{ series['VCF2'] }}
-                </span>
-              </div>
-            {% else %}
-              <div class="line diff">
-                <div class="line-number">{{ loop.index }}</div>
-                <span class="diff column">
-                  {{ series['VCF2'] }}
+                  {{ series['Variant_vcf2'] }}
                 </span>
               </div>
             {% endif %}
@@ -88,6 +92,14 @@
     
     content2El.addEventListener('scroll', () => {
       content1El.scrollTop = content2El.scrollTop;
+    });
+
+    content1El.addEventListener('scroll', () => {
+      content2El.scrollLeft = content1El.scrollLeft;
+    });
+    
+    content2El.addEventListener('scroll', () => {
+      content1El.scrollLeft = content2El.scrollLeft;
     });
     
     function interpretTabs(className) {
