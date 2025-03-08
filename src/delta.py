@@ -1,10 +1,14 @@
 import concurrent.futures
 from cyvcf2 import VCF
 from hashlib import sha256
+from itertools import chain, repeat
 from loguru import logger
 import numpy as np
+from operator import itemgetter
+import pandas as pd
 import plot
 import subprocess
+from template import Report
 import pprint
 import utils
 
@@ -411,7 +415,7 @@ def delta(params: object) -> int:
                     f"File {futures_to_vcf[future]} generated an exception: {e}"
                 )
 
-    common_variants, unique_variants_to_left, unique_variants_to_right = (
+    common, unique_vcf0, unique_vcf1 = (
         {},
         {},
         {},
@@ -426,38 +430,23 @@ def delta(params: object) -> int:
 
     for chrom in result[params.vcfs[0]]["variants"]:
 
-        unique_variants_to_left[chrom] = {
-            k: result[params.vcfs[0]]["variants"][chrom][k]
-            for k in utils.difference(
-                a=set(result[params.vcfs[0]]["variants"][chrom].keys()),
-                b=set(result[params.vcfs[1]]["variants"][chrom].keys()),
-            )
-        }
+        unique_vcf0[chrom] = utils.difference(a=set(result[params.vcfs[0]]["variants"][chrom].keys()),
+                                              b=set(result[params.vcfs[1]]["variants"][chrom].keys()))
 
-        unique_variants_to_right[chrom] = {
-            k: result[params.vcfs[1]]["variants"][chrom][k]
-            for k in utils.difference(
-                a=set(result[params.vcfs[1]]["variants"][chrom].keys()),
-                b=set(result[params.vcfs[0]]["variants"][chrom].keys()),
-            )
-        }
+        unique_vcf1[chrom] = utils.difference(a=set(result[params.vcfs[1]]["variants"][chrom].keys()),
+                                              b=set(result[params.vcfs[0]]["variants"][chrom].keys()))
 
-        common_variants[chrom] = {
-            k: result[params.vcfs[0]]["variants"][chrom][k]
-            for k in utils.intersect(
-                a=set(result[params.vcfs[0]]["variants"][chrom].keys()),
-                b=set(result[params.vcfs[1]]["variants"][chrom].keys()),
-            )
-        }
+        common[chrom] = utils.intersect(a=set(result[params.vcfs[0]]["variants"][chrom].keys()),
+                                        b=set(result[params.vcfs[1]]["variants"][chrom].keys()))
 
         (
             result["delta"]["common"][chrom],
             result["delta"]["unique"][params.vcfs[0]][chrom],
             result["delta"]["unique"][params.vcfs[1]][chrom],
         ) = (
-            len(common_variants[chrom]),
-            len(unique_variants_to_left[chrom]),
-            len(unique_variants_to_right[chrom]),
+            len(common[chrom]),
+            len(unique_vcf0[chrom]),
+            len(unique_vcf1[chrom]),
         )
 
         logger.debug(
@@ -484,7 +473,7 @@ def delta(params: object) -> int:
         logger.debug(f"Results are seralized to {path}")
         try:
             utils.save(
-                obj=common_variants,
+                obj=common,
                 prefixe=f"{path}/common",
                 format=params.serialize,
             )
@@ -494,9 +483,28 @@ def delta(params: object) -> int:
     if params.stats:
         plot.visualization(file=params.vcfs[0], stats=result[params.vcfs[0]]["stats"])
 
-    values = list(map(lambda chrom: list(common_variants[chrom].values()), common_variants.keys()))
+    values = list(map(lambda chrom: list(itemgetter(*list(common[chrom]))(result[params.vcfs[0]]["variants"][chrom])) 
+                      if result["delta"]["common"][chrom] > 0 
+                      else [], 
+                      sorted(common.keys())))
+    
+    dfs: list[pd.DataFrame] = []
 
     for chrom in values:
+
         chrom.sort(key=lambda s: s.split('\t')[1])
+
+        df = pd.DataFrame({
+            "Chromosome": list(repeat(chrom,len(chrom))),
+            "VCF1": chrom,
+            "VCF2": chrom,
+            "State": list(repeat(True,len(chrom)))
+        })
+
+        dfs.append(df)
+
+    df = pd.concat(dfs)
+
+    Report(vcfs=params.vcfs, df=df).create()
 
     return 1

@@ -2,19 +2,22 @@ from jinja2 import Environment, FileSystemLoader
 
 class Report:
 
-    def __init__(self):
-        pass
+    def __init__(self, vcfs: list[str], df):
+
+        self.vcfs = vcfs
+        
+        self.data = df
 
     def __str__(self):
         pass
 
-def render():
-    
-    env = Environment(loader=FileSystemLoader('src/templates'))
+    def create(self):
+        
+        env = Environment(loader=FileSystemLoader('src/templates'))
 
-    template = env.get_template("file.html")
+        template = env.get_template("file.html")
 
-    html = template.render()
+        html = template.render(vcfs=self.vcfs, df=self.data)
 
-    with open("report.html",'w') as f:
-        f.writelines(html)
+        with open("report.html",'w') as f:
+            f.writelines(html)

@@ -84,6 +84,9 @@ def boxplot(data: list, nominal: str, y: str, color: str, title: str, prefix: st
     
     set_layout(fig).write_html(f"{prefix}.html")
 
+def venn():
+    pass
+
 def visualization(file: str, stats: object):
 
     data = []

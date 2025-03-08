@@ -11,55 +11,55 @@
     
     <div class="comparison-container">
       <div class="file1-view">
-        <div class="file-title">{{ First VCF | required }}</div>
+        <div class="file-title">{{ vcfs[0] }}</div>
         <div class="file1-content" id="content1">
           <div class="line header">
             <div class="line-number">0</div>
               <span class="header column">
-                {{ header | required }}
+                {{ header }}
               </span>
           </div>
-          {% for row in rows %}
-            {% if row.match %}
+          {% for index, series in df.iterrows() %}
+            {% if series['State'] %}
               <div class="line match">
                 <div class="line-number">{{ loop.index }}</div>
                 <span class="match column">
-                  {{ row }}
+                  {{ series['VCF1'] }}
                 </span>
               </div>
             {% else %}
               <div class="line diff">
                 <div class="line-number">{{ loop.index }}</div>
                 <span class="diff column">
-                  {{ row }}
+                  {{ series['VCF1'] }}
                 </span>
               </div>
-            {% endif %}
+            {% endif %}    
           {% endfor %}
         </div>
       </div>
       <div class="file2-view">
-        <div class="file-title">{{ Second VCF | required }}</div>
+        <div class="file-title">{{ vcfs[1] }}</div>
         <div class="file2-content" id="content2">
           <div class="line header">
             <div class="line-number">0</div>
               <span class="column">
-                {{ header | required }}
+                {{ header }}
               </span>
           </div>
-          {% for row in rows %}
-            {% if row.match %}
+          {% for index, series in df.iterrows() %}
+            {% if series['State'] %}
               <div class="line match">
                 <div class="line-number">{{ loop.index }}</div>
                 <span class="match column">
-                  {{ row }}
+                  {{ series['VCF2'] }}
                 </span>
               </div>
             {% else %}
               <div class="line diff">
                 <div class="line-number">{{ loop.index }}</div>
                 <span class="diff column">
-                  {{ row }}
+                  {{ series['VCF2'] }}
                 </span>
               </div>
             {% endif %}
