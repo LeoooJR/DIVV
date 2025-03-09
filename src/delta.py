@@ -5,7 +5,7 @@ from itertools import chain, repeat
 from loguru import logger
 import numpy as np
 from operator import itemgetter
-import pandas as pd
+from pandas import DataFrame, concat
 import plot
 import subprocess
 from template import Report
@@ -186,7 +186,7 @@ def process_chromosome(
     except UserWarning as e:
         logger.warning(e)
 
-    variants = pd.DataFrame.from_dict(variants, orient='index', columns=["Chromosome","Position","Variant"])
+    variants = DataFrame.from_dict(variants, orient='index', columns=["Chromosome","Position","Variant"])
 
     logger.debug(
         f"Filtered: {filtered['snp']} SNP(s), {filtered['indel']} INDEL(s), {filtered['sv']} structural variant(s) variant(s) for chromosome {chrom} in file {FILES['compression']}"
@@ -475,13 +475,13 @@ def delta(params: object) -> int:
     if params.stats:
         plot.visualization(file=params.vcfs[0], stats=result[params.vcfs[0]]["stats"])
 
-    dfs_chroms: list[pd.DataFrame] = list(map(lambda vcf: list(itemgetter(*list(sorted(result[vcf]["variants"].keys())))(result[vcf]["variants"])), params.vcfs))
+    dfs_chroms: list[DataFrame] = list(map(lambda vcf: list(itemgetter(*list(sorted(result[vcf]["variants"].keys())))(result[vcf]["variants"])), params.vcfs))
 
-    dfs_files: list[pd.DataFrame] = list(map(lambda x: pd.concat(x), dfs_chroms))
+    dfs_files: list[DataFrame] = list(map(lambda x: concat(x), dfs_chroms))
 
     list(map((lambda x, n: x.rename(columns={c: f'{c}_vcf{n}' for c in x.columns}, inplace=True)), dfs_files, [1,2]))
 
-    df: pd.DataFrame = pd.concat(dfs_files, axis=1, join='outer', sort=False)
+    df: DataFrame = concat(dfs_files, axis=1, join='outer', sort=False)
 
     if params.serialize:
         path: str = "/".join(params.vcfs[0].split("/")[:-1])

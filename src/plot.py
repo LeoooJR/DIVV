@@ -1,6 +1,6 @@
 import numpy
 import plotly.express as px
-import pandas as pd
+from pandas import DataFrame, concat
 import pprint
 
 class Plot:
@@ -28,10 +28,10 @@ def set_layout(fig: object) -> object:
 
 def barplot(data: list, nominal: str, y: str, color: str, title: str, prefix: str):
 
-    if isinstance(data[0],pd.DataFrame):
-        df = pd.concat(data, ignore_index=True)
+    if isinstance(data[0],DataFrame):
+        df = concat(data, ignore_index=True)
     elif isinstance(data[0],dict):
-        df = pd.DataFrame(data)
+        df = DataFrame(data)
 
     fig = px.bar(data_frame=df, 
                  x=nominal, 
@@ -60,10 +60,10 @@ def barplot(data: list, nominal: str, y: str, color: str, title: str, prefix: st
 
 def histogram(data: list, x: str, color: str, title: str, prefix: str):
 
-    if isinstance(data[0],pd.DataFrame):
-        df = pd.concat(data, ignore_index=True)
+    if isinstance(data[0],DataFrame):
+        df = concat(data, ignore_index=True)
     elif isinstance(data[0],dict):
-        df = pd.DataFrame(data)
+        df = DataFrame(data)
 
     fig = px.histogram(data_frame=df, x=x, title=title)
 
@@ -71,10 +71,10 @@ def histogram(data: list, x: str, color: str, title: str, prefix: str):
 
 def boxplot(data: list, nominal: str, y: str, color: str, title: str, prefix: str):
 
-    if isinstance(data[0],pd.DataFrame):
-        df = pd.concat(data, ignore_index=True)
+    if isinstance(data[0],DataFrame):
+        df = concat(data, ignore_index=True)
     elif isinstance(data[0],dict):
-        df = pd.DataFrame(data)
+        df = DataFrame(data)
 
     fig = px.box(data_frame=df,
                      x=nominal,
@@ -127,7 +127,7 @@ def visualization(file: str, stats: object):
 
         for k in chromsomes:
 
-            tmp = pd.DataFrame({"Chromosome": [k] * stats[k]["depth"].size,
+            tmp = DataFrame({"Chromosome": [k] * stats[k]["depth"].size,
                                 "Depth": stats[k]["depth"].flatten()})
 
             data.append(tmp)
