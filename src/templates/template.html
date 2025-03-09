@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VCF File Comparison Tool</title>
+  <link rel="stylesheet" href="template.css" />
+  <link rel="stylesheet" href="file.css" />
+</head>
+
+<body>
+    <div class="FlexMain">
+        <div class="DivMainLeft">
+            <img src="statics/vcf_black.png" alt="VCF1" class="VCFIcon">
+            <h2 class="HeadingLeft">
+                Sample.vcf
+            </h2>
+        </div>
+        <img src="statics/vs_grey.png" alt="VS" class="VS">
+        <div class="DivMainRight">
+            <img src="statics/vcf_white_line.png" alt="VCF2" class="VCFIcon">
+            <h2 class="HeadingRight">
+                Sample.vcf
+            </h2>
+        </div>
+    </div>
+    <div class="FlexSub">
+        <div class="DivSubLeft">
+            <img src="statics/info_black.png" class="InfoIcon">
+            <div class="ContainerInfos">
+                <p class="InformationL">
+                    Path: /workdir/data/file.vcf.gz
+                </p>
+                <p class="InformationL">
+                    Size: 300kB
+                </p>
+                <p class="InformationL">
+                    Created: 11/02/2025
+                </p>
+            </div>
+        </div>
+        <div class="DivSubRight">
+            <img src="statics/info-white-lines.png" class="InfoIcon">
+            <div class="ContainerInfos">
+                <p class="InformationR">
+                    Path: /workdir/data/file.vcf.gz
+                </p>
+                <p class="InformationR">
+                    Size: 300kb
+                </p>
+                <p class="InformationR">
+                    Created: 10/02/2025
+                </p>
+            </div>
+        </div>
+    </div>
+    <section class="SectionPlots">
+        <div class="GridPlotLeft">
+            <div class="DivPlot">
+                <img src="statics/charts.png" alt="Image 1" class="Plot">
+            </div>
+            <div class="DivPlot">
+                <img src="statics/charts.png" alt="Image 2" class="Plot">
+            </div>
+            <div class="DivPlot">
+                <img src="statics/fill_blue_aes-1.png" alt="Image 3" class="Plot">
+            </div>
+            <div class="DivPlot">
+                <img src="statics/fill_blue_aes-1.png" alt="Image 4" class="Plot">
+            </div>
+        </div>
+        <div class="GridPlotRight">
+            <div class="DivPlot">
+                <img src="statics/charts.png" alt="Image 5" class="Plot">
+            </div>
+            <div class="DivPlot">
+                <img src="statics/charts.png" alt="Image 6" class="Plot">
+            </div>
+            <div class="DivPlot">
+                <img src="statics/charts.png" alt="Image 7" class="Plot">
+            </div>
+            <div class="DivPlot">
+                <img src="statics/charts.png" alt="Image 8" class="Plot">
+            </div>
+        </div>
+    </section>
+    <div class="FlexSub">
+        <div class="DivSubLeft">
+            <div class="Container">
+                <img src="statics/search.png" alt="search" class="IconFilter">
+            </div>
+        </div>
+        <div class="DivSubRight">
+            <div class="Container">
+                <img src="statics/filter-white-line.png" alt="search" class="IconFilter">
+            </div>
+        </div>
+    </div>
+    <div class="FlexMain">
+        <div class="DivMainLeft">
+            <div class="ContainerSearch">
+                <img src="statics/chromosome.png" alt="chromosomes" class="IconFilter">
+                <input type="text" class="SearchField" placeholder="Search for a chromosome..." aria-label="Search">
+            </div>
+        </div>
+        <div class="DivMainRight">
+            <div class="ContainerFilter">
+                <img src="statics/dan-test-white.png" alt="dna" class="IconFilter">
+                <div class="FilterContainer">
+                    <select class="FilterField">
+                        <option selected disabled>Select a variant...</option>
+                        <option>SNP</option>
+                        <option>Indel</option>
+                        <option>Other</option>
+                    </select>
+                </div>
+                <button class="SearchButton">Search</button>
+            </div>
+        </div>
+    </div>
+    <div class="FlexSub">
+        <div class="DivSubLeft">
+            VCF1
+        </div>
+        <div class="DivSubRight">
+            VCF2
+        </div>
+    </div>
+    <div class="Container">
+        <div class="TabMenu">
+            <button class="TabButton active">GRAPH</button>
+            <button class="TabButton">FILE</button>
+            <button class="TabButton">HEATMAP</button>
+            <button class="TabButton">GENOME</button>
+        </div>
+        <div class="chart-container" id="graphTab">Graph content here</div>
+        <div class="file-container" id="fileTab">
+    
+            <div class="comparison-container">
+              <div class="file1-view">
+                <div class="file-title">{{ vcfs[0] }}</div>
+                <div class="file1-content" id="content1">
+                  <div class="line header">
+                    <div class="line-number">0</div>
+                      <span class="header column">
+                        {{ header }}
+                      </span>
+                  </div>
+                  {% for index, series in df.iterrows() %}
+                    {% if series['Variant_vcf1']|is_nan or series['Variant_vcf2']|is_nan %}
+                      <div class="line diff">
+                        <div class="line-number">{{ loop.index }}</div>
+                        {% if not series['Variant_vcf1']|is_nan %}
+                          <span class="diff column">
+                            {{ series['Variant_vcf1'] }}
+                          </span>
+                        {% endif %}
+                      </div>
+                    {% else %}
+                      <div class="line match">
+                        <div class="line-number">{{ loop.index }}</div>
+                        <span class="match column">
+                          {{ series['Variant_vcf1'] }}
+                        </span>
+                      </div>
+                    {% endif %}    
+                  {% endfor %}
+                </div>
+              </div>
+              <div class="file2-view">
+                <div class="file-title">{{ vcfs[1] }}</div>
+                <div class="file2-content" id="content2">
+                  <div class="line header">
+                    <div class="line-number">0</div>
+                      <span class="column">
+                        {{ header }}
+                      </span>
+                  </div>
+                  {% for index, series in df.iterrows() %}
+                    {% if series['Variant_vcf1']|is_nan or series['Variant_vcf2']|is_nan %}
+                      <div class="line diff">
+                        <div class="line-number">{{ loop.index }}</div>
+                        {% if not series['Variant_vcf2']|is_nan %}
+                          <span class="diff column">
+                            {{ series['Variant_vcf2'] }}
+                          </span>
+                        {% endif %}
+                      </div>
+                    {% else %}
+                      <div class="line match">
+                        <div class="line-number">{{ loop.index }}</div>
+                        <span class="match column">
+                          {{ series['Variant_vcf2'] }}
+                        </span>
+                      </div>
+                    {% endif %}
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+            
+            <div class="stats" id="stats">
+              <h3>Comparison Stats</h3>
+              <p>Total match: {{ common }}</p>
+              <p>Matching lines: <span style="color: green">{{ matches }}</span></p>
+              <p>Different lines: <span style="color: red">{{ diffs }}</span></p>
+              <p>Match percentage: {{ common }}</p>
+            </div>
+        </div>
+        <div class="chart-container" id="heatmapTab" style="display: none;">Heatmap content here</div>
+        <div class="chart-container" id="genomeTab" style="display: none;">Genome content here</div>
+    </div>
+    <script>
+        const tabs = document.querySelectorAll('.TabButton');
+        const tabContents = {
+        "GRAPH": document.getElementById("graphTab"),
+        "FILE": document.getElementById("fileTab"),
+        "HEATMAP": document.getElementById("heatmapTab"),
+        "GENOME": document.getElementById("genomeTab"),
+        };
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+
+                Object.values(tabContents).forEach(content => content.style.display = "none");
+                tabContents[tab.innerText].style.display = "flex"; 
+            });
+        });
+
+        const content1El = document.getElementById('content1');
+        const content2El = document.getElementById('content2');
+        
+        // Sync scrolling between panels
+        content1El.addEventListener('scroll', () => {
+        content2El.scrollTop = content1El.scrollTop;
+        });
+        
+        content2El.addEventListener('scroll', () => {
+        content1El.scrollTop = content2El.scrollTop;
+        });
+
+        content1El.addEventListener('scroll', () => {
+        content2El.scrollLeft = content1El.scrollLeft;
+        });
+        
+        content2El.addEventListener('scroll', () => {
+        content1El.scrollLeft = content2El.scrollLeft;
+        });
+        
+        function interpretTabs(className) {
+        document.querySelectorAll("." + className).forEach(element => {
+            element.innerHTML = element.innerHTML.split("\\t").join('&nbsp;&nbsp;&nbsp;&nbsp;');
+        });
+        }
+        interpretTabs("header.column")
+        interpretTabs("match.column");
+        interpretTabs("diff.column");
+    </script>
+</body>
+</html>

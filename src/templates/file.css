@@ -1,8 +1,9 @@
-.container {
+.file-container  {
   display: flex;
   flex-direction: column;
   max-width: 1200px;
   margin: 0 auto;
+  margin-top: 10px;
 }
 .comparison-container {
   display: flex;

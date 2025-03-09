@@ -21,7 +21,7 @@ class Report:
 
         env.filters['is_nan'] = is_nan
 
-        template = env.get_template("file.html")
+        template = env.get_template("template.html")
 
         html = template.render(vcfs=self.vcfs, df=self.data)
 
