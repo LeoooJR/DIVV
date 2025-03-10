@@ -37,7 +37,7 @@ class PlotLibrary:
         self.plots = []
 
     def __str__(self):
-        return f"PlotLibrary with {len(self.plots)} plots"
+        return f"Library with {len(self.plots)} plots for file {self.file}"
 
     def save(self, plot: Plot):
         
@@ -46,77 +46,83 @@ class PlotLibrary:
     def as_html(self):
          return list(map(lambda p: pio.to_html(p.fig, full_html=False, include_plotlyjs=False),self.plots))
 
-def barplot(data, nominal: str, y: str, color: str, title: str, prefix: str) -> Plot:
+    def barplot(self, data, nominal: str, y: str, color: str, title: str, prefix: str) -> Plot:
 
-    if isinstance(data[0],DataFrame):
-        df = concat(data, ignore_index=True)
-    elif isinstance(data[0], dict):
-        df = DataFrame(data)
+        if isinstance(data[0],DataFrame):
+            df = concat(data, ignore_index=True)
+        elif isinstance(data[0], dict):
+            df = DataFrame(data)
 
-    fig = px.bar(data_frame=df, 
-                x=nominal, 
-                y=y, 
-                color=color,
-                title=title)
-        
-    fig.update_xaxes(ticklabelstep=1)
-        
-    fig.update_layout(
-        updatemenus=[
-            dict(
-                buttons=list([
-                    dict(
-                        args=["type", "bar"],
-                        label="Bar Chart",
-                        method="restyle"
-                    )
-                ]),
-                direction="down",
-            ),
-        ]
-    )
-
-    plot = Plot(fig=fig)
-
-    Plot.set_layout(plot.fig)
-
-    return plot
-
-def histogram(data, x: str, color: str, title: str, prefix: str) -> Plot:
-
-    if isinstance(data[0],DataFrame):
-        df = concat(data, ignore_index=True)
-    elif isinstance(data[0],dict):
-        df = DataFrame(data)
-
-    fig = px.histogram(data_frame=df, x=x, title=title)
-
-    plot = Plot(fig=fig)
-    Plot.set_layout(plot.fig)
-    return plot
-
-def boxplot(data, nominal: str, y: str, color: str, title: str, prefix: str) -> Plot:
-
-    if isinstance(data[0],DataFrame):
-        df = concat(data, ignore_index=True)
-    elif isinstance(data[0],dict):
-        df = DataFrame(data)
-
-    fig = px.box(data_frame=df,
-                    x=nominal,
-                    y=y,
+        fig = px.bar(data_frame=df, 
+                    x=nominal, 
+                    y=y, 
                     color=color,
                     title=title)
+            
+        fig.update_xaxes(ticklabelstep=1)
+            
+        fig.update_layout(
+            updatemenus=[
+                dict(
+                    buttons=list([
+                        dict(
+                            args=["type", "bar"],
+                            label="Bar Chart",
+                            method="restyle"
+                        )
+                    ]),
+                    direction="down",
+                ),
+            ]
+        )
+
+        plot = Plot(fig=fig)
+
+        Plot.set_layout(plot.fig)
+
+        self.save(plot)
+
+    def histogram(self, data, x: str, color: str, title: str, prefix: str) -> Plot:
+
+        if isinstance(data[0],DataFrame):
+            df = concat(data, ignore_index=True)
+        elif isinstance(data[0],dict):
+            df = DataFrame(data)
+
+        fig = px.histogram(data_frame=df, x=x, title=title)
+
+        plot = Plot(fig=fig)
+
+        Plot.set_layout(plot.fig)
+
+        self.save(plot)
+
+    def boxplot(self, data, nominal: str, y: str, color: str, title: str, prefix: str) -> Plot:
+
+        if isinstance(data[0],DataFrame):
+            df = concat(data, ignore_index=True)
+        elif isinstance(data[0],dict):
+            df = DataFrame(data)
+
+        fig = px.box(data_frame=df,
+                        x=nominal,
+                        y=y,
+                        color=color,
+                        title=title)
+            
+        plot = Plot(fig=fig)
+
+        Plot.set_layout(plot.fig)
         
-    plot = Plot(fig=fig)
-    Plot.set_layout(plot.fig)
-    return plot
+        self.save(plot)
 
-def venn(self) -> Plot:
-    pass
+    def venn(self) -> Plot:
+        pass
 
 
-def visualization(file: str, stats: object, library: PlotLibrary):
+def visualization(file: str, stats: object):
+
+    library = PlotLibrary(file=file)
 
     data = []
 
@@ -128,7 +134,7 @@ def visualization(file: str, stats: object, library: PlotLibrary):
         data.append({"Chromosome": k, "Type": "SNP", "Count": stats[k]["variant"]["snp"]["transition"] + stats[k]["variant"]["snp"]["transversion"]})
         data.append({"Chromosome": k, "Type": "SV", "Count": stats[k]["variant"]["sv"]})
 
-    library.save(barplot(data,"Chromosome","Count","Type", f"Variant by chromosome {file}", "VariantByChromosome"))
+    library.barplot(data,"Chromosome","Count","Type", f"Variant by chromosome {file}", "VariantByChromosome")
 
     data.clear()
 
@@ -136,7 +142,7 @@ def visualization(file: str, stats: object, library: PlotLibrary):
         data.append({"Chromosome": k, "Genotype": "Homozygous", "Count": stats[k]["hom"]})
         data.append({"Chromosome": k, "Genotype": "Heterozygous", "Count": stats[k]["het"]})
 
-    library.save(barplot(data, "Chromosome","Count","Genotype", f"Genotype by chromosome for {file}","GenotypeByChromosome"))
+    library.barplot(data, "Chromosome","Count","Genotype", f"Genotype by chromosome for {file}","GenotypeByChromosome")
 
     data.clear()
 
@@ -150,7 +156,7 @@ def visualization(file: str, stats: object, library: PlotLibrary):
         for k in chromosomes:
             data.append({"Chromosome": k, "Depth": numpy.mean(stats[k]["depth"])})
         
-        library.save(barplot(data, "Chromosome", "Depth", color="Chromosome", title=f"Mean depth by chromosome for {file}", prefix="DepthByChromosomeBarPlot"))
+        library.barplot(data, "Chromosome", "Depth", color="Chromosome", title=f"Mean depth by chromosome for {file}", prefix="DepthByChromosomeBarPlot")
 
         data.clear()
 
@@ -161,11 +167,13 @@ def visualization(file: str, stats: object, library: PlotLibrary):
 
             data.append(tmp)
 
-        library.save(boxplot(data, "Chromosome", "Depth", "Chromosome", f"Depth by chromosome for {file}", "DepthByChromosomeBoxPlot"))
+        library.boxplot(data, "Chromosome", "Depth", "Chromosome", f"Depth by chromosome for {file}", "DepthByChromosomeBoxPlot")
 
-        library.save(histogram(data, "Depth", None, f"Depth for {file}", "DepthHist"))
+        library.histogram(data, "Depth", None, f"Depth for {file}", "DepthHist")
 
         data.clear()
 
     if stats[chromosome]["quality"].size:
         pass
+
+    return library

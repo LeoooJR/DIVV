@@ -337,8 +337,7 @@ def process_files(
                 )
 
     if compute:
-        library = plot.PlotLibrary(file=file)
-        plot.visualization(file=basename(file), stats=stats, library=library)
+        library = plot.visualization(file=basename(file), stats=stats)
 
     return {
         "info": utils.file_stats(file),
