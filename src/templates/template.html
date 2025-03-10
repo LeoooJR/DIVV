@@ -6,6 +6,7 @@
   <title>VCF File Comparison Tool</title>
   <link rel="stylesheet" href="template.css" />
   <link rel="stylesheet" href="file.css" />
+  <script src="https://cdn.plot.ly/plotly-3.0.0.min.js" charset="utf-8"></script>
 </head>
 
 <body>
@@ -13,14 +14,14 @@
         <div class="DivMainLeft">
             <img src="statics/vcf_black.png" alt="VCF1" class="VCFIcon">
             <h2 class="HeadingLeft">
-                Sample.vcf
+              {{ vcfs[0] }}
             </h2>
         </div>
         <img src="statics/vs_grey.png" alt="VS" class="VS">
         <div class="DivMainRight">
             <img src="statics/vcf_white_line.png" alt="VCF2" class="VCFIcon">
             <h2 class="HeadingRight">
-                Sample.vcf
+              {{ vcfs[1] }}
             </h2>
         </div>
     </div>
@@ -56,32 +57,18 @@
     </div>
     <section class="SectionPlots">
         <div class="GridPlotLeft">
-            <div class="DivPlot">
-                <img src="statics/charts.png" alt="Image 1" class="Plot">
-            </div>
-            <div class="DivPlot">
-                <img src="statics/charts.png" alt="Image 2" class="Plot">
-            </div>
-            <div class="DivPlot">
-                <img src="statics/fill_blue_aes-1.png" alt="Image 3" class="Plot">
-            </div>
-            <div class="DivPlot">
-                <img src="statics/fill_blue_aes-1.png" alt="Image 4" class="Plot">
-            </div>
+            {% for plot in plots[vcfs[0]] %}
+              <div class="DivPlot" id={{ "plot" ~ loop.index }}>
+                {{ plot }}
+              </div>
+            {% endfor %}
         </div>
         <div class="GridPlotRight">
-            <div class="DivPlot">
-                <img src="statics/charts.png" alt="Image 5" class="Plot">
-            </div>
-            <div class="DivPlot">
-                <img src="statics/charts.png" alt="Image 6" class="Plot">
-            </div>
-            <div class="DivPlot">
-                <img src="statics/charts.png" alt="Image 7" class="Plot">
-            </div>
-            <div class="DivPlot">
-                <img src="statics/charts.png" alt="Image 8" class="Plot">
-            </div>
+            {% for plot in plots[vcfs[1]] %}
+              <div class="DivPlot">
+                {{ plot }}
+              </div>
+            {% endfor %}
         </div>
     </section>
     <div class="FlexSub">

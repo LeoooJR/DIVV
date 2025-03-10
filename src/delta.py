@@ -5,6 +5,7 @@ from itertools import chain, repeat
 from loguru import logger
 import numpy as np
 from operator import itemgetter
+from os.path import basename
 from pandas import DataFrame, concat
 import plot
 import subprocess
@@ -335,11 +336,15 @@ def process_files(
                     f"Chromosome {futures_to_chrom[future]} generated an exception: {e}"
                 )
 
+    if compute:
+        library = plot.PlotLibrary(file=file)
+        plot.visualization(file=basename(file), stats=stats, library=library)
+
     return {
         "info": utils.file_stats(file),
         "variants": variants,
         "filter": filtered,
-        "stats": stats,
+        "plots": library,
     }
 
 
@@ -472,9 +477,6 @@ def delta(params: object) -> int:
             f"{result['delta']['unique'][params.vcfs[1]][chrom]} variant(s) is/are unique for chromosome {chrom} in files {params.vcfs[1]}"
         )
 
-    if params.stats:
-        plot.visualization(file=params.vcfs[0], stats=result[params.vcfs[0]]["stats"])
-
     dfs_chroms: list[DataFrame] = list(map(lambda vcf: list(itemgetter(*list(sorted(result[vcf]["variants"].keys())))(result[vcf]["variants"])), params.vcfs))
 
     dfs_files: list[DataFrame] = list(map(lambda x: concat(x), dfs_chroms))
@@ -497,6 +499,7 @@ def delta(params: object) -> int:
 
     if params.report:
 
-        Report(vcfs=params.vcfs, df=df).create()
+        Report(vcfs=params.vcfs, df=df, plots={params.vcfs[0]:result[params.vcfs[0]]["plots"].as_html(),
+                                              params.vcfs[1]:result[params.vcfs[1]]["plots"].as_html()}).create()
 
     return 1
