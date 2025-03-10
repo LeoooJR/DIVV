@@ -14,14 +14,14 @@
         <div class="DivMainLeft">
             <img src="statics/vcf_black.png" alt="VCF1" class="VCFIcon">
             <h2 class="HeadingLeft">
-              {{ vcfs[0] }}
+              {{ infos[vcfs[0]].path|default(vcfs[0]) }}
             </h2>
         </div>
         <img src="statics/vs_grey.png" alt="VS" class="VS">
         <div class="DivMainRight">
             <img src="statics/vcf_white_line.png" alt="VCF2" class="VCFIcon">
             <h2 class="HeadingRight">
-              {{ vcfs[1] }}
+              {{ infos[vcfs[1]].path|default(vcfs[1]) }}
             </h2>
         </div>
     </div>
@@ -30,13 +30,13 @@
             <img src="statics/info_black.png" class="InfoIcon">
             <div class="ContainerInfos">
                 <p class="InformationL">
-                    Path: /workdir/data/file.vcf.gz
+                    Path: {{ infos[vcfs[1]].path|default(vcfs[0]) }}
                 </p>
                 <p class="InformationL">
-                    Size: 300kB
+                    Size: {{ infos[vcfs[0]].size|default('NA') }}
                 </p>
                 <p class="InformationL">
-                    Created: 11/02/2025
+                    Modified: {{ infos[vcfs[0]].mtime|default('NA') }}
                 </p>
             </div>
         </div>
@@ -44,13 +44,13 @@
             <img src="statics/info-white-lines.png" class="InfoIcon">
             <div class="ContainerInfos">
                 <p class="InformationR">
-                    Path: /workdir/data/file.vcf.gz
+                    Path: {{ infos[vcfs[1]].path|default(vcfs[1]) }}
                 </p>
                 <p class="InformationR">
-                    Size: 300kb
+                    Size: Size: {{ infos[vcfs[1]].size|default('NA') }}
                 </p>
                 <p class="InformationR">
-                    Created: 10/02/2025
+                    Created: {{ infos[vcfs[1]].mtime|default('NA') }}
                 </p>
             </div>
         </div>
@@ -65,7 +65,7 @@
         </div>
         <div class="GridPlotRight">
             {% for plot in plots[vcfs[1]] %}
-              <div class="DivPlot">
+              <div class="DivPlot" id={{ "plot" ~ loop.index }}>
                 {{ plot }}
               </div>
             {% endfor %}
@@ -188,9 +188,8 @@
             
             <div class="stats" id="stats">
               <h3>Comparison Stats</h3>
-              <p>Total match: {{ common }}</p>
-              <p>Matching lines: <span style="color: green">{{ matches }}</span></p>
-              <p>Different lines: <span style="color: red">{{ diffs }}</span></p>
+              <p>Matching lines: <span style="color: green">{{ match }}</span></p>
+              <p>Different lines: <span style="color: red">{{ diff }}</span></p>
               <p>Match percentage: {{ common }}</p>
             </div>
         </div>

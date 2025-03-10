@@ -343,7 +343,7 @@ def process_files(
         "info": utils.file_stats(file),
         "variants": variants,
         "filter": filtered,
-        "plots": library,
+        "plots": library if compute else None,
     }
 
 
@@ -438,14 +438,14 @@ def delta(params: object) -> int:
 
     for chrom in result[params.vcfs[0]]["variants"]:
 
-        unique_vcf0[chrom] = utils.difference(a=set(result[params.vcfs[0]]["variants"][chrom].index),
-                                              b=set(result[params.vcfs[1]]["variants"][chrom].index))
+        unique_vcf0[chrom] = utils.difference(a=frozenset(result[params.vcfs[0]]["variants"][chrom].index),
+                                              b=frozenset(result[params.vcfs[1]]["variants"][chrom].index))
 
-        unique_vcf1[chrom] = utils.difference(a=set(result[params.vcfs[1]]["variants"][chrom].index),
-                                              b=set(result[params.vcfs[0]]["variants"][chrom].index))
+        unique_vcf1[chrom] = utils.difference(a=frozenset(result[params.vcfs[1]]["variants"][chrom].index),
+                                              b=frozenset(result[params.vcfs[0]]["variants"][chrom].index))
 
-        common[chrom] = utils.intersect(a=set(result[params.vcfs[0]]["variants"][chrom].index),
-                                        b=set(result[params.vcfs[1]]["variants"][chrom].index))
+        common[chrom] = utils.intersect(a=frozenset(result[params.vcfs[0]]["variants"][chrom].index),
+                                        b=frozenset(result[params.vcfs[1]]["variants"][chrom].index))
 
         (
             result["delta"]["common"][chrom],
@@ -485,6 +485,15 @@ def delta(params: object) -> int:
     df: DataFrame = concat(dfs_files, axis=1, join='outer', sort=False)
 
     if params.serialize:
+
+        out = DataFrame({"Chromosome": list(result["delta"]["common"].keys()),
+                         "Common": result["delta"]["common"],
+                         "UniqueVCF1": result["delta"]["unique"][params.vcfs[0]],
+                         "UniqueVCF2": result["delta"]["unique"][params.vcfs[1]],
+                         "JaccardIndex": result['delta']['jaccard']})
+        
+        pprint.pprint(out)
+
         path: str = "/".join(params.vcfs[0].split("/")[:-1])
         logger.debug(f"Results are seralized to {path}")
         try:
@@ -498,7 +507,11 @@ def delta(params: object) -> int:
 
     if params.report:
 
-        Report(vcfs=params.vcfs, df=df, plots={params.vcfs[0]:result[params.vcfs[0]]["plots"].as_html(),
-                                              params.vcfs[1]:result[params.vcfs[1]]["plots"].as_html()}).create()
+        Report(vcfs=params.vcfs, 
+               infos ={params.vcfs[0]:result[params.vcfs[0]]["info"],
+                       params.vcfs[1]:result[params.vcfs[1]]["info"]},
+               df=df, 
+               plots={params.vcfs[0]:result[params.vcfs[0]]["plots"].as_html(),
+                      params.vcfs[1]:result[params.vcfs[1]]["plots"].as_html()}).create()
 
     return 1
