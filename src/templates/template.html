@@ -14,14 +14,14 @@
         <div class="DivMainLeft">
             <img src="statics/vcf_black.png" alt="VCF1" class="VCFIcon">
             <h2 class="HeadingLeft">
-              {{ infos[vcfs[0]].path|default(vcfs[0]) }}
+              {{ infos[vcfs[0]].basename|default(vcfs[0]) }}
             </h2>
         </div>
         <img src="statics/vs_grey.png" alt="VS" class="VS">
         <div class="DivMainRight">
             <img src="statics/vcf_white_line.png" alt="VCF2" class="VCFIcon">
             <h2 class="HeadingRight">
-              {{ infos[vcfs[1]].path|default(vcfs[1]) }}
+              {{ infos[vcfs[1]].basename|default(vcfs[1]) }}
             </h2>
         </div>
     </div>
@@ -33,7 +33,7 @@
                     Path: {{ infos[vcfs[1]].path|default(vcfs[0]) }}
                 </p>
                 <p class="InformationL">
-                    Size: {{ infos[vcfs[0]].size|default('NA') }}
+                    Size: {{ infos[vcfs[0]].size|default('NA') }} Mo
                 </p>
                 <p class="InformationL">
                     Modified: {{ infos[vcfs[0]].mtime|default('NA') }}
@@ -47,10 +47,10 @@
                     Path: {{ infos[vcfs[1]].path|default(vcfs[1]) }}
                 </p>
                 <p class="InformationR">
-                    Size: Size: {{ infos[vcfs[1]].size|default('NA') }}
+                    Size: {{ infos[vcfs[1]].size|default('NA') }} Mo
                 </p>
                 <p class="InformationR">
-                    Created: {{ infos[vcfs[1]].mtime|default('NA') }}
+                    Modified: {{ infos[vcfs[1]].mtime|default('NA') }}
                 </p>
             </div>
         </div>
@@ -58,17 +58,31 @@
     <section class="SectionPlots">
         <div class="GridPlotLeft">
             {% for plot in plots[vcfs[0]] %}
-              <div class="DivPlot" id={{ "plot" ~ loop.index }}>
+              <div class="DivPlot {% if loop.index == 1 %}active{% endif %}" id="leftPlot{{ loop.index }}">
                 {{ plot }}
               </div>
             {% endfor %}
+            <div class="plot-navigation">
+              <div class="plot-nav-left">
+                  <div class="nav-arrow left" id="leftPrevArrow">&#8592;</div>
+                  <div class="plot-indicator" id="leftPlotIndicator"></div>
+                  <div class="nav-arrow right" id="leftNextArrow">&#8594;</div>
+              </div>
+            </div>
         </div>
         <div class="GridPlotRight">
             {% for plot in plots[vcfs[1]] %}
-              <div class="DivPlot" id={{ "plot" ~ loop.index }}>
+              <div class="DivPlot {% if loop.index == 1 %}active{% endif %}" id="rightPlot{{ loop.index }}">
                 {{ plot }}
               </div>
             {% endfor %}
+            <div class="plot-navigation">
+              <div class="plot-nav-right">
+                <div class="nav-arrow left" id="rightPrevArrow">&#8592;</div>
+                <div class="plot-indicator" id="rightPlotIndicator"></div>
+                <div class="nav-arrow right" id="rightNextArrow">&#8594;</div>
+              </div>
+            </div>
         </div>
     </section>
     <div class="FlexSub">
@@ -243,6 +257,82 @@
         interpretTabs("header.column")
         interpretTabs("match.column");
         interpretTabs("diff.column");
+    </script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+          // Left side plot navigation
+          const leftPlots = document.querySelectorAll('.GridPlotLeft .DivPlot');
+          const leftPrevArrow = document.getElementById('leftPrevArrow');
+          const leftNextArrow = document.getElementById('leftNextArrow');
+          const leftPlotIndicator = document.getElementById('leftPlotIndicator');
+          let leftCurrentPlot = 0;
+          
+          // Right side plot navigation
+          const rightPlots = document.querySelectorAll('.GridPlotRight .DivPlot');
+          const rightPrevArrow = document.getElementById('rightPrevArrow');
+          const rightNextArrow = document.getElementById('rightNextArrow');
+          const rightPlotIndicator = document.getElementById('rightPlotIndicator');
+          let rightCurrentPlot = 0;
+          
+          // Hide arrows if only one plot
+          if (leftPlots.length <= 1) {
+              leftPrevArrow.style.display = 'none';
+              leftNextArrow.style.display = 'none';
+          }
+          
+          if (rightPlots.length <= 1) {
+              rightPrevArrow.style.display = 'none';
+              rightNextArrow.style.display = 'none';
+          }
+          
+          // Create dot indicators for left plots
+          for (let i = 0; i < leftPlots.length; i++) {
+              const dot = document.createElement('div');
+              dot.className = i === 0 ? 'plot-dot active' : 'plot-dot';
+              leftPlotIndicator.appendChild(dot);
+          }
+          
+          // Create dot indicators for right plots
+          for (let i = 0; i < rightPlots.length; i++) {
+              const dot = document.createElement('div');
+              dot.className = i === 0 ? 'plot-dot active' : 'plot-dot';
+              rightPlotIndicator.appendChild(dot);
+          }
+          
+          // Left plot navigation
+          leftPrevArrow.addEventListener('click', () => {
+              leftPlots[leftCurrentPlot].classList.remove('active');
+              leftPlotIndicator.children[leftCurrentPlot].classList.remove('active');
+              leftCurrentPlot = (leftCurrentPlot - 1 + leftPlots.length) % leftPlots.length;
+              leftPlots[leftCurrentPlot].classList.add('active');
+              leftPlotIndicator.children[leftCurrentPlot].classList.add('active');
+          });
+          
+          leftNextArrow.addEventListener('click', () => {
+              leftPlots[leftCurrentPlot].classList.remove('active');
+              leftPlotIndicator.children[leftCurrentPlot].classList.remove('active');
+              leftCurrentPlot = (leftCurrentPlot + 1) % leftPlots.length;
+              leftPlots[leftCurrentPlot].classList.add('active');
+              leftPlotIndicator.children[leftCurrentPlot].classList.add('active');
+          });
+          
+          // Right plot navigation
+          rightPrevArrow.addEventListener('click', () => {
+              rightPlots[rightCurrentPlot].classList.remove('active');
+              rightPlotIndicator.children[rightCurrentPlot].classList.remove('active');
+              rightCurrentPlot = (rightCurrentPlot - 1 + rightPlots.length) % rightPlots.length;
+              rightPlots[rightCurrentPlot].classList.add('active');
+              rightPlotIndicator.children[rightCurrentPlot].classList.add('active');
+          });
+          
+          rightNextArrow.addEventListener('click', () => {
+              rightPlots[rightCurrentPlot].classList.remove('active');
+              rightPlotIndicator.children[rightCurrentPlot].classList.remove('active');
+              rightCurrentPlot = (rightCurrentPlot + 1) % rightPlots.length;
+              rightPlots[rightCurrentPlot].classList.add('active');
+              rightPlotIndicator.children[rightCurrentPlot].classList.add('active');
+          });
+      });
     </script>
 </body>
 </html>

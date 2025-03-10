@@ -68,7 +68,7 @@ def file_stats(path: str) -> dict:
 
     return {"basename": os.path.basename(path),
             "path": os.path.dirname(path),
-            "size": statinfo.st_size,
+            "size": round(statinfo.st_size / pow(1024,2),2),
             "mtime": datetime.fromtimestamp(statinfo.st_mtime, tz=timezone.utc)}
 
 

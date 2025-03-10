@@ -56,6 +56,13 @@
   overflow-y: scroll;
   background-color: #f4f4f5;
 }
+.file1-content .line,
+.file2-content .line {
+  min-height: 24px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+}
 .column {
   display: table-cell;
   padding: 2px 8px;

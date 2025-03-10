@@ -111,10 +111,12 @@ body {
 
 .InfoIcon {
     width: 39px;
-    height: auto;
+    height: 39px;
     padding-left: 10px;
     padding-top: 5px;
     padding-bottom: 5px;
+    align-self: center;
+    vertical-align: middle;
 }
 
 .InformationL {
@@ -151,8 +153,8 @@ body {
 
 .GridPlotLeft {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: 1fr 1fr;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
     direction: ltr;
     gap: 8px;
     width: 50%;
@@ -161,8 +163,8 @@ body {
 
 .GridPlotRight {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: 1fr 1fr;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
     direction: ltr;
     gap: 16px;
     width: 50%;
@@ -172,11 +174,99 @@ body {
 }
 
 .DivPlot {
+    display: none;
     width: 100%;
-    height: 0;
-    padding-bottom: 100%;
     position: relative;
     overflow: hidden;
+}
+
+.DivPlot.active {
+    display: block;
+}
+
+.plot-navigation {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin: 10px 0;
+}
+
+.plot-nav-left {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    padding-left: 20px;
+}
+
+.plot-nav-right {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    padding-left: 20px;
+}
+
+.nav-arrow {
+    cursor: pointer;
+    font-size: 24px;
+    padding: 5px 10px;
+    background-color: rgba(200, 200, 200, 0.3);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    transition: all 0.3s ease;
+    margin: 0 10px;
+}
+
+.nav-arrow:hover {
+    background-color: rgba(150, 150, 150, 0.7);
+    transform: scale(1.1);
+}
+
+.nav-arrow.left {
+    color: #191919;
+}
+
+.nav-arrow.right {
+    color: #191919;
+}
+
+.DivMainRight .nav-arrow {
+    color: white;
+    background-color: rgba(100, 100, 100, 0.3);
+}
+
+.DivMainRight .nav-arrow:hover {
+    background-color: rgba(150, 150, 150, 0.7);
+}
+
+.plot-indicator {
+    display: flex;
+    gap: 5px;
+    margin: 0 15px;
+    align-items: center;
+}
+
+.plot-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: #ccc;
+}
+
+.plot-dot.active {
+    background-color: #555;
+}
+
+.DivMainRight .plot-dot {
+    background-color: #666;
+}
+
+.DivMainRight .plot-dot.active {
+    background-color: #ddd;
 }
 
 .Plot {
