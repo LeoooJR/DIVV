@@ -8,22 +8,12 @@ import numpy as np
 from operator import itemgetter
 from os import getcwd
 from os.path import basename
-from fireducks.pandas import DataFrame, concat
+from pandas import DataFrame, concat
 import plot
 import subprocess
 from template import Report
 import pprint
 import utils
-
-
-class VCFLibrary:
-
-    def __init__(self, **kwargs):
-
-        self.library = []
-
-        for key, value in kwargs.items():
-            setattr(self, key, value)
 
 
 @logger.catch
@@ -190,7 +180,11 @@ def process_chromosome(
     except UserWarning as e:
         logger.warning(e)
 
-    variants = DataFrame.from_dict(variants, orient='index', columns=["Chromosome","Position","Variant"])
+    variants = DataFrame.from_dict(variants, orient='index', columns=["Chromosome","Position","Variant"]).astype({"Chromosome": "category", 
+                                                                                                                  "Position": "int",
+                                                                                                                  "Variant": "string[pyarrow]"})
+    
+    variants.index = variants.index.astype("string[pyarrow]")
 
     logger.debug(
         f"Filtered: {filtered['snp']} SNP(s), {filtered['indel']} INDEL(s), {filtered['sv']} structural variant(s) variant(s) for chromosome {chrom} in file {FILES['compression']}"
@@ -489,7 +483,7 @@ def delta(params: object) -> int:
 
     list(map((lambda x, n: x.rename(columns={c: f'{c}_vcf{n}' for c in x.columns}, inplace=True)), dfs_files, [1,2]))
 
-    df: DataFrame = concat(dfs_files, axis=1, join='outer', sort=False)
+    df: DataFrame = concat(dfs_files, axis=1, join='outer', sort=False).astype({"Chromosome_vcf1": "category", "Chromosome_vcf2": "category"})
 
     if params.serialize:
 

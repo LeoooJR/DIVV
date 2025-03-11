@@ -2,7 +2,7 @@ from memory_profiler import profile
 import numpy
 import plotly.express as px
 import plotly.io as pio
-from fireducks.pandas import DataFrame, concat
+from pandas import DataFrame, concat
 import pprint
 import utils
 
@@ -16,7 +16,7 @@ class Plot:
         pass
 
     @staticmethod
-    def set_layout(fig: object) -> object:
+    def set_layout(fig: object):
 
         fig.update_layout(
             font=dict(
@@ -28,8 +28,6 @@ class Plot:
                 yanchor= 'top'
             )
         )
-
-        return fig
     
 class PlotLibrary:
 
@@ -51,9 +49,9 @@ class PlotLibrary:
     def barplot(self, data, nominal: str, y: str, color: str, title: str, prefix: str) -> Plot:
 
         if isinstance(data[0],DataFrame):
-            df = concat(data, ignore_index=True).to_pandas()
+            df = concat(data, ignore_index=True)
         elif isinstance(data[0], dict):
-            df = DataFrame(data).to_pandas()
+            df = DataFrame(data)
 
         fig = px.bar(data_frame=df[df[y] > 0], 
                     x=nominal, 
@@ -69,7 +67,7 @@ class PlotLibrary:
 
         self.save(plot)
 
-    def histogram(self, df, x: str, color: str, title: str, prefix: str) -> Plot:
+    def histogram(self, df: DataFrame, x: str, color: str, title: str, prefix: str) -> Plot:
 
         df.dropna(axis=0, how='any', inplace=True)
 
@@ -83,7 +81,7 @@ class PlotLibrary:
 
         self.save(plot)
 
-    def boxplot(self, df, nominal: str, y: str, color: str, title: str, prefix: str) -> Plot:
+    def boxplot(self, df: DataFrame, nominal: str, y: str, color: str, title: str, prefix: str) -> Plot:
 
         fig = px.box(data_frame=df,
                         x=nominal,
@@ -147,7 +145,7 @@ def visualization(file: str, stats: object):
         for k in chromosomes:
 
             tmp = DataFrame({"Chromosome": [k] * stats[k]["depth"].size,
-                             "Depth": stats[k]["depth"].flatten()}).to_pandas()
+                             "Depth": stats[k]["depth"].flatten()})
             
             data.append(tmp)
 

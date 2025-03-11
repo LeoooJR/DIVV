@@ -81,7 +81,6 @@ body {
     display: flex;
     flex-direction: row;
     width: 100%;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(0, 0, 0, 0.2));
 }
 
 .DivSubLeft {
@@ -89,7 +88,7 @@ body {
     display: flex;
     flex-direction: row;
     width: 50%;
-    background-color: linear-gradient(to bottom, #eef0f1, #d6d8da);
+    background-color: #EEF0F1;
 }
 
 .DivSubRight {
@@ -310,6 +309,7 @@ body {
     flex-direction: row;
     margin-left: auto;
     margin-right: auto;
+    justify-content: center;
 }
 
 .ContainerSearch {
