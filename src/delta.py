@@ -3,8 +3,10 @@ from cyvcf2 import VCF
 from hashlib import sha256
 from itertools import chain, repeat
 from loguru import logger
+from memory_profiler import profile
 import numpy as np
 from operator import itemgetter
+from os import getcwd
 from os.path import basename
 from pandas import DataFrame, concat
 import plot
@@ -85,104 +87,105 @@ def process_chromosome(
                 "hom": 0,
             }
 
-        for i, v in enumerate(vcf(f"{chrom}")):
+        with utils.suppress_warnings():
 
-            v_list = str(v).split("\t")
+            for i, v in enumerate(vcf(f"{chrom}")):
 
-            if not i:
+                v_list = str(v).split("\t")
 
-                format = v_list[header["FORMAT"]]
+                if not i:
 
-                logger.debug(f"FORMAT for chromosome {chrom}: {format}")
+                    format = v_list[header["FORMAT"]]
 
-            samples_data = {
-                s: utils.format_to_values(
-                    format=format, values=v_list[header[s]]
-                )
-                for s in samples
-            }
+                    logger.debug(f"FORMAT for chromosome {chrom}: {format}")
 
-            if filters:
+                samples_data = {
+                    s: utils.format_to_values(
+                        format=format, values=v_list[header[s]]
+                    )
+                    for s in samples
+                }
 
-                exclude: bool = utils.exclude(v, filters)
+                if filters:
 
-            if exclude:
+                    exclude: bool = utils.exclude(v, filters)
 
-                filtered[v.var_type] += 1
+                if exclude:
 
-            else:
+                    filtered[v.var_type] += 1
 
-                hash = sha256(
-                    string=f"{v.CHROM}:{v.POS}:{v.REF}:{'|'.join(v.ALT)}".encode()
-                ).hexdigest()
+                else:
 
-                variants[hash] = [v.CHROM,
-                                  v.POS,
-                                  str(v)
-]
-                if compute:
+                    hash = sha256(
+                        string=f"{v.CHROM}:{v.POS}:{v.REF}:{'|'.join(v.ALT)}".encode()
+                    ).hexdigest()
 
-                    if v.var_type == "snp":
-                        if v.is_transition:
-                            mutation = "transition"
+                    variants[hash] = [v.CHROM,
+                                    v.POS,
+                                    str(v)]
+                    if compute:
+
+                        if v.var_type == "snp":
+                            if v.is_transition:
+                                mutation = "transition"
+                            else:
+                                mutation = "transversion"
+                            stats["variant"][v.var_type][mutation] += 1
+                            stats["variant"][v.var_type][v.REF][v.ALT[0]] += 1
+                        elif v.var_type == "indel":
+                            if v.is_deletion:
+                                mutation = "deletion"
+                            else:
+                                mutation = "insertion"
+                            stats["variant"][v.var_type][mutation] += 1
                         else:
-                            mutation = "transversion"
-                        stats["variant"][v.var_type][mutation] += 1
-                        stats["variant"][v.var_type][v.REF][v.ALT[0]] += 1
-                    elif v.var_type == "indel":
-                        if v.is_deletion:
-                            mutation = "deletion"
-                        else:
-                            mutation = "insertion"
-                        stats["variant"][v.var_type][mutation] += 1
-                    else:
-                        stats["variant"][v.var_type] += 1
+                            stats["variant"][v.var_type] += 1
 
-                    if (
-                        FORMAT["genotype_quality"][0]
-                        in samples_data[samples[0]].keys()
-                    ):
-                        stats[FORMAT["genotype_quality"][0]].append(
+                        if (
+                            FORMAT["genotype_quality"][0]
+                            in samples_data[samples[0]].keys()
+                        ):
+                            stats[FORMAT["genotype_quality"][0]].append(
+                                [
+                                    samples_data[s][FORMAT["genotype_quality"][0]]
+                                    for s in samples
+                                ]
+                            )
+
+                        stats["hom"] += sum(
+                            list(
+                                map(
+                                    lambda x: utils.is_homozygous(
+                                        GT=samples_data[x][FORMAT["genotype"][0]]
+                                    ),
+                                    samples,
+                                )
+                            )
+                        )
+                        stats["het"] += sum(
+                            list(
+                                map(
+                                    lambda x: utils.is_heterozygous(
+                                        GT=samples_data[x][FORMAT["genotype"][0]]
+                                    ),
+                                    samples,
+                                )
+                            )
+                        )
+
+                        if v.QUAL:
+                            stats["quality"].append(v.QUAL)
+
+                        stats["depth"].append(
                             [
-                                samples_data[s][FORMAT["genotype_quality"][0]]
+                                (
+                                    samples_data[s][FORMAT["depth"][0]]
+                                    if FORMAT["depth"][0] in samples_data[s]
+                                    else [samples_data[s][FORMAT["depth"][1]]]
+                                )
                                 for s in samples
                             ]
                         )
-
-                    stats["hom"] += sum(
-                        list(
-                            map(
-                                lambda x: utils.is_homozygous(
-                                    GT=samples_data[x][FORMAT["genotype"][0]]
-                                ),
-                                samples,
-                            )
-                        )
-                    )
-                    stats["het"] += sum(
-                        list(
-                            map(
-                                lambda x: utils.is_heterozygous(
-                                    GT=samples_data[x][FORMAT["genotype"][0]]
-                                ),
-                                samples,
-                            )
-                        )
-                    )
-
-                    if v.QUAL:
-                        stats["quality"].append(v.QUAL)
-
-                    stats["depth"].append(
-                        [
-                            (
-                                samples_data[s][FORMAT["depth"][0]]
-                                if FORMAT["depth"][0] in samples_data[s]
-                                else [samples_data[s][FORMAT["depth"][1]]]
-                            )
-                            for s in samples
-                        ]
-                    )
 
     except UserWarning as e:
         logger.warning(e)
@@ -256,9 +259,9 @@ def process_files(
     except FileNotFoundError as e:
         logger.error(e)
 
-    chromosomes = vcf.seqnames
+    chromosomes: list = vcf.seqnames
 
-    samples = vcf.samples
+    samples: list = vcf.samples
 
     HEADER = {
         "CHROM": 0,
@@ -486,18 +489,16 @@ def delta(params: object) -> int:
 
     if params.serialize:
 
-        out = DataFrame({"Chromosome": result["delta"]["common"].keys(),
-                         "Common": result["delta"]["common"].values(),
-                         "UniqueVCF1": result["delta"]["unique"][params.vcfs[0]].values(),
-                         "UniqueVCF2": result["delta"]["unique"][params.vcfs[1]].values(),
-                         "JaccardIndex": result['delta']['jaccard'].values()})
-
-        path: str = "/".join(params.vcfs[0].split("/")[:-1])
+        path: str = getcwd()
         logger.debug(f"Results are seralized to {path}")
         try:
             utils.save(
-                obj=out,
-                prefixe=f"{path}/common",
+                obj=DataFrame({"Chromosome": result["delta"]["common"].keys(),
+                               "Common": result["delta"]["common"].values(),
+                               "UniqueVCF1": result["delta"]["unique"][params.vcfs[0]].values(),
+                               "UniqueVCF2": result["delta"]["unique"][params.vcfs[1]].values(),
+                               "JaccardIndex": result['delta']['jaccard'].values()}),
+                prefixe=f"{path}/delta",
                 format=params.serialize,
             )
         except ValueError as e:

@@ -1,8 +1,10 @@
+from memory_profiler import profile
 import numpy
 import plotly.express as px
 import plotly.io as pio
 from pandas import DataFrame, concat
 import pprint
+import utils
 
 class Plot:
 
@@ -119,7 +121,6 @@ class PlotLibrary:
     def venn(self) -> Plot:
         pass
 
-
 def visualization(file: str, stats: object):
 
     library = PlotLibrary(file=file)
@@ -154,7 +155,8 @@ def visualization(file: str, stats: object):
     if stats[chromosome]["depth"].size:
 
         for k in chromosomes:
-            data.append({"Chromosome": k, "Depth": numpy.mean(stats[k]["depth"])})
+            with utils.suppress_warnings():
+                data.append({"Chromosome": k, "Depth": numpy.mean(stats[k]["depth"])})
         
         library.barplot(data, "Chromosome", "Depth", color="Chromosome", title=f"Mean depth by chromosome for {file}", prefix="DepthByChromosomeBarPlot")
 

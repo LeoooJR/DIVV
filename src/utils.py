@@ -1,8 +1,10 @@
+import contextlib
 from datetime import datetime, timezone
 import json
 import numpy as np
 import os
 from pandas import DataFrame
+import warnings
 import _pickle as cPickle
 
 # I/O
@@ -71,6 +73,12 @@ def file_stats(path: str) -> dict:
             "size": round(statinfo.st_size / pow(1024,2),2),
             "mtime": datetime.fromtimestamp(statinfo.st_mtime, tz=timezone.utc)}
 
+@contextlib.contextmanager
+def suppress_warnings():
+    with warnings.catch_warnings():
+        warnings.filterwarnings("ignore", message="no intervals found for*")
+        warnings.filterwarnings("ignore", message="Mean of empty slice.")
+        yield
 
 # SETS
 
