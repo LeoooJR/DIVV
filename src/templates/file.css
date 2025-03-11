@@ -1,9 +1,8 @@
 .file-container  {
   display: flex;
   flex-direction: column;
-  max-width: 1200px;
-  margin: 0 auto;
-  margin-top: 10px;
+  max-width: 100%;
+  margin: 10px
 }
 .comparison-container {
   display: flex;
@@ -29,14 +28,23 @@
 .file-view:last-child {
   border-right: none;
 }
-.file-title {
-  padding: 8px;
-  background-color: #e0e0e0;
+.file1-title, .file2-title {
+  padding: 18px;
   text-align: center;
   font-weight: bold;
   border-bottom: 1px solid #ccc;
   font-family: ubuntu;
 }
+
+.file1-title {
+  background-color: #e0e0e0;
+}
+
+.file2-title {
+  background-color: #333333;
+  color: white;
+}
+
 .file1-content {
   position: absolute;
   margin-top: 20px;

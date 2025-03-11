@@ -2,7 +2,7 @@ from memory_profiler import profile
 import numpy
 import plotly.express as px
 import plotly.io as pio
-from pandas import DataFrame, concat
+from fireducks.pandas import DataFrame, concat
 import pprint
 import utils
 
@@ -51,11 +51,9 @@ class PlotLibrary:
     def barplot(self, data, nominal: str, y: str, color: str, title: str, prefix: str) -> Plot:
 
         if isinstance(data[0],DataFrame):
-            df = concat(data, ignore_index=True)
+            df = concat(data, ignore_index=True).to_pandas()
         elif isinstance(data[0], dict):
-            df = DataFrame(data)
-
-        pprint.pprint(df)
+            df = DataFrame(data).to_pandas()
 
         fig = px.bar(data_frame=df[df[y] > 0], 
                     x=nominal, 
@@ -71,12 +69,7 @@ class PlotLibrary:
 
         self.save(plot)
 
-    def histogram(self, data, x: str, color: str, title: str, prefix: str) -> Plot:
-
-        if isinstance(data[0],DataFrame):
-            df = concat(data, ignore_index=True)
-        elif isinstance(data[0],dict):
-            df = DataFrame(data)
+    def histogram(self, df, x: str, color: str, title: str, prefix: str) -> Plot:
 
         df.dropna(axis=0, how='any', inplace=True)
 
@@ -90,12 +83,7 @@ class PlotLibrary:
 
         self.save(plot)
 
-    def boxplot(self, data, nominal: str, y: str, color: str, title: str, prefix: str) -> Plot:
-
-        if isinstance(data[0],DataFrame):
-            df = concat(data, ignore_index=True)
-        elif isinstance(data[0],dict):
-            df = DataFrame(data)
+    def boxplot(self, df, nominal: str, y: str, color: str, title: str, prefix: str) -> Plot:
 
         fig = px.box(data_frame=df,
                         x=nominal,
@@ -159,13 +147,15 @@ def visualization(file: str, stats: object):
         for k in chromosomes:
 
             tmp = DataFrame({"Chromosome": [k] * stats[k]["depth"].size,
-                                "Depth": stats[k]["depth"].flatten()})
-
+                             "Depth": stats[k]["depth"].flatten()}).to_pandas()
+            
             data.append(tmp)
 
-        library.boxplot(data, "Chromosome", "Depth", "Chromosome", "Depth by chromosome", "DepthByChromosomeBoxPlot")
+        df = concat(data, ignore_index=True)
 
-        library.histogram(data, "Depth", None, "Depth", "DepthHist")
+        library.boxplot(df, "Chromosome", "Depth", "Chromosome", "Depth by chromosome", "DepthByChromosomeBoxPlot")
+
+        library.histogram(df, "Depth", None, "Depth", "DepthHist")
 
         data.clear()
 

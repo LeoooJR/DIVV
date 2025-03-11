@@ -8,7 +8,7 @@ import numpy as np
 from operator import itemgetter
 from os import getcwd
 from os.path import basename
-from pandas import DataFrame, concat
+from fireducks.pandas import DataFrame, concat
 import plot
 import subprocess
 from template import Report
@@ -439,15 +439,19 @@ def delta(params: object) -> int:
         "jaccard": {}
     }
 
+    difference = utils.difference
+
+    intersect = utils.intersect
+
     for chrom in result[params.vcfs[0]]["variants"]:
 
-        unique_vcf0[chrom] = utils.difference(a=frozenset(result[params.vcfs[0]]["variants"][chrom].index),
+        unique_vcf0[chrom] = difference(a=frozenset(result[params.vcfs[0]]["variants"][chrom].index),
                                               b=frozenset(result[params.vcfs[1]]["variants"][chrom].index))
 
-        unique_vcf1[chrom] = utils.difference(a=frozenset(result[params.vcfs[1]]["variants"][chrom].index),
+        unique_vcf1[chrom] = difference(a=frozenset(result[params.vcfs[1]]["variants"][chrom].index),
                                               b=frozenset(result[params.vcfs[0]]["variants"][chrom].index))
 
-        common[chrom] = utils.intersect(a=frozenset(result[params.vcfs[0]]["variants"][chrom].index),
+        common[chrom] = intersect(a=frozenset(result[params.vcfs[0]]["variants"][chrom].index),
                                         b=frozenset(result[params.vcfs[1]]["variants"][chrom].index))
 
         (

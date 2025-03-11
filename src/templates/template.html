@@ -153,7 +153,7 @@
     
             <div class="comparison-container">
               <div class="file1-view">
-                <div class="file-title">{{ vcfs[0] }}</div>
+                <div class="file1-title">{{ infos[vcfs[0]].basename|default(vcfs[0]) }}</div>
                 <div class="file1-content" id="content1">
                   <div class="line header">
                     <div class="line-number">0</div>
@@ -183,7 +183,7 @@
                 </div>
               </div>
               <div class="file2-view">
-                <div class="file-title">{{ vcfs[1] }}</div>
+                <div class="file2-title">{{ infos[vcfs[1]].basename|default(vcfs[1]) }}</div>
                 <div class="file2-content" id="content2">
                   <div class="line header">
                     <div class="line-number">0</div>
