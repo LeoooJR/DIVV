@@ -486,19 +486,17 @@ def delta(params: object) -> int:
 
     if params.serialize:
 
-        out = DataFrame({"Chromosome": list(result["delta"]["common"].keys()),
-                         "Common": result["delta"]["common"],
-                         "UniqueVCF1": result["delta"]["unique"][params.vcfs[0]],
-                         "UniqueVCF2": result["delta"]["unique"][params.vcfs[1]],
-                         "JaccardIndex": result['delta']['jaccard']})
-        
-        pprint.pprint(out)
+        out = DataFrame({"Chromosome": result["delta"]["common"].keys(),
+                         "Common": result["delta"]["common"].values(),
+                         "UniqueVCF1": result["delta"]["unique"][params.vcfs[0]].values(),
+                         "UniqueVCF2": result["delta"]["unique"][params.vcfs[1]].values(),
+                         "JaccardIndex": result['delta']['jaccard'].values()})
 
         path: str = "/".join(params.vcfs[0].split("/")[:-1])
         logger.debug(f"Results are seralized to {path}")
         try:
             utils.save(
-                obj=df,
+                obj=out,
                 prefixe=f"{path}/common",
                 format=params.serialize,
             )
