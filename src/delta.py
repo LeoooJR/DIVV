@@ -506,6 +506,8 @@ def delta(params: object) -> int:
 
     if params.report:
 
+        result[params.vcfs[1]]["plots"].dark()
+
         Report(vcfs=params.vcfs, 
                infos ={params.vcfs[0]:result[params.vcfs[0]]["info"],
                        params.vcfs[1]:result[params.vcfs[1]]["info"]},

@@ -55,28 +55,15 @@ class PlotLibrary:
         elif isinstance(data[0], dict):
             df = DataFrame(data)
 
-        fig = px.bar(data_frame=df, 
+        pprint.pprint(df)
+
+        fig = px.bar(data_frame=df[df[y] > 0], 
                     x=nominal, 
                     y=y, 
                     color=color,
                     title=title)
             
         fig.update_xaxes(ticklabelstep=1)
-            
-        fig.update_layout(
-            updatemenus=[
-                dict(
-                    buttons=list([
-                        dict(
-                            args=["type", "bar"],
-                            label="Bar Chart",
-                            method="restyle"
-                        )
-                    ]),
-                    direction="down",
-                ),
-            ]
-        )
 
         plot = Plot(fig=fig)
 
@@ -91,7 +78,11 @@ class PlotLibrary:
         elif isinstance(data[0],dict):
             df = DataFrame(data)
 
-        fig = px.histogram(data_frame=df, x=x, title=title)
+        df.dropna(axis=0, how='any', inplace=True)
+
+        fig = px.histogram(data_frame=df, 
+                           x=x, 
+                           title=title)
 
         plot = Plot(fig=fig)
 
@@ -121,6 +112,9 @@ class PlotLibrary:
     def venn(self) -> Plot:
         pass
 
+    def dark(self):
+        list(map(lambda plot: plot.fig.update_layout(template="plotly_dark"),self.plots))
+
 def visualization(file: str, stats: object):
 
     library = PlotLibrary(file=file)
@@ -135,7 +129,7 @@ def visualization(file: str, stats: object):
         data.append({"Chromosome": k, "Type": "SNP", "Count": stats[k]["variant"]["snp"]["transition"] + stats[k]["variant"]["snp"]["transversion"]})
         data.append({"Chromosome": k, "Type": "SV", "Count": stats[k]["variant"]["sv"]})
 
-    library.barplot(data,"Chromosome","Count","Type", f"Variant by chromosome {file}", "VariantByChromosome")
+    library.barplot(data,"Chromosome","Count","Type", "Variant by chromosome", "VariantByChromosome")
 
     data.clear()
 
@@ -143,7 +137,7 @@ def visualization(file: str, stats: object):
         data.append({"Chromosome": k, "Genotype": "Homozygous", "Count": stats[k]["hom"]})
         data.append({"Chromosome": k, "Genotype": "Heterozygous", "Count": stats[k]["het"]})
 
-    library.barplot(data, "Chromosome","Count","Genotype", f"Genotype by chromosome for {file}","GenotypeByChromosome")
+    library.barplot(data, "Chromosome","Count","Genotype", "Genotype by chromosome","GenotypeByChromosome")
 
     data.clear()
 
@@ -158,7 +152,7 @@ def visualization(file: str, stats: object):
             with utils.suppress_warnings():
                 data.append({"Chromosome": k, "Depth": numpy.mean(stats[k]["depth"])})
         
-        library.barplot(data, "Chromosome", "Depth", color="Chromosome", title=f"Mean depth by chromosome for {file}", prefix="DepthByChromosomeBarPlot")
+        library.barplot(data, "Chromosome", "Depth", color="Chromosome", title="Mean depth by chromosome", prefix="DepthByChromosomeBarPlot")
 
         data.clear()
 
@@ -169,9 +163,9 @@ def visualization(file: str, stats: object):
 
             data.append(tmp)
 
-        library.boxplot(data, "Chromosome", "Depth", "Chromosome", f"Depth by chromosome for {file}", "DepthByChromosomeBoxPlot")
+        library.boxplot(data, "Chromosome", "Depth", "Chromosome", "Depth by chromosome", "DepthByChromosomeBoxPlot")
 
-        library.histogram(data, "Depth", None, f"Depth for {file}", "DepthHist")
+        library.histogram(data, "Depth", None, "Depth", "DepthHist")
 
         data.clear()
 
