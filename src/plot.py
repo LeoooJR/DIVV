@@ -2,11 +2,13 @@ from memory_profiler import profile
 import numpy
 import plotly.express as px
 import plotly.io as pio
-from pandas import DataFrame, concat
+from pandas import Series, DataFrame, concat
 import pprint
 import utils
 
 class Plot:
+
+    __slots__ = ('fig')
 
     def __init__(self, fig: object):
         
@@ -31,6 +33,8 @@ class Plot:
     
 class PlotLibrary:
 
+    __slots__ = ('file', 'plots')
+
     def __init__(self, file: str):
         
         self.file = file
@@ -48,10 +52,13 @@ class PlotLibrary:
 
     def barplot(self, data, nominal: str, y: str, color: str, title: str, prefix: str) -> Plot:
 
-        if isinstance(data[0],DataFrame):
-            df = concat(data, ignore_index=True)
-        elif isinstance(data[0], dict):
-            df = DataFrame(data)
+        if isinstance(data, list):
+            if isinstance(data[0],DataFrame):
+                df = concat(data, ignore_index=True)
+            elif isinstance(data[0], dict):
+                df = DataFrame(data)
+        else:
+            df = data
 
         fig = px.bar(data_frame=df[df[y] > 0], 
                     x=nominal, 
@@ -117,15 +124,11 @@ def visualization(file: str, stats: object):
 
     library.barplot(data,"Chromosome","Count","Type", "Variant by chromosome", "VariantByChromosome")
 
-    data.clear()
-
-    for k in chromosomes:
-        data.append({"Chromosome": k, "Genotype": "Homozygous", "Count": stats[k]["hom"]})
-        data.append({"Chromosome": k, "Genotype": "Heterozygous", "Count": stats[k]["het"]})
+    data = DataFrame([{"Chromosome": k, "Genotype": genotype, "Count": stats[k][code]} 
+                    for k in chromosomes 
+                    for genotype, code in [("Homozygous", "hom"), ("Heterozygous", "het")]])
 
     library.barplot(data, "Chromosome","Count","Genotype", "Genotype by chromosome","GenotypeByChromosome")
-
-    data.clear()
 
     chromosome = list(chromosomes)[0]
 
@@ -134,22 +137,15 @@ def visualization(file: str, stats: object):
 
     if stats[chromosome]["depth"].size:
 
-        for k in chromosomes:
-            with utils.suppress_warnings():
-                data.append({"Chromosome": k, "Depth": numpy.mean(stats[k]["depth"])})
+        with utils.suppress_warnings():       
+            data = DataFrame(list(map(lambda k: Series([k, numpy.mean(stats[k]["depth"])], index=["Chromosome", "Depth"]), chromosomes)))
         
         library.barplot(data, "Chromosome", "Depth", color="Chromosome", title="Mean depth by chromosome", prefix="DepthByChromosomeBarPlot")
 
-        data.clear()
+        data = list(map(lambda k: DataFrame({"Chromosome": [k] * stats[k]["depth"].size,
+                                 "Depth": stats[k]["depth"].flatten()}), chromosomes))
 
-        for k in chromosomes:
-
-            tmp = DataFrame({"Chromosome": [k] * stats[k]["depth"].size,
-                             "Depth": stats[k]["depth"].flatten()})
-            
-            data.append(tmp)
-
-        df = concat(data, ignore_index=True)
+        df = concat(data, ignore_index=True).astype({"Chromosome": "category", "Depth": "int"})
 
         library.boxplot(df, "Chromosome", "Depth", "Chromosome", "Depth by chromosome", "DepthByChromosomeBoxPlot")
 

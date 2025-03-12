@@ -193,8 +193,8 @@ def process_chromosome(
     if compute:
         stats["depth"], stats["quality"], stats["GQ"] = (
             np.array(stats["depth"], dtype=np.uint16),
-            np.array(stats["quality"], dtype=np.float32),
-            np.array(stats["GQ"]),
+            np.array(stats["quality"], dtype=np.float16),
+            np.array(stats["GQ"], dtype=np.uint8),
         )
 
     return (variants, filtered, stats) if compute else (variants, filtered, {})
@@ -496,7 +496,7 @@ def delta(params: object) -> int:
                                "UniqueVCF1": result["delta"]["unique"][params.vcfs[0]].values(),
                                "UniqueVCF2": result["delta"]["unique"][params.vcfs[1]].values(),
                                "JaccardIndex": result['delta']['jaccard'].values()}),
-                prefixe=f"{path}/delta",
+                prefixe=f"{path}/{params.out}",
                 format=params.serialize,
             )
         except ValueError as e:
@@ -507,6 +507,7 @@ def delta(params: object) -> int:
         result[params.vcfs[1]]["plots"].dark()
 
         Report(vcfs=params.vcfs, 
+               prefix=params.out,
                infos ={params.vcfs[0]:result[params.vcfs[0]]["info"],
                        params.vcfs[1]:result[params.vcfs[1]]["info"]},
                df=df, 
