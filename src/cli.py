@@ -172,7 +172,7 @@ class Programm:
         )
         self.parser.add_argument(
             "--truth",
-            dest="truth_flag",
+            dest="truth",
             action="store_true",
             default=False,
             help="Additional metrics are generated assuming the first VCF file is the truth.",

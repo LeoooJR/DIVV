@@ -8,7 +8,7 @@ import numpy as np
 from operator import itemgetter
 from os import getcwd
 from os.path import basename
-from pandas import DataFrame, concat
+from pandas import Series, DataFrame, concat, notna, isna
 import plot
 import subprocess
 from template import Report
@@ -112,6 +112,8 @@ def process_chromosome(
 
                     variants[hash] = [v.CHROM,
                                     v.POS,
+                                    v.var_type,
+                                    "FAIL" if v.FILTER else "PASS",
                                     str(v)]
                     if compute:
 
@@ -180,8 +182,10 @@ def process_chromosome(
     except UserWarning as e:
         logger.warning(e)
 
-    variants = DataFrame.from_dict(variants, orient='index', columns=["Chromosome","Position","Variant"]).astype({"Chromosome": "category", 
+    variants = DataFrame.from_dict(variants, orient='index', columns=["Chromosome","Position", "Type", "Filter", "Variant"]).astype({"Chromosome": "category", 
                                                                                                                   "Position": "int",
+                                                                                                                  "Type": "category",
+                                                                                                                  "Filter": "category",
                                                                                                                   "Variant": "string[pyarrow]"})
     
     variants.index = variants.index.astype("string[pyarrow]")
@@ -479,12 +483,25 @@ def delta(params: object) -> int:
 
     dfs_chroms: list[DataFrame] = list(map(lambda vcf: list(itemgetter(*list(sorted(result[vcf]["variants"].keys())))(result[vcf]["variants"])), params.vcfs))
 
-    dfs_files: list[DataFrame] = list(map(lambda x: concat(x), dfs_chroms))
+    dfs_files: list[DataFrame] = list(map(concat, dfs_chroms))
+
+    del dfs_chroms
 
     list(map((lambda x, n: x.rename(columns={c: f'{c}_vcf{n}' for c in x.columns}, inplace=True)), dfs_files, [1,2]))
 
-    df: DataFrame = concat(dfs_files, axis=1, join='outer', sort=False).astype({"Chromosome_vcf1": "category", "Chromosome_vcf2": "category"})
+    df: DataFrame = concat(dfs_files, axis=1, join='outer', sort=False).astype({"Chromosome_vcf1": "category", 
+                                                                                "Chromosome_vcf2": "category",
+                                                                                "Type_vcf1": "category",
+                                                                                "Type_vcf2": "category",
+                                                                                "Filter_vcf1": "category",
+                                                                                "Filter_vcf2": "category"})
 
+    del dfs_files
+
+    if params.truth:
+
+        summary = utils.evaluate(df)
+                                                                                            
     if params.serialize:
 
         path: str = getcwd()

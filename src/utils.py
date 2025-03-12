@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 import json
 import numpy as np
 import os
-from pandas import DataFrame
+from pandas import Series, DataFrame, notna, isna
 import warnings
 import _pickle as cPickle
 
@@ -107,6 +107,43 @@ def convert(a: object) -> object:
 
 
 # Variants
+
+def evaluate(df: DataFrame):
+
+    pass_mask = (df["Filter_vcf1"] == "PASS") | (df["Filter_vcf2"] == "PASS")
+
+    series = []
+        
+    for v in ['snp','indel']:
+
+        type_mask = (df["Type_vcf1" == v]) | (df["Type_vcf2" == v])
+
+        df_masked = df[pass_mask & type_mask]
+
+        is_match = df.loc[df_masked, "Filter_vcf1"] == df.loc[df_masked, "Filter_vcf2"]
+        is_truth_only = (df.loc[df_masked, "Filter_vcf1"] == "PASS") & isna(df.loc[df_masked, "Filter_vcf2"])
+        is_query_only = isna(df.loc[df_masked, "Filter_vcf1"]) & (df.loc[df_masked, "Filter_vcf2"] == "PASS")
+
+        summary = Series([v, 
+                          'PASS', 
+                          notna(df["Chromosome_vcf1"])[df_masked].sum(), 
+                          is_match.sum(), 
+                          is_truth_only.sum(), 
+                          notna(df["Chromosome_vcf2"])[df_masked].sum(), 
+                          is_query_only.sum()], 
+                          index=["TYPE","FILTER","TRUTH.TOTAL","TRUTH.TP","TRUTH.FN","QUERY.TOTAL","QUERY.FP"])
+            
+        summary["RECALL"] = summary["TRUTH.TP"] / (summary["TRUTH.TP"] + summary["TRUTH.FN"])
+        summary["PRECISION"] = summary["TRUTH.TP"] / (summary["TRUTH.TP"] + summary["QUERY.FP"])
+            
+        try:
+            summary["F1"] = 2 * (summary["PRECISION"] * summary["RECALL"]) / (summary["PRECISION"] + summary["RECALL"])
+        except ZeroDivisionError:
+            summary["F1"] = 0.0
+
+        series.append(summary)
+
+        return DataFrame(series)
 
 def hamming_distance(a: np.ndarray, b: np.ndarray) -> float:
     try:

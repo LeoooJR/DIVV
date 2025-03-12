@@ -31,7 +31,7 @@
             <img src="statics/info_black.png" class="InfoIcon">
             <div class="ContainerInfos">
                 <p class="InformationL">
-                    Path: {{ infos[vcfs[1]].path|default(vcfs[0]) }}
+                    Path: {{ infos[vcfs[0]].path|default(vcfs[0]) }}
                 </p>
                 <p class="InformationL">
                     Size: {{ infos[vcfs[0]].size|default('NA') }} Mo
