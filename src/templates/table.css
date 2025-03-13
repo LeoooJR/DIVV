@@ -1,0 +1,40 @@
+.TruthTable {
+    width: 100%;
+    border-width: 1px;
+    border-style: solid;
+    border-color: #3D444D;
+    border-radius: 6px;
+    border-spacing: 0px;
+    border-collapse: separate;
+    font-family: Ubuntu;
+}
+
+.TableRow {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    border-bottom-color: #3D444D;
+    background-color: white;
+    &:nth-of-type(odd) {
+		background:#EEEEEE;
+	}
+}
+
+.TableHeader {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    background-color: #0d1117;
+    color: white;
+}
+
+.TableCell {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    align-items: center;
+}

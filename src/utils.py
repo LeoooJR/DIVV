@@ -108,7 +108,7 @@ def convert(a: object) -> object:
 
 # Variants
 
-def evaluate(df: DataFrame):
+def evaluate(df: DataFrame) -> DataFrame:
 
     pass_mask = (df["Filter.L"] == "PASS") | (df["Filter.R"] == "PASS")
 
@@ -116,9 +116,9 @@ def evaluate(df: DataFrame):
         
     for v in ['snp','indel']:
 
-        type_mask = (df["Type.L" == v]) | (df["Type.R" == v])
+        type_mask = (df["Type.L"] == v) | (df["Type.R"] == v)
 
-        df_masked = df[pass_mask & type_mask]
+        df_masked = pass_mask & type_mask
 
         is_match = df.loc[df_masked, "Filter.L"] == df.loc[df_masked, "Filter.R"]
         is_truth_only = (df.loc[df_masked, "Filter.L"] == "PASS") & isna(df.loc[df_masked, "Filter.R"])
@@ -126,10 +126,10 @@ def evaluate(df: DataFrame):
 
         summary = Series([v, 
                           'PASS', 
-                          notna(df["Chromosome.L"])[df_masked].sum(), 
+                          notna(df["Variant.L"])[df_masked].sum(), 
                           is_match.sum(), 
                           is_truth_only.sum(), 
-                          notna(df["Chromosome.R"])[df_masked].sum(), 
+                          notna(df["Variant.R"])[df_masked].sum(), 
                           is_query_only.sum()], 
                           index=["TYPE","FILTER","TRUTH.TOTAL","TRUTH.TP","TRUTH.FN","QUERY.TOTAL","QUERY.FP"])
             
@@ -139,11 +139,20 @@ def evaluate(df: DataFrame):
         try:
             summary["F1"] = 2 * (summary["PRECISION"] * summary["RECALL"]) / (summary["PRECISION"] + summary["RECALL"])
         except ZeroDivisionError:
-            summary["F1"] = 0.0
+            summary["F1"] = 0.00
 
         series.append(summary)
 
-        return DataFrame(series)
+    return DataFrame(series).astype({"TYPE": "category", 
+                                    "FILTER": "category", 
+                                    "TRUTH.TOTAL": "int64", 
+                                    "TRUTH.TP": "int64", 
+                                    "TRUTH.FN": "int64", 
+                                    "QUERY.TOTAL": "int64", 
+                                    "QUERY.FP": "int64",
+                                    "RECALL": "float64",
+                                    "PRECISION": "float64",
+                                    "F1": "float64"})
 
 def hamming_distance(a: np.ndarray, b: np.ndarray) -> float:
     try:

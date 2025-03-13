@@ -105,8 +105,8 @@
   background-color: rgba(255, 0, 0, 0.2);
 }
 .stats {
-  margin-top: 20px;
-  padding: 10px;
+  margin-top: 1px;
+  padding: 2px;
   background-color: white;
   border: 1px solid #9188a1;
   font-family: ubuntu;
@@ -116,5 +116,5 @@ textarea {
   height: 150px;
   margin-bottom: 10px;
   font-family: monospace;
-  padding: 8px;
+  padding: 2px;
 }

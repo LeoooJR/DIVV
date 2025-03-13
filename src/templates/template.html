@@ -7,6 +7,8 @@
   <link rel="stylesheet" href="template.css" />
   <link rel="stylesheet" href="file.css" />
   <link rel="stylesheet" href="search.css" />
+  <link rel="stylesheet" href="table.css" />
+  <link rel="stylesheet" href="tickets.css" />
   <script src="https://cdn.plot.ly/plotly-3.0.0.min.js" charset="utf-8"></script>
 </head>
 
@@ -30,18 +32,21 @@
             <img src="statics/info_black.png" class="InfoIcon">
             <div class="ContainerInfos">
               <div class="BulleInfo">
+                <img src="statics/folder.png" class="InfoSubIcon">
                 <p class="InformationL">
-                    Path: {{ infos[vcfs[0]].path|default(vcfs[0]) }}
+                    {{ infos[vcfs[0]].path|default(vcfs[0]) }}
                 </p>
               </div>
               <div class="BulleInfo">
+                <img src="statics/database.png" class="InfoSubIcon">
                 <p class="InformationL">
-                    Size: {{ infos[vcfs[0]].size|default('NA') }} Mo
+                    {{ infos[vcfs[0]].size|default('NA') }} Mo
                 </p>
               </div>
               <div class="BulleInfo">
+                <img src="statics/file.png" class="InfoSubIcon">
                 <p class="InformationL">
-                    Modified: {{ infos[vcfs[0]].mtime|default('NA') }}
+                    {{ infos[vcfs[0]].mtime|default('NA') }}
                 </p>
               </div>
             </div>
@@ -50,18 +55,21 @@
             <img src="statics/info-white-lines.png" class="InfoIcon">
             <div class="ContainerInfos">
               <div class="BulleInfo">
+                <img src="statics/folder.png" class="InfoSubIcon">
                 <p class="InformationR">
-                  Path: {{ infos[vcfs[1]].path|default(vcfs[1]) }}
+                    {{ infos[vcfs[1]].path|default(vcfs[1]) }}
                 </p>
               </div>
               <div class="BulleInfo">
+                <img src="statics/database.png" class="InfoSubIcon">
                 <p class="InformationR">
-                    Size: {{ infos[vcfs[1]].size|default('NA') }} Mo
+                    {{ infos[vcfs[1]].size|default('NA') }} Mo
                 </p>
               </div>
               <div class="BulleInfo">
+                <img src="statics/file.png" class="InfoSubIcon">
                 <p class="InformationR">
-                    Modified: {{ infos[vcfs[1]].mtime|default('NA') }}
+                    {{ infos[vcfs[1]].mtime|default('NA') }}
                 </p>
               </div>
             </div>
@@ -217,8 +225,69 @@
               <p>Match percentage: {{ common }}</p>
             </div>
         </div>
-        <div class="chart-container" id="heatmapTab" style="display: none;">Heatmap content here</div>
-        <div class="chart-container" id="genomeTab" style="display: none;">Genome content here</div>
+        {% if summary is not none %}
+          <div class="FlexSub">
+            <div class="DivSubLeft">
+              <div class="card">
+                <span
+                  ><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                    <path
+                      d="m256 8c-136.957 0-248 111.083-248 248 0 136.997 111.043 248 248 248s248-111.003 248-248c0-136.917-111.043-248-248-248zm0 110c23.196 0 42 18.804 42 42s-18.804 42-42 42-42-18.804-42-42 18.804-42 42-42zm56 254c0 6.627-5.373 12-12 12h-88c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h12v-64h-12c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h64c6.627 0 12 5.373 12 12v100h12c6.627 0 12 5.373 12 12z"
+                    ></path>
+                  </svg>
+              
+                  <p>
+                    Reference: {{ vcfs[0] }}
+                  </p></span
+                >
+              </div>
+            </div>
+            <div class="DivSubRight">
+              <div class="card">
+                <span
+                  ><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                    <path
+                      d="m256 8c-136.957 0-248 111.083-248 248 0 136.997 111.043 248 248 248s248-111.003 248-248c0-136.917-111.043-248-248-248zm0 110c23.196 0 42 18.804 42 42s-18.804 42-42 42-42-18.804-42-42 18.804-42 42-42zm56 254c0 6.627-5.373 12-12 12h-88c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h12v-64h-12c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h64c6.627 0 12 5.373 12 12v100h12c6.627 0 12 5.373 12 12z"
+                    ></path>
+                  </svg>
+              
+                  <p>
+                    Query: {{ vcfs[1] }}
+                  </p></span
+                >
+              </div>
+            </div>
+          </div>
+          <table class="TruthTable">
+            <tbody>
+              <tr class="TableRow">
+                <th class="TableHeader">TYPE</th>
+                <th class="TableHeader">FILTER</th>
+                <th class="TableHeader">TRUTH TOTAL</th>
+                <th class="TableHeader">TRUE POSITIVE</th>
+                <th class="TableHeader">FALSE NEGATIVE</th>
+                <th class="TableHeader">QUERY TOTAL</th>
+                <th class="TableHeader">FALSE POSITIVE</th>
+                <th class="TableHeader">RECALL</th>
+                <th class="TableHeader">PRECISION</th>
+                <th class="TableHeader">F1 SCORE</th>
+              </tr>
+              {% for row, metrics in summary.iterrows() %}
+                <tr class="TableRow">
+                  {% for index, metric in metrics.items() %}
+                    {% if metric is float() %}
+                      <td class="TableCell">{{ metric|round(2, 'common') }}</td>
+                    {% elif metric is string() %}
+                      <td class="TableCell">{{ metric|upper() }}</td>
+                    {% else %}
+                      <td class="TableCell">{{ metric }}</td>
+                    {% endif %}  
+                  {% endfor %}
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        {% endif %}
     </div>
     <script>
         const tabs = document.querySelectorAll('.TabButton');

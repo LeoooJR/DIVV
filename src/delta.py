@@ -538,6 +538,7 @@ def delta(params: object) -> int:
                        params.vcfs[1]:result[params.vcfs[1]]["info"]},
                df=df, 
                plots={params.vcfs[0]:result[params.vcfs[0]]["plots"],
-                      params.vcfs[1]:result[params.vcfs[1]]["plots"]}).create()
+                      params.vcfs[1]:result[params.vcfs[1]]["plots"]},
+               summary=summary if params.truth else None).create()
 
     return 1

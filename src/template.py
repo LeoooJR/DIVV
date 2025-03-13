@@ -3,9 +3,9 @@ from pandas import isna
 
 class Report:
 
-    __slots__ = ('vcfs', 'infos', 'data', 'plots', 'prefix')
+    __slots__ = ('vcfs', 'infos', 'data', 'plots', 'prefix', 'summary')
 
-    def __init__(self, vcfs: list[str], prefix: str, infos: dict, df: object, plots: dict):
+    def __init__(self, vcfs: list[str], prefix: str, infos: dict, df: object, plots: dict, summary: object = None):
 
         self.vcfs = vcfs
 
@@ -16,6 +16,8 @@ class Report:
         self.plots = plots
 
         self.prefix = prefix
+
+        self.summary = summary
 
     def __str__(self):
         pass
@@ -33,8 +35,8 @@ class Report:
 
         self.plots[self.vcfs[1]].dark()
 
-        html = template.render(vcfs=self.vcfs, infos=self.infos, df=self.data, plots={self.vcfs[0]:self.plots[self.vcfs[0]].as_html(),
-                                                                                      self.vcfs[1]:self.plots[self.vcfs[1]].as_html()})
+        html = template.render(vcfs=self.vcfs, infos=self.infos, df=self.data, summary=self.summary, plots={self.vcfs[0]:self.plots[self.vcfs[0]].as_html(),
+                                                                                                            self.vcfs[1]:self.plots[self.vcfs[1]].as_html()})
 
         with open(f"{self.prefix}.html",'w') as f:
             f.writelines(html)
