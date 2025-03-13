@@ -110,26 +110,26 @@ def convert(a: object) -> object:
 
 def evaluate(df: DataFrame):
 
-    pass_mask = (df["Filter_vcf1"] == "PASS") | (df["Filter_vcf2"] == "PASS")
+    pass_mask = (df["Filter.L"] == "PASS") | (df["Filter.R"] == "PASS")
 
     series = []
         
     for v in ['snp','indel']:
 
-        type_mask = (df["Type_vcf1" == v]) | (df["Type_vcf2" == v])
+        type_mask = (df["Type.L" == v]) | (df["Type.R" == v])
 
         df_masked = df[pass_mask & type_mask]
 
-        is_match = df.loc[df_masked, "Filter_vcf1"] == df.loc[df_masked, "Filter_vcf2"]
-        is_truth_only = (df.loc[df_masked, "Filter_vcf1"] == "PASS") & isna(df.loc[df_masked, "Filter_vcf2"])
-        is_query_only = isna(df.loc[df_masked, "Filter_vcf1"]) & (df.loc[df_masked, "Filter_vcf2"] == "PASS")
+        is_match = df.loc[df_masked, "Filter.L"] == df.loc[df_masked, "Filter.R"]
+        is_truth_only = (df.loc[df_masked, "Filter.L"] == "PASS") & isna(df.loc[df_masked, "Filter.R"])
+        is_query_only = isna(df.loc[df_masked, "Filter.L"]) & (df.loc[df_masked, "Filter.R"] == "PASS")
 
         summary = Series([v, 
                           'PASS', 
-                          notna(df["Chromosome_vcf1"])[df_masked].sum(), 
+                          notna(df["Chromosome.L"])[df_masked].sum(), 
                           is_match.sum(), 
                           is_truth_only.sum(), 
-                          notna(df["Chromosome_vcf2"])[df_masked].sum(), 
+                          notna(df["Chromosome.R"])[df_masked].sum(), 
                           is_query_only.sum()], 
                           index=["TYPE","FILTER","TRUTH.TOTAL","TRUTH.TP","TRUTH.FN","QUERY.TOTAL","QUERY.FP"])
             

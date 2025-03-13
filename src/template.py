@@ -31,7 +31,10 @@ class Report:
 
         template = env.get_template("template.html")
 
-        html = template.render(vcfs=self.vcfs, infos=self.infos, df=self.data, plots=self.plots)
+        self.plots[self.vcfs[1]].dark()
+
+        html = template.render(vcfs=self.vcfs, infos=self.infos, df=self.data, plots={self.vcfs[0]:self.plots[self.vcfs[0]].as_html(),
+                                                                                      self.vcfs[1]:self.plots[self.vcfs[1]].as_html()})
 
         with open(f"{self.prefix}.html",'w') as f:
             f.writelines(html)

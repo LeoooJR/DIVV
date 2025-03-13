@@ -9,7 +9,7 @@ from operator import itemgetter
 from os import getcwd
 from os.path import basename
 from pandas import Series, DataFrame, concat, notna, isna
-import plot
+from plot import visualization
 import subprocess
 from template import Report
 import pprint
@@ -338,7 +338,7 @@ def process_files(
                 )
 
     if compute:
-        library = plot.visualization(file=basename(file), stats=stats)
+        library = visualization(file=basename(file), stats=stats)
 
     return {
         "info": utils.file_stats(file),
@@ -357,6 +357,8 @@ def delta(params: object) -> int:
         logger.add("VCFDelta.log")
 
     logger.debug(f"VCFS: {params.vcfs}")
+
+    logger.debug(f"{params.vcfs[0]} is set as truth" if params.truth else "No VCF has been set as truth")
 
     logger.debug(f"Indexes: {params.indexes}")
 
@@ -487,16 +489,25 @@ def delta(params: object) -> int:
 
     del dfs_chroms
 
-    list(map((lambda x, n: x.rename(columns={c: f'{c}_vcf{n}' for c in x.columns}, inplace=True)), dfs_files, [1,2]))
+    list(map((lambda x, n: x.rename(columns={c: f'{c}.{n}' for c in x.columns if not (c in ["Chromosome","Position"] and n == "L")}, inplace=True)), dfs_files, ["L","R"]))
 
-    df: DataFrame = concat(dfs_files, axis=1, join='outer', sort=False).astype({"Chromosome_vcf1": "category", 
-                                                                                "Chromosome_vcf2": "category",
-                                                                                "Type_vcf1": "category",
-                                                                                "Type_vcf2": "category",
-                                                                                "Filter_vcf1": "category",
-                                                                                "Filter_vcf2": "category"})
+    df: DataFrame = concat(dfs_files, axis=1, join='outer', sort=False)
 
     del dfs_files
+
+    df["Chromosome"] = df["Chromosome"].fillna(df["Chromosome.R"])
+    df["Position"] = df["Position"].fillna(df["Position.R"])
+
+    df.drop(columns=["Chromosome.R","Position.R"], inplace=True)
+
+    df = df.astype({"Chromosome": "category",
+                    "Position": "int64",
+                    "Type.L": "category",
+                    "Type.R": "category",
+                    "Filter.L": "category",
+                    "Filter.R": "category"})           
+
+    df.sort_values(by=["Chromosome","Position"], axis=0, ascending=True, inplace=True, kind="mergesort")                                                                                                                                             
 
     if params.truth:
 
@@ -510,8 +521,8 @@ def delta(params: object) -> int:
             utils.save(
                 obj=DataFrame({"Chromosome": result["delta"]["common"].keys(),
                                "Common": result["delta"]["common"].values(),
-                               "UniqueVCF1": result["delta"]["unique"][params.vcfs[0]].values(),
-                               "UniqueVCF2": result["delta"]["unique"][params.vcfs[1]].values(),
+                               "Unique.L": result["delta"]["unique"][params.vcfs[0]].values(),
+                               "Unique.R": result["delta"]["unique"][params.vcfs[1]].values(),
                                "JaccardIndex": result['delta']['jaccard'].values()}),
                 prefixe=f"{path}/{params.out}",
                 format=params.serialize,
@@ -521,14 +532,12 @@ def delta(params: object) -> int:
 
     if params.report:
 
-        result[params.vcfs[1]]["plots"].dark()
-
         Report(vcfs=params.vcfs, 
                prefix=params.out,
                infos ={params.vcfs[0]:result[params.vcfs[0]]["info"],
                        params.vcfs[1]:result[params.vcfs[1]]["info"]},
                df=df, 
-               plots={params.vcfs[0]:result[params.vcfs[0]]["plots"].as_html(),
-                      params.vcfs[1]:result[params.vcfs[1]]["plots"].as_html()}).create()
+               plots={params.vcfs[0]:result[params.vcfs[0]]["plots"],
+                      params.vcfs[1]:result[params.vcfs[1]]["plots"]}).create()
 
     return 1
