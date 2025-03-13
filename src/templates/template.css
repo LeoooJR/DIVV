@@ -26,7 +26,7 @@ body {
     flex-direction: row;
     width: 50%;
     align-items: stretch;
-    background-color: #191919;
+    background-color: #111111;
     position: static;
 }
 
@@ -34,7 +34,7 @@ body {
     display: flex;
     margin-top: 20px;
     margin-bottom: 10px;
-    color: #191919;
+    color: #111111;
     size: 32px;
     height: 36px;
     font-family: Ubuntu;
@@ -118,28 +118,38 @@ body {
     vertical-align: middle;
 }
 
-.InformationL {
-    align-items: center;
-    margin-left: 40px;
-    margin-right: 20px;
-    size: 14px;
-    height: 20px;
-    color: #191919;
-    font-family: Ubuntu;
-    font-weight: bold;
-    text-align: center;
+.BulleInfo {
+    border: solid;
+    border-color: transparent;
+    border-radius: 2em;
+    margin: 2px;
+    background-color: #111d2f;
 }
 
-.InformationR {
+.InformationL {
     align-items: center;
-    margin-left: 40px;
-    margin-right: 20px;
-    size: 14px;
+    font-size: 14px;
     height: 20px;
+    padding-left: 5px;
+    padding-right: 5px;
     color: white;
     font-family: Ubuntu;
     font-weight: bold;
     text-align: center;
+    line-height: 22px;
+}
+
+.InformationR {
+    align-items: center;
+    font-size: 14px;
+    height: 20px;
+    padding-left: 5px;
+    padding-right: 5px;
+    color: white;
+    font-family: Ubuntu;
+    font-weight: bold;
+    text-align: center;
+    line-height: 22px;
 }
 
 .SectionPlots {
@@ -168,7 +178,7 @@ body {
     gap: 16px;
     width: 50%;
     flex-wrap: wrap;
-    background-color: #191919;
+    background-color: #111111;
     column-span: 1;
 }
 
@@ -225,11 +235,11 @@ body {
 }
 
 .nav-arrow.left {
-    color: #191919;
+    color: #111111;
 }
 
 .nav-arrow.right {
-    color: #191919;
+    color: #111111;
 }
 
 .DivMainRight .nav-arrow {
@@ -381,10 +391,10 @@ body {
 }
 
 .SearchButton {
-    background-color: #444;
+    background-color: #29903b;
     color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 6px;
     padding: 10px 20px;
     margin: 10px;
     cursor: pointer;
@@ -392,29 +402,5 @@ body {
     border-radius: 16px;
     font-family: Ubuntu;
     font-weight: bold;
-}
-
-.TabMenu {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    gap: 10px;
-}
-
-.TabButton {
-    background: #f8f8f8;
-    border-radius: 16px;
-    font-size: 14px;
-    cursor: pointer;
-    padding: 10px 20px;
-    margin-top: 10px;
-}
-
-.TabButton:hover{
-    background-color: #bdbdbd;
-}
-
-.TabButton:focus-within{
-    background-color: #eef0f1;
 }
 

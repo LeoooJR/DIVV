@@ -18,7 +18,6 @@
               {{ infos[vcfs[0]].basename|default(vcfs[0]) }}
             </h2>
         </div>
-        <img src="statics/vs_grey.png" alt="VS" class="VS">
         <div class="DivMainRight">
             <img src="statics/vcf_white_line.png" alt="VCF2" class="VCFIcon">
             <h2 class="HeadingRight">
@@ -30,29 +29,41 @@
         <div class="DivSubLeft">
             <img src="statics/info_black.png" class="InfoIcon">
             <div class="ContainerInfos">
+              <div class="BulleInfo">
                 <p class="InformationL">
                     Path: {{ infos[vcfs[0]].path|default(vcfs[0]) }}
                 </p>
+              </div>
+              <div class="BulleInfo">
                 <p class="InformationL">
                     Size: {{ infos[vcfs[0]].size|default('NA') }} Mo
                 </p>
+              </div>
+              <div class="BulleInfo">
                 <p class="InformationL">
                     Modified: {{ infos[vcfs[0]].mtime|default('NA') }}
                 </p>
+              </div>
             </div>
         </div>
         <div class="DivSubRight">
             <img src="statics/info-white-lines.png" class="InfoIcon">
             <div class="ContainerInfos">
+              <div class="BulleInfo">
                 <p class="InformationR">
-                    Path: {{ infos[vcfs[1]].path|default(vcfs[1]) }}
+                  Path: {{ infos[vcfs[1]].path|default(vcfs[1]) }}
                 </p>
+              </div>
+              <div class="BulleInfo">
                 <p class="InformationR">
                     Size: {{ infos[vcfs[1]].size|default('NA') }} Mo
                 </p>
+              </div>
+              <div class="BulleInfo">
                 <p class="InformationR">
                     Modified: {{ infos[vcfs[1]].mtime|default('NA') }}
                 </p>
+              </div>
             </div>
         </div>
     </div>
@@ -133,22 +144,7 @@
             </div>
         </div>
     </div>
-    <div class="FlexSub">
-        <div class="DivSubLeft">
-            VCF1
-        </div>
-        <div class="DivSubRight">
-            VCF2
-        </div>
-    </div>
     <div class="Container">
-        <div class="TabMenu">
-            <button class="TabButton active">GRAPH</button>
-            <button class="TabButton">FILE</button>
-            <button class="TabButton">HEATMAP</button>
-            <button class="TabButton">GENOME</button>
-        </div>
-        <div class="chart-container" id="graphTab">Graph content here</div>
         <div class="file-container" id="fileTab">
     
             <div class="comparison-container">
@@ -162,12 +158,12 @@
                       </span>
                   </div>
                   {% for index, series in df.iterrows() %}
-                    {% if series['Variant_vcf1']|is_nan or series['Variant_vcf2']|is_nan %}
+                    {% if series['Variant.L']|is_nan or series['Variant.R']|is_nan %}
                       <div class="line diff">
                         <div class="line-number">{{ loop.index }}</div>
-                        {% if not series['Variant_vcf1']|is_nan %}
+                        {% if not series['Variant.L']|is_nan %}
                           <span class="diff column">
-                            {{ series['Variant_vcf1'] }}
+                            {{ series['Variant.L'] }}
                           </span>
                         {% endif %}
                       </div>
@@ -175,7 +171,7 @@
                       <div class="line match">
                         <div class="line-number">{{ loop.index }}</div>
                         <span class="match column">
-                          {{ series['Variant_vcf1'] }}
+                          {{ series['Variant.L'] }}
                         </span>
                       </div>
                     {% endif %}    
@@ -192,12 +188,12 @@
                       </span>
                   </div>
                   {% for index, series in df.iterrows() %}
-                    {% if series['Variant_vcf1']|is_nan or series['Variant_vcf2']|is_nan %}
+                    {% if series['Variant.L']|is_nan or series['Variant.R']|is_nan %}
                       <div class="line diff">
                         <div class="line-number">{{ loop.index }}</div>
-                        {% if not series['Variant_vcf2']|is_nan %}
+                        {% if not series['Variant.R']|is_nan %}
                           <span class="diff column">
-                            {{ series['Variant_vcf2'] }}
+                            {{ series['Variant.R'] }}
                           </span>
                         {% endif %}
                       </div>
@@ -205,7 +201,7 @@
                       <div class="line match">
                         <div class="line-number">{{ loop.index }}</div>
                         <span class="match column">
-                          {{ series['Variant_vcf2'] }}
+                          {{ series['Variant.R'] }}
                         </span>
                       </div>
                     {% endif %}

@@ -2,12 +2,13 @@
   display: flex;
   flex-direction: column;
   max-width: 100%;
-  margin: 10px
+  margin-left: 1px;
+  margin-right: 1px;
 }
 .comparison-container {
   display: flex;
   height: 500px;
-  border: 1px solid #ccc;
+  border: 1px solid #9188a1;
   border-radius: 5px;
   background-color: white;
 }
@@ -41,7 +42,7 @@
 }
 
 .file2-title {
-  background-color: #333333;
+  background-color: #0d1117;
   color: white;
 }
 
@@ -107,7 +108,7 @@
   margin-top: 20px;
   padding: 10px;
   background-color: white;
-  border: 1px solid #ccc;
+  border: 1px solid #9188a1;
   font-family: ubuntu;
 }
 textarea {
