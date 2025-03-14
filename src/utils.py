@@ -116,7 +116,7 @@ def evaluate(df: DataFrame) -> DataFrame:
         
     for v in ['snp','indel']:
 
-        type_mask = (df["Type.L"] == v) | (df["Type.R"] == v)
+        type_mask = df["Type"] == v
 
         df_masked = pass_mask & type_mask
 

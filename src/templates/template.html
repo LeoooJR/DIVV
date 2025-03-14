@@ -165,7 +165,7 @@
                         {{ header }}
                       </span>
                   </div>
-                  {% for index, series in df.iterrows() %}
+                  {% for index, series in view.iterrows() %}
                     {% if series['Variant.L']|is_nan or series['Variant.R']|is_nan %}
                       <div class="line diff">
                         <div class="line-number">{{ loop.index }}</div>
@@ -195,7 +195,7 @@
                         {{ header }}
                       </span>
                   </div>
-                  {% for index, series in df.iterrows() %}
+                  {% for index, series in view.iterrows() %}
                     {% if series['Variant.L']|is_nan or series['Variant.R']|is_nan %}
                       <div class="line diff">
                         <div class="line-number">{{ loop.index }}</div>
