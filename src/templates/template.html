@@ -543,27 +543,5 @@
         element.style.display = element.style.display == "none" ? "flex" : "none";
       }
     </script>
-    <script>
-      document.addEventListener('DOMContentLoaded', function() {
-          function updatePlotlyPlots() {
-              document.querySelectorAll('.DivPlot.active .plotly-graph-div').forEach(plot => {
-                  Plotly.relayout(plot, { 
-                      autosize: true,
-                      width: '100%' // Keep it responsive
-                  });
-              });
-          }
-
-          // Update Plotly whenever a new plot is shown
-          document.querySelectorAll('.nav-arrow').forEach(button => {
-              button.addEventListener('click', function() {
-                  setTimeout(updatePlotlyPlots, 100); 
-              });
-          });
-
-          // Initial update
-          updatePlotlyPlots();
-      });
-    </script>
 </body>
 </html>
