@@ -106,22 +106,36 @@ body {
     align-items: center;
     flex-wrap: wrap;
     width: 100%;
+    padding-top: 5px;
 }
 
 .InfoIcon {
     width: 39px;
     height: 39px;
-    padding-left: 10px;
-    padding-top: 5px;
-    padding-bottom: 5px;
+    margin-left: 10px;
+    margin-top: 5px;
+    margin-bottom: 5px;
     align-self: center;
     vertical-align: middle;
+    margin-right: 5px;
+}
+
+.InfoIcon:hover {
+    cursor: pointer;
+}
+
+.background {
+    background: linear-gradient(to right, #eef0f1 50%, #333333 50%);
+    width: 100%;
+    display: block;
+    padding-top: 5px;
+    padding-bottom: 5px;
 }
 
 .InfoSubIcon {
     width: 20px;
     height: 20px;
-    padding-left: 10px;
+    padding-left: 5px;
     padding-top: 5px;
     padding-bottom: 5px;
     align-self: center;
@@ -129,6 +143,8 @@ body {
 }
 
 .BulleInfo {
+    display: flex;
+    flex-direction: row;
     border: solid;
     border-color: transparent;
     border-radius: 2em;
@@ -193,14 +209,18 @@ body {
 }
 
 .DivPlot {
-    display: none;
+    position: flex;
+    visibility: hidden;
+    opacity: 0;
     width: 100%;
-    position: relative;
-    overflow: hidden;
+    transition: opacity 0.3s ease-in-out;
 }
 
 .DivPlot.active {
-    display: block;
+    width: 100%;
+    visibility: visible;
+    opacity: 1;
+    position: relative;
 }
 
 .plot-navigation {
@@ -285,17 +305,6 @@ body {
 
 .DivMainRight .plot-dot.active {
     background-color: #ddd;
-}
-
-.Plot {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    display: block;
-    margin: 5px;
 }
 
 .Container {

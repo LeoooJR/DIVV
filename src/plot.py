@@ -28,6 +28,13 @@ class Plot:
                 x = 0.5,
                 xanchor= 'center',
                 yanchor= 'top'
+            ),
+            barmode='relative',
+            hovermode="x unified",
+            legend=dict(
+                traceorder="normal",
+                itemclick="toggle",
+                itemdoubleclick="toggleothers"
             )
         )
     

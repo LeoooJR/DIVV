@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="search.css" />
   <link rel="stylesheet" href="table.css" />
   <link rel="stylesheet" href="tickets.css" />
+  <link rel="stylesheet" href="cmd.css" />
   <script src="https://cdn.plot.ly/plotly-3.0.0.min.js" charset="utf-8"></script>
 </head>
 
@@ -50,6 +51,7 @@
                 </p>
               </div>
             </div>
+            <img src="statics/down-arrow.png" class="InfoIcon" id="DropDown">
         </div>
         <div class="DivSubRight">
             <img src="statics/info-white-lines.png" class="InfoIcon">
@@ -73,7 +75,16 @@
                 </p>
               </div>
             </div>
+            <img src="statics/down-arrow.png" class="InfoIcon" id="DropDown">
         </div>
+    </div>
+    <div class="background">
+      <div class="input-container">
+        <p class="bash-text">
+          <span class="user">user</span><span class="vm">@vcfdelta</span>:<span class="char">~</span>$
+        </p>
+        <input class="input" placeholder="sudo rm -rf css/" type="text">
+      </div>
     </div>
     <section class="SectionPlots">
         <div class="GridPlotLeft">
@@ -413,7 +424,7 @@
       });
       function filter() {
 
-          let totalCount = document.querySelectorAll(".file1-content .line:not(.hidden)").length;
+          let totalCount = document.querySelectorAll(".file1-content .line:not(.header)").length;
           
           let chromosomeInput = document.querySelector(".ContainerSearch .search-field input.input");
           if (!chromosomeInput) {
@@ -460,6 +471,15 @@
           document.querySelector(".search-box .input").value = "";
           document.querySelectorAll(".FilterContainer select").forEach(select => select.value = "ALL");
           filter();
+      }
+    </script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        document.getElementById("DropDown").addEventListener("click", show)
+      });
+      function show() {
+        element = document.querySelector(".input-container")
+        element.style.display = element.style.display == "none" ? "flex" : "none";
       }
     </script>
 </body>

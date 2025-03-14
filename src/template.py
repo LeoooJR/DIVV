@@ -13,7 +13,11 @@ class Report:
         
         self.view = view
 
+        print(plots[vcfs[1]].plots[0].fig)
+
         plots[vcfs[1]].dark()
+
+        print(plots[vcfs[1]].plots[0].fig)
 
         self.plots = {vcfs[0]:plots[vcfs[0]].as_html(),
                       vcfs[1]:plots[vcfs[1]].as_html()}
