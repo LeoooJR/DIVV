@@ -489,7 +489,7 @@ def delta(params: object) -> int:
 
     del dfs_chroms
 
-    list(map((lambda x, n: x.rename(columns={c: f'{c}.{n}' for c in x.columns if not (c in ["Chromosome","Position"] and n == "L")}, inplace=True)), dfs_files, ["L","R"]))
+    list(map((lambda x, n: x.rename(columns={c: f'{c}.{n}' for c in x.columns if not (c in ["Chromosome","Position","Type"] and n == "L")}, inplace=True)), dfs_files, ["L","R"]))
 
     df: DataFrame = concat(dfs_files, axis=1, join='outer', sort=False)
 
@@ -497,13 +497,13 @@ def delta(params: object) -> int:
 
     df["Chromosome"] = df["Chromosome"].fillna(df["Chromosome.R"])
     df["Position"] = df["Position"].fillna(df["Position.R"])
+    df["Type"] = df["Type"].fillna(df["Type.R"])
 
-    df.drop(columns=["Chromosome.R","Position.R"], inplace=True)
+    df.drop(columns=["Chromosome.R","Position.R","Type.R"], inplace=True)
 
     df = df.astype({"Chromosome": "category",
                     "Position": "int64",
-                    "Type.L": "category",
-                    "Type.R": "category",
+                    "Type": "category",
                     "Filter.L": "category",
                     "Filter.R": "category"})           
 
