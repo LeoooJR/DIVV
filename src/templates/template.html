@@ -382,37 +382,98 @@
               rightPlotIndicator.appendChild(dot);
           }
           
+          // Ensure inactive plots are fully hidden
+          leftPlots.forEach((plot, index) => {
+              if (index !== leftCurrentPlot) {
+                  plot.style.display = 'none';
+                  plot.style.visibility = 'hidden';
+                  plot.style.gridArea = 'none'; // Remove from grid layout
+              } else {
+                  plot.style.display = 'block';
+                  plot.style.visibility = 'visible';
+                  plot.style.gridArea = 'auto'; // Use default grid positioning
+              }
+          });
+          
+          rightPlots.forEach((plot, index) => {
+              if (index !== rightCurrentPlot) {
+                  plot.style.display = 'none';
+                  plot.style.visibility = 'hidden';
+                  plot.style.gridArea = 'none'; // Remove from grid layout
+              } else {
+                  plot.style.display = 'block';
+                  plot.style.visibility = 'visible';
+                  plot.style.gridArea = 'auto'; // Use default grid positioning
+              }
+          });
+          
           // Left plot navigation
           leftPrevArrow.addEventListener('click', () => {
               leftPlots[leftCurrentPlot].classList.remove('active');
+              leftPlots[leftCurrentPlot].style.display = 'none';
+              leftPlots[leftCurrentPlot].style.visibility = 'hidden';
+              leftPlots[leftCurrentPlot].style.gridArea = 'none';
+              
               leftPlotIndicator.children[leftCurrentPlot].classList.remove('active');
               leftCurrentPlot = (leftCurrentPlot - 1 + leftPlots.length) % leftPlots.length;
+              
               leftPlots[leftCurrentPlot].classList.add('active');
+              leftPlots[leftCurrentPlot].style.display = 'block';
+              leftPlots[leftCurrentPlot].style.visibility = 'visible';
+              leftPlots[leftCurrentPlot].style.gridArea = 'auto';
+              
               leftPlotIndicator.children[leftCurrentPlot].classList.add('active');
           });
           
           leftNextArrow.addEventListener('click', () => {
               leftPlots[leftCurrentPlot].classList.remove('active');
+              leftPlots[leftCurrentPlot].style.display = 'none';
+              leftPlots[leftCurrentPlot].style.visibility = 'hidden';
+              leftPlots[leftCurrentPlot].style.gridArea = 'none';
+              
               leftPlotIndicator.children[leftCurrentPlot].classList.remove('active');
               leftCurrentPlot = (leftCurrentPlot + 1) % leftPlots.length;
+              
               leftPlots[leftCurrentPlot].classList.add('active');
+              leftPlots[leftCurrentPlot].style.display = 'block';
+              leftPlots[leftCurrentPlot].style.visibility = 'visible';
+              leftPlots[leftCurrentPlot].style.gridArea = 'auto';
+              
               leftPlotIndicator.children[leftCurrentPlot].classList.add('active');
           });
           
           // Right plot navigation
           rightPrevArrow.addEventListener('click', () => {
               rightPlots[rightCurrentPlot].classList.remove('active');
+              rightPlots[rightCurrentPlot].style.display = 'none';
+              rightPlots[rightCurrentPlot].style.visibility = 'hidden';
+              rightPlots[rightCurrentPlot].style.gridArea = 'none';
+              
               rightPlotIndicator.children[rightCurrentPlot].classList.remove('active');
               rightCurrentPlot = (rightCurrentPlot - 1 + rightPlots.length) % rightPlots.length;
+              
               rightPlots[rightCurrentPlot].classList.add('active');
+              rightPlots[rightCurrentPlot].style.display = 'block';
+              rightPlots[rightCurrentPlot].style.visibility = 'visible';
+              rightPlots[rightCurrentPlot].style.gridArea = 'auto';
+              
               rightPlotIndicator.children[rightCurrentPlot].classList.add('active');
           });
           
           rightNextArrow.addEventListener('click', () => {
               rightPlots[rightCurrentPlot].classList.remove('active');
+              rightPlots[rightCurrentPlot].style.display = 'none';
+              rightPlots[rightCurrentPlot].style.visibility = 'hidden';
+              rightPlots[rightCurrentPlot].style.gridArea = 'none';
+              
               rightPlotIndicator.children[rightCurrentPlot].classList.remove('active');
               rightCurrentPlot = (rightCurrentPlot + 1) % rightPlots.length;
+              
               rightPlots[rightCurrentPlot].classList.add('active');
+              rightPlots[rightCurrentPlot].style.display = 'block';
+              rightPlots[rightCurrentPlot].style.visibility = 'visible';
+              rightPlots[rightCurrentPlot].style.gridArea = 'auto';
+              
               rightPlotIndicator.children[rightCurrentPlot].classList.add('active');
           });
       });
@@ -481,6 +542,28 @@
         element = document.querySelector(".input-container")
         element.style.display = element.style.display == "none" ? "flex" : "none";
       }
+    </script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+          function updatePlotlyPlots() {
+              document.querySelectorAll('.DivPlot.active .plotly-graph-div').forEach(plot => {
+                  Plotly.relayout(plot, { 
+                      autosize: true,
+                      width: '100%' // Keep it responsive
+                  });
+              });
+          }
+
+          // Update Plotly whenever a new plot is shown
+          document.querySelectorAll('.nav-arrow').forEach(button => {
+              button.addEventListener('click', function() {
+                  setTimeout(updatePlotlyPlots, 100); 
+              });
+          });
+
+          // Initial update
+          updatePlotlyPlots();
+      });
     </script>
 </body>
 </html>
