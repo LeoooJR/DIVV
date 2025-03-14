@@ -11,6 +11,7 @@ from os.path import basename
 from pandas import Series, DataFrame, concat, notna, isna
 from plot import visualization
 import subprocess
+from sys import argv
 from template import Report
 import pprint
 import utils

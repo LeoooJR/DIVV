@@ -139,16 +139,25 @@
         </div>
         <div class="DivMainRight">
             <div class="ContainerFilter">
+                <img src="statics/filter.png" alt="filter" class="IconFilter">
+                <div class="FilterContainer">
+                    <select class="FilterField">
+                        <option selected disabled>Select a filter...</option>
+                        <option>ALL</option>
+                        <option>PASS</option>
+                    </select>
+                </div>
                 <img src="statics/dan-test-white.png" alt="dna" class="IconFilter">
                 <div class="FilterContainer">
                     <select class="FilterField">
                         <option selected disabled>Select a variant...</option>
+                        <option>ALL</option>
                         <option>SNP</option>
-                        <option>Indel</option>
+                        <option>INDEL</option>
                         <option>Other</option>
                     </select>
                 </div>
-                <button class="SearchButton">Search</button>
+                <button class="SearchButton" onclick="resetFilters()">Reset</button>
             </div>
         </div>
     </div>
@@ -157,7 +166,7 @@
     
             <div class="comparison-container">
               <div class="file1-view">
-                <div class="file1-title">{{ infos[vcfs[0]].basename|default(vcfs[0]) }}</div>
+                <div class="file1-title">{{ infos[vcfs[0]].basename|default(vcfs[0]) }} <p class="filterSummary" id="filterSummaryL">Showing all variants</p> </div>
                 <div class="file1-content" id="content1">
                   <div class="line header">
                     <div class="line-number">0</div>
@@ -167,7 +176,7 @@
                   </div>
                   {% for index, series in view['variants'].iterrows() %}
                     {% if series['Variant.L']|is_nan or series['Variant.R']|is_nan %}
-                      <div class="line diff">
+                      <div class="line diff" id="{{ series['Chromosome']|upper() }} {{ series['Type']|upper() }} {{ series['Filter.L']|upper() }}">
                         <div class="line-number">{{ loop.index }}</div>
                         {% if not series['Variant.L']|is_nan %}
                           <span class="diff column">
@@ -176,7 +185,7 @@
                         {% endif %}
                       </div>
                     {% else %}
-                      <div class="line match">
+                      <div class="line match" id="{{ series['Chromosome']|upper() }} {{ series['Type']|upper() }} {{ series['Filter.L']|upper() }}">
                         <div class="line-number">{{ loop.index }}</div>
                         <span class="match column">
                           {{ series['Variant.L'] }}
@@ -187,7 +196,7 @@
                 </div>
               </div>
               <div class="file2-view">
-                <div class="file2-title">{{ infos[vcfs[1]].basename|default(vcfs[1]) }}</div>
+                <div class="file2-title">{{ infos[vcfs[1]].basename|default(vcfs[1]) }} <p class="filterSummary" id="filterSummaryR">Showing all variants</p> </div>
                 <div class="file2-content" id="content2">
                   <div class="line header">
                     <div class="line-number">0</div>
@@ -197,7 +206,7 @@
                   </div>
                   {% for index, series in view['variants'].iterrows() %}
                     {% if series['Variant.L']|is_nan or series['Variant.R']|is_nan %}
-                      <div class="line diff">
+                      <div class="line diff" id="{{ series['Chromosome']|upper() }} {{ series['Type']|upper() }} {{ series['Filter.R']|upper() }}">
                         <div class="line-number">{{ loop.index }}</div>
                         {% if not series['Variant.R']|is_nan %}
                           <span class="diff column">
@@ -206,7 +215,7 @@
                         {% endif %}
                       </div>
                     {% else %}
-                      <div class="line match">
+                      <div class="line match" id="{{ series['Chromosome']|upper() }} {{ series['Type']|upper() }} {{ series['Filter.R']|upper() }}">
                         <div class="line-number">{{ loop.index }}</div>
                         <span class="match column">
                           {{ series['Variant.R'] }}
@@ -237,7 +246,7 @@
                   </svg>
               
                   <p>
-                    Reference: {{ vcfs[0] }}
+                    Truth: {{ vcfs[0] }}
                   </p></span
                 >
               </div>
@@ -258,56 +267,40 @@
               </div>
             </div>
           </div>
-          <table class="TruthTable">
-            <tbody>
-              <tr class="TableRow">
-                <th class="TableHeader">TYPE</th>
-                <th class="TableHeader">FILTER</th>
-                <th class="TableHeader">TRUTH TOTAL</th>
-                <th class="TableHeader">TRUE POSITIVE</th>
-                <th class="TableHeader">FALSE NEGATIVE</th>
-                <th class="TableHeader">QUERY TOTAL</th>
-                <th class="TableHeader">FALSE POSITIVE</th>
-                <th class="TableHeader">RECALL</th>
-                <th class="TableHeader">PRECISION</th>
-                <th class="TableHeader">F1 SCORE</th>
-              </tr>
-              {% for row, metrics in summary.iterrows() %}
+          <div style="display: flex; width: 100%; justify-content: center; align-items: center; margin: 10px;">
+            <table class="TruthTable">
+              <tbody>
                 <tr class="TableRow">
-                  {% for index, metric in metrics.items() %}
-                    {% if metric is float() %}
-                      <td class="TableCell">{{ metric|round(2, 'common') }}</td>
-                    {% elif metric is string() %}
-                      <td class="TableCell">{{ metric|upper() }}</td>
-                    {% else %}
-                      <td class="TableCell">{{ metric }}</td>
-                    {% endif %}  
-                  {% endfor %}
+                  <th class="TableHeader">TYPE</th>
+                  <th class="TableHeader">FILTER</th>
+                  <th class="TableHeader">TRUTH TOTAL</th>
+                  <th class="TableHeader">TRUE POSITIVE</th>
+                  <th class="TableHeader">FALSE NEGATIVE</th>
+                  <th class="TableHeader">QUERY TOTAL</th>
+                  <th class="TableHeader">FALSE POSITIVE</th>
+                  <th class="TableHeader">RECALL</th>
+                  <th class="TableHeader">PRECISION</th>
+                  <th class="TableHeader">F1 SCORE</th>
                 </tr>
-              {% endfor %}
-            </tbody>
-          </table>
+                {% for row, metrics in summary.iterrows() %}
+                  <tr class="TableRow">
+                    {% for index, metric in metrics.items() %}
+                      {% if metric is float() %}
+                        <td class="TableCell">{{ metric|round(2, 'common') }}</td>
+                      {% elif metric is string() %}
+                        <td class="TableCell">{{ metric|upper() }}</td>
+                      {% else %}
+                        <td class="TableCell">{{ metric }}</td>
+                      {% endif %}  
+                    {% endfor %}
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>  
         {% endif %}
     </div>
     <script>
-        const tabs = document.querySelectorAll('.TabButton');
-        const tabContents = {
-        "GRAPH": document.getElementById("graphTab"),
-        "FILE": document.getElementById("fileTab"),
-        "HEATMAP": document.getElementById("heatmapTab"),
-        "GENOME": document.getElementById("genomeTab"),
-        };
-
-        tabs.forEach(tab => {
-            tab.addEventListener('click', () => {
-                tabs.forEach(t => t.classList.remove('active'));
-                tab.classList.add('active');
-
-                Object.values(tabContents).forEach(content => content.style.display = "none");
-                tabContents[tab.innerText].style.display = "flex"; 
-            });
-        });
-
         const content1El = document.getElementById('content1');
         const content2El = document.getElementById('content2');
         
@@ -412,6 +405,62 @@
               rightPlotIndicator.children[rightCurrentPlot].classList.add('active');
           });
       });
+    </script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+          document.querySelector(".search-box .input").addEventListener("input", filter);
+          document.querySelectorAll(".FilterContainer select").forEach(select => select.addEventListener("change", filter));
+      });
+      function filter() {
+
+          let totalCount = document.querySelectorAll(".file1-content .line:not(.hidden)").length;
+          
+          let chromosomeInput = document.querySelector(".ContainerSearch .search-field input.input");
+          if (!chromosomeInput) {
+              chromosomeInput = document.querySelector(".search .search-field input.input");
+          }
+          let chromosome = chromosomeInput ? chromosomeInput.value.trim().toUpperCase() : "";
+          
+          let filterSelects = document.querySelectorAll(".FilterContainer .FilterField");
+          let filterType = filterSelects.length > 0 ? filterSelects[0].value.toUpperCase() : "ALL";
+          let variantType = filterSelects.length > 1 ? filterSelects[1].value.toUpperCase() : "ALL";
+
+          let rowsLeft = document.querySelectorAll(".file1-content .line:not(.header)");
+          let rowsRight = document.querySelectorAll(".file2-content .line:not(.header)");
+
+          let visibleCount = 0;
+
+          rowsLeft.forEach((row, index) => {
+              let idParts = row.id.split(" ");
+              if (idParts.length < 3) return;
+      
+              let chromMatch = chromosome === "" || idParts[0] == chromosome;
+              let typeMatch = variantType === "ALL" || idParts[1] === variantType;
+              let filterMatchLeft = filterType === "ALL" || idParts[2] === filterType;
+      
+              let rowRight = rowsRight[index];
+              let idPartsRight = rowRight.id.split(" ");
+      
+              let filterMatchRight = filterType === "ALL" || idPartsRight[2] === filterType;
+    
+              let rowVisible = (chromMatch && typeMatch && (filterMatchLeft || filterMatchRight));
+      
+              console.log(`Row ${index}:`, {
+                  chromMatch, typeMatch, filterMatchLeft, filterMatchRight, rowVisible
+              });
+              visibleCount = rowVisible ? ++visibleCount : visibleCount;
+              row.style.display = rowVisible ? "flex" : "none";
+              rowRight.style.display = rowVisible ? "flex" : "none";
+          });
+          
+          document.getElementById("filterSummaryL").innerText = `Showing ${visibleCount} variants out of ${totalCount}`;
+          document.getElementById("filterSummaryR").innerText = `Showing ${visibleCount} variants out of ${totalCount}`;
+      }
+      function resetFilters() {
+          document.querySelector(".search-box .input").value = "";
+          document.querySelectorAll(".FilterContainer select").forEach(select => select.value = "ALL");
+          filter();
+      }
     </script>
 </body>
 </html>
