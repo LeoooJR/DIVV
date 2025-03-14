@@ -162,10 +162,10 @@
                   <div class="line header">
                     <div class="line-number">0</div>
                       <span class="header column">
-                        {{ header }}
+                        {{ view['headers'][vcfs[0]] }}
                       </span>
                   </div>
-                  {% for index, series in view.iterrows() %}
+                  {% for index, series in view['variants'].iterrows() %}
                     {% if series['Variant.L']|is_nan or series['Variant.R']|is_nan %}
                       <div class="line diff">
                         <div class="line-number">{{ loop.index }}</div>
@@ -191,11 +191,11 @@
                 <div class="file2-content" id="content2">
                   <div class="line header">
                     <div class="line-number">0</div>
-                      <span class="column">
-                        {{ header }}
+                      <span class="header column">
+                        {{ view['headers'][vcfs[1]] }}
                       </span>
                   </div>
-                  {% for index, series in view.iterrows() %}
+                  {% for index, series in view['variants'].iterrows() %}
                     {% if series['Variant.L']|is_nan or series['Variant.R']|is_nan %}
                       <div class="line diff">
                         <div class="line-number">{{ loop.index }}</div>

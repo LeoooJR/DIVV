@@ -5,13 +5,13 @@ class Report:
 
     __slots__ = ('vcfs', 'infos', 'view', 'plots', 'prefix', 'summary')
 
-    def __init__(self, vcfs: list[str], prefix: str, infos: dict, df: object, plots: dict, summary: object = None):
+    def __init__(self, vcfs: list[str], prefix: str, infos: dict, view: object, plots: dict, summary: object = None):
 
         self.vcfs = vcfs
 
         self.infos = infos
         
-        self.view = df
+        self.view = view
 
         plots[vcfs[1]].dark()
 

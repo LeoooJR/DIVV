@@ -342,6 +342,7 @@ def process_files(
 
     return {
         "info": utils.file_stats(file),
+        "header": "\t".join(list(HEADER.keys())),
         "variants": variants,
         "filter": filtered,
         "plots": library if compute else None,
@@ -536,7 +537,9 @@ def delta(params: object) -> int:
                prefix=params.out,
                infos ={params.vcfs[0]:result[params.vcfs[0]]["info"],
                        params.vcfs[1]:result[params.vcfs[1]]["info"]},
-               df=df, 
+               view={"headers": {params.vcfs[0]: result[params.vcfs[0]]["header"],
+                                params.vcfs[1]: result[params.vcfs[1]]["header"]},
+                    "variants": df}, 
                plots={params.vcfs[0]:result[params.vcfs[0]]["plots"],
                       params.vcfs[1]:result[params.vcfs[1]]["plots"]},
                summary=summary if params.truth else None).create()
