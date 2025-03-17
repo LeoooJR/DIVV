@@ -113,82 +113,84 @@ def process_chromosome(
                         string=f"{v.CHROM}:{v.POS}:{v.REF}:{'|'.join(v.ALT)}".encode()
                     ).hexdigest()
 
-                    variants[hash] = [
-                        v.CHROM,
-                        v.POS,
-                        v.var_type,
-                        "FAIL" if v.FILTER else "PASS",
-                        '\t'.join(parts),
-                    ]
-                    if compute:
+                    if not hash in variants:
 
-                        if v.var_type == "snp":
-                            if v.is_transition:
-                                mutation = "transition"
-                            else:
-                                mutation = "transversion"
-                            stats["variant"][v.var_type][mutation] += 1
-                            stats["variant"][v.var_type][v.REF][v.ALT[0]] += 1
-                        elif v.var_type == "indel":
-                            if v.is_deletion:
-                                mutation = "deletion"
-                            else:
-                                mutation = "insertion"
-                            stats["variant"][v.var_type][mutation] += 1
-                        else:
-                            stats["variant"][v.var_type] += 1
+                        variants[hash] = [
+                            v.CHROM,
+                            v.POS,
+                            v.var_type,
+                            "FAIL" if v.FILTER else "PASS",
+                            '\t'.join(parts),
+                        ]
+                        if compute:
 
-                        if (
-                            FORMAT["genotype_quality"][0]
-                            in samples_data[samples[0]].keys()
-                        ):
-                            stats[FORMAT["genotype_quality"][0]].append(
-                                [
-                                    samples_data[s][
-                                        FORMAT["genotype_quality"][0]
+                            if v.var_type == "snp":
+                                if v.is_transition:
+                                    mutation = "transition"
+                                else:
+                                    mutation = "transversion"
+                                stats["variant"][v.var_type][mutation] += 1
+                                stats["variant"][v.var_type][v.REF][v.ALT[0]] += 1
+                            elif v.var_type == "indel":
+                                if v.is_deletion:
+                                    mutation = "deletion"
+                                else:
+                                    mutation = "insertion"
+                                stats["variant"][v.var_type][mutation] += 1
+                            else:
+                                stats["variant"][v.var_type] += 1
+
+                            if (
+                                FORMAT["genotype_quality"][0]
+                                in samples_data[samples[0]]
+                            ):
+                                stats[FORMAT["genotype_quality"][0]].append(
+                                    [
+                                        samples_data[s][
+                                            FORMAT["genotype_quality"][0]
+                                        ]
+                                        for s in samples
                                     ]
+                                )
+
+                            stats["hom"] += sum(
+                                list(
+                                    map(
+                                        lambda x: utils.is_homozygous(
+                                            GT=samples_data[x][
+                                                FORMAT["genotype"][0]
+                                            ]
+                                        ),
+                                        samples,
+                                    )
+                                )
+                            )
+                            stats["het"] += sum(
+                                list(
+                                    map(
+                                        lambda x: utils.is_heterozygous(
+                                            GT=samples_data[x][
+                                                FORMAT["genotype"][0]
+                                            ]
+                                        ),
+                                        samples,
+                                    )
+                                )
+                            )
+
+                            if v.QUAL:
+                                stats["quality"].append(v.QUAL)
+
+                            stats["depth"].append(
+                                [
+                                    (
+                                        samples_data[s][FORMAT["depth"][0]]
+                                        if FORMAT["depth"][0] in samples_data[s]
+                                        else [samples_data[s][FORMAT["depth"][1]]]
+                                    )
                                     for s in samples
                                 ]
                             )
-
-                        stats["hom"] += sum(
-                            list(
-                                map(
-                                    lambda x: utils.is_homozygous(
-                                        GT=samples_data[x][
-                                            FORMAT["genotype"][0]
-                                        ]
-                                    ),
-                                    samples,
-                                )
-                            )
-                        )
-                        stats["het"] += sum(
-                            list(
-                                map(
-                                    lambda x: utils.is_heterozygous(
-                                        GT=samples_data[x][
-                                            FORMAT["genotype"][0]
-                                        ]
-                                    ),
-                                    samples,
-                                )
-                            )
-                        )
-
-                        if v.QUAL:
-                            stats["quality"].append(v.QUAL)
-
-                        stats["depth"].append(
-                            [
-                                (
-                                    samples_data[s][FORMAT["depth"][0]]
-                                    if FORMAT["depth"][0] in samples_data[s]
-                                    else [samples_data[s][FORMAT["depth"][1]]]
-                                )
-                                for s in samples
-                            ]
-                        )
 
     except UserWarning as e:
         logger.warning(e)
@@ -570,8 +572,6 @@ def delta(params: object) -> int:
 
     del result[params.vcfs[0]]["variants"]
     del result[params.vcfs[1]]["variants"]
-
-    print(df.memory_usage(deep=True))
 
     if params.truth:
 
