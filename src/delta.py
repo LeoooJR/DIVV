@@ -8,7 +8,7 @@ import numpy as np
 from operator import itemgetter
 from os import getcwd
 from os.path import basename
-from pandas import Series, DataFrame, concat, notna, isna
+from pandas import Series, DataFrame, Index, concat
 from plot import visualization
 import subprocess
 from sys import argv
@@ -111,11 +111,13 @@ def process_chromosome(
                         string=f"{v.CHROM}:{v.POS}:{v.REF}:{'|'.join(v.ALT)}".encode()
                     ).hexdigest()
 
-                    variants[hash] = [v.CHROM,
-                                    v.POS,
-                                    v.var_type,
-                                    "FAIL" if v.FILTER else "PASS",
-                                    str(v)]
+                    variants[hash] = [
+                        v.CHROM,
+                        v.POS,
+                        v.var_type,
+                        "FAIL" if v.FILTER else "PASS",
+                        str(v),
+                    ]
                     if compute:
 
                         if v.var_type == "snp":
@@ -140,7 +142,9 @@ def process_chromosome(
                         ):
                             stats[FORMAT["genotype_quality"][0]].append(
                                 [
-                                    samples_data[s][FORMAT["genotype_quality"][0]]
+                                    samples_data[s][
+                                        FORMAT["genotype_quality"][0]
+                                    ]
                                     for s in samples
                                 ]
                             )
@@ -149,7 +153,9 @@ def process_chromosome(
                             list(
                                 map(
                                     lambda x: utils.is_homozygous(
-                                        GT=samples_data[x][FORMAT["genotype"][0]]
+                                        GT=samples_data[x][
+                                            FORMAT["genotype"][0]
+                                        ]
                                     ),
                                     samples,
                                 )
@@ -159,7 +165,9 @@ def process_chromosome(
                             list(
                                 map(
                                     lambda x: utils.is_heterozygous(
-                                        GT=samples_data[x][FORMAT["genotype"][0]]
+                                        GT=samples_data[x][
+                                            FORMAT["genotype"][0]
+                                        ]
                                     ),
                                     samples,
                                 )
@@ -183,13 +191,21 @@ def process_chromosome(
     except UserWarning as e:
         logger.warning(e)
 
-    variants = DataFrame.from_dict(variants, orient='index', columns=["Chromosome","Position", "Type", "Filter", "Variant"]).astype({"Chromosome": "category", 
-                                                                                                                  "Position": "int",
-                                                                                                                  "Type": "category",
-                                                                                                                  "Filter": "category",
-                                                                                                                  "Variant": "string[pyarrow]"})
-    
-    variants.index = variants.index.astype("string[pyarrow]")
+    variants = DataFrame.from_dict(
+        variants,
+        orient="index",
+        columns=["Chromosome", "Position", "Type", "Filter", "Variant"],
+    ).astype(
+        {
+            "Chromosome": "category",
+            "Position": "int",
+            "Type": "category",
+            "Filter": "category",
+            "Variant": "string[pyarrow]",
+        }
+    )
+
+    variants.index = Index(variants.index.values, dtype="string[pyarrow]")
 
     logger.debug(
         f"Filtered: {filtered['snp']} SNP(s), {filtered['indel']} INDEL(s), {filtered['sv']} structural variant(s) variant(s) for chromosome {chrom} in file {FILES['compression']}"
@@ -331,8 +347,10 @@ def process_files(
 
                 if compute:
 
-                    stats[futures_to_chrom[future]]["length"] = vcf.seqlens[chromosomes.index(futures_to_chrom[future])]
-                
+                    stats[futures_to_chrom[future]]["length"] = vcf.seqlens[
+                        chromosomes.index(futures_to_chrom[future])
+                    ]
+
             except Exception as e:
                 logger.warning(
                     f"Chromosome {futures_to_chrom[future]} generated an exception: {e}"
@@ -344,7 +362,9 @@ def process_files(
     return {
         "info": utils.file_stats(file),
         "header": "\t".join(list(HEADER.keys())),
-        "variants": variants,
+        "variants": concat(
+            list(itemgetter(*list(sorted(variants.keys())))(variants))
+        ),
         "filter": filtered,
         "plots": library if compute else None,
     }
@@ -360,7 +380,11 @@ def delta(params: object) -> int:
 
     logger.debug(f"VCFS: {params.vcfs}")
 
-    logger.debug(f"{params.vcfs[0]} is set as truth" if params.truth else "No VCF has been set as truth")
+    logger.debug(
+        f"{params.vcfs[0]} is set as truth"
+        if params.truth
+        else "No VCF has been set as truth"
+    )
 
     logger.debug(f"Indexes: {params.indexes}")
 
@@ -386,7 +410,7 @@ def delta(params: object) -> int:
                 "exclude_mnps": params.exclude_mnps,
                 "exclude_transitions": params.exclude_trans,
                 "exclude_svs": params.exclude_svs,
-                "pass_only": params.pass_only
+                "pass_only": params.pass_only,
             },
         }
         if any(
@@ -398,7 +422,7 @@ def delta(params: object) -> int:
                 params.exclude_mnps,
                 params.exclude_trans,
                 params.exclude_svs,
-                params.pass_only
+                params.pass_only,
             ]
         )
         else None
@@ -428,104 +452,141 @@ def delta(params: object) -> int:
                     f"File {futures_to_vcf[future]} generated an exception: {e}"
                 )
 
-    common, unique_vcf0, unique_vcf1 = (
-        {},
-        {},
-        {},
-    )
-
     result["delta"] = {
         "common": {},
-        "unique": {params.vcfs[0]: {}, 
-                   params.vcfs[1]: {}},
-        "jaccard": {}
+        "unique": {params.vcfs[0]: {}, params.vcfs[1]: {}},
+        "jaccard": {},
     }
 
-    difference = utils.difference
+    uniqueL = utils.difference(
+        a=frozenset(result[params.vcfs[0]]["variants"].index),
+        b=frozenset(result[params.vcfs[1]]["variants"].index),
+    )
 
-    intersect = utils.intersect
+    uniqueR = utils.difference(
+        a=frozenset(result[params.vcfs[1]]["variants"].index),
+        b=frozenset(result[params.vcfs[0]]["variants"].index),
+    )
 
-    for chrom in result[params.vcfs[0]]["variants"]:
+    common = utils.intersect(
+        a=frozenset(result[params.vcfs[0]]["variants"].index),
+        b=frozenset(result[params.vcfs[1]]["variants"].index),
+    )
 
-        unique_vcf0[chrom] = difference(a=frozenset(result[params.vcfs[0]]["variants"][chrom].index),
-                                              b=frozenset(result[params.vcfs[1]]["variants"][chrom].index))
+    (
+        result["delta"]["common"],
+        result["delta"]["unique"][params.vcfs[0]],
+        result["delta"]["unique"][params.vcfs[1]],
+    ) = (
+        len(common),
+        len(uniqueL),
+        len(uniqueR),
+    )
 
-        unique_vcf1[chrom] = difference(a=frozenset(result[params.vcfs[1]]["variants"][chrom].index),
-                                              b=frozenset(result[params.vcfs[0]]["variants"][chrom].index))
+    logger.debug(
+        f"{result['delta']['common']} variant(s) is/are commom in both files"
+    )
 
-        common[chrom] = intersect(a=frozenset(result[params.vcfs[0]]["variants"][chrom].index),
-                                        b=frozenset(result[params.vcfs[1]]["variants"][chrom].index))
+    logger.debug(
+        f"{result['delta']['unique'][params.vcfs[0]]} variant(s) is/are unique in files {params.vcfs[0]}"
+    )
 
-        (
-            result["delta"]["common"][chrom],
-            result["delta"]["unique"][params.vcfs[0]][chrom],
-            result["delta"]["unique"][params.vcfs[1]][chrom],
-        ) = (
-            len(common[chrom]),
-            len(unique_vcf0[chrom]),
-            len(unique_vcf1[chrom]),
+    logger.debug(
+        f"{result['delta']['unique'][params.vcfs[1]]} variant(s) is/are unique in files {params.vcfs[1]}"
+    )
+
+    result["delta"]["jaccard"] = utils.jaccard_index(
+        shared=result["delta"]["common"],
+        total=(
+            result["delta"]["common"]
+            + result["delta"]["unique"][params.vcfs[0]]
+            + result["delta"]["unique"][params.vcfs[1]]
+        ),
+    )
+
+    logger.debug(f"Jaccard index: {result['delta']['jaccard']}")
+
+    list(
+        map(
+            (
+                lambda x, n: x.rename(
+                    columns={
+                        c: f"{c}.{n}"
+                        for c in x.columns
+                        if not (
+                            c in ["Chromosome", "Position", "Type"]
+                            and n == "L"
+                        )
+                    },
+                    inplace=True,
+                )
+            ),
+            [
+                result[params.vcfs[0]]["variants"],
+                result[params.vcfs[1]]["variants"],
+            ],
+            ["L", "R"],
         )
+    )
 
-        logger.debug(
-            f"{result['delta']['common'][chrom]} variant(s) is/are commom for chromosome {chrom} in both files"
-        )
-
-        result["delta"]["jaccard"][chrom] = utils.jaccard_index(shared=result["delta"]["common"][chrom], 
-                                                                total=(result["delta"]["common"][chrom]+
-                                                                        result["delta"]["unique"][params.vcfs[0]][chrom]+
-                                                                        result["delta"]["unique"][params.vcfs[1]][chrom]))
-
-        logger.debug(f"Jaccard index for chromosome {chrom}: {result['delta']['jaccard'][chrom]}")
-
-        logger.debug(
-            f"{result['delta']['unique'][params.vcfs[0]][chrom]} variant(s) is/are unique for chromosme {chrom} in files {params.vcfs[0]}"
-        )
-
-        logger.debug(
-            f"{result['delta']['unique'][params.vcfs[1]][chrom]} variant(s) is/are unique for chromosome {chrom} in files {params.vcfs[1]}"
-        )
-
-    dfs_chroms: list[DataFrame] = list(map(lambda vcf: list(itemgetter(*list(sorted(result[vcf]["variants"].keys())))(result[vcf]["variants"])), params.vcfs))
-
-    dfs_files: list[DataFrame] = list(map(concat, dfs_chroms))
-
-    del dfs_chroms
-
-    list(map((lambda x, n: x.rename(columns={c: f'{c}.{n}' for c in x.columns if not (c in ["Chromosome","Position","Type"] and n == "L")}, inplace=True)), dfs_files, ["L","R"]))
-
-    df: DataFrame = concat(dfs_files, axis=1, join='outer', sort=False)
-
-    del dfs_files
+    df: DataFrame = concat(
+        [
+            result[params.vcfs[0]]["variants"],
+            result[params.vcfs[1]]["variants"],
+        ],
+        axis=1,
+        join="outer",
+        sort=False,
+    )
 
     df["Chromosome"] = df["Chromosome"].fillna(df["Chromosome.R"])
     df["Position"] = df["Position"].fillna(df["Position.R"])
     df["Type"] = df["Type"].fillna(df["Type.R"])
 
-    df.drop(columns=["Chromosome.R","Position.R","Type.R"], inplace=True)
+    df.drop(columns=["Chromosome.R", "Position.R", "Type.R"], inplace=True)
 
-    df = df.astype({"Chromosome": "category",
-                    "Position": "int64",
-                    "Type": "category",
-                    "Filter.L": "category",
-                    "Filter.R": "category"})           
+    df.reset_index(drop=False, names="Hash", inplace=True)
 
-    df.sort_values(by=["Chromosome","Position"], axis=0, ascending=True, inplace=True, kind="mergesort")                                                                                                                                             
+    df = df.astype(
+        {
+            "Hash": "string[pyarrow]",
+            "Chromosome": "category",
+            "Position": "int64",
+            "Type": "category",
+            "Filter.L": "category",
+            "Filter.R": "category",
+        }
+    )
+
+    df.sort_values(
+        by=["Chromosome", "Position"],
+        axis=0,
+        ascending=True,
+        inplace=True,
+        kind="mergesort",
+    )
+
+    del result[params.vcfs[0]]["variants"]
+    del result[params.vcfs[1]]["variants"]
 
     if params.truth:
 
         summary = utils.evaluate(df)
-                                                                                            
+
     if params.serialize:
 
         path: str = getcwd()
         logger.debug(f"Results are seralized to {path}")
         try:
             utils.save(
-                obj=DataFrame({"Chromosome": result["delta"]["common"].keys(),
-                               "Common": result["delta"]["common"].values(),
-                               "Unique.L": result["delta"]["unique"][params.vcfs[0]].values(),
-                               "Unique.R": result["delta"]["unique"][params.vcfs[1]].values(),
-                               "JaccardIndex": result['delta']['jaccard'].values()}),
+                obj=DataFrame(
+                    {
+                        "Common": result["delta"]["common"],
+                        "Unique.L": result["delta"]["unique"][params.vcfs[0]],
+                        "Unique.R": result["delta"]["unique"][params.vcfs[1]],
+                        "JaccardIndex": result["delta"]["jaccard"],
+                    }
+                ),
                 prefixe=f"{path}/{params.out}",
                 format=params.serialize,
             )
@@ -534,16 +595,26 @@ def delta(params: object) -> int:
 
     if params.report:
 
-        Report(vcfs=params.vcfs, 
-               prefix=params.out,
-               cmd=" ".join(argv),
-               infos ={params.vcfs[0]:result[params.vcfs[0]]["info"],
-                       params.vcfs[1]:result[params.vcfs[1]]["info"]},
-               view={"headers": {params.vcfs[0]: result[params.vcfs[0]]["header"],
-                                params.vcfs[1]: result[params.vcfs[1]]["header"]},
-                    "variants": df}, 
-               plots={params.vcfs[0]:result[params.vcfs[0]]["plots"],
-                      params.vcfs[1]:result[params.vcfs[1]]["plots"]},
-               summary=summary if params.truth else None).create()
+        Report(
+            vcfs=params.vcfs,
+            prefix=params.out,
+            cmd=" ".join(argv),
+            infos={
+                params.vcfs[0]: result[params.vcfs[0]]["info"],
+                params.vcfs[1]: result[params.vcfs[1]]["info"],
+            },
+            view={
+                "headers": {
+                    params.vcfs[0]: result[params.vcfs[0]]["header"],
+                    params.vcfs[1]: result[params.vcfs[1]]["header"],
+                },
+                "variants": df,
+            },
+            plots={
+                params.vcfs[0]: result[params.vcfs[0]]["plots"],
+                params.vcfs[1]: result[params.vcfs[1]]["plots"],
+            },
+            summary=summary if params.truth else None,
+        ).create()
 
     return 1
