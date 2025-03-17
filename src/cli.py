@@ -178,13 +178,6 @@ class Programm:
             help="Additional metrics are generated assuming the first VCF file is the truth.",
         )
         self.parser.add_argument(
-            "--stats",
-            dest="stats",
-            action="store_true",
-            help="Should statistiques be computed.",
-            default=False,
-        )
-        self.parser.add_argument(
             "-r",
             "--report",
             dest="report",

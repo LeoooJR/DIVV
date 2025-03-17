@@ -366,7 +366,7 @@ def delta(params: object) -> int:
 
     logger.debug(f"Serialize output: {params.serialize}")
 
-    logger.debug(f"Compute statistics: {params.stats}")
+    logger.debug(f"Output a report: {params.report}")
 
     assert len(params.vcfs) == 2, "Two VCF files are required"
 
@@ -410,7 +410,7 @@ def delta(params: object) -> int:
 
         futures_to_vcf = {
             files_pool.submit(
-                process_files, vcf, index, FILTERS, params.stats
+                process_files, vcf, index, FILTERS, params.report
             ): vcf
             for vcf, index in zip(params.vcfs, params.indexes)
         }
