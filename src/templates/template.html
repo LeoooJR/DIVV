@@ -240,9 +240,9 @@
             
             <div class="stats" id="stats">
               <h3>Comparison Stats</h3>
-              <p>Matching lines: <span style="color: green">{{ match }}</span></p>
-              <p>Different lines: <span style="color: red">{{ diff }}</span></p>
-              <p>Match percentage: {{ common }}</p>
+              <p>Matching lines: <span style="color: rgba(0, 255, 0)">{{ view["stats"]["common"] }}</span></p>
+              <p>Different lines: <span style="color: rgba(255, 0, 0)">{{ view["stats"]["unique"][vcfs[0]] + view["stats"]["unique"][vcfs[1]] }}</span></p>
+              <p>Jaccard Index: {{ view["stats"]["jaccard"]|round(3,'common') }}</p>
             </div>
         </div>
         {% if summary is not none %}

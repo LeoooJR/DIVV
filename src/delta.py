@@ -82,17 +82,19 @@ def process_chromosome(
 
             for i, v in enumerate(vcf(f"{chrom}")):
 
-                v_list = str(v).split("\t")
+                parts = str(v).split("\t")
+
+                parts[header["INFO"]] = '.'
 
                 if not i:
 
-                    format = v_list[header["FORMAT"]]
+                    format = parts[header["FORMAT"]]
 
                     logger.debug(f"FORMAT for chromosome {chrom}: {format}")
 
                 samples_data = {
                     s: utils.format_to_values(
-                        format=format, values=v_list[header[s]]
+                        format=format, values=parts[header[s]]
                     )
                     for s in samples
                 }
@@ -106,7 +108,7 @@ def process_chromosome(
                     filtered[v.var_type] += 1
 
                 else:
-
+                    
                     hash = sha256(
                         string=f"{v.CHROM}:{v.POS}:{v.REF}:{'|'.join(v.ALT)}".encode()
                     ).hexdigest()
@@ -116,7 +118,7 @@ def process_chromosome(
                         v.POS,
                         v.var_type,
                         "FAIL" if v.FILTER else "PASS",
-                        str(v),
+                        '\t'.join(parts),
                     ]
                     if compute:
 
@@ -569,6 +571,8 @@ def delta(params: object) -> int:
     del result[params.vcfs[0]]["variants"]
     del result[params.vcfs[1]]["variants"]
 
+    print(df.memory_usage(deep=True))
+
     if params.truth:
 
         summary = utils.evaluate(df)
@@ -609,6 +613,7 @@ def delta(params: object) -> int:
                     params.vcfs[1]: result[params.vcfs[1]]["header"],
                 },
                 "variants": df,
+                "stats": result["delta"]
             },
             plots={
                 params.vcfs[0]: result[params.vcfs[0]]["plots"],
