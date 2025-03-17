@@ -129,13 +129,17 @@ def visualization(file: str, stats: object):
         data.append({"Chromosome": k, "Type": "SNP", "Count": stats[k]["variant"]["snp"]["transition"] + stats[k]["variant"]["snp"]["transversion"]})
         data.append({"Chromosome": k, "Type": "SV", "Count": stats[k]["variant"]["sv"]})
 
-    library.barplot(data,"Chromosome","Count","Type", "Variant by chromosome", "VariantByChromosome")
+    library.barplot(data, "Chromosome","Count", "Type", "Variant by chromosome", "VariantByChromosome")
 
     data = DataFrame([{"Chromosome": k, "Genotype": genotype, "Count": stats[k][code]} 
                     for k in chromosomes 
                     for genotype, code in [("Homozygous", "hom"), ("Heterozygous", "het")]])
 
-    library.barplot(data, "Chromosome","Count","Genotype", "Genotype by chromosome","GenotypeByChromosome")
+    library.barplot(data, "Chromosome", "Count", "Genotype", "Genotype by chromosome","GenotypeByChromosome")
+
+    data = DataFrame([{"Chromosome": k, "SNP": snp, "Count": stats[k]["variant"]["snp"][snp]} for k in chromosomes for snp in ["transition","transversion"]])
+
+    library.barplot(data, "Chromosome", "Count", "SNP", "SNP Type by Chromosome", "SNPTypeByChrom")
 
     chromosome = list(chromosomes)[0]
 
