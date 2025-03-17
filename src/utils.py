@@ -110,6 +110,10 @@ def convert(a: object) -> object:
 
 def evaluate(df: DataFrame) -> DataFrame:
 
+    assert "Filter.L" in df.columns, "Missing truth filter column"
+    assert "Filter.R" in df.columns, "Missing query filter column"
+    assert "Type" in df.columns, "Missing variant type column"
+
     pass_mask = (df["Filter.L"] == "PASS") | (df["Filter.R"] == "PASS")
 
     series = []
@@ -126,10 +130,10 @@ def evaluate(df: DataFrame) -> DataFrame:
 
         summary = Series([v, 
                           'PASS', 
-                          (filtered_df["Filter.L"] == "PASS").sum(), 
+                          (notna(filtered_df["Filter.L"])).sum(), 
                           is_match.sum(), 
                           is_truth_only.sum(), 
-                          (filtered_df["Filter.R"] == "PASS").sum(), 
+                          (notna(filtered_df["Filter.R"])).sum(), 
                           is_query_only.sum()], 
                           index=["TYPE","FILTER","TRUTH.TOTAL","TRUTH.TP","TRUTH.FN","QUERY.TOTAL","QUERY.FP"])
         
