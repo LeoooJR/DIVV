@@ -118,23 +118,30 @@ def evaluate(df: DataFrame) -> DataFrame:
 
         type_mask = df["Type"] == v
 
-        df_masked = pass_mask & type_mask
+        filtered_df = df[type_mask & pass_mask]
 
-        is_match = df.loc[df_masked, "Filter.L"] == df.loc[df_masked, "Filter.R"]
-        is_truth_only = (df.loc[df_masked, "Filter.L"] == "PASS") & isna(df.loc[df_masked, "Filter.R"])
-        is_query_only = isna(df.loc[df_masked, "Filter.L"]) & (df.loc[df_masked, "Filter.R"] == "PASS")
+        is_match = filtered_df["Filter.L"] == filtered_df["Filter.R"]
+        is_truth_only = (filtered_df["Filter.L"] == "PASS") & ((isna(filtered_df["Filter.R"])) | (filtered_df["Filter.R"] == "FAIL"))
+        is_query_only = ((isna(filtered_df["Filter.L"])) | (filtered_df["Filter.R"] == "FAIL")) & (filtered_df["Filter.R"] == "PASS")
 
         summary = Series([v, 
                           'PASS', 
-                          notna(df["Variant.L"])[df_masked].sum(), 
+                          (filtered_df["Filter.L"] == "PASS").sum(), 
                           is_match.sum(), 
                           is_truth_only.sum(), 
-                          notna(df["Variant.R"])[df_masked].sum(), 
+                          (filtered_df["Filter.R"] == "PASS").sum(), 
                           is_query_only.sum()], 
                           index=["TYPE","FILTER","TRUTH.TOTAL","TRUTH.TP","TRUTH.FN","QUERY.TOTAL","QUERY.FP"])
-            
-        summary["RECALL"] = summary["TRUTH.TP"] / (summary["TRUTH.TP"] + summary["TRUTH.FN"])
-        summary["PRECISION"] = summary["TRUTH.TP"] / (summary["TRUTH.TP"] + summary["QUERY.FP"])
+        
+        try:
+            summary["RECALL"] = summary["TRUTH.TP"] / (summary["TRUTH.TP"] + summary["TRUTH.FN"])
+        except ZeroDivisionError:
+            summary["RECALL"] = 0.00
+
+        try:
+            summary["PRECISION"] = summary["TRUTH.TP"] / (summary["TRUTH.TP"] + summary["QUERY.FP"])
+        except ZeroDivisionError:
+            summary["PRECISION"] = 0.00
             
         try:
             summary["F1"] = 2 * (summary["PRECISION"] * summary["RECALL"]) / (summary["PRECISION"] + summary["RECALL"])
