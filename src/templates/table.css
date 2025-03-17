@@ -9,10 +9,13 @@
     font-family: Ubuntu;
 }
 
-.TableRow {
+.TableRow, .TableHeader, .TableCell {
     display: flex;
     flex-direction: row;
     width: 100%;
+}
+
+.TableRow {
     border-bottom-style: solid;
     border-bottom-width: 1px;
     border-bottom-color: #3D444D;
@@ -23,17 +26,11 @@
 }
 
 .TableHeader {
-    display: flex;
-    flex-direction: row;
-    width: 100%;
     background-color: #0d1117;
     color: white;
 }
 
 .TableCell {
-    display: flex;
-    flex-direction: row;
-    width: 100%;
     margin-top: 5px;
     margin-bottom: 5px;
     align-items: center;

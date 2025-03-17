@@ -543,5 +543,207 @@
         element.style.display = element.style.display == "none" ? "flex" : "none";
       }
     </script>
+    <script>
+      // Create the loop button element
+      const loopButton = document.createElement('button');
+      loopButton.className = 'loop-button';
+      loopButton.textContent = 'Loop Differences';
+      loopButton.title = 'Auto-scroll through differences';
+      loopButton.style.position = 'fixed';
+      loopButton.style.bottom = '20px';
+      loopButton.style.right = '20px';
+      loopButton.style.padding = '10px 15px';
+      loopButton.style.backgroundColor = '#29903b';
+      loopButton.style.color = 'white';
+      loopButton.style.border = 'none';
+      loopButton.style.borderRadius = '16px';
+      loopButton.style.cursor = 'pointer';
+      loopButton.style.fontFamily = 'Ubuntu';
+      loopButton.style.fontWeight = 'bold';
+      loopButton.style.boxShadow = '0 2px 5px rgba(0,0,0,0.2)';
+      loopButton.style.zIndex = '999';
+
+      // Add indicator for active/inactive state
+      const loopStatusIndicator = document.createElement('span');
+      loopStatusIndicator.style.display = 'inline-block';
+      loopStatusIndicator.style.width = '10px';
+      loopStatusIndicator.style.height = '10px';
+      loopStatusIndicator.style.backgroundColor = '#ddd';
+      loopStatusIndicator.style.borderRadius = '50%';
+      loopStatusIndicator.style.marginRight = '8px';
+      loopButton.prepend(loopStatusIndicator);
+
+      // Append button to body
+      document.body.appendChild(loopButton);
+
+      // Variables for looping functionality
+      let loopActive = false;
+      let loopInterval = null;
+      let currentDiffIndex = -1;
+      let diffElements = [];
+
+      // Function to update diff elements array
+      function updateDiffElements() {
+          const file1Diffs = Array.from(document.querySelectorAll('.file1-content .diff')).filter(el => el.style.display !== 'none');
+          diffElements = file1Diffs;
+          console.log(`Found ${diffElements.length} differences`);
+          currentDiffIndex = diffElements.length > 0 ? 0 : -1;
+      }
+
+      // Function to scroll to specific diff
+      function scrollToDiff(index) {
+          if (index >= 0 && index < diffElements.length) {
+              const diffElement = diffElements[index];
+              
+              // Scroll both panels to the same position
+              const file1Content = document.getElementById('content1');
+              const file2Content = document.getElementById('content2');
+              
+              // Calculate scroll position (center the diff in the viewport)
+              const elementTop = diffElement.offsetTop;
+              const containerHeight = file1Content.clientHeight;
+              const scrollPosition = elementTop - (containerHeight / 2) + (diffElement.clientHeight / 2);
+              
+              // Smooth scroll to the element
+              file1Content.scrollTo({ top: scrollPosition, behavior: 'smooth' });
+              file2Content.scrollTo({ top: scrollPosition, behavior: 'smooth' });
+              
+              // Highlight current difference with a temporary effect
+              diffElement.style.transition = 'background-color 0.5s ease';
+              const originalColor = diffElement.style.backgroundColor;
+              diffElement.style.backgroundColor = 'rgba(255, 165, 0, 0.5)'; // Highlight color
+              
+              // Reset highlight after a delay
+              setTimeout(() => {
+                  diffElement.style.backgroundColor = originalColor;
+              }, 800);
+          }
+      }
+
+      // Toggle loop functionality
+      function toggleLoop() {
+          loopActive = !loopActive;
+          
+          if (loopActive) {
+              // Update indicator to show active state
+              loopStatusIndicator.style.backgroundColor = '#ff5722';
+              
+              // Initialize diff elements and index
+              updateDiffElements();
+              
+              if (diffElements.length > 0) {
+                  // Start looping through differences
+                  loopInterval = setInterval(() => {
+                      scrollToDiff(currentDiffIndex);
+                      currentDiffIndex = (currentDiffIndex + 1) % diffElements.length;
+                  }, 2000); // Adjust timing as needed
+                  
+                  // Scroll to first difference immediately
+                  scrollToDiff(currentDiffIndex);
+              } else {
+                  // No differences found
+                  alert('No differences found to loop through');
+                  loopActive = false;
+                  loopStatusIndicator.style.backgroundColor = '#ddd';
+              }
+          } else {
+              // Stop looping
+              clearInterval(loopInterval);
+              loopStatusIndicator.style.backgroundColor = '#ddd';
+          }
+      }
+
+      // Add click event to toggle button
+      loopButton.addEventListener('click', toggleLoop);
+
+      // Update diff elements when filters change
+      document.addEventListener('DOMContentLoaded', function() {
+          const filterElements = [
+              document.querySelector(".search-box .input"),
+              ...document.querySelectorAll(".FilterContainer select")
+          ];
+          
+          filterElements.forEach(element => {
+              if (element) {
+                  element.addEventListener("change", function() {
+                      // If loop is active, restart it to account for new filter
+                      if (loopActive) {
+                          clearInterval(loopInterval);
+                          updateDiffElements();
+                          
+                          if (diffElements.length > 0) {
+                              loopInterval = setInterval(() => {
+                                  scrollToDiff(currentDiffIndex);
+                                  currentDiffIndex = (currentDiffIndex + 1) % diffElements.length;
+                              }, 2000);
+                              
+                              scrollToDiff(currentDiffIndex);
+                          } else {
+                              alert('No differences found with current filters');
+                              loopActive = false;
+                              loopStatusIndicator.style.backgroundColor = '#ddd';
+                              toggleLoop(); // Turn off the loop
+                          }
+                      }
+                  });
+              }
+          });
+          
+          // Also update when reset button is clicked
+          const resetButton = document.querySelector(".SearchButton");
+          if (resetButton) {
+              resetButton.addEventListener("click", function() {
+                  setTimeout(updateDiffElements, 100); // Small delay to ensure filters are reset
+              });
+          }
+      });
+
+      // Add keyboard shortcut for toggling loop (press 'L')
+      document.addEventListener('keydown', function(event) {
+          if (event.key.toLowerCase() === 'l') {
+              toggleLoop();
+          }
+      });
+
+      // Add metrics counter to show progress
+      const metricsContainer = document.createElement('div');
+      metricsContainer.className = 'loop-metrics';
+      metricsContainer.style.position = 'fixed';
+      metricsContainer.style.bottom = '70px';
+      metricsContainer.style.right = '20px';
+      metricsContainer.style.padding = '5px 10px';
+      metricsContainer.style.backgroundColor = 'rgba(0,0,0,0.7)';
+      metricsContainer.style.color = 'white';
+      metricsContainer.style.borderRadius = '5px';
+      metricsContainer.style.fontFamily = 'Ubuntu';
+      metricsContainer.style.fontSize = '12px';
+      metricsContainer.style.display = 'none';
+      metricsContainer.style.zIndex = '998';
+      document.body.appendChild(metricsContainer);
+
+      // Show metrics when loop is active
+      function updateMetrics() {
+          if (loopActive) {
+              metricsContainer.style.display = 'block';
+              metricsContainer.textContent = `Showing difference ${currentDiffIndex + 1} of ${diffElements.length}`;
+          } else {
+              metricsContainer.style.display = 'none';
+          }
+      }
+
+      // Update the toggle function to call updateMetrics
+      const originalToggleLoop = toggleLoop;
+      toggleLoop = function() {
+          originalToggleLoop();
+          updateMetrics();
+      };
+
+      // Update metrics when scrolling to a diff
+      const originalScrollToDiff = scrollToDiff;
+      scrollToDiff = function(index) {
+          originalScrollToDiff(index);
+          updateMetrics();
+      };
+    </script>
 </body>
 </html>
