@@ -536,6 +536,7 @@ def delta(params: object) -> int:
 
         Report(vcfs=params.vcfs, 
                prefix=params.out,
+               cmd=" ".join(argv),
                infos ={params.vcfs[0]:result[params.vcfs[0]]["info"],
                        params.vcfs[1]:result[params.vcfs[1]]["info"]},
                view={"headers": {params.vcfs[0]: result[params.vcfs[0]]["header"],

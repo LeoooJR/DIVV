@@ -3,21 +3,19 @@ from pandas import isna
 
 class Report:
 
-    __slots__ = ('vcfs', 'infos', 'view', 'plots', 'prefix', 'summary')
+    __slots__ = ('vcfs', 'infos', 'cmd', 'view', 'plots', 'prefix', 'summary')
 
-    def __init__(self, vcfs: list[str], prefix: str, infos: dict, view: object, plots: dict, summary: object = None):
+    def __init__(self, vcfs: list[str], prefix: str, cmd: str, infos: dict, view: object, plots: dict, summary: object = None):
 
         self.vcfs = vcfs
+
+        self.cmd = cmd
 
         self.infos = infos
         
         self.view = view
 
-        print(plots[vcfs[1]].plots[0].fig)
-
         plots[vcfs[1]].dark()
-
-        print(plots[vcfs[1]].plots[0].fig)
 
         self.plots = {vcfs[0]:plots[vcfs[0]].as_html(),
                       vcfs[1]:plots[vcfs[1]].as_html()}
@@ -40,7 +38,7 @@ class Report:
 
         template = env.get_template("template.html")
 
-        html = template.render(vcfs=self.vcfs, infos=self.infos, view=self.view, summary=self.summary, plots=self.plots)
+        html = template.render(vcfs=self.vcfs, cmd=self.cmd, infos=self.infos, view=self.view, summary=self.summary, plots=self.plots)
 
         with open(f"{self.prefix}.html",'w') as f:
             f.writelines(html)

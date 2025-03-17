@@ -83,7 +83,7 @@
         <p class="bash-text">
           <span class="user">user</span><span class="vm">@vcfdelta</span>:<span class="char">~</span>$
         </p>
-        <input class="input" placeholder="sudo rm -rf css/" type="text">
+        <input class="input" placeholder="{{ cmd }}" type="text" disabled>
       </div>
     </div>
     <section class="SectionPlots">
@@ -247,7 +247,7 @@
         </div>
         {% if summary is not none %}
           <div class="FlexSub">
-            <div class="DivSubLeft">
+            <div class="DivMainLeft">
               <div class="card">
                 <span
                   ><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
@@ -262,7 +262,7 @@
                 >
               </div>
             </div>
-            <div class="DivSubRight">
+            <div class="DivMainRight">
               <div class="card">
                 <span
                   ><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
@@ -278,7 +278,7 @@
               </div>
             </div>
           </div>
-          <div style="display: flex; width: 100%; justify-content: center; align-items: center; margin: 10px;">
+          <div style="display: flex; width: 100%; justify-content: center; align-items: center; background: linear-gradient(to right, #eef0f1 50%, #333333 50%);">
             <table class="TruthTable">
               <tbody>
                 <tr class="TableRow">
