@@ -1,39 +1,61 @@
 import contextlib
+from cyvcf2 import VCF, Writer
 from datetime import datetime, timezone
+from hashlib import sha256
 import json
+from loguru import logger
 import numpy as np
 import os
+from pathlib import Path
 from pandas import Series, DataFrame, notna, isna
 import warnings
 import _pickle as cPickle
 
 # I/O
 
-def save(obj: object, prefixe: str = "output", format: str = "pickle") -> int:
+def save(obj: DataFrame, path: Path, format: str = "pickle", target: str = "L", lookup: dict = None, out: str = os.getcwd()) -> int:
 
     assert (
-        format == "json" or format == "pickle"
+        format == "json" or format == "pickle" or format == "vcf"
     ), "File format is not supported"
 
-    if format in ["json", "pickle"]:
+    assert (isinstance(obj,DataFrame)), "Input provided is not a Dataframe instance"
 
-        if isinstance(obj,DataFrame):
-            obj = obj.to_dict(orient='list')
-
-        FILES = {
+    FILES = {
             "json": {"ext": "json", "mode": "w", "func": json.dump},
             "pickle": {"ext": "pkl", "mode": "wb", "func": cPickle.dump},
+            "vcf": {"ext": "vcf", "mode": "wz", "func": None}
         }
 
-        with open(
-            file=f"{prefixe}.{FILES[format]['ext']}",
-            mode=FILES[format]["mode"],
-        ) as f:
-            FILES[format]["func"](obj, f)
+    if format in FILES:
+
+        outf = str(Path(out,path.stem))
+
+        if format in ["json", "pickle"]:
+            with open(
+                file=f"{outf}_delta.{FILES[format]['ext']}",
+                mode=FILES[format]["mode"],
+            ) as f:
+                obj = obj.to_dict(orient='list')
+                FILES[format]["func"](obj, f)
+        else:
+            vcf = VCF(f"{str(path)}.gz")
+            vcf.add_info_to_header({'ID': 'match', 'Description': 'overlapping variant', 'Type': 'String', 'Number': '1'})
+            w = Writer(f"{outf}_delta.{FILES[format]['ext']}",vcf)
+            for i, v in enumerate(vcf):
+                hash = sha256(
+                    string=f"{v.CHROM}:{v.POS}:{v.REF}:{'|'.join(v.ALT)}".encode()
+                ).hexdigest()
+                series = obj.iloc[lookup[hash]]
+                v.INFO["match"] = int((notna(series["Variant.L"])) & (notna(series["Variant.R"])))
+                w.write_record(v)
+            w.close(); vcf.close()
 
         assert os.path.isfile(
-            f"{prefixe}.{FILES[format]['ext']}"
+            f"{outf}_delta.{FILES[format]['ext']}"
         ), "File was not created"
+
+        logger.debug(f"Results are seralized to {out}")
 
         return 1
     else:

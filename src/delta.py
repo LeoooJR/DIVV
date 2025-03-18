@@ -9,6 +9,7 @@ from operator import itemgetter
 from os import getcwd
 from os.path import basename
 from pandas import Series, DataFrame, Index, concat
+from pathlib import Path
 from plot import visualization
 import subprocess
 from sys import argv
@@ -573,29 +574,31 @@ def delta(params: object) -> int:
     del result[params.vcfs[0]]["variants"]
     del result[params.vcfs[1]]["variants"]
 
+    # Key is a references to the Hash string object in the Dataframe
+    # Allow a O(1) lookup while keeping memory footprint low
+    lookup = {hash: row for row, hash in enumerate(df["Hash"])}
+
     if params.truth:
 
         summary = utils.evaluate(df)
 
     if params.serialize:
 
-        path: str = getcwd()
-        logger.debug(f"Results are seralized to {path}")
-        try:
-            utils.save(
-                obj=DataFrame(
-                    {
-                        "Common": result["delta"]["common"],
-                        "Unique.L": result["delta"]["unique"][params.vcfs[0]],
-                        "Unique.R": result["delta"]["unique"][params.vcfs[1]],
-                        "JaccardIndex": result["delta"]["jaccard"],
-                    }
-                ),
-                prefixe=f"{path}/{params.out}",
-                format=params.serialize,
-            )
-        except ValueError as e:
-            logger.error(e)
+        with concurrent.futures.ProcessPoolExecutor(max_workers=2) as files_pool:
+
+            futures_to_vcf = {
+                files_pool.submit(
+                    utils.save, df, vcf, params.serialize, t, lookup
+                ): vcf for vcf, t in zip([Path(params.vcfs[0]),Path(params.vcfs[1])],['L','R'])
+            }
+
+            for future in concurrent.futures.as_completed(futures_to_vcf):
+
+                try:
+                   out: int = future.result()
+                   logger.success(f"Process {future} has successfully serialized {futures_to_vcf[future]}") if out else logger.error(f"Process {future} did not successfully serialized with a {out} output code.")
+                except ValueError as e:
+                    logger.error(e)
 
     if params.report:
 
