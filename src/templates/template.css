@@ -163,6 +163,7 @@ body {
     font-weight: bold;
     text-align: center;
     line-height: 22px;
+    overflow: scroll;
 }
 
 .InformationR {
@@ -176,6 +177,7 @@ body {
     font-weight: bold;
     text-align: center;
     line-height: 22px;
+    overflow: scroll;
 }
 
 .SectionPlots {
