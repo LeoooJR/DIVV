@@ -46,8 +46,9 @@ def save(obj: DataFrame, path: Path, format: str = "pickle", target: str = "L", 
                 hash = sha256(
                     string=f"{v.CHROM}:{v.POS}:{v.REF}:{'|'.join(v.ALT)}".encode()
                 ).hexdigest()
-                series = obj.iloc[lookup[hash]]
-                v.INFO["match"] = int((notna(series["Variant.L"])) & (notna(series["Variant.R"])))
+                if hash in lookup:
+                    series = obj.iloc[lookup[hash]]
+                    v.INFO["match"] = int((notna(series["Variant.L"])) & (notna(series["Variant.R"])))
                 w.write_record(v)
             w.close(); vcf.close()
 
