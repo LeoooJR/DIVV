@@ -16,6 +16,7 @@ from sys import argv
 from tabulate import tabulate
 from template import Report
 import pprint
+from psutil import cpu_count
 import utils
 
 
@@ -408,6 +409,9 @@ def delta(params: object) -> int:
 
     if params.process <= 0:
         raise ValueError("Number of processes available must be an postive unsigned integer.")
+    else:
+        if params.process > cpu_count(logical=True):
+            params.process = cpu_count(logical=True)
 
     result = {}
 
