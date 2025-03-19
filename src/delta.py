@@ -6,7 +6,7 @@ from loguru import logger
 from memory_profiler import profile
 import numpy as np
 from operator import itemgetter
-from os.path import basename
+from os.path import basename, getsize
 from pandas import Series, DataFrame, Index, concat
 from pathlib import Path
 from plot import visualization
@@ -81,8 +81,6 @@ def process_chromosome(
             }
 
         with utils.suppress_warnings():
-
-            print(chrom)
 
             for i, v in enumerate(vcf(f"{chrom}")):
 
@@ -233,7 +231,7 @@ def process_chromosome(
 
 @logger.catch
 def process_files(
-    file: str, index: str = None, filters: dict = None, compute: bool = False
+    file: str, index: str = None, filters: dict = None, compute: bool = False, pool: int = 1
 ) -> dict:
 
     logger.debug(f"Processing file: {file}")
@@ -326,7 +324,7 @@ def process_files(
     variants, filtered, stats = {}, {}, {}
 
     with concurrent.futures.ProcessPoolExecutor(
-        max_workers=2
+        max_workers=pool
     ) as chrom_executor:
 
         futures_to_chrom = {
@@ -454,11 +452,23 @@ def delta(params: object) -> int:
 
     with concurrent.futures.ProcessPoolExecutor(max_workers=PROCESS_FILE) as files_pool:
 
+        pavailable = (params.process - PROCESS_FILE) % 2
+
+        palloc = [(params.process - PROCESS_FILE)//2]*2
+
+        if pavailable != 0:
+            
+            fsizes = list(map(getsize,params.vcfs))
+
+            maxid = 0 if fsizes[0] > fsizes[1] else 1
+
+            palloc[maxid] += 1
+
         futures_to_vcf = {
             files_pool.submit(
-                process_files, vcf, index, FILTERS, params.report
+                process_files, vcf, index, FILTERS, params.report, proc
             ): vcf
-            for vcf, index in zip(params.vcfs, params.indexes)
+            for vcf, index, proc in zip(params.vcfs, params.indexes, palloc)
         }
 
         for future in concurrent.futures.as_completed(futures_to_vcf):
