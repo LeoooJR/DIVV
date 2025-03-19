@@ -13,6 +13,7 @@ from pathlib import Path
 from plot import visualization
 import subprocess
 from sys import argv
+from tabulate import tabulate
 from template import Report
 import pprint
 import utils
@@ -624,5 +625,11 @@ def delta(params: object) -> int:
             },
             summary=summary if params.truth else None,
         ).create()
+
+    else:
+        print(f"{params.vcfs[0]}: [{result['delta']['unique'][params.vcfs[0]]} unique]────[{result['delta']['common']} common]────[{result['delta']['unique'][params.vcfs[1]]} unique] :{params.vcfs[1]}")
+        print(f"Jaccard index: {result['delta']['jaccard']}")
+        if params.truth:
+            print(tabulate(summary,headers='keys',tablefmt='grid',numalign='center', stralign='center'))
 
     return 1
