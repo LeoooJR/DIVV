@@ -398,11 +398,16 @@ def delta(params: object) -> int:
 
     logger.debug(f"Output a report: {params.report}")
 
-    assert len(params.vcfs) == 2, "Two VCF files are required"
+    assert len(params.vcfs) == 2, "Two VCF files are required."
 
     assert isinstance(params.vcfs[0], str) and isinstance(
         params.vcfs[1], str
     ), "Input vcf should be string instance"
+
+    assert isinstance(params.process,int) and params.process >= 0, "Number of processes available must be an positive unsigned integer."
+
+    if params.process <= 0:
+        raise ValueError("Number of processes available must be an postive unsigned integer.")
 
     result = {}
 

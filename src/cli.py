@@ -65,7 +65,7 @@ class Programm:
             type=int,
             required=False,
             default=1,
-            help="Number of process to use.",
+            help="Number of processes to be used in addition to the main process.",
         )
         self.parser.add_argument(
             "--threshold",
