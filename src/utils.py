@@ -44,7 +44,7 @@ def save(obj: DataFrame, path: Path, format: str = "pickle", target: str = "L", 
             w = Writer(f"{outf}_delta.{FILES[format]['ext']}",vcf)
             for i, v in enumerate(vcf):
                 hash = sha256(
-                    string=f"{v.CHROM}:{v.POS}:{v.REF}:{'|'.join(v.ALT)}".encode()
+                    string=f"{(v.CHROM).removeprefix('chr')}:{v.POS}:{v.REF}:{'|'.join(v.ALT)}".encode()
                 ).hexdigest()
                 if hash in lookup:
                     series = obj.iloc[lookup[hash]]

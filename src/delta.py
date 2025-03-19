@@ -6,7 +6,6 @@ from loguru import logger
 from memory_profiler import profile
 import numpy as np
 from operator import itemgetter
-from os import getcwd
 from os.path import basename
 from pandas import Series, DataFrame, Index, concat
 from pathlib import Path
@@ -83,6 +82,8 @@ def process_chromosome(
 
         with utils.suppress_warnings():
 
+            print(chrom)
+
             for i, v in enumerate(vcf(f"{chrom}")):
 
                 parts = str(v).split("\t")
@@ -113,13 +114,13 @@ def process_chromosome(
                 else:
                     
                     hash = sha256(
-                        string=f"{v.CHROM}:{v.POS}:{v.REF}:{'|'.join(v.ALT)}".encode()
+                        string=f"{(v.CHROM).removeprefix('chr')}:{v.POS}:{v.REF}:{'|'.join(v.ALT)}".encode()
                     ).hexdigest()
 
                     if not hash in variants:
 
                         variants[hash] = [
-                            v.CHROM,
+                            (v.CHROM).removeprefix('chr'),
                             v.POS,
                             v.var_type,
                             "FAIL" if v.FILTER else "PASS",
@@ -197,6 +198,8 @@ def process_chromosome(
 
     except UserWarning as e:
         logger.warning(e)
+
+    vcf.close()
 
     variants = DataFrame.from_dict(
         variants,
@@ -363,6 +366,8 @@ def process_files(
                     f"Chromosome {futures_to_chrom[future]} generated an exception: {e}"
                 )
 
+    vcf.close()
+
     if compute:
         library = visualization(file=basename(file), stats=stats)
 
@@ -413,6 +418,8 @@ def delta(params: object) -> int:
         if params.process > cpu_count(logical=True):
             params.process = cpu_count(logical=True)
 
+    PROCESS_FILE = 2
+
     result = {}
 
     FILTERS = (
@@ -445,7 +452,7 @@ def delta(params: object) -> int:
 
     logger.debug(f"Filters used: {FILTERS}")
 
-    with concurrent.futures.ProcessPoolExecutor(max_workers=2) as files_pool:
+    with concurrent.futures.ProcessPoolExecutor(max_workers=PROCESS_FILE) as files_pool:
 
         futures_to_vcf = {
             files_pool.submit(
@@ -594,7 +601,7 @@ def delta(params: object) -> int:
 
     if params.serialize:
 
-        with concurrent.futures.ProcessPoolExecutor(max_workers=2) as files_pool:
+        with concurrent.futures.ProcessPoolExecutor(max_workers=PROCESS_FILE) as files_pool:
 
             futures_to_vcf = {
                 files_pool.submit(
