@@ -9,7 +9,7 @@ from operator import itemgetter
 from os.path import basename, getsize
 from pandas import Series, DataFrame, Index, concat
 from pathlib import Path
-from plot import visualization
+from plot import visualization, PlotLibrary
 import subprocess
 from sys import argv
 from tabulate import tabulate
@@ -629,6 +629,10 @@ def delta(params: object) -> int:
 
     if params.report:
 
+        pcommon = PlotLibrary()
+
+        pcommon.venn((result["delta"]["unique"][params.vcfs[0]], result["delta"]["unique"][params.vcfs[1]], result["delta"]["common"]), ['L','R'])
+
         Report(
             vcfs=params.vcfs,
             prefix=params.out,
@@ -648,6 +652,7 @@ def delta(params: object) -> int:
             plots={
                 params.vcfs[0]: result[params.vcfs[0]]["plots"],
                 params.vcfs[1]: result[params.vcfs[1]]["plots"],
+                "common": pcommon
             },
             summary=summary if params.truth else None,
         ).create()

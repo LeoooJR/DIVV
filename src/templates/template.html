@@ -254,6 +254,9 @@
               <p>Matching lines: <span style="color: rgba(0, 255, 0)">{{ view["stats"]["common"] }}</span></p>
               <p>Different lines: <span style="color: rgba(255, 0, 0)">{{ view["stats"]["unique"][vcfs[0]] + view["stats"]["unique"][vcfs[1]] }}</span></p>
               <p>Jaccard Index: {{ view["stats"]["jaccard"]|round(3,'common') }}</p>
+              <div class="DivPlot active">
+                {{ plots["common"][0] }}
+              </div>
             </div>
         </div>
         {% if summary is not none %}

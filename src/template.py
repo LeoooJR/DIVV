@@ -18,7 +18,8 @@ class Report:
         plots[vcfs[1]].dark()
 
         self.plots = {vcfs[0]:plots[vcfs[0]].as_html(),
-                      vcfs[1]:plots[vcfs[1]].as_html()}
+                      vcfs[1]:plots[vcfs[1]].as_html(),
+                      "common":plots["common"].as_html()}
 
         self.prefix = prefix
 
