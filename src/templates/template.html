@@ -493,6 +493,7 @@
       document.addEventListener("DOMContentLoaded", function () {
           document.querySelector(".search-box .input").addEventListener("input", filter);
           document.querySelectorAll(".FilterContainer select").forEach(select => select.addEventListener("change", filter));
+          document.querySelector(".FilterContainerL select").addEventListener("change",filter);
       });
       function filter() {
 
@@ -504,6 +505,8 @@
           }
           let chromosome = chromosomeInput ? chromosomeInput.value.trim().toUpperCase() : "";
           
+          let filterSelectsL = document.querySelector(".FilterContainerL .FilterField");
+          let matchType = filterSelectsL ? filterSelectsL.value : "ALL";
           let filterSelects = document.querySelectorAll(".FilterContainer .FilterField");
           let filterType = filterSelects.length > 0 ? filterSelects[0].value.toUpperCase() : "ALL";
           let variantType = filterSelects.length > 1 ? filterSelects[1].value.toUpperCase() : "ALL";
@@ -516,6 +519,8 @@
           rowsLeft.forEach((row, index) => {
               let idParts = row.id.split(" ");
               if (idParts.length < 3) return;
+              
+              let rowClassMatch = matchType === "ALL" || row.className.split(" ")[1] === (matchType === "MATCH" ? "match": "diff");
       
               let chromMatch = chromosome === "" || idParts[0] == chromosome;
               let typeMatch = variantType === "ALL" || idParts[1] === variantType;
@@ -526,10 +531,10 @@
       
               let filterMatchRight = filterType === "ALL" || idPartsRight[2] === filterType;
     
-              let rowVisible = (chromMatch && typeMatch && (filterMatchLeft || filterMatchRight));
+              let rowVisible = (chromMatch && typeMatch && rowClassMatch && (filterMatchLeft || filterMatchRight));
       
               console.log(`Row ${index}:`, {
-                  chromMatch, typeMatch, filterMatchLeft, filterMatchRight, rowVisible
+                  chromMatch, typeMatch, rowClassMatch, filterMatchLeft, filterMatchRight, rowVisible
               });
               visibleCount = rowVisible ? ++visibleCount : visibleCount;
               row.style.display = rowVisible ? "flex" : "none";
@@ -542,6 +547,7 @@
       function resetFilters() {
           document.querySelector(".search-box .input").value = "";
           document.querySelectorAll(".FilterContainer select").forEach(select => select.value = "ALL");
+          document.querySelector(".FilterContainerL select").value = "ALL";
           filter();
       }
     </script>
