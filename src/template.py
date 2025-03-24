@@ -1,5 +1,8 @@
+from glob import glob
+import os
 from jinja2 import Environment, FileSystemLoader
 from pandas import isna
+from shutil import copy, copytree
 
 class Report:
 
@@ -43,3 +46,8 @@ class Report:
 
         with open(f"{self.prefix}.html",'w') as f:
             f.writelines(html)
+
+        ressources = os.path.join(os.path.dirname(os.path.abspath(__file__)),'templates/')
+        for f in glob(f"{ressources}*.css"):
+            copy(f,os.getcwd())
+        copytree(os.path.join(ressources,'statics'),os.path.join(os.getcwd(),'statics'), dirs_exist_ok=True)
