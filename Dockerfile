@@ -4,7 +4,6 @@ RUN mkdir /vcfdelta
 
 WORKDIR /vcfdelta
 
-COPY src /vcfdelta/
 COPY requirements.txt /vcfdelta/
 
 RUN apt-get update \
@@ -12,3 +11,5 @@ RUN apt-get update \
 
 RUN pip install --upgrade pip \
 && pip install --no-cache-dir -r requirements.txt
+
+COPY src /vcfdelta/

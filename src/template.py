@@ -36,7 +36,9 @@ class Report:
         def is_nan(value):
             return isna(value)
         
-        env = Environment(loader=FileSystemLoader('src/templates'))
+        ressources = os.path.join(os.path.dirname(os.path.abspath(__file__)),'templates/')
+        
+        env = Environment(loader=FileSystemLoader(ressources))
 
         env.filters['is_nan'] = is_nan
 
@@ -47,7 +49,6 @@ class Report:
         with open(f"{self.prefix}.html",'w') as f:
             f.writelines(html)
 
-        ressources = os.path.join(os.path.dirname(os.path.abspath(__file__)),'templates/')
         for f in glob(f"{ressources}*.css"):
             copy(f,os.getcwd())
         copytree(os.path.join(ressources,'statics'),os.path.join(os.getcwd(),'statics'), dirs_exist_ok=True)
