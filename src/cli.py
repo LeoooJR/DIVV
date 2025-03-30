@@ -1,10 +1,9 @@
 from __init__ import __version__
 import argparse
 from delta import delta
-from psutil import cpu_count
 import sys
 
-class Programm:
+class Program:
 
     FUNC = {"delta": delta}
 
@@ -18,7 +17,7 @@ class Programm:
             "-v",
             "--version",
             action="version",
-            version="VCFDelta v" + __version__,
+            version=f"VCFDelta v{__version__}",
         )
         self.parser.add_argument(
             "--vcfs",
@@ -47,7 +46,7 @@ class Programm:
             metavar="",
             required=False,
             default="delta",
-            help="prefix of the outputs files",
+            help="Prefix of the outputs files",
         )
         self.parser.add_argument(
             "-s",

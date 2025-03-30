@@ -1,14 +1,14 @@
-from cli import Programm
-from sys import exit
+from cli import Program
+from sys import exit, stderr
 
 
 def main():
 
-    prog = Programm()
+    prog = Program()
     try:
         prog.launch()
     except Exception as e:
-        print(e)
+        print(f"Error: {e}", file=stderr)
         exit(1)
 
 
