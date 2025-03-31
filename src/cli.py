@@ -53,7 +53,7 @@ class Program:
             "--serialize",
             dest="serialize",
             type=str,
-            choices=["json", "pickle", "vcf"],
+            choices=["json", "pickle", "vcf", "vcf.gz"],
             required=False,
             help="Should the result be seralized",
         )

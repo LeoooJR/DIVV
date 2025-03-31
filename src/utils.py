@@ -16,18 +16,19 @@ import _pickle as cPickle
 def save(obj: DataFrame, path: Path, format: str = "pickle", target: str = "L", lookup: dict = None, out: str = os.getcwd()) -> int:
     """ Serialize DataFrame to file of specified format """
 
-    assert (
-        format == "json" or format == "pickle" or format == "vcf"
-    ), "File format is not supported"
-
     assert (isinstance(obj,DataFrame)), "Input provided is not a Dataframe instance"
 
     # Map file formats to respective file extensions, write modes, and functions
     FILES = {
             "json": {"ext": "json", "mode": "w", "func": json.dump},
             "pickle": {"ext": "pkl", "mode": "wb", "func": cPickle.dump},
-            "vcf": {"ext": "vcf", "mode": "wz", "func": None}
+            "vcf": {"ext": "vcf", "mode": "wz", "func": None},
+            "vcf.gz": {"ext": "vcf.gz", "mode":"wz", "func": None}
         }
+    
+    assert (
+        format in FILES
+    ), "File format is not supported"
 
     if format in FILES:
 
