@@ -50,7 +50,7 @@ def process_chromosome(
         logger.error(e)
 
     # Map the FORMAT values to there respectives informations
-    FORMAT = {
+    FORMAT: dict = {
         "genotype": ["GT"],
         "genotype_quality": ["GQ"],
         "depth": ["DP", "TRC"],
@@ -70,7 +70,7 @@ def process_chromosome(
         # If a report is wanted, set the statistics to 0
         # If no report is wanted, the dictionary is not created reducing memory footprint
         if compute:
-            stats = {
+            stats: dict = {
                 "variant": {
                     "snp": {
                         "transition": 0,
@@ -92,12 +92,15 @@ def process_chromosome(
                 "hom": 0,
             }
 
+            # Record warnings for caller dependent FORMAT field
+            warnings: dict = {}
+
         # Suppress warnings from cyvcf2 in case of missing values
         with utils.suppress_warnings():
 
             for i, v in enumerate(vcf(f"{chrom}")):
                 # Get the values from the VCF file
-                parts = str(v).split("\t")
+                parts: list = str(v).split("\t")
                 # Set the INFO values as a single character to reduce memory footprint
                 parts[header["INFO"]] = '.'
                 # First iteration, get the FORMAT values
@@ -199,17 +202,23 @@ def process_chromosome(
                             if v.QUAL:
                                 stats["quality"].append(v.QUAL)
 
-                            stats["depth"].append(
-                                [
-                                    (
-                                        samples_values[s][FORMAT["depth"][0]]
-                                        if FORMAT["depth"][0] in samples_values[s]
-                                        else [samples_values[s][FORMAT["depth"][1]]]
-                                    ) # Try to get the depth value from the first FORMAT value, if not found, get it from the second FORMAT value
-                                    for s in samples
-                                ]
-                            )
-
+                            # If previous passes have raised a warning, do not search for depth metric.
+                            if not "depth" in warnings:
+                                try:
+                                    stats["depth"].append(
+                                        [
+                                            (
+                                                samples_values[s][FORMAT["depth"][0]]
+                                                if FORMAT["depth"][0] in samples_values[s]
+                                                else [samples_values[s][FORMAT["depth"][1]]]
+                                            ) # Try to get the depth value from the first FORMAT value, if not found, get it from the second FORMAT value
+                                            for s in samples
+                                        ]
+                                    )
+                                except KeyError:
+                                    logger.warning(f"Sequencing depth value cannot be retrieved with key(s): {FORMAT['depth']}")
+                                    # Keep record of exception
+                                    warnings["depth"] = True
     except UserWarning as e:
         logger.warning(e)
 

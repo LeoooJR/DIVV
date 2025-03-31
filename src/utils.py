@@ -42,6 +42,7 @@ def save(obj: DataFrame, path: Path, format: str = "pickle", target: str = "L", 
             ) as f:
                 obj = obj.to_dict(orient='list')
                 FILES[format]["func"](obj, f)
+        # Write a VCF
         else:
             # Open the initial VCF file to get the template
             vcf = VCF(f"{str(path)}.gz")
