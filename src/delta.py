@@ -264,6 +264,8 @@ def process_files(
 
     logger.debug(f"Processing file: {file}")
 
+    logger.debug(f"Computation will be {'parallelized' if pool else 'made sequentially'} by chromosome(s).")
+
     # Check if the file exists and is not empty
     try:
         utils.verify_file(file=file)
@@ -361,48 +363,59 @@ def process_files(
 
     variants, filtered, stats = {}, {}, {}
 
-    # Process the chromosomes concurrently, using as much process as available
-    # use a context manager to avoid memory leaks
-    with concurrent.futures.ProcessPoolExecutor(
-        max_workers=pool
-    ) as chrom_executor:
-        # Submit the processes
-        futures_to_chrom = {
-            chrom_executor.submit(
-                process_chromosome,
-                chrom,
-                samples,
-                HEADER,
-                FILES,
-                filters,
-                compute,
-            ): chrom
-            for chrom in chromosomes # VCF object cannot be pickled thus cannot be passed to a process
-        }
-        # Check if a process is completed
-        for future in concurrent.futures.as_completed(futures_to_chrom):
+    if pool:
+        # Process the chromosomes concurrently, using as much process as available
+        # use a context manager to avoid memory leaks
+        with concurrent.futures.ProcessPoolExecutor(
+            max_workers=pool
+        ) as chrom_executor:
+            # Submit the processes
+            futures_to_chrom = {
+                chrom_executor.submit(
+                    process_chromosome,
+                    chrom,
+                    samples,
+                    HEADER,
+                    FILES,
+                    filters,
+                    compute,
+                ): chrom
+                for chrom in chromosomes # VCF object cannot be pickled thus cannot be passed to a process
+            }
+            # Check if a process is completed
+            for future in concurrent.futures.as_completed(futures_to_chrom):
 
-            logger.success(
-                f"Process {future} for chromosome {futures_to_chrom[future]} in file {FILES['compression']} has completed."
-            )
-            # Get the returned result
-            try:
-                (
-                    variants[futures_to_chrom[future]],
-                    filtered[futures_to_chrom[future]],
-                    stats[futures_to_chrom[future]],
-                ) = future.result()
-                # If a report is wanted, add the length of the chromosome
-                if compute:
-
-                    stats[futures_to_chrom[future]]["length"] = vcf.seqlens[
-                        chromosomes.index(futures_to_chrom[future])
-                    ]
-
-            except Exception as e:
-                logger.warning(
-                    f"Chromosome {futures_to_chrom[future]} generated an exception: {e}"
+                logger.success(
+                    f"Process {future} for chromosome {futures_to_chrom[future]} in file {FILES['compression']} has completed."
                 )
+                # Get the returned result
+                try:
+                    (
+                        variants[futures_to_chrom[future]],
+                        filtered[futures_to_chrom[future]],
+                        stats[futures_to_chrom[future]],
+                    ) = future.result()
+                    # If a report is wanted, add the length of the chromosome
+                    if compute:
+
+                        stats[futures_to_chrom[future]]["length"] = vcf.seqlens[
+                            chromosomes.index(futures_to_chrom[future])
+                        ]
+
+                except Exception as e:
+                    logger.warning(
+                        f"Chromosome {futures_to_chrom[future]} generated an exception: {e}"
+                    )
+    # Computation is carried out sequentially.                
+    else:
+        for chrom in chromosomes:
+            variants[chrom], filtered[chrom], stats[chrom] = process_chromosome(chrom=chrom, 
+                                                                                samples=samples, 
+                                                                                header=HEADER, 
+                                                                                FILES=FILES, 
+                                                                                filters=filters, 
+                                                                                compute=compute)
+
     # Close the data stream
     vcf.close()
 
@@ -454,18 +467,25 @@ def delta(params: object) -> int:
         params.vcfs[1], str
     ), "Input vcf should be string instance"
 
-    assert isinstance(params.process,int) and params.process >= 0, "Number of processes available must be an positive unsigned integer."
-
-    if params.process <= 0:
-        raise ValueError("Number of processes available must be an postive unsigned integer.")
-    else:
-        if params.process > cpu_count(logical=True):
-            params.process = cpu_count(logical=True)
-
     # Number of files to process
-    PROCESS_FILE = 2
+    PROCESS_FILE: int = 2
+    # Number of CPUs available
+    CPUS = cpu_count(logical=True)
 
-    result = {}
+    logger.debug(f"Number of logical(s) CPU(s) detected: {CPUS}.")
+
+    assert isinstance(params.process,int) and params.process >= 0, "Number of processes alocated must be an positive unsigned integer."
+
+    if params.process < 0:
+        raise ValueError("Number of processes alocated must be an postive unsigned integer.")
+    else:
+        if CPUS > 1:
+            logger.debug("Computation will be parallelized by the number of VCF files.")
+            params.process = min(params.process,cpu_count(logical=True))
+        else:
+            logger.debug("Computation will be carried out sequentially.")
+
+    result: dict = {}
 
     # Filters to apply during the parsing
     FILTERS = (
@@ -499,43 +519,64 @@ def delta(params: object) -> int:
 
     logger.debug(f"Filters used: {FILTERS}")
 
-    # Process the files concurrently, using as much process as VCF files inputed
-    # use a context manager to avoid memory leaks
-    with concurrent.futures.ProcessPoolExecutor(max_workers=PROCESS_FILE) as files_pool:
-        # Check if the number of process available is odd or even
-        pavailable = (params.process - PROCESS_FILE) % 2
+    if params.process:
 
-        # Allocate to each file executor the number of process available for further parallelization by chromosomes
-        palloc = [(params.process - PROCESS_FILE)//2]*2
+        # Process the files concurrently, using as much process as VCF files inputed
+        # use a context manager to avoid memory leaks
+        with concurrent.futures.ProcessPoolExecutor(max_workers=min(params.process,PROCESS_FILE)) as files_pool:
 
-        # If the number of process available is odd, allocate the remaining process to the file with the biggest size
-        if pavailable != 0:
+            if params.process >= PROCESS_FILE:
+
+                # Check if the number of process available is odd or even
+                pavailable = (params.process - PROCESS_FILE) % 2
+
+                # Allocate to each file executor the number of process available for further parallelization by chromosomes
+                palloc = [(params.process - PROCESS_FILE)//2]*2
+
+                # If the number of process available is odd, allocate the remaining process to the file with the biggest size
+                if pavailable != 0:
+                    
+                    fsizes = list(map(getsize,params.vcfs))
+
+                    maxid = 0 if fsizes[0] > fsizes[1] else 1
+
+                    palloc[maxid] += 1
+
+                iterable: zip = zip(params.vcfs, params.indexes, palloc)
             
-            fsizes = list(map(getsize,params.vcfs))
+            else:
 
-            maxid = 0 if fsizes[0] > fsizes[1] else 1
+                iterable: tuple = [(params.vcfs[1], params.indexes[1], 0)]
 
-            palloc[maxid] += 1
-        # Submit the process for each file mapped to the vcf path
-        futures_to_vcf = {
-            files_pool.submit(
-                process_files, vcf, index, FILTERS, params.report, proc
-            ): vcf
-            for vcf, index, proc in zip(params.vcfs, params.indexes, palloc)
-        }
-        # Check if a process is completed
-        for future in concurrent.futures.as_completed(futures_to_vcf):
+            # Submit the process for each file mapped to the vcf path
+            futures_to_vcf = {
+                files_pool.submit(
+                    process_files, vcf, index, FILTERS, params.report, proc
+                ): vcf
+                for vcf, index, proc in iterable
+            }
 
-            logger.success(
-                f"Process {future} for file {futures_to_vcf[future]} has completed."
-            )
-            # Get the returned result
-            try:
-                (result[futures_to_vcf[future]]) = future.result()
-            except Exception as e:
-                logger.error(
-                    f"File {futures_to_vcf[future]} generated an exception: {e}"
+            # Should the main process compute a VCF, contributing to the workload ?
+            if PROCESS_FILE > params.process:   
+                result[params.vcfs[0]] = process_files(file=params.vcfs[0], index=params.indexes[0], filters=FILTERS, compute=params.report, pool=0)
+
+            # Check if a process is completed
+            for future in concurrent.futures.as_completed(futures_to_vcf):
+
+                logger.success(
+                    f"Process {future} for file {futures_to_vcf[future]} has completed."
                 )
+                # Get the returned result
+                try:
+                    (result[futures_to_vcf[future]]) = future.result()
+                except Exception as e:
+                    logger.error(
+                        f"File {futures_to_vcf[future]} generated an exception: {e}"
+                    )
+    # Computation is carried out sequentially.
+    else:
+        for vcf, index in zip(params.vcfs, params.indexes):
+            result[vcf] = process_files(file=vcf, index=index, filters=FILTERS, compute=params.report, pool=0)
 
     result["delta"] = {
         "common": {},

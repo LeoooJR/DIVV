@@ -63,7 +63,7 @@ class Program:
             dest="process",
             type=int,
             required=False,
-            default=1,
+            default=0,
             help="Number of processes to be used in addition to the main process.",
         )
         self.parser.add_argument(
