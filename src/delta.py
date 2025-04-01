@@ -273,6 +273,11 @@ def process_files(
 
     logger.debug(f"Processing file: {file}")
 
+    assert pool >= 0, "Number of processes alocated must be an positive unsigned integer."
+
+    if pool < 0:
+        raise ValueError("Number of processes alocated must be an positive unsigned integer.")
+
     logger.debug(f"Computation will be {'parallelized' if pool else 'made sequentially'} by chromosome(s).")
 
     # Check if the file exists and is not empty
@@ -726,23 +731,28 @@ def delta(params: object) -> int:
     # Should the output be serialized ?
     if params.serialize:
 
-        # Parallelize the serialization process, with as much process as VCF files inputed
-        # use a context manager to avoid memory leaks
-        with concurrent.futures.ProcessPoolExecutor(max_workers=PROCESS_FILE) as files_pool:
-            # Submit the process for each file mapped to the vcf path
-            futures_to_vcf = {
-                files_pool.submit(
-                    utils.save, df, vcf, params.serialize, t, lookup
-                ): vcf for vcf, t in zip([Path(params.vcfs[0]),Path(params.vcfs[1])],['L','R'])
-            }
-            # Check if a process is completed
-            for future in concurrent.futures.as_completed(futures_to_vcf):
-                # Get the returned result
-                try:
-                   out: int = future.result()
-                   logger.success(f"Process {future} has successfully serialized {futures_to_vcf[future]}") if out else logger.error(f"Process {future} did not successfully serialized with a {out} output code.")
-                except ValueError as e:
-                    logger.error(e)
+        if params.process:
+            # Parallelize the serialization process, with as much process as VCF files inputed
+            # use a context manager to avoid memory leaks
+            with concurrent.futures.ProcessPoolExecutor(max_workers=min(params.process, PROCESS_FILE)) as files_pool:
+                # Submit the process for each file mapped to the vcf path
+                futures_to_vcf = {
+                    files_pool.submit(
+                        utils.save, df, vcf, params.serialize, t, lookup
+                    ): vcf for vcf, t in zip([Path(params.vcfs[0]),Path(params.vcfs[1])],['L','R'])
+                }
+                # Check if a process is completed
+                for future in concurrent.futures.as_completed(futures_to_vcf):
+                    # Get the returned result
+                    try:
+                        out: int = future.result()
+                        logger.success(f"Process {future} has successfully serialized {futures_to_vcf[future]}") if out else logger.error(f"Process {future} did not successfully serialized with a {out} output code.")
+                    except ValueError as e:
+                       logger.error(e)
+        # Computation is carried out sequentially.
+        else:
+            for vcf, t in zip(params.vcfs, ['L','R']):
+                utils.save(obj=df, path=Path(vcf), format=params.serialize, target=t, lookup=lookup)
 
     # Should the output be reported ?
     if params.report:
