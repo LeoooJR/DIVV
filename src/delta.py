@@ -465,7 +465,7 @@ def delta(params: object) -> int:
 
     logger.debug(
         f"{params.vcfs[0]} is set as truth"
-        if params.truth
+        if params.benchmark
         else "No VCF has been set as truth"
     )
 
@@ -723,10 +723,10 @@ def delta(params: object) -> int:
     # Allow a O(1) lookup while keeping memory footprint low
     lookup = {hash: row for row, hash in enumerate(df["Hash"])}
 
-    # Should the truth be computed ?
-    if params.truth:
+    # Should a benchmark be computed ?
+    if params.benchmark:
 
-        summary = utils.evaluate(df)
+        table: DataFrame = utils.evaluate(df)
 
     # Should the output be serialized ?
     if params.serialize:
@@ -785,13 +785,13 @@ def delta(params: object) -> int:
                 params.vcfs[1]: result[params.vcfs[1]]["plots"],
                 "common": pcommon
             },
-            summary=summary if params.truth else None,
+            table=table if params.benchmark else None,
         ).create()
     # Print the results to the CLI
     else:
         print(f"{params.vcfs[0]}: [{result['delta']['unique'][params.vcfs[0]]} unique]────[{result['delta']['common']} common]────[{result['delta']['unique'][params.vcfs[1]]} unique] :{params.vcfs[1]}")
         print(f"Jaccard index: {result['delta']['jaccard']}")
-        if params.truth:
-            print(tabulate(summary,headers='keys',tablefmt='grid',numalign='center', stralign='center'))
+        if params.benchmark:
+            print(tabulate(table,headers='keys',tablefmt='grid',numalign='center', stralign='center'))
 
     return 1

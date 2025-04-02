@@ -170,8 +170,8 @@ class Program:
             help="Keep only PASS calls.",
         )
         self.parser.add_argument(
-            "--truth",
-            dest="truth",
+            "--benchmark",
+            dest="benchmark",
             action="store_true",
             default=False,
             help="Additional metrics are generated assuming the first VCF file is the truth.",

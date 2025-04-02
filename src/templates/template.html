@@ -259,7 +259,7 @@
               </div>
             </div>
         </div>
-        {% if summary is not none %}
+        {% if table is not none %}
           <div class="FlexSub">
             <div class="DivMainLeft">
               <div class="card">
@@ -307,7 +307,7 @@
                   <th class="TableHeader">PRECISION</th>
                   <th class="TableHeader">F1 SCORE</th>
                 </tr>
-                {% for row, metrics in summary.iterrows() %}
+                {% for row, metrics in table.iterrows() %}
                   <tr class="TableRow">
                     {% for index, metric in metrics.items() %}
                       {% if metric is float() %}

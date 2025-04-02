@@ -1,7 +1,7 @@
 from glob import glob
 import os
 from jinja2 import Environment, FileSystemLoader
-from pandas import isna
+from pandas import isna, DataFrame
 from shutil import copy, copytree
 
 class Report:
@@ -13,12 +13,12 @@ class Report:
         infos: The information about the VCF files
         view: The view object as a DataFrame
         plots: The plots
-        summary: The summary (truth metrics) object as a DataFrame
+        table: The benchmark table (truth metrics) object as a DataFrame
     """
     # Make use of __slots__ to avoid the creation of __dict__ and __weakref__ for each instance, reducing the memory footprint
-    __slots__ = ('vcfs', 'infos', 'cmd', 'view', 'plots', 'prefix', 'summary')
+    __slots__ = ('vcfs', 'infos', 'cmd', 'view', 'plots', 'prefix', 'table')
 
-    def __init__(self, vcfs: list[str], prefix: str, cmd: str, infos: dict, view: object, plots: dict, summary: object = None):
+    def __init__(self, vcfs: list[str], prefix: str, cmd: str, infos: dict, view: dict, plots: dict, table: DataFrame = None):
 
         # The list of VCF files
         self.vcfs = vcfs
@@ -43,8 +43,8 @@ class Report:
         # The prefix of the report
         self.prefix = prefix
 
-        # The summary (truth metrics) object as a DataFrame
-        self.summary = summary
+        # The benchmark table (truth metrics) object as a DataFrame
+        self.table = table
 
     def __str__(self):
         pass
@@ -68,7 +68,7 @@ class Report:
         template = env.get_template("template.html")
 
         # Render the template
-        html = template.render(vcfs=self.vcfs, cmd=self.cmd, infos=self.infos, view=self.view, summary=self.summary, plots=self.plots)
+        html = template.render(vcfs=self.vcfs, cmd=self.cmd, infos=self.infos, view=self.view, table=self.table, plots=self.plots)
 
         # Open data stream
         with open(f"{self.prefix}.html",'w') as f:
