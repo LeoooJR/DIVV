@@ -1,102 +1,82 @@
 body {
+    --background-color-main-left: white;
+    --background-color-main-right: #111111;
+    --background-color-sub-left: #EEF0F1;
+    --background-color-sub-right: #333333;
+    --color-left: #111111;
+    --color-right: white;
+    --font-family: Ubuntu;
+    --width-left: 50%;
+    --width-right: 50%;
     margin: 0;
     padding: 0;
 }
 
-.FlexMain {
+.FlexMain, .FlexSub {
     display: flex;
     flex-direction: row;
     width: 100%;
-    height: auto;
-    margin: 0;
 }
 
-
-.DivMainLeft {
+.DivMainLeft, .DivMainRight {
     display: flex;
     flex-direction: row;
-    width: 50%;
     align-items: stretch;
-    background-color: white;
-    position: static;
+}
+
+.DivMainLeft {
+    width: var(--width-left);
+    background-color: var(--background-color-main-left);
 }
 
 .DivMainRight {
-    display: flex;
-    flex-direction: row;
-    width: 50%;
-    align-items: stretch;
-    background-color: #111111;
-    position: static;
+    width: var(--width-right);
+    background-color: var(--background-color-main-right);
+}
+
+.HeadingLeft, .HeadingRight {
+    margin-top: 20px;
+    margin-bottom: 10px;
+    size: 32px;
+    height: 36px;
+    font-family: var(--font-family);
+    font-weight: bold;
+    font-style: italic;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
 }
 
 .HeadingLeft {
-    display: flex;
-    margin-top: 20px;
-    margin-bottom: 10px;
-    color: #111111;
-    size: 32px;
-    height: 36px;
-    font-family: Ubuntu;
-    font-weight: bold;
-    font-style: italic;
-    text-align: center;
-    position: static;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
+    color: var(--color-left);
 }
 
 .HeadingRight {
-    display: flex;
-    margin-top: 20px;
-    margin-bottom: 10px;
     color: white;
-    size: 32px;
-    height: 36px;
-    font-family: Ubuntu;
-    font-weight: bold;
-    font-style: italic;
-    text-align: center;
-    position: static;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
 }
 
 .VCFIcon {
     width: 57px;
-    height: auto;
     padding-left: 10px;
     padding-top: 5px;
     padding-bottom: 5px;
 }
 
-.VS {
-    width: 65px;
-    height: auto;
-}
-
-.FlexSub {
+.DivSubLeft, .DivSubRight {
+    align-self: stretch;
     display: flex;
     flex-direction: row;
-    width: 100%;
 }
 
 .DivSubLeft {
-    align-self: stretch;
-    display: flex;
-    flex-direction: row;
-    width: 50%;
-    background-color: #EEF0F1;
+    width: var(--width-left);
+    background-color: var(--background-color-sub-left);
 }
 
 .DivSubRight {
-    align-self: stretch;
-    display: flex;
-    flex-direction: row;
-    width: 50%;
-    background: #333333;
+    width: var(--width-right);
+    background: var(--background-color-sub-right);
 }
 
 .ContainerInfos {
@@ -118,10 +98,6 @@ body {
     align-self: center;
     vertical-align: middle;
     margin-right: 5px;
-}
-
-.InfoIcon:hover {
-    cursor: pointer;
 }
 
 .background {
@@ -152,32 +128,26 @@ body {
     background-color: #111d2f;
 }
 
-.InformationL {
+.InformationL, .InformationR {
     align-items: center;
     font-size: 14px;
     height: 20px;
     padding-left: 5px;
     padding-right: 5px;
-    color: white;
-    font-family: Ubuntu;
     font-weight: bold;
     text-align: center;
     line-height: 22px;
     overflow: scroll;
 }
 
+.InformationL {
+    color: var(--color-right);
+    font-family: var(--font-family);
+}
+
 .InformationR {
-    align-items: center;
-    font-size: 14px;
-    height: 20px;
-    padding-left: 5px;
-    padding-right: 5px;
-    color: white;
-    font-family: Ubuntu;
-    font-weight: bold;
-    text-align: center;
-    line-height: 22px;
-    overflow: scroll;
+    color: var(--color-right);
+    font-family: var(--font-family);
 }
 
 .SectionPlots {
@@ -188,26 +158,23 @@ body {
     padding: 0;
 }
 
-.GridPlotLeft {
+.GridPlotLeft, .GridPlotRight {
     display: grid;
     grid-template-columns: 1fr;
     grid-template-rows: 1fr;
     direction: ltr;
     gap: 8px;
-    width: 50%;
     flex-wrap: wrap;
 }
 
+.GridPlotLeft {
+    width: var(--width-left);
+    background-color: var(--background-color-main-left);
+}
+
 .GridPlotRight {
-    display: grid;
-    grid-template-columns: 1fr;
-    grid-template-rows: 1fr;
-    direction: ltr;
-    gap: 16px;
-    width: 50%;
-    flex-wrap: wrap;
-    background-color: #111111;
-    column-span: 1;
+    width: var(--width-right);
+    background-color: var(--background-color-main-right);
 }
 
 .DivPlot {
@@ -233,14 +200,7 @@ body {
     margin: 10px 0;
 }
 
-.plot-nav-left {
-    display: flex;
-    justify-content: center;
-    width: 100%;
-    padding-left: 20px;
-}
-
-.plot-nav-right {
+.plot-nav-left, .plot-nav-right {
     display: flex;
     justify-content: center;
     width: 100%;
@@ -266,11 +226,7 @@ body {
     transform: scale(1.1);
 }
 
-.nav-arrow.left {
-    color: #111111;
-}
-
-.nav-arrow.right {
+.nav-arrow.left, .nav-arrow.right {
     color: #111111;
 }
 
@@ -313,13 +269,14 @@ body {
     display: block;
     margin-right: auto;
     margin-left: auto;
-    margin-top: 0;
-    margin-bottom: 0;
 }
 
 .IconFilter {
-    width: 50px;
-    height: auto;
+    width: 39px;
+    height: 39px;
+    margin: 5px;
+    vertical-align: center;
+    padding-top: 5px;
     margin: 5px;
 }
 
@@ -327,12 +284,6 @@ body {
     display: flex;
     flex-direction: row;
     width: 100%;
-}
-
-.Form {
-    width: 100%;
-    display: flex;
-    flex-direction: row;
 }
 
 .ContainerSearch {
@@ -343,40 +294,6 @@ body {
     width: 100%;
 }
 
-.IconFilter {
-    padding-top: 5px;
-    margin: 5px;
-    width: 39px;
-    height: 39px;
-    vertical-align: center;
-}
-
-.SearchField{
-    display: flex;
-    align-items: center;
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 2, 5, 0);
-    border-radius: 16px;
-    padding: 6px 16px;
-    margin-top: 10px;
-    margin-bottom: 10px;
-    align-items: center;
-    transition: all 0.3s ease;
-    background: #eef0f1;
-    width: 100%;
-}
-
-.SearchField:focus-within {
-    background: white;
-}
-
-.SearchField::placeholder {
-    color: #b3b3b3;
-    font-family: Ubuntu;
-    font-weight: bold;
-}
-
 .ContainerFilter {
     display: flex;
     flex-direction: row;
@@ -384,13 +301,8 @@ body {
     margin-left: auto;
 }
 
-.FilterContainerL {
+.FilterContainerL, .FilterContainerR {
     margin-right: 50px;
-    width: 100%;
-}
-
-.FilterContainerR {
-    margin-right: 10px;
     width: 100%;
 }
 
@@ -403,7 +315,7 @@ body {
     margin: 10px;
     align-content: center;
     background-color: #eef0f1;
-    font-family: Ubuntu;
+    font-family: var(--font-family);
 }
 
 .FilterField:focus-within {
@@ -412,7 +324,7 @@ body {
 
 .SearchButton {
     background-color: #29903b;
-    color: white;
+    color: var(--color-right);
     border: none;
     border-radius: 6px;
     padding: 10px 20px;
@@ -420,7 +332,7 @@ body {
     cursor: pointer;
     font-size: 14px;
     border-radius: 16px;
-    font-family: Ubuntu;
+    font-family: var(--font-family);
     font-weight: bold;
 }
 
