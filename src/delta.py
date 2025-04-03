@@ -1,5 +1,6 @@
 import concurrent.futures
 from cyvcf2 import VCF
+import filetype
 from hashlib import sha256
 from itertools import chain, repeat
 from loguru import logger
@@ -39,12 +40,12 @@ def process_chromosome(
     """
 
     logger.debug(
-        f"Processing chromosome {chrom} for file {FILES['compression']}"
+        f"Processing chromosome {chrom} for file {FILES['archive']}"
     )
 
     # Open the VCF file and set the index for faster lookup
     try:
-        vcf = VCF(FILES["compression"], lazy=True)
+        vcf = VCF(FILES["archive"], lazy=True)
         vcf.set_index(index_path=FILES["index"])
     except FileNotFoundError as e:
         logger.error(e)
@@ -244,7 +245,7 @@ def process_chromosome(
     variants.index = Index(variants.index.values, dtype="string[pyarrow]")
 
     logger.debug(
-        f"Filtered: {filtered['snp']} SNP(s), {filtered['indel']} INDEL(s), {filtered['sv']} structural variant(s) variant(s) for chromosome {chrom} in file {FILES['compression']}"
+        f"Filtered: {filtered['snp']} SNP(s), {filtered['indel']} INDEL(s), {filtered['sv']} structural variant(s) variant(s) for chromosome {chrom} in file {FILES['archive']}"
     )
 
     # Set the statistics computed as the right type for better memory management
@@ -280,54 +281,46 @@ def process_files(
 
     logger.debug(f"Computation will be {'parallelized' if pool else 'made sequentially'} by chromosome(s).")
 
+    # Map files to there respectives type
+    FILES = {}
+
     # Check if the file exists and is not empty
     try:
-        utils.verify_file(file=file)
-    except (FileNotFoundError, ValueError) as e:
+        FILES = utils.verify_files(file=file, index=index)
+    except (FileNotFoundError, ValueError, IOError) as e:
         logger.error(e)
+        # Error raised by VCF file are critical
+        source = e.args[0][0]
+        if source == 'F':
+            pass
+        # Errors caused by the provided index are treated as warnings.
+        elif source == 'I':
+            
+            # If error thrown by index, file is an archive
+            # Index is considered ONLY if file is an archive
+            FILES["archive"] = file
 
-    # Map files to there respectives extensions
-    FILES = {"compression": f"{file}.gz", "index": f"{file}.gz.tbi"}
+    # File must be indexed
+    if "index" not in FILES:
 
-    # Is a index file provided ?
-    if index:
-        # Check if the file exists and is not empty
-        try:
-            utils.verify_file(file=index)
-        except (FileNotFoundError, ValueError) as e:
-            logger.error(e)
-    # No index file provided
-    else:
-        # Try to look for indexing files
-        try:
-            utils.verify_file(FILES["compression"])
-            utils.is_indexed(FILES["index"])
-        except (FileNotFoundError, ValueError) as e:
-            logger.warning(e)
-
-            # Indexing
-            logger.debug(f"Indexing file: {file}")
-
-            # Call a process to index the file
+        # Compression
+        if "file" in FILES:
+            logger.debug(f"{file} will be compressed and indexed")
             try:
-                code = subprocess.run(
-                    ["./src/indexing.sh", file],
-                    capture_output=True,
-                    text=True,
-                    check=True,
-                )
-            except (subprocess.CalledProcessError, FileNotFoundError) as e:
+                FILES["archive"] = utils.compressing(file)
+            except subprocess.CalledProcessError as e:
                 logger.error(e.stderr)
 
-            # Verify that the index file has been created
-            try:
-                utils.verify_file(file=FILES["compression"])
-            except (FileNotFoundError, ValueError) as e:
-                logger.error(e)
+        # Call a process to index the file
+        try:
+            FILES["index"] = utils.indexing(FILES["archive"])
+        except subprocess.CalledProcessError as e:
+            logger.error(e.stderr)
+
     # From this point, the VCF file is supposed indexed
     try:
         # Open the VCF file and set the index for faster lookup
-        vcf = VCF(FILES["compression"])
+        vcf = VCF(FILES["archive"])
         vcf.set_index(index_path=FILES["index"])
     except FileNotFoundError as e:
         logger.error(e)
@@ -400,7 +393,7 @@ def process_files(
             for future in concurrent.futures.as_completed(futures_to_chrom):
 
                 logger.success(
-                    f"Process {future} for chromosome {futures_to_chrom[future]} in file {FILES['compression']} has completed."
+                    f"Process {future} for chromosome {futures_to_chrom[future]} in file {FILES['archive']} has completed."
                 )
                 # Get the returned result
                 try:

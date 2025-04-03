@@ -1,17 +1,69 @@
 import contextlib
 from cyvcf2 import VCF, Writer
 from datetime import datetime, timezone
+import filetype
+import gzip
 from hashlib import sha256
 import json
 from loguru import logger
 import numpy as np
 import os
+import subprocess
 from pathlib import Path
 from pandas import Series, DataFrame, notna, isna
 import warnings
 import _pickle as cPickle
 
 # I/O
+
+def runcmd(cmd: list, stdout: str = None) -> subprocess.CompletedProcess:
+
+    if stdout:
+
+        with open(stdout, mode = "wb") as out:
+
+            return subprocess.run(cmd, check=True, stdout=out)
+    
+    else:
+
+        return subprocess.run(cmd, check=True)
+
+def compressing(file: str) -> str:
+
+    EXT = "gz"
+
+    archive = f"{file}.{EXT}"
+
+    CMDS = {"bcftools": ["bcftools", "view", "-O", "z", "-o", archive, file],
+            "bgzip": ["bgzip", "-c", file]}
+
+    cmd = []
+
+    # while out != 0 and try <= 2 try except
+
+    # Call a process to compress the file
+    runcmd(CMDS["bgzip"], stdout=archive)
+
+    return archive
+
+def indexing(file: str) -> str:
+
+    EXT = "tbi"
+
+    index = f"{file}.{EXT}"
+
+    CMDS = {"bcftools": ["bcftools", "index", file],
+            "tabix": ["tabix", "-p", "vcf", file]}
+
+    cmd = ["./src/indexing.sh", file]
+
+    # Call a process to index the file
+    runcmd(CMDS["tabix"])
+
+    # Verify that the index file has been created
+    # verify_files(file=file, index=index)
+
+    return index
 
 def save(obj: DataFrame, path: Path, format: str = "pickle", target: str = "L", lookup: dict = None, out: str = os.getcwd()) -> int:
     """ Serialize DataFrame to file of specified format """
@@ -90,21 +142,134 @@ def is_empty(path: str) -> bool:
 
 def is_indexed(path: str) -> bool:
     """ Check if file is indexed """
-    return verify_file(path)
+    pass
 
+def is_compressed(path: str, type: str) -> bool:
+    """ Checks if a file is a compressed archive type """
+    return filetype.archive_match(path) == type
 
-def verify_file(file: str):
-    """ Verify file exists and is not empty """
+def verify_files(file: str, index: str = None) -> dict|None:
+    """ Verify files exists and are not empty """
 
-    assert isinstance(file, str), "Values must be of string instance"
+    files = {}
 
-    if not is_file(file):
+    def verify_VCF(file: str) -> str:
 
-        raise FileNotFoundError(f"Error: The file '{file}' does not exist.")
+        assert isinstance(file, str), "VCF must be of string instance"
 
-    if is_empty(file):
+        TYPE = {"compression": "Gz"}
 
-        raise ValueError(f"Error: The file '{file}' is empty.")
+        if not is_file(file):
+
+            raise FileNotFoundError(f"F.Error: The file {file} does not exist.")
+
+        if is_empty(file):
+
+            raise ValueError(f"F.Error: The file {file} is empty.")
+        
+        type = filetype.archive_match(file)
+
+        # Is a archive
+        if type:
+
+            if type != TYPE["compression"]:
+
+                raise ValueError(f"F.Error: The compression of {file} is not supported.")
+            
+            # The file is a Gz archive
+            else:
+
+                with open(file, mode='rb') as f:
+
+                    header = f.read(3)
+
+                    # Gzip magic number and flag byte (3rd byte)
+                    # If 3rd bit (0x04) is set, header has extra field.
+                    if not header[0:2] != b'\x1f\x8b' and header[3] & 0x04:
+
+                        raise ValueError(f"F.Error: {file} is not a BGZF archive")
+                    
+                    else:
+
+                        # Check for BC extra sub-field
+
+                        pass
+
+                with gzip.open(file,mode='rt') as f:
+                            
+                    line = f.readline()
+
+                    # Check if first line is empty
+                    if not line:
+
+                        raise ValueError(f"F.Error: First line of {file} is empty.")
+                            
+                    else:
+                        # Check if first line start with "#"
+                        if line[0] != '#':
+
+                            raise ValueError(f"F.Error: First line inconsistent with VCF header format")
+                
+            return "archive"
+        
+        # Is not a archive
+        else:
+
+            with open(file, mode='r') as f:
+
+                line = f.readline()
+
+                if not line:
+
+                    raise ValueError(f"F.Error: First line of {file} is empty.")
+                    
+                else:
+                    # Check if first line start with "#"
+                    if line[0] != '#':
+
+                        raise ValueError(f"F.Error: First line inconsistent with VCF header format")
+                    
+            return "file"
+
+    def verify_index(vcf: str, index: str) -> str:
+
+        assert isinstance(index, str), "VCF must be of string instance"
+
+        if not is_file(index):
+
+            raise FileNotFoundError(f"I.Error: The file {index} does not exist.")
+
+        if is_empty(index):
+
+            raise ValueError(f"I.Error: The file {index} is empty.")
+        
+        # Index should be newer than VCF
+        if os.path.getmtime(index) < os.path.getmtime(vcf):
+
+            raise ValueError(f"I.Error: {index} is older than {vcf}.")
+
+        else:
+            # Try using the index file
+            cmd = ["tabix", "-l", vcf]
+
+            try:
+
+                runcmd(cmd)
+
+            except subprocess.CalledProcessError:
+
+                raise ValueError(f"I.Error: {index} does not allow fast lookup for {vcf}")
+            
+        return "index"
+    
+    files[verify_VCF(file)] = file
+
+    # Index is considered ONLY if file is an archive
+    if "archive" in files and index:
+
+        files[verify_index(index)] = index
+
+    return files
     
 def file_stats(path: str) -> dict:
     """ Get file stats """
