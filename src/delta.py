@@ -578,11 +578,15 @@ def delta(params: object) -> int:
                     )
                     if len(futures_to_vcf) == 2:
                         # Retrieve all futures
-                        futures = list(futures_to_vcf.keys())
+                        futures: list[concurrent.futures.Future] = list(futures_to_vcf.keys())
                         if future is futures[0]:
                             # Attempt to cancel the other call.
                             # If the call is currently being executed or finished running and cannot be cancelled then this attempt will fail.
                                 futures[1].cancel()
+                        else:
+                            # Attempt to cancel the other call.
+                            # If the call is currently being executed or finished running and cannot be cancelled then this attempt will fail.
+                            futures[0].cancel()
                     
     # Computation is carried out sequentially.
     else:
