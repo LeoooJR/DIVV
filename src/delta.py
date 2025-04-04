@@ -1,7 +1,6 @@
 import concurrent.futures
 from cyvcf2 import VCF
 import errors
-import filetype
 from hashlib import sha256
 from itertools import chain, repeat
 from loguru import logger
@@ -12,7 +11,6 @@ from os.path import basename, getsize
 from pandas import DataFrame, Index, concat
 from pathlib import Path
 from plot import visualization, PlotLibrary
-import subprocess
 from sys import argv
 from tabulate import tabulate
 from template import Report
@@ -292,7 +290,7 @@ def process_files(
         logger.error(e)
         # Error raised by VCF file are critical
         if isinstance(e,errors.VCFError):
-            pass
+            raise errors.ProcessError(f"{file} is not a valid VCF file.")
         # Errors caused by the provided index are treated as warnings.
         elif isinstance(e,errors.IndexError):
             
@@ -302,7 +300,7 @@ def process_files(
 
     # File must be indexed
     if "index" not in FILES:
-
+        
         # Compression
         if "file" in FILES:
             FILES["archive"] = utils.compressing(file)
@@ -568,16 +566,24 @@ def delta(params: object) -> int:
             # Check if a process is completed
             for future in concurrent.futures.as_completed(futures_to_vcf):
 
-                logger.success(
-                    f"Process {future} for file {futures_to_vcf[future]} has completed."
-                )
                 # Get the returned result
                 try:
                     (result[futures_to_vcf[future]]) = future.result()
+                    logger.success(
+                    f"Process {future} for file {futures_to_vcf[future]} has completed."
+                    )
                 except Exception as e:
                     logger.error(
                         f"File {futures_to_vcf[future]} generated an exception: {e}"
                     )
+                    if len(futures_to_vcf) == 2:
+                        # Retrieve all futures
+                        futures = list(futures_to_vcf.keys())
+                        if future is futures[0]:
+                            # Attempt to cancel the other call.
+                            # If the call is currently being executed or finished running and cannot be cancelled then this attempt will fail.
+                                futures[1].cancel()
+                    
     # Computation is carried out sequentially.
     else:
         for vcf, index in zip(params.vcfs, params.indexes):

@@ -13,3 +13,7 @@ class VCFError(FileError):
 class IndexError(FileError):
 
     pass
+
+class ProcessError(RuntimeError):
+
+    pass
