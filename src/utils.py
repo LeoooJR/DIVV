@@ -79,7 +79,7 @@ def indexing(file: str) -> str|None:
     # Call a process to compress the file
     while retry < len(CMDS) and outcode != 0:
         bin = CMDS.keys()[retry]
-        logger.debug(f"Compressing with {bin} binary.")
+        logger.debug(f"Compressing {file} with {bin} binary.")
         try:
             process: subprocess.CompletedProcess = runcmd(CMDS[bin])
             outcode: int = process.returncode
@@ -190,11 +190,11 @@ def verify_files(file: str, index: str = None) -> dict|None:
 
         if not is_file(file):
 
-            raise FileNotFoundError(f"F.Error: The file {file} does not exist.")
+            raise errors.VCFError(f"F.Error: The file {file} does not exist.")
 
         if is_empty(file):
 
-            raise errors.FileError(f"F.Error: The file {file} is empty.")
+            raise errors.VCFError(f"F.Error: The file {file} is empty.")
         
         type = filetype.archive_match(file)
 
@@ -203,60 +203,80 @@ def verify_files(file: str, index: str = None) -> dict|None:
 
             if type != TYPE["compression"]:
 
-                raise errors.FileError(f"F.Error: The compression of {file} is not supported.")
+                raise errors.VCFError(f"F.Error: The compression of {file} is not supported.")
             
             # The file is a Gz archive
             else:
 
-                with open(file, mode='rb') as f:
+                try:
 
-                    header = f.read(3)
+                    with open(file, mode='rb') as f:
 
-                    # Gzip magic number and flag byte (3rd byte)
-                    # If 3rd bit (0x04) is set, header has extra field.
-                    if not header[0:2] != b'\x1f\x8b' and header[3] & 0x04:
+                        header = f.read(3)
 
-                        raise errors.VCFError(f"F.Error: {file} is not a BGZF archive")
-                    
-                    else:
+                        # Gzip magic number and flag byte (3rd byte)
+                        # If 3rd bit (0x04) is set, header has extra field.
+                        if not header[0:2] != b'\x1f\x8b' and header[3] & 0x04:
 
-                        # Check for BC extra sub-field
+                            raise errors.VCFError(f"F.Error: {file} is not a BGZF archive")
+                        
+                        else:
 
-                        pass
+                            # Check for BC extra sub-field
 
-                with gzip.open(file,mode='rt') as f:
+                            pass
+
+                    with gzip.open(file,mode='rt') as f:
+                                
+                        line = f.readline()
+
+                        # Check if first line is empty
+                        if not line:
+
+                            raise errors.VCFError(f"F.Error: First line of {file} is empty.")
+                                
+                        else:
+                            # Check if first line start with "#"
+                            if line[0] != '#':
+
+                                raise errors.VCFError(f"F.Error: First line inconsistent with VCF header format")
                             
-                    line = f.readline()
+                except FileNotFoundError:
 
-                    # Check if first line is empty
-                    if not line:
+                    raise errors.VCFError(f"{file} is not a valid path")
+                
+                except IOError:
 
-                        raise errors.VCFError(f"F.Error: First line of {file} is empty.")
-                            
-                    else:
-                        # Check if first line start with "#"
-                        if line[0] != '#':
-
-                            raise errors.VCFError(f"F.Error: First line inconsistent with VCF header format")
+                    raise errors.VCFError(f"An error occurred while reading {file}")
                 
             return "archive"
         
         # Is not a archive
         else:
 
-            with open(file, mode='r') as f:
+            try:
 
-                line = f.readline()
+                with open(file, mode='r') as f:
 
-                if not line:
+                    line = f.readline()
 
-                    raise errors.VCFError(f"F.Error: First line of {file} is empty.")
-                    
-                else:
-                    # Check if first line start with "#"
-                    if line[0] != '#':
+                    if not line:
 
-                        raise errors.VCFError(f"F.Error: First line inconsistent with VCF header format")
+                        raise errors.VCFError(f"F.Error: First line of {file} is empty.")
+                        
+                    else:
+                        # Check if first line start with "#"
+                        if line[0] != '#':
+
+                            raise errors.VCFError(f"F.Error: First line inconsistent with VCF header format")
+                        
+            except FileNotFoundError:
+
+                raise errors.VCFError(f"{file} is not a valid path")
+                
+            except IOError:
+
+                raise errors.VCFError(f"An error occurred while reading {file}")
                     
             return "file"
 
@@ -266,11 +286,11 @@ def verify_files(file: str, index: str = None) -> dict|None:
 
         if not is_file(index):
 
-            raise FileNotFoundError(f"I.Error: The file {index} does not exist.")
+            raise errors.IndexError(f"I.Error: The file {index} does not exist.")
 
         if is_empty(index):
 
-            raise errors.FileError(f"I.Error: The file {index} is empty.")
+            raise errors.IndexError(f"I.Error: The file {index} is empty.")
         
         # Index should be newer than VCF
         if os.path.getmtime(index) < os.path.getmtime(vcf):

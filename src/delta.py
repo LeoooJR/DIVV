@@ -288,14 +288,13 @@ def process_files(
     # Check if the file exists and is not empty
     try:
         FILES = utils.verify_files(file=file, index=index)
-    except (FileNotFoundError, ValueError, IOError) as e:
+    except (errors.VCFError, errors.IndexError) as e:
         logger.error(e)
         # Error raised by VCF file are critical
-        source = e.args[0][0]
-        if source == 'F':
+        if isinstance(e,errors.VCFError):
             pass
         # Errors caused by the provided index are treated as warnings.
-        elif source == 'I':
+        elif isinstance(e,errors.IndexError):
             
             # If error thrown by index, file is an archive
             # Index is considered ONLY if file is an archive
