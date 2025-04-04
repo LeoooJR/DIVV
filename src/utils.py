@@ -1,6 +1,7 @@
 import contextlib
 from cyvcf2 import VCF, Writer
 from datetime import datetime, timezone
+import errors
 import filetype
 import gzip
 from hashlib import sha256
@@ -18,6 +19,8 @@ import _pickle as cPickle
 
 def runcmd(cmd: list, stdout: str = None) -> subprocess.CompletedProcess:
 
+    logger.debug(f"Running command: {cmd}")
+
     if stdout:
 
         with open(stdout, mode = "wb") as out:
@@ -28,42 +31,68 @@ def runcmd(cmd: list, stdout: str = None) -> subprocess.CompletedProcess:
 
         return subprocess.run(cmd, check=True)
 
-def compressing(file: str) -> str:
+def compressing(file: str) -> str|None:
 
-    EXT = "gz"
+    logger.debug(f"Compressing file {file}.")
 
-    archive = f"{file}.{EXT}"
+    EXT: str = "gz"
 
-    CMDS = {"bcftools": ["bcftools", "view", "-O", "z", "-o", archive, file],
-            "bgzip": ["bgzip", "-c", file]}
+    archive: str = f"{file}.{EXT}"
 
-    cmd = []
+    CMDS: dict = {"bcftools": ["bcftools", "view", "-O", "z", "-o", archive, file],
+                  "bgzip": ["bgzip", "-c", file]}
 
-    # while out != 0 and try <= 2 try except
+    outcode: int = 1
+    retry: int = 0
 
     # Call a process to compress the file
-    runcmd(CMDS["bgzip"], stdout=archive)
+    while retry < len(CMDS) and outcode != 0:
+        bin = CMDS.keys()[retry]
+        logger.debug(f"Compressing with {bin} binary.")
+        try:
+            process: subprocess.CompletedProcess = runcmd(CMDS[bin], stdout=archive)
+            outcode: int = process.returncode
+        except subprocess.CalledProcessError as e:
+            logger.warning(f"Compressing {file} with {bin} binary did not succeed.")
+            logger.warning(f"Standard error: {e.stderr}")
+            retry += 1
 
-    return archive
+    # Return archive path ONLY if exit code is 0
+    return None if outcode else archive
 
-def indexing(file: str) -> str:
+def indexing(file: str) -> str|None:
 
-    EXT = "tbi"
+    logger.debug(f"Indexing file {file}.")
 
-    index = f"{file}.{EXT}"
+    EXT: str = "tbi"
 
-    CMDS = {"bcftools": ["bcftools", "index", file],
-            "tabix": ["tabix", "-p", "vcf", file]}
+    index: str = f"{file}.{EXT}"
+
+    CMDS: dict = {"bcftools": ["bcftools", "index", file],
+                  "tabix": ["tabix", "-p", "vcf", file]}
 
     cmd = ["./src/indexing.sh", file]
 
-    # Call a process to index the file
-    runcmd(CMDS["tabix"])
+    outcode: int = 1
+    retry: int = 0
+
+    # Call a process to compress the file
+    while retry < len(CMDS) and outcode != 0:
+        bin = CMDS.keys()[retry]
+        logger.debug(f"Compressing with {bin} binary.")
+        try:
+            process: subprocess.CompletedProcess = runcmd(CMDS[bin])
+            outcode: int = process.returncode
+        except subprocess.CalledProcessError as e:
+            logger.warning(f"Compressing {file} with {bin} binary did not succeed.")
+            logger.warning(f"Standard error: {e.stderr}")
+            retry += 1
 
     # Verify that the index file has been created
     # verify_files(file=file, index=index)
 
-    return index
+    # Return index path ONLY if exit code is 0
+    return None if outcode else index
 
 def save(obj: DataFrame, path: Path, format: str = "pickle", target: str = "L", lookup: dict = None, out: str = os.getcwd()) -> int:
     """ Serialize DataFrame to file of specified format """
@@ -165,7 +194,7 @@ def verify_files(file: str, index: str = None) -> dict|None:
 
         if is_empty(file):
 
-            raise ValueError(f"F.Error: The file {file} is empty.")
+            raise errors.FileError(f"F.Error: The file {file} is empty.")
         
         type = filetype.archive_match(file)
 
@@ -174,7 +203,7 @@ def verify_files(file: str, index: str = None) -> dict|None:
 
             if type != TYPE["compression"]:
 
-                raise ValueError(f"F.Error: The compression of {file} is not supported.")
+                raise errors.FileError(f"F.Error: The compression of {file} is not supported.")
             
             # The file is a Gz archive
             else:
@@ -187,7 +216,7 @@ def verify_files(file: str, index: str = None) -> dict|None:
                     # If 3rd bit (0x04) is set, header has extra field.
                     if not header[0:2] != b'\x1f\x8b' and header[3] & 0x04:
 
-                        raise ValueError(f"F.Error: {file} is not a BGZF archive")
+                        raise errors.VCFError(f"F.Error: {file} is not a BGZF archive")
                     
                     else:
 
@@ -202,13 +231,13 @@ def verify_files(file: str, index: str = None) -> dict|None:
                     # Check if first line is empty
                     if not line:
 
-                        raise ValueError(f"F.Error: First line of {file} is empty.")
+                        raise errors.VCFError(f"F.Error: First line of {file} is empty.")
                             
                     else:
                         # Check if first line start with "#"
                         if line[0] != '#':
 
-                            raise ValueError(f"F.Error: First line inconsistent with VCF header format")
+                            raise errors.VCFError(f"F.Error: First line inconsistent with VCF header format")
                 
             return "archive"
         
@@ -221,13 +250,13 @@ def verify_files(file: str, index: str = None) -> dict|None:
 
                 if not line:
 
-                    raise ValueError(f"F.Error: First line of {file} is empty.")
+                    raise errors.VCFError(f"F.Error: First line of {file} is empty.")
                     
                 else:
                     # Check if first line start with "#"
                     if line[0] != '#':
 
-                        raise ValueError(f"F.Error: First line inconsistent with VCF header format")
+                        raise errors.VCFError(f"F.Error: First line inconsistent with VCF header format")
                     
             return "file"
 
@@ -241,12 +270,12 @@ def verify_files(file: str, index: str = None) -> dict|None:
 
         if is_empty(index):
 
-            raise ValueError(f"I.Error: The file {index} is empty.")
+            raise errors.FileError(f"I.Error: The file {index} is empty.")
         
         # Index should be newer than VCF
         if os.path.getmtime(index) < os.path.getmtime(vcf):
 
-            raise ValueError(f"I.Error: {index} is older than {vcf}.")
+            raise errors.IndexError(f"I.Error: {index} is older than {vcf}.")
 
         else:
             # Try using the index file
@@ -258,7 +287,7 @@ def verify_files(file: str, index: str = None) -> dict|None:
 
             except subprocess.CalledProcessError:
 
-                raise ValueError(f"I.Error: {index} does not allow fast lookup for {vcf}")
+                raise errors.IndexError(f"I.Error: {index} does not allow fast lookup for {vcf}")
             
         return "index"
     

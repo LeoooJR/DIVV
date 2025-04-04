@@ -1,5 +1,6 @@
 import concurrent.futures
 from cyvcf2 import VCF
+import errors
 import filetype
 from hashlib import sha256
 from itertools import chain, repeat
@@ -305,140 +306,138 @@ def process_files(
 
         # Compression
         if "file" in FILES:
-            logger.debug(f"{file} will be compressed and indexed")
-            try:
-                FILES["archive"] = utils.compressing(file)
-            except subprocess.CalledProcessError as e:
-                logger.error(e.stderr)
+            FILES["archive"] = utils.compressing(file)
 
         # Call a process to index the file
+        FILES["index"] = utils.indexing(FILES["archive"])
+    
+    if FILES["archive"] and FILES["index"]:
+        # From this point, the VCF file is supposed indexed
         try:
-            FILES["index"] = utils.indexing(FILES["archive"])
-        except subprocess.CalledProcessError as e:
-            logger.error(e.stderr)
+            # Open the VCF file and set the index for faster lookup
+            vcf = VCF(FILES["archive"])
+            vcf.set_index(index_path=FILES["index"])
+        except FileNotFoundError as e:
+            logger.error(e)
 
-    # From this point, the VCF file is supposed indexed
-    try:
-        # Open the VCF file and set the index for faster lookup
-        vcf = VCF(FILES["archive"])
-        vcf.set_index(index_path=FILES["index"])
-    except FileNotFoundError as e:
-        logger.error(e)
+        # Get the chromosomes from the VCF file
+        chromosomes: list = vcf.seqnames
 
-    # Get the chromosomes from the VCF file
-    chromosomes: list = vcf.seqnames
+        logger.debug(f"File {file} is composed of {chromosomes} chromosomes")
 
-    logger.debug(f"File {file} is composed of {chromosomes} chromosomes")
+        # Get the samples from the VCF file
+        samples: list = vcf.samples
 
-    # Get the samples from the VCF file
-    samples: list = vcf.samples
+        logger.debug(
+            f"{len(samples)} samples have been found in {file}: {samples}"
+        )
 
-    logger.debug(
-        f"{len(samples)} samples have been found in {file}: {samples}"
-    )
-
-    # Map the header values to there respectives indexes
-    HEADER = {
-        "CHROM": 0,
-        "POS": 1,
-        "ID": 2,
-        "REF": 3,
-        "ALT": 4,
-        "QUAL": 5,
-        "FILTER": 6,
-        "INFO": 7,
-        "FORMAT": 8,
-    }
-
-    # Add the samples to the mapper
-    HEADER.update(
-        {
-            s: i
-            for i, s in zip(
-                range(
-                    (HEADER["FORMAT"] + 1),
-                    (HEADER["FORMAT"] + 1) + len(samples),
-                ),
-                samples,
-            )
+        # Map the header values to there respectives indexes
+        HEADER = {
+            "CHROM": 0,
+            "POS": 1,
+            "ID": 2,
+            "REF": 3,
+            "ALT": 4,
+            "QUAL": 5,
+            "FILTER": 6,
+            "INFO": 7,
+            "FORMAT": 8,
         }
-    )
 
-    logger.debug(
-        f"Header for {file} has such format: {' '.join(HEADER.keys())}"
-    )
-
-    variants, filtered, stats = {}, {}, {}
-
-    if pool:
-        # Process the chromosomes concurrently, using as much process as available
-        # use a context manager to avoid memory leaks
-        with concurrent.futures.ProcessPoolExecutor(
-            max_workers=pool
-        ) as chrom_executor:
-            # Submit the processes
-            futures_to_chrom = {
-                chrom_executor.submit(
-                    process_chromosome,
-                    chrom,
+        # Add the samples to the mapper
+        HEADER.update(
+            {
+                s: i
+                for i, s in zip(
+                    range(
+                        (HEADER["FORMAT"] + 1),
+                        (HEADER["FORMAT"] + 1) + len(samples),
+                    ),
                     samples,
-                    HEADER,
-                    FILES,
-                    filters,
-                    compute,
-                ): chrom
-                for chrom in chromosomes # VCF object cannot be pickled thus cannot be passed to a process
-            }
-            # Check if a process is completed
-            for future in concurrent.futures.as_completed(futures_to_chrom):
-
-                logger.success(
-                    f"Process {future} for chromosome {futures_to_chrom[future]} in file {FILES['archive']} has completed."
                 )
-                # Get the returned result
-                try:
-                    (
-                        variants[futures_to_chrom[future]],
-                        filtered[futures_to_chrom[future]],
-                        stats[futures_to_chrom[future]],
-                    ) = future.result()
-                    # If a report is wanted, add the length of the chromosome
-                    if compute:
+            }
+        )
 
-                        stats[futures_to_chrom[future]]["length"] = vcf.seqlens[
-                            chromosomes.index(futures_to_chrom[future])
-                        ]
+        logger.debug(
+            f"Header for {file} has such format: {' '.join(HEADER.keys())}"
+        )
 
-                except Exception as e:
-                    logger.warning(
-                        f"Chromosome {futures_to_chrom[future]} generated an exception: {e}"
+        variants, filtered, stats = {}, {}, {}
+
+        if pool:
+            # Process the chromosomes concurrently, using as much process as available
+            # use a context manager to avoid memory leaks
+            with concurrent.futures.ProcessPoolExecutor(
+                max_workers=pool
+            ) as chrom_executor:
+                # Submit the processes
+                futures_to_chrom = {
+                    chrom_executor.submit(
+                        process_chromosome,
+                        chrom,
+                        samples,
+                        HEADER,
+                        FILES,
+                        filters,
+                        compute,
+                    ): chrom
+                    for chrom in chromosomes # VCF object cannot be pickled thus cannot be passed to a process
+                }
+                # Check if a process is completed
+                for future in concurrent.futures.as_completed(futures_to_chrom):
+
+                    logger.success(
+                        f"Process {future} for chromosome {futures_to_chrom[future]} in file {FILES['archive']} has completed."
                     )
-    # Computation is carried out sequentially.                
+                    # Get the returned result
+                    try:
+                        (
+                            variants[futures_to_chrom[future]],
+                            filtered[futures_to_chrom[future]],
+                            stats[futures_to_chrom[future]],
+                        ) = future.result()
+                        # If a report is wanted, add the length of the chromosome
+                        if compute:
+
+                            stats[futures_to_chrom[future]]["length"] = vcf.seqlens[
+                                chromosomes.index(futures_to_chrom[future])
+                            ]
+
+                    except Exception as e:
+                        logger.warning(
+                            f"Chromosome {futures_to_chrom[future]} generated an exception: {e}"
+                        )
+        # Computation is carried out sequentially.                
+        else:
+            for chrom in chromosomes:
+                variants[chrom], filtered[chrom], stats[chrom] = process_chromosome(chrom=chrom, 
+                                                                                    samples=samples, 
+                                                                                    header=HEADER, 
+                                                                                    FILES=FILES, 
+                                                                                    filters=filters, 
+                                                                                    compute=compute)
+
+        # Close the data stream
+        vcf.close()
+
+        # If a report is wanted, create plots
+        if compute:
+            library = visualization(file=basename(file), stats=stats)
+
+        return {
+            "info": utils.file_stats(file), # Get the information about the VCF file
+            "header": "\t".join(list(HEADER.keys())), # Get the header of the VCF file
+            "variants": concat(
+                list(itemgetter(*list(sorted(variants.keys())))(variants))
+            ), # Concatenate the chromosomes DataFrames
+            "filter": filtered, # Get the stats about filtered variants
+            "plots": library if compute else None, # Get the plots
+        }
+    
     else:
-        for chrom in chromosomes:
-            variants[chrom], filtered[chrom], stats[chrom] = process_chromosome(chrom=chrom, 
-                                                                                samples=samples, 
-                                                                                header=HEADER, 
-                                                                                FILES=FILES, 
-                                                                                filters=filters, 
-                                                                                compute=compute)
 
-    # Close the data stream
-    vcf.close()
-
-    # If a report is wanted, create plots
-    if compute:
-        library = visualization(file=basename(file), stats=stats)
-
-    return {
-        "info": utils.file_stats(file), # Get the information about the VCF file
-        "header": "\t".join(list(HEADER.keys())), # Get the header of the VCF file
-        "variants": concat(
-            list(itemgetter(*list(sorted(variants.keys())))(variants))
-        ), # Concatenate the chromosomes DataFrames
-        "filter": filtered, # Get the stats about filtered variants
-        "plots": library if compute else None, # Get the plots
-    }
+        raise errors.CompressionIndexError(f"Failed to compress and index {file}")
 
 
 def delta(params: object) -> int:
