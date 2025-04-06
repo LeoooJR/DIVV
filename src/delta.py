@@ -97,20 +97,20 @@ def process_chromosome(
 
         # Suppress warnings from cyvcf2 in case of missing values
         with utils.suppress_warnings():
-
+            # Iterate over the VCF file
             for i, v in enumerate(vcf(f"{chrom}")):
                 # Get the values from the VCF file
-                parts: list = str(v).split("\t")
+                parts: list[str] = str(v).split("\t")
                 # Set the INFO values as a single character to reduce memory footprint
                 parts[header["INFO"]] = '.'
                 # First iteration, get the FORMAT values
                 if not i:
 
-                    format = parts[header["FORMAT"]]
+                    format: str = parts[header["FORMAT"]]
 
                     logger.debug(f"FORMAT for chromosome {chrom}: {format}")
                 # From FORMAT get the values for each sample
-                samples_values = {
+                samples_values: dict[str:dict] = {
                     s: utils.format_to_values(
                         format=format, values=parts[header[s]]
                     )
@@ -146,59 +146,74 @@ def process_chromosome(
                             # The variant type is common to all samples
                             if v.var_type == "snp":
                                 if v.is_transition:
-                                    mutation = "transition"
+                                    mutation: str = "transition"
                                 else:
-                                    mutation = "transversion"
+                                    mutation: str = "transversion"
                                 stats["variant"][v.var_type][mutation] += 1
                                 stats["variant"][v.var_type][v.REF][v.ALT[0]] += 1
                             elif v.var_type == "indel":
                                 if v.is_deletion:
-                                    mutation = "deletion"
+                                    mutation: str = "deletion"
                                 else:
-                                    mutation = "insertion"
+                                    mutation: str = "insertion"
                                 stats["variant"][v.var_type][mutation] += 1
                             else:
                                 stats["variant"][v.var_type] += 1
 
                             # Statistics unique to each samples
-                            if (
-                                FORMAT["genotype_quality"][0]
-                                in samples_values[samples[0]]
-                            ):
-                                stats[FORMAT["genotype_quality"][0]].append(
-                                    [
-                                        samples_values[s][
-                                            FORMAT["genotype_quality"][0]
+                            # If previous passes have raised a warning, do not search for genotype quality score.
+                            if not "genotype_quality" in warnings:
+                                try:
+                                    stats[FORMAT["genotype_quality"][0]].append(
+                                        [
+                                            samples_values[s][
+                                                FORMAT["genotype_quality"][0]
+                                            ]
+                                            for s in samples
                                         ]
-                                        for s in samples
-                                    ]
-                                )
-
-                            stats["hom"] += sum(
-                                list(
-                                    map(
-                                        lambda x: utils.is_homozygous(
-                                            GT=samples_values[x][
-                                                FORMAT["genotype"][0]
-                                            ]
-                                        ),
-                                        samples,
                                     )
-                                )
-                            )
-                            stats["het"] += sum(
-                                list(
-                                    map(
-                                        lambda x: utils.is_heterozygous(
-                                            GT=samples_values[x][
-                                                FORMAT["genotype"][0]
-                                            ]
-                                        ),
-                                        samples,
+                                except KeyError:
+                                    logger.warning(
+                                        f"Genotype quality value cannot be retrieved with key(s): {FORMAT['genotype_quality']}"
                                     )
-                                )
-                            )
+                                    # Keep record of exception
+                                    warnings["genotype_quality"] = True
 
+                            # If previous passes have raised a warning, do not search for genotype.
+                            if not "genotype" in warnings:
+                                try:
+                                    # Sum homzygous genotypes for each sample
+                                    stats["hom"] += sum(
+                                        list(
+                                            map(
+                                                lambda sample: utils.is_homozygous(
+                                                    GT=samples_values[sample][
+                                                        FORMAT["genotype"][0]
+                                                    ]
+                                                ),
+                                                samples,
+                                            )
+                                        )
+                                    )
+                                    # Sum heterozygous genotypes for each sample
+                                    stats["het"] += sum(
+                                        list(
+                                            map(
+                                                lambda sample: utils.is_heterozygous(
+                                                    GT=samples_values[sample][
+                                                        FORMAT["genotype"][0]
+                                                    ]
+                                                ),
+                                                samples,
+                                            )
+                                        )
+                                    )
+                                except KeyError:
+                                    logger.warning(f"Genotype type cannot be retrieved with key(s): {FORMAT['genotype']}")
+                                    # Keep record of exception
+                                    warnings["genotype"] = True
+
+                            # Save the call quality
                             if v.QUAL:
                                 stats["quality"].append(v.QUAL)
 
@@ -226,7 +241,7 @@ def process_chromosome(
     vcf.close()
 
     # Create a DataFrame from the variants,
-    variants = DataFrame.from_dict(
+    variants: DataFrame = DataFrame.from_dict(
         variants,
         orient="index",
         columns=["Chromosome", "Position", "Type", "Filter", "Variant"],
@@ -320,14 +335,31 @@ def process_files(
         # Get the chromosomes from the VCF file
         chromosomes: list = vcf.seqnames
 
-        logger.debug(f"File {file} is composed of {chromosomes} chromosomes")
+        if len(chromosomes) == 0:
+
+            raise errors.VCFError(f"No chromosome found in {file}")
+        
+        else:
+
+            logger.debug(f"File {file} is composed of {chromosomes} chromosomes")
 
         # Get the samples from the VCF file
         samples: list = vcf.samples
 
-        logger.debug(
+        if len(samples) == 0:
+
+            raise errors.VCFError(f"No sample found in {file}")
+        
+        else :
+
+            logger.debug(
             f"{len(samples)} samples have been found in {file}: {samples}"
-        )
+            )
+
+        # Check if the samples are unique
+        if len(samples) != len(set(samples)):
+
+            raise errors.VCFError(f"Duplicated sample names found in {file}")
 
         # Map the header values to there respectives indexes
         HEADER = {

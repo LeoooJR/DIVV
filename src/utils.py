@@ -70,7 +70,7 @@ def indexing(file: str) -> str|None:
 
     index: str = f"{file}.{EXT}"
 
-    CMDS: dict = {"bcftools": ["bcftools", "index", file],
+    CMDS: dict = {"bcftools": ["bcftools", "index", "-t", file],
                   "tabix": ["tabix", "-p", "vcf", file]}
 
     # cmd = ["./src/indexing.sh", file]
