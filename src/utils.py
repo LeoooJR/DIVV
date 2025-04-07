@@ -15,7 +15,9 @@ from pandas import Series, DataFrame, notna, isna
 import warnings
 import _pickle as cPickle
 
+# ===========================================================================================
 # I/O
+# ===========================================================================================
 
 def runcmd(cmd: list, stdout: str = None) -> subprocess.CompletedProcess:
 
@@ -214,9 +216,9 @@ def verify_files(file: str, index: str = None) -> dict|None:
 
                 try:
 
-                    with open(file, mode='rb') as f:
+                    with open(file, mode='rb') as vcf:
 
-                        header = f.read(3)
+                        header = vcf.read(3)
 
                         # Gzip magic number and flag byte (3rd byte)
                         # If 3rd bit (0x04) is set, header has extra field.
@@ -230,9 +232,9 @@ def verify_files(file: str, index: str = None) -> dict|None:
 
                             pass
 
-                    with gzip.open(file,mode='rt') as f:
+                    with gzip.open(file,mode='rt') as vcf:
                                 
-                        line = f.readline()
+                        line = vcf.readline()
 
                         # Check if first line is empty
                         if not line:
@@ -260,9 +262,9 @@ def verify_files(file: str, index: str = None) -> dict|None:
 
             try:
 
-                with open(file, mode='r') as f:
+                with open(file, mode='r') as vcf:
 
-                    line = f.readline()
+                    line = vcf.readline()
 
                     if not line:
 
@@ -341,7 +343,9 @@ def suppress_warnings():
         warnings.filterwarnings("ignore", message="Mean of empty slice.")
         yield
 
+# ===========================================================================================
 # SETS
+# ===========================================================================================
 
 
 def intersect(a: set[str], b: set[str]) -> set:
@@ -360,7 +364,9 @@ def jaccard_index(shared: int, total: dict) -> float:
     except ZeroDivisionError:
         return None
 
+# ===========================================================================================
 # Variables
+# ===========================================================================================
 
 def convert(a: object) -> object:
     """ Convert variable to appropriate type """
@@ -373,7 +379,9 @@ def convert(a: object) -> object:
         return a
 
 
+# ===========================================================================================
 # Variants
+# ===========================================================================================
 
 def evaluate(df: DataFrame) -> DataFrame:
     """ Evaluate the performance of the variant caller based on the truth set """
