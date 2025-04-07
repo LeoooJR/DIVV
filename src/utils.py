@@ -373,7 +373,7 @@ def convert(a: object) -> object:
     try:
         # If the variable contains a '/' or '|' character, it is a genotype information, return the variable as is
         # Else return the variable as an evaluated expression
-        return a if any(list(map(lambda x: x in a,('/','|')))) else eval(a)
+        return a if sum(list(map(lambda x: x in a, ('/','|')))) else eval(a)
     except Exception:
         # If the variable cannot be evaluated, return the variable as is
         return a
