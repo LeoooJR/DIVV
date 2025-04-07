@@ -2,7 +2,9 @@ from glob import glob
 import os
 from jinja2 import Environment, FileSystemLoader
 from pandas import isna, DataFrame
+import pathlib
 from shutil import copy, copytree
+import zipfile
 
 class Report:
     """
@@ -16,9 +18,9 @@ class Report:
         table: The benchmark table (truth metrics) object as a DataFrame
     """
     # Make use of __slots__ to avoid the creation of __dict__ and __weakref__ for each instance, reducing the memory footprint
-    __slots__ = ('vcfs', 'infos', 'cmd', 'view', 'plots', 'prefix', 'table')
+    __slots__ = ('vcfs', 'infos', 'cmd', 'view', 'plots', 'prefix', 'table', 'out')
 
-    def __init__(self, vcfs: list[str], prefix: str, cmd: str, infos: dict, view: dict, plots: dict, table: DataFrame = None):
+    def __init__(self, vcfs: list[str], prefix: str, cmd: str, infos: dict, view: dict, plots: dict, table: DataFrame = None, out: str = "archive"):
 
         # The list of VCF files
         self.vcfs = vcfs
@@ -46,6 +48,9 @@ class Report:
         # The benchmark table (truth metrics) object as a DataFrame
         self.table = table
 
+        # How to save the outputs
+        self.out = out
+
     def __str__(self):
         pass
 
@@ -56,7 +61,16 @@ class Report:
             return isna(value)
         
         # Path to look for the template
-        ressources = os.path.join(os.path.dirname(os.path.abspath(__file__)),'templates/')
+        ressources = os.path.join(os.path.dirname(os.path.abspath(__file__)),'templates')
+
+        # Path to look for the CSS stylesheets
+        stylesheets = os.path.join(ressources, "*.css")
+
+        # Path to look for the statics
+        statics = os.path.join(ressources, 'statics', "*.png")
+
+        # HTML output
+        output = f"{self.prefix}.html"
         
         # Create the environment
         env = Environment(loader=FileSystemLoader(ressources))
@@ -70,11 +84,28 @@ class Report:
         # Render the template
         html = template.render(vcfs=self.vcfs, cmd=self.cmd, infos=self.infos, view=self.view, table=self.table, plots=self.plots)
 
-        # Open data stream
-        with open(f"{self.prefix}.html",'w') as f:
-            f.writelines(html)
+        if self.out == "dir":
 
-        # Copy the css and statics files next to the report
-        for f in glob(f"{ressources}*.css"):
-            copy(f,os.getcwd())
-        copytree(os.path.join(ressources,'statics'),os.path.join(os.getcwd(),'statics'), dirs_exist_ok=True)
+            # Open data stream
+            try:
+                os.mkdir(f"{self.prefix}")
+            except (FileNotFoundError, NotImplementedError, PermissionError):
+                raise IOError("Report cannot be created.")
+
+            with open(os.path.join(self.prefix, output),'w') as f:
+                f.writelines(html)
+
+            # Copy the css and statics files next to the report
+            for f in glob(stylesheets):
+                copy(f, self.prefix)
+            copytree(os.path.dirname(statics), os.path.join(self.prefix,'statics'), dirs_exist_ok=True)
+
+        else:
+
+            # Open data stream with context manager
+            with zipfile.ZipFile(f"{self.prefix}.zip", mode='w') as zip:
+                zip.writestr(output, html)
+                for stylesheet in glob(stylesheets):
+                    zip.write(stylesheet, arcname=os.path.relpath(path=stylesheet, start=ressources))
+                for static in glob(statics):
+                    zip.write(static, arcname=os.path.relpath(path=static, start=ressources))
