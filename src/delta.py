@@ -759,10 +759,14 @@ def delta(params: object) -> int:
     # Should a benchmark be computed ?
     if params.benchmark:
 
+        logger.debug(f"Computing benchmark metrics from {params.vcfs[0]}.")
+
         table: DataFrame = utils.evaluate(df)
 
     # Should the output be serialized ?
     if params.serialize:
+
+        logger.debug("Serializing output.")
 
         if params.process:
             # Parallelize the serialization process, with as much process as VCF files inputed
@@ -789,6 +793,8 @@ def delta(params: object) -> int:
 
     # Should the output be reported ?
     if params.report:
+
+        logger.debug("Generating a HTML report.")
 
         # Library of common plots between the two VCF files
         pcommon: PlotLibrary = PlotLibrary()

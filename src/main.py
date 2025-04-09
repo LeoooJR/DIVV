@@ -8,7 +8,7 @@ def main():
     try:
         prog.launch()
     except Exception as e:
-        print(f"Error: {e}", file=stderr)
+        print(f"Error: {e.args[0]}", file=stderr)
         exit(1)
 
 
