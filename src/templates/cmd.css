@@ -1,4 +1,4 @@
-.input-container {
+.command {
     margin-left: 20px;
     margin-right: 20px;
     display: none;
@@ -9,26 +9,30 @@
     border-radius: 20px;
   }
   
-  .input-container .bash-text {
+  .command .bash-text {
     font-size: .8rem;
     color: white;
   }
   
-  .input-container .bash-text .user {
+  .command .bash-text .user {
     color: #E879F9;
   }
   
-  .input-container .bash-text .vm {
+  .command .bash-text .vm {
     color: #2DD4BF;
   }
   
-  .input-container .bash-text .char {
+  .command .bash-text .char {
     color: #A78BFA;
   }
   
-  .input-container input[type=text].input {
+  .command input[type=text].input {
     background-color: transparent;
     border: none;
     outline: none;
+    color: white;
+  }
+
+  .command .input::placeholder {
     color: white;
   }

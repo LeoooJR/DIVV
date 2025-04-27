@@ -1,6 +1,6 @@
 .search {
     --input-line: #cccccc;
-    --input-text-color: #808080;
+    --input-text-color: white;
     --input-text-hover-color: transparent;
     --input-border-color: #3d444d;
     --input-border-hover-color: #999999;
@@ -64,6 +64,10 @@
   .input::-ms-input-placeholder {
     color: var(--input-text-color);
   }
+
+  .input::placeholder {
+    color: var(--input-text-color);
+  }
   
   .input:focus::-webkit-input-placeholder {
     color: var(--input-text-hover-color);
@@ -74,6 +78,10 @@
   }
   
   .input:focus::-ms-input-placeholder {
+    color: var(--input-text-hover-color);
+  }
+
+  .input:focus::placeholder {
     color: var(--input-text-hover-color);
   }
   
