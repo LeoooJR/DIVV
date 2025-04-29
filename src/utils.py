@@ -73,7 +73,7 @@ def indexing(file: str) -> str|None:
     index: str = f"{file}.{EXT}"
 
     CMDS: dict = {"bcftools": ["bcftools", "index", "-t", file],
-                  "tabix": ["tabix", "-p", "vcf", file]}
+                  "tabix": ["tabix", "-f", "-p", "vcf", file]}
 
     # cmd = ["./src/indexing.sh", file]
 
@@ -203,11 +203,11 @@ def verify_files(file: str, index: str = None) -> dict|None:
             raise errors.VCFError(f"Error: The file {file} is empty.")
         
         type = filetype.archive_match(file)
-
+        
         # Is a archive
         if type:
 
-            if type != TYPE["compression"]:
+            if not (type.__class__.__name__ == TYPE["compression"] and type.EXTENSION == TYPE["compression"].lower()):
 
                 raise errors.VCFError(f"Error: The compression of {file} is not supported.")
             
@@ -218,11 +218,11 @@ def verify_files(file: str, index: str = None) -> dict|None:
 
                     with open(file, mode='rb') as vcf:
 
-                        header = vcf.read(3)
+                        header = vcf.read(4)
 
                         # Gzip magic number and flag byte (3rd byte)
                         # If 3rd bit (0x04) is set, header has extra field.
-                        if not header[0:2] != b'\x1f\x8b' and header[3] & 0x04:
+                        if not (header[0:2] == b'\x1f\x8b' and header[3] & 0x04):
 
                             raise errors.VCFError(f"Error: {file} is not a BGZF archive")
                         

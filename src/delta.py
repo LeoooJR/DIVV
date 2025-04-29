@@ -312,7 +312,7 @@ def process_files(
             # If error thrown by index, file is an archive
             # Index is considered ONLY if file is an archive
             FILES["archive"] = file
-
+            
     # File must be indexed
     if "index" not in FILES:
         
