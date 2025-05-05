@@ -267,7 +267,7 @@ def process_chromosome(
         stats["depth"], stats["quality"], stats["GQ"] = (
             np.array(stats["depth"], dtype=np.uint16),
             np.array(stats["quality"], dtype=np.float16),
-            np.array(stats["GQ"], dtype=np.uint8),
+            np.array(stats["GQ"], dtype=np.uint16),
         )
 
     return (variants, filtered, stats) if compute else (variants, filtered, {})
