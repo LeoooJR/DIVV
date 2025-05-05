@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>VCF File Comparison Tool</title>
+  <title>VCF comparison report</title>
   <link rel="stylesheet" href="template.css" />
   <link rel="stylesheet" href="file.css" />
   <link rel="stylesheet" href="search.css" />
@@ -14,82 +14,140 @@
 </head>
 
 <body>
-    <div class="FlexMain">
-        <div class="DivMainLeft">
-            <img src="statics/vcf_black.png" alt="VCF1" class="VCFIcon">
-            <h2 class="HeadingLeft">
+
+    <div class="main">
+
+        <div class="main-left">
+            <img src="statics/vcf-left.png" alt="vcf-icon-white" class="header-icon">
+            <h2 class="header-left">
               {{ infos[vcfs[0]].basename|default(vcfs[0]) }}
             </h2>
         </div>
-        <div class="DivMainRight">
-            <img src="statics/vcf_white_line.png" alt="VCF2" class="VCFIcon">
-            <h2 class="HeadingRight">
+
+        <div class="main-right">
+            <img src="statics/vcf-right.png" alt="vcf-icon-black" class="header-icon">
+            <h2 class="header-right">
               {{ infos[vcfs[1]].basename|default(vcfs[1]) }}
             </h2>
         </div>
+
     </div>
-    <div class="FlexSub">
-        <div class="DivSubLeft">
-            <img src="statics/info_black.png" class="InfoIcon">
-            <div class="ContainerInfos">
-              <div class="BulleInfo">
-                <img src="statics/folder.png" class="InfoSubIcon">
-                <p class="InformationL">
+
+    <div class="sub">
+
+        <div class="sub-left">
+
+            <img src="statics/info-left.png" class="info-icon", id="info-left-icon">
+
+            <div class="info-container">
+
+              <div class="info-bubble">
+                <img src="statics/folder.png" class="info-small-icon">
+                <p class="info-text-left">
                     {{ infos[vcfs[0]].path|default(vcfs[0]) }}
                 </p>
               </div>
-              <div class="BulleInfo">
-                <img src="statics/database.png" class="InfoSubIcon">
-                <p class="InformationL">
+
+              <div class="info-bubble">
+                <img src="statics/database.png" class="info-small-icon">
+                <p class="info-text-left">
                     {{ infos[vcfs[0]].size|default('NA') }} Mo
                 </p>
               </div>
-              <div class="BulleInfo">
-                <img src="statics/file.png" class="InfoSubIcon">
-                <p class="InformationL">
+
+              <div class="info-bubble">
+                <img src="statics/file.png" class="info-small-icon">
+                <p class="info-text-left">
                     {{ infos[vcfs[0]].mtime|default('NA') }}
                 </p>
               </div>
+
             </div>
-            <img src="statics/down-arrow.png" class="InfoIcon" id="DropDown">
+
+            <div style="position: relative; margin-right: 10px; margin-top: 10px;">
+
+              <img src="statics/down-arrow-left.png" class="info-icon" id="dropdown-icon">
+
+              <div class="notification-dot">
+                <div class="notification-dot-ping"></div>
+              </div>
+
+            </div>
+
         </div>
-        <div class="DivSubRight">
-            <img src="statics/info-white-lines.png" class="InfoIcon">
-            <div class="ContainerInfos">
-              <div class="BulleInfo">
-                <img src="statics/folder.png" class="InfoSubIcon">
-                <p class="InformationR">
+
+        <div class="sub-right">
+
+            <img src="statics/info-right.png" class="info-icon", id="info-right-icon">
+
+            <div class="info-container">
+
+              <div class="info-bubble">
+                <img src="statics/folder.png" class="info-small-icon">
+                <p class="info-text-right">
                     {{ infos[vcfs[1]].path|default(vcfs[1]) }}
                 </p>
               </div>
-              <div class="BulleInfo">
-                <img src="statics/database.png" class="InfoSubIcon">
-                <p class="InformationR">
+
+              <div class="info-bubble">
+                <img src="statics/database.png" class="info-small-icon">
+                <p class="info-text-right">
                     {{ infos[vcfs[1]].size|default('NA') }} Mo
                 </p>
               </div>
-              <div class="BulleInfo">
-                <img src="statics/file.png" class="InfoSubIcon">
-                <p class="InformationR">
+
+              <div class="info-bubble">
+                <img src="statics/file.png" class="info-small-icon">
+                <p class="info-text-right">
                     {{ infos[vcfs[1]].mtime|default('NA') }}
                 </p>
               </div>
+
             </div>
-            <img src="statics/down-arrow-white.png" class="InfoIcon" id="DropDown">
+
+            <div style="position: relative; margin-right: 10px; margin-top: 10px;">
+
+              <img src="statics/down-arrow-right.png" class="info-icon" id="dropdown-icon">
+
+              <div class="notification-dot">
+                <div class="notification-dot-ping"></div>
+              </div>
+
+            </div>
         </div>
     </div>
-    <div class="background">
-      <div class="input-container">
+
+    <div class="info-expand-container">
+
+      {% if table is not none %}
+        <div class="popup-left">
+          <div class="popup-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" height="24" fill="none">
+              <path fill="#393a37" d="m12 1.5c-5.79844 0-10.5 4.70156-10.5 10.5 0 5.7984 4.70156 10.5 10.5 10.5 5.7984 0 10.5-4.7016 10.5-10.5 0-5.79844-4.7016-10.5-10.5-10.5zm.75 15.5625c0 .1031-.0844.1875-.1875.1875h-1.125c-.1031 0-.1875-.0844-.1875-.1875v-6.375c0-.1031.0844-.1875.1875-.1875h1.125c.1031 0 .1875.0844.1875.1875zm-.75-8.0625c-.2944-.00601-.5747-.12718-.7808-.3375-.206-.21032-.3215-.49305-.3215-.7875s.1155-.57718.3215-.7875c.2061-.21032.4864-.33149.7808-.3375.2944.00601.5747.12718.7808.3375.206.21032.3215.49305.3215.7875s-.1155.57718-.3215.7875c-.2061.21032-.4864.33149-.7808.3375z">
+              </path>
+            </svg>
+          </div>
+          <div class="popup-title">This VCF has been set as reference.</div>
+        </div>
+      {% endif %}
+
+      <div class="command">
+
         <p class="bash-text">
           <span class="user">user</span><span class="vm">@vcfdelta</span>:<span class="char">~</span>$
         </p>
+
         <input class="input" placeholder="{{ cmd }}" type="text" disabled>
+
       </div>
+
     </div>
-    <section class="SectionPlots">
-        <div class="GridPlotLeft">
+
+    <section class="plots-section">
+
+        <div class="plots-left-grid">
             {% for plot in plots[vcfs[0]] %}
-              <div class="DivPlot {% if loop.index == 1 %}active{% endif %}" id="leftPlot{{ loop.index }}">
+              <div class="plot {% if loop.index == 1 %}active{% endif %}" id="left-plot{{ loop.index }}">
                 {{ plot }}
               </div>
             {% endfor %}
@@ -101,9 +159,10 @@
               </div>
             </div>
         </div>
-        <div class="GridPlotRight">
+
+        <div class="plots-right-grid">
             {% for plot in plots[vcfs[1]] %}
-              <div class="DivPlot {% if loop.index == 1 %}active{% endif %}" id="rightPlot{{ loop.index }}">
+              <div class="plot {% if loop.index == 1 %}active{% endif %}" id="right-plot{{ loop.index }}">
                 {{ plot }}
               </div>
             {% endfor %}
@@ -115,42 +174,66 @@
               </div>
             </div>
         </div>
+
     </section>
-    <div class="FlexSub">
-        <div class="DivSubLeft">
+
+    <div class="sub">
+
+        <div class="sub-left">
             <div class="Container">
-                <img src="statics/search.png" alt="search" class="IconFilter">
+                <img src="statics/search.png" alt="search-icon" class="filter-icon">
             </div>
         </div>
-        <div class="DivSubRight">
+
+        <div class="sub-right">
             <div class="Container">
-                <img src="statics/filter-white-line.png" alt="search" class="IconFilter">
+                <img src="statics/filters.png" alt="parameters-icon" class="filter-icon">
             </div>
         </div>
+
     </div>
-    <div class="FlexMain">
-        <div class="DivMainLeft">
-            <div class="ContainerSearch">
-                <img src="statics/chromosome.png" alt="chromosomes" class="IconFilter">
+
+    <div class="main">
+
+        <div class="main-left">
+
+            <div class="search-container">
+
+                <img src="statics/chromosome.png" alt="chromosomes-icon" class="filter-icon">
+
                 <div class="search">
+
                   <div class="search-box">
+
                     <div class="search-field">
+
                       <input placeholder="Search chromosome" class="input" type="text">
+
                       <div class="search-box-icon">
+
                         <button class="btn-icon-content">
                           <i class="search-icon">
-                            <svg xmlns="://www.w3.org/2000/svg" version="1.1" viewBox="0 0 512 512"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z" fill="#fff"></path></svg>
+                            <svg xmlns="://www.w3.org/2000/svg" version="1.1" viewBox="0 0 512 512">
+                              <path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z" fill="#fff">
+                              </path>
+                            </svg>
                           </i>
                         </button>
+
                       </div>
+
                     </div>
+
                   </div>
+
                 </div>
+
             </div>
-            <div class="ContainerFilter">
-              <img src="statics/puzzle.png" alt="filter" class="IconFilter">
-              <div class="FilterContainerL">
-                <select class="FilterField">
+
+            <div class="filters-container">
+              <img src="statics/puzzle.png" alt="puzzle-icon" class="filter-icon">
+              <div class="filter-container-left">
+                <select class="filter left">
                     <option selected disabled>Select a filter...</option>
                     <option>ALL</option>
                     <option>MATCH</option>
@@ -158,31 +241,34 @@
                 </select>
               </div>
             </div>
+
         </div>
-        <div class="DivMainRight">
-            <div class="ContainerFilter">
-                <img src="statics/filter.png" alt="filter" class="IconFilter">
-                <div class="FilterContainer">
-                    <select class="FilterField">
+
+        <div class="main-right">
+            <div class="filters-container">
+                <img src="statics/filter.png" alt="filter-icon" class="filter-icon">
+                <div class="filter-container-right">
+                    <select class="filter right">
                         <option selected disabled>Select a filter...</option>
                         <option>ALL</option>
                         <option>PASS</option>
                     </select>
                 </div>
-                <img src="statics/dan-test-white.png" alt="dna" class="IconFilter">
-                <div class="FilterContainer">
-                    <select class="FilterField">
+                <img src="statics/dna.png" alt="dna-icon" class="filter-icon">
+                <div class="filter-container-right">
+                    <select class="filter right">
                         <option selected disabled>Select a variant...</option>
                         <option>ALL</option>
                         <option>SNP</option>
                         <option>INDEL</option>
-                        <option>Other</option>
+                        <option>OTHER</option>
                     </select>
                 </div>
-                <button class="SearchButton" onclick="resetFilters()">Reset</button>
+                <button class="reset-button" onclick="resetFilters()">Reset</button>
             </div>
         </div>
     </div>
+
     <div class="Container">
         <div class="file-container" id="fileTab">
     
@@ -249,73 +335,90 @@
               </div>
             </div>
             
-            <div class="stats" id="stats">
-              <h3>Comparison Stats</h3>
-              <p>Matching lines: <span style="color: rgba(0, 255, 0)">{{ view["stats"]["common"] }}</span></p>
-              <p>Different lines: <span style="color: rgba(255, 0, 0)">{{ view["stats"]["unique"][vcfs[0]] + view["stats"]["unique"][vcfs[1]] }}</span></p>
-              <p>Jaccard Index: {{ view["stats"]["jaccard"]|round(3,'common') }}</p>
-              <div class="DivPlot active">
+            <div class="summary-container" id="stats">
+
+              <section class="stats-section">
+
+                <div class="stats-container">
+                  
+                  <div class="stat-card">
+                    <div class="stats-container-match">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="currentColor" class="icon">
+                        <rect x="96" y="176" width="320" height="48" rx="8" ry="8"/>
+                        <rect x="96" y="288" width="320" height="48" rx="8" ry="8"/>
+                      </svg>
+                    </div>
+                    <div class="content">
+                      <p class="stat-value">{{ view["stats"]["common"] }}</p>
+                      <p class="stat-label">Matching lines</p>
+                    </div>
+                  </div>
+                  
+                  <div class="stat-card">
+                    <div class="stats-container-diff">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="currentColor" class="icon">
+                        <rect x="96" y="176" width="320" height="48" rx="8" ry="8"/>
+                        <rect x="96" y="288" width="320" height="48" rx="8" ry="8"/>
+                        <line x1="120" y1="400" x2="392" y2="112" stroke="currentColor" stroke-width="48" stroke-linecap="round"/>
+                      </svg>
+                    </div>
+                    <div class="content">
+                      <p class="stat-value">{{ view["stats"]["unique"][vcfs[0]] + view["stats"]["unique"][vcfs[1]] }}</p>
+                      <p class="stat-label">Different lines</p>
+                    </div>
+                  </div>
+                  
+                  <div class="stat-card">
+                    <div class="stats-container-index">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="currentColor" class="icon">
+                        <circle cx="200" cy="256" r="120" fill="none" stroke="currentColor" stroke-width="24" opacity="0.8"/>
+                        <circle cx="312" cy="256" r="120" fill="none" stroke="currentColor" stroke-width="24" opacity="0.8"/>
+                        <path d="M256,184 a72,72 0 0,1 0,144 a72,72 0 0,1 0,-144" fill="currentColor" opacity="0.6"/>
+                        <text x="256" y="256" font-size="40" text-anchor="middle" dominant-baseline="middle" fill="currentColor">J</text>
+                      </svg>
+                    </div>
+                    <div class="content">
+                      <p class="stat-value">{{  view["stats"]["jaccard"]|round(3,'common') }}</p>
+                      <p class="stat-label">Jaccard index</p>
+                    </div>
+                  </div>
+                </div>
+
+              </section>
+
+              <div class="plot active common">
                 {{ plots["common"][0] }}
               </div>
+
             </div>
+
         </div>
+
         {% if table is not none %}
-          <div class="FlexSub">
-            <div class="DivMainLeft">
-              <div class="card">
-                <span
-                  ><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-                    <path
-                      d="m256 8c-136.957 0-248 111.083-248 248 0 136.997 111.043 248 248 248s248-111.003 248-248c0-136.917-111.043-248-248-248zm0 110c23.196 0 42 18.804 42 42s-18.804 42-42 42-42-18.804-42-42 18.804-42 42-42zm56 254c0 6.627-5.373 12-12 12h-88c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h12v-64h-12c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h64c6.627 0 12 5.373 12 12v100h12c6.627 0 12 5.373 12 12z"
-                    ></path>
-                  </svg>
-              
-                  <p>
-                    Truth: {{ vcfs[0] }}
-                  </p></span
-                >
-              </div>
-            </div>
-            <div class="DivMainRight">
-              <div class="card">
-                <span
-                  ><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-                    <path
-                      d="m256 8c-136.957 0-248 111.083-248 248 0 136.997 111.043 248 248 248s248-111.003 248-248c0-136.917-111.043-248-248-248zm0 110c23.196 0 42 18.804 42 42s-18.804 42-42 42-42-18.804-42-42 18.804-42 42-42zm56 254c0 6.627-5.373 12-12 12h-88c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h12v-64h-12c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h64c6.627 0 12 5.373 12 12v100h12c6.627 0 12 5.373 12 12z"
-                    ></path>
-                  </svg>
-              
-                  <p>
-                    Query: {{ vcfs[1] }}
-                  </p></span
-                >
-              </div>
-            </div>
-          </div>
-          <div style="display: flex; width: 100%; justify-content: center; align-items: center; background: linear-gradient(to right, #eef0f1 50%, #333333 50%);">
-            <table class="TruthTable">
+          <div style="display: flex; width: 100%; justify-content: center; align-items: center; background: white;">
+            <table class="benchmark-table">
               <tbody>
-                <tr class="TableRow">
-                  <th class="TableHeader">TYPE</th>
-                  <th class="TableHeader">FILTER</th>
-                  <th class="TableHeader">TRUTH TOTAL</th>
-                  <th class="TableHeader">TRUE POSITIVE</th>
-                  <th class="TableHeader">FALSE NEGATIVE</th>
-                  <th class="TableHeader">QUERY TOTAL</th>
-                  <th class="TableHeader">FALSE POSITIVE</th>
-                  <th class="TableHeader">RECALL</th>
-                  <th class="TableHeader">PRECISION</th>
-                  <th class="TableHeader">F1 SCORE</th>
+                <tr class="row-table">
+                  <th class="header-table">TYPE</th>
+                  <th class="header-table">FILTER</th>
+                  <th class="header-table">TRUTH TOTAL</th>
+                  <th class="header-table">TRUE POSITIVE</th>
+                  <th class="header-table">FALSE NEGATIVE</th>
+                  <th class="header-table">QUERY TOTAL</th>
+                  <th class="header-table">FALSE POSITIVE</th>
+                  <th class="header-table">RECALL</th>
+                  <th class="header-table">PRECISION</th>
+                  <th class="header-table">F1 SCORE</th>
                 </tr>
                 {% for row, metrics in table.iterrows() %}
-                  <tr class="TableRow">
+                  <tr class="row-table">
                     {% for index, metric in metrics.items() %}
                       {% if metric is float() %}
-                        <td class="TableCell">{{ metric|round(2, 'common') }}</td>
+                        <td class="cell-table">{{ metric|round(2, 'common') }}</td>
                       {% elif metric is string() %}
-                        <td class="TableCell">{{ metric|upper() }}</td>
+                        <td class="cell-table">{{ metric|upper() }}</td>
                       {% else %}
-                        <td class="TableCell">{{ metric }}</td>
+                        <td class="cell-table">{{ metric }}</td>
                       {% endif %}  
                     {% endfor %}
                   </tr>
@@ -325,6 +428,7 @@
           </div>  
         {% endif %}
     </div>
+
     <script>
         const content1El = document.getElementById('content1');
         const content2El = document.getElementById('content2');
@@ -358,14 +462,14 @@
     <script>
       document.addEventListener('DOMContentLoaded', function() {
           // Left side plot navigation
-          const leftPlots = document.querySelectorAll('.GridPlotLeft .DivPlot');
+          const leftPlots = document.querySelectorAll('.plots-left-grid .plot');
           const leftPrevArrow = document.getElementById('leftPrevArrow');
           const leftNextArrow = document.getElementById('leftNextArrow');
           const leftPlotIndicator = document.getElementById('leftPlotIndicator');
           let leftCurrentPlot = 0;
           
           // Right side plot navigation
-          const rightPlots = document.querySelectorAll('.GridPlotRight .DivPlot');
+          const rightPlots = document.querySelectorAll('.plots-right-grid .plot');
           const rightPrevArrow = document.getElementById('rightPrevArrow');
           const rightNextArrow = document.getElementById('rightNextArrow');
           const rightPlotIndicator = document.getElementById('rightPlotIndicator');
@@ -495,22 +599,22 @@
     <script>
       document.addEventListener("DOMContentLoaded", function () {
           document.querySelector(".search-box .input").addEventListener("input", filter);
-          document.querySelectorAll(".FilterContainer select").forEach(select => select.addEventListener("change", filter));
-          document.querySelector(".FilterContainerL select").addEventListener("change",filter);
+          document.querySelectorAll(".filter-container-right select").forEach(select => select.addEventListener("change", filter));
+          document.querySelector(".filter-container-left select").addEventListener("change",filter);
       });
       function filter() {
 
           let totalCount = document.querySelectorAll(".file1-content .line:not(.header)").length;
           
-          let chromosomeInput = document.querySelector(".ContainerSearch .search-field input.input");
+          let chromosomeInput = document.querySelector(".search-container .search-field input.input");
           if (!chromosomeInput) {
               chromosomeInput = document.querySelector(".search .search-field input.input");
           }
           let chromosome = chromosomeInput ? chromosomeInput.value.trim().toUpperCase() : "";
           
-          let filterSelectsL = document.querySelector(".FilterContainerL .FilterField");
+          let filterSelectsL = document.querySelector(".filter-container-left .filter");
           let matchType = filterSelectsL ? filterSelectsL.value : "ALL";
-          let filterSelects = document.querySelectorAll(".FilterContainer .FilterField");
+          let filterSelects = document.querySelectorAll(".filter-container-right .filter");
           let filterType = filterSelects.length > 0 ? filterSelects[0].value.toUpperCase() : "ALL";
           let variantType = filterSelects.length > 1 ? filterSelects[1].value.toUpperCase() : "ALL";
 
@@ -549,17 +653,19 @@
       }
       function resetFilters() {
           document.querySelector(".search-box .input").value = "";
-          document.querySelectorAll(".FilterContainer select").forEach(select => select.value = "ALL");
-          document.querySelector(".FilterContainerL select").value = "ALL";
+          document.querySelectorAll(".filter-container-right select").forEach(select => select.value = "ALL");
+          document.querySelector(".filter-container-left select").value = "ALL";
           filter();
       }
     </script>
     <script>
       document.addEventListener("DOMContentLoaded", function () {
-        document.getElementById("DropDown").addEventListener("click", show)
+        document.getElementById("dropdown-icon").addEventListener("click", show)
       });
       function show() {
-        element = document.querySelector(".input-container")
+        element = document.querySelector(".command")
+        element.style.display = element.style.display == "none" ? "flex" : "none";
+        element = document.querySelector(".popup-left")
         element.style.display = element.style.display == "none" ? "flex" : "none";
       }
     </script>
@@ -680,7 +786,7 @@
       document.addEventListener('DOMContentLoaded', function() {
           const filterElements = [
               document.querySelector(".search-box .input"),
-              ...document.querySelectorAll(".FilterContainer select")
+              ...document.querySelectorAll(".filter-container-right select")
           ];
           
           filterElements.forEach(element => {
@@ -710,7 +816,7 @@
           });
           
           // Also update when reset button is clicked
-          const resetButton = document.querySelector(".SearchButton");
+          const resetButton = document.querySelector(".reset-button");
           if (resetButton) {
               resetButton.addEventListener("click", function() {
                   setTimeout(updateDiffElements, 100); // Small delay to ensure filters are reset

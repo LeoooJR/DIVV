@@ -1,4 +1,4 @@
-.TruthTable {
+.benchmark-table {
     width: 90%;
     border-width: 1px;
     border-style: solid;
@@ -9,13 +9,13 @@
     font-family: Ubuntu;
 }
 
-.TableRow, .TableHeader, .TableCell {
+.row-table, .header-table, .cell-table {
     display: flex;
     flex-direction: row;
     width: 100%;
 }
 
-.TableRow {
+.row-table {
     border-bottom-style: solid;
     border-bottom-width: 1px;
     border-bottom-color: #3D444D;
@@ -25,12 +25,12 @@
 	}
 }
 
-.TableHeader {
+.header-table {
     background-color: #0d1117;
     color: white;
 }
 
-.TableCell {
+.cell-table {
     margin-top: 5px;
     margin-bottom: 5px;
     align-items: center;

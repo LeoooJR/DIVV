@@ -1,7 +1,7 @@
 from __init__ import __version__
 import argparse
 from delta import delta
-import sys
+from sys import argv
 
 class Program:
 
@@ -195,7 +195,7 @@ class Program:
         self.parser.set_defaults(func=self.FUNC["delta"])
 
     def launch(self) -> int:
-        cmd = self.parser.parse_args(args=sys.argv[1:])
+        cmd = self.parser.parse_args(args=argv[1:])
         return cmd.func(params=cmd)
 
     def __str__(self):

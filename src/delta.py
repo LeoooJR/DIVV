@@ -1,5 +1,6 @@
 import concurrent.futures
 from cyvcf2 import VCF
+import errors
 from hashlib import sha256
 from itertools import chain, repeat
 from loguru import logger
@@ -10,7 +11,6 @@ from os.path import basename, getsize
 from pandas import DataFrame, Index, concat
 from pathlib import Path
 from plot import visualization, PlotLibrary
-import subprocess
 from sys import argv
 from tabulate import tabulate
 from template import Report
@@ -39,12 +39,12 @@ def process_chromosome(
     """
 
     logger.debug(
-        f"Processing chromosome {chrom} for file {FILES['compression']}"
+        f"Processing chromosome {chrom} for file {FILES['archive']}"
     )
 
     # Open the VCF file and set the index for faster lookup
     try:
-        vcf = VCF(FILES["compression"], lazy=True)
+        vcf = VCF(FILES["archive"], lazy=True)
         vcf.set_index(index_path=FILES["index"])
     except FileNotFoundError as e:
         logger.error(e)
@@ -97,20 +97,20 @@ def process_chromosome(
 
         # Suppress warnings from cyvcf2 in case of missing values
         with utils.suppress_warnings():
-
+            # Iterate over the VCF file
             for i, v in enumerate(vcf(f"{chrom}")):
                 # Get the values from the VCF file
-                parts: list = str(v).split("\t")
+                parts: list[str] = str(v).split("\t")
                 # Set the INFO values as a single character to reduce memory footprint
                 parts[header["INFO"]] = '.'
                 # First iteration, get the FORMAT values
                 if not i:
 
-                    format = parts[header["FORMAT"]]
+                    format: str = parts[header["FORMAT"]]
 
                     logger.debug(f"FORMAT for chromosome {chrom}: {format}")
                 # From FORMAT get the values for each sample
-                samples_values = {
+                samples_values: dict[str:dict] = {
                     s: utils.format_to_values(
                         format=format, values=parts[header[s]]
                     )
@@ -146,59 +146,74 @@ def process_chromosome(
                             # The variant type is common to all samples
                             if v.var_type == "snp":
                                 if v.is_transition:
-                                    mutation = "transition"
+                                    mutation: str = "transition"
                                 else:
-                                    mutation = "transversion"
+                                    mutation: str = "transversion"
                                 stats["variant"][v.var_type][mutation] += 1
                                 stats["variant"][v.var_type][v.REF][v.ALT[0]] += 1
                             elif v.var_type == "indel":
                                 if v.is_deletion:
-                                    mutation = "deletion"
+                                    mutation: str = "deletion"
                                 else:
-                                    mutation = "insertion"
+                                    mutation: str = "insertion"
                                 stats["variant"][v.var_type][mutation] += 1
                             else:
                                 stats["variant"][v.var_type] += 1
 
                             # Statistics unique to each samples
-                            if (
-                                FORMAT["genotype_quality"][0]
-                                in samples_values[samples[0]]
-                            ):
-                                stats[FORMAT["genotype_quality"][0]].append(
-                                    [
-                                        samples_values[s][
-                                            FORMAT["genotype_quality"][0]
+                            # If previous passes have raised a warning, do not search for genotype quality score.
+                            if not "genotype_quality" in warnings:
+                                try:
+                                    stats[FORMAT["genotype_quality"][0]].append(
+                                        [
+                                            samples_values[s][
+                                                FORMAT["genotype_quality"][0]
+                                            ]
+                                            for s in samples
                                         ]
-                                        for s in samples
-                                    ]
-                                )
-
-                            stats["hom"] += sum(
-                                list(
-                                    map(
-                                        lambda x: utils.is_homozygous(
-                                            GT=samples_values[x][
-                                                FORMAT["genotype"][0]
-                                            ]
-                                        ),
-                                        samples,
                                     )
-                                )
-                            )
-                            stats["het"] += sum(
-                                list(
-                                    map(
-                                        lambda x: utils.is_heterozygous(
-                                            GT=samples_values[x][
-                                                FORMAT["genotype"][0]
-                                            ]
-                                        ),
-                                        samples,
+                                except KeyError:
+                                    logger.warning(
+                                        f"Genotype quality value cannot be retrieved with key(s): {FORMAT['genotype_quality']}"
                                     )
-                                )
-                            )
+                                    # Keep record of exception
+                                    warnings["genotype_quality"] = True
 
+                            # If previous passes have raised a warning, do not search for genotype.
+                            if not "genotype" in warnings:
+                                try:
+                                    # Sum homzygous genotypes for each sample
+                                    stats["hom"] += sum(
+                                        list(
+                                            map(
+                                                lambda sample: utils.is_homozygous(
+                                                    GT=samples_values[sample][
+                                                        FORMAT["genotype"][0]
+                                                    ]
+                                                ),
+                                                samples,
+                                            )
+                                        )
+                                    )
+                                    # Sum heterozygous genotypes for each sample
+                                    stats["het"] += sum(
+                                        list(
+                                            map(
+                                                lambda sample: utils.is_heterozygous(
+                                                    GT=samples_values[sample][
+                                                        FORMAT["genotype"][0]
+                                                    ]
+                                                ),
+                                                samples,
+                                            )
+                                        )
+                                    )
+                                except KeyError:
+                                    logger.warning(f"Genotype type cannot be retrieved with key(s): {FORMAT['genotype']}")
+                                    # Keep record of exception
+                                    warnings["genotype"] = True
+
+                            # Save the call quality
                             if v.QUAL:
                                 stats["quality"].append(v.QUAL)
 
@@ -226,7 +241,7 @@ def process_chromosome(
     vcf.close()
 
     # Create a DataFrame from the variants,
-    variants = DataFrame.from_dict(
+    variants: DataFrame = DataFrame.from_dict(
         variants,
         orient="index",
         columns=["Chromosome", "Position", "Type", "Filter", "Variant"],
@@ -244,7 +259,7 @@ def process_chromosome(
     variants.index = Index(variants.index.values, dtype="string[pyarrow]")
 
     logger.debug(
-        f"Filtered: {filtered['snp']} SNP(s), {filtered['indel']} INDEL(s), {filtered['sv']} structural variant(s) variant(s) for chromosome {chrom} in file {FILES['compression']}"
+        f"Filtered: {filtered['snp']} SNP(s), {filtered['indel']} INDEL(s), {filtered['sv']} structural variant(s) variant(s) for chromosome {chrom} in file {FILES['archive']}"
     )
 
     # Set the statistics computed as the right type for better memory management
@@ -252,7 +267,7 @@ def process_chromosome(
         stats["depth"], stats["quality"], stats["GQ"] = (
             np.array(stats["depth"], dtype=np.uint16),
             np.array(stats["quality"], dtype=np.float16),
-            np.array(stats["GQ"], dtype=np.uint8),
+            np.array(stats["GQ"], dtype=np.uint16),
         )
 
     return (variants, filtered, stats) if compute else (variants, filtered, {})
@@ -280,172 +295,178 @@ def process_files(
 
     logger.debug(f"Computation will be {'parallelized' if pool else 'made sequentially'} by chromosome(s).")
 
+    # Map files to there respectives type
+    FILES = {}
+
     # Check if the file exists and is not empty
     try:
-        utils.verify_file(file=file)
-    except (FileNotFoundError, ValueError) as e:
+        FILES = utils.verify_files(file=file, index=index)
+    except (errors.VCFError, errors.IndexError) as e:
         logger.error(e)
+        # Error raised by VCF file are critical
+        if isinstance(e,errors.VCFError):
+            raise errors.ProcessError(f"{file} is not a valid VCF file.")
+        # Errors caused by the provided index are treated as warnings.
+        elif isinstance(e,errors.IndexError):
+            
+            # If error thrown by index, file is an archive
+            # Index is considered ONLY if file is an archive
+            FILES["archive"] = file
+            
+    # File must be indexed
+    if "index" not in FILES:
+        
+        # Compression
+        if "file" in FILES:
+            FILES["archive"] = utils.compressing(file)
 
-    # Map files to there respectives extensions
-    FILES = {"compression": f"{file}.gz", "index": f"{file}.gz.tbi"}
-
-    # Is a index file provided ?
-    if index:
-        # Check if the file exists and is not empty
+        # Call a process to index the file
+        FILES["index"] = utils.indexing(FILES["archive"])
+    
+    if FILES["archive"] and FILES["index"]:
+        # From this point, the VCF file is supposed indexed
         try:
-            utils.verify_file(file=index)
-        except (FileNotFoundError, ValueError) as e:
+            # Open the VCF file and set the index for faster lookup
+            vcf = VCF(FILES["archive"])
+            vcf.set_index(index_path=FILES["index"])
+        except FileNotFoundError as e:
             logger.error(e)
-    # No index file provided
-    else:
-        # Try to look for indexing files
-        try:
-            utils.verify_file(FILES["compression"])
-            utils.is_indexed(FILES["index"])
-        except (FileNotFoundError, ValueError) as e:
-            logger.warning(e)
 
-            # Indexing
-            logger.debug(f"Indexing file: {file}")
+        # Get the chromosomes from the VCF file
+        chromosomes: list = vcf.seqnames
 
-            # Call a process to index the file
-            try:
-                code = subprocess.run(
-                    ["./src/indexing.sh", file],
-                    capture_output=True,
-                    text=True,
-                    check=True,
-                )
-            except (subprocess.CalledProcessError, FileNotFoundError) as e:
-                logger.error(e.stderr)
+        if len(chromosomes) == 0:
 
-            # Verify that the index file has been created
-            try:
-                utils.verify_file(file=FILES["compression"])
-            except (FileNotFoundError, ValueError) as e:
-                logger.error(e)
-    # From this point, the VCF file is supposed indexed
-    try:
-        # Open the VCF file and set the index for faster lookup
-        vcf = VCF(FILES["compression"])
-        vcf.set_index(index_path=FILES["index"])
-    except FileNotFoundError as e:
-        logger.error(e)
+            raise errors.VCFError(f"No chromosome found in {file}")
+        
+        else:
 
-    # Get the chromosomes from the VCF file
-    chromosomes: list = vcf.seqnames
+            logger.debug(f"File {file} is composed of {chromosomes} chromosomes")
 
-    logger.debug(f"File {file} is composed of {chromosomes} chromosomes")
+        # Get the samples from the VCF file
+        samples: list = vcf.samples
 
-    # Get the samples from the VCF file
-    samples: list = vcf.samples
+        if len(samples) == 0:
 
-    logger.debug(
-        f"{len(samples)} samples have been found in {file}: {samples}"
-    )
+            raise errors.VCFError(f"No sample found in {file}")
+        
+        else :
 
-    # Map the header values to there respectives indexes
-    HEADER = {
-        "CHROM": 0,
-        "POS": 1,
-        "ID": 2,
-        "REF": 3,
-        "ALT": 4,
-        "QUAL": 5,
-        "FILTER": 6,
-        "INFO": 7,
-        "FORMAT": 8,
-    }
-
-    # Add the samples to the mapper
-    HEADER.update(
-        {
-            s: i
-            for i, s in zip(
-                range(
-                    (HEADER["FORMAT"] + 1),
-                    (HEADER["FORMAT"] + 1) + len(samples),
-                ),
-                samples,
+            logger.debug(
+            f"{len(samples)} samples have been found in {file}: {samples}"
             )
+
+        # Check if the samples are unique
+        if len(samples) != len(set(samples)):
+
+            raise errors.VCFError(f"Duplicated sample names found in {file}")
+
+        # Map the header values to there respectives indexes
+        HEADER = {
+            "CHROM": 0,
+            "POS": 1,
+            "ID": 2,
+            "REF": 3,
+            "ALT": 4,
+            "QUAL": 5,
+            "FILTER": 6,
+            "INFO": 7,
+            "FORMAT": 8,
         }
-    )
 
-    logger.debug(
-        f"Header for {file} has such format: {' '.join(HEADER.keys())}"
-    )
-
-    variants, filtered, stats = {}, {}, {}
-
-    if pool:
-        # Process the chromosomes concurrently, using as much process as available
-        # use a context manager to avoid memory leaks
-        with concurrent.futures.ProcessPoolExecutor(
-            max_workers=pool
-        ) as chrom_executor:
-            # Submit the processes
-            futures_to_chrom = {
-                chrom_executor.submit(
-                    process_chromosome,
-                    chrom,
+        # Add the samples to the mapper
+        HEADER.update(
+            {
+                s: i
+                for i, s in zip(
+                    range(
+                        (HEADER["FORMAT"] + 1),
+                        (HEADER["FORMAT"] + 1) + len(samples),
+                    ),
                     samples,
-                    HEADER,
-                    FILES,
-                    filters,
-                    compute,
-                ): chrom
-                for chrom in chromosomes # VCF object cannot be pickled thus cannot be passed to a process
-            }
-            # Check if a process is completed
-            for future in concurrent.futures.as_completed(futures_to_chrom):
-
-                logger.success(
-                    f"Process {future} for chromosome {futures_to_chrom[future]} in file {FILES['compression']} has completed."
                 )
-                # Get the returned result
-                try:
-                    (
-                        variants[futures_to_chrom[future]],
-                        filtered[futures_to_chrom[future]],
-                        stats[futures_to_chrom[future]],
-                    ) = future.result()
-                    # If a report is wanted, add the length of the chromosome
-                    if compute:
+            }
+        )
 
-                        stats[futures_to_chrom[future]]["length"] = vcf.seqlens[
-                            chromosomes.index(futures_to_chrom[future])
-                        ]
+        logger.debug(
+            f"Header for {file} has such format: {' '.join(HEADER.keys())}"
+        )
 
-                except Exception as e:
-                    logger.warning(
-                        f"Chromosome {futures_to_chrom[future]} generated an exception: {e}"
+        variants, filtered, stats = {}, {}, {}
+
+        if pool:
+            # Process the chromosomes concurrently, using as much process as available
+            # use a context manager to avoid memory leaks
+            with concurrent.futures.ProcessPoolExecutor(
+                max_workers=pool
+            ) as chrom_executor:
+                # Submit the processes
+                futures_to_chrom = {
+                    chrom_executor.submit(
+                        process_chromosome,
+                        chrom,
+                        samples,
+                        HEADER,
+                        FILES,
+                        filters,
+                        compute,
+                    ): chrom
+                    for chrom in chromosomes # VCF object cannot be pickled thus cannot be passed to a process
+                }
+                # Check if a process is completed
+                for future in concurrent.futures.as_completed(futures_to_chrom):
+
+                    logger.success(
+                        f"Process {future} for chromosome {futures_to_chrom[future]} in file {FILES['archive']} has completed."
                     )
-    # Computation is carried out sequentially.                
+                    # Get the returned result
+                    try:
+                        (
+                            variants[futures_to_chrom[future]],
+                            filtered[futures_to_chrom[future]],
+                            stats[futures_to_chrom[future]],
+                        ) = future.result()
+                        # If a report is wanted, add the length of the chromosome
+                        if compute:
+
+                            stats[futures_to_chrom[future]]["length"] = vcf.seqlens[
+                                chromosomes.index(futures_to_chrom[future])
+                            ]
+
+                    except Exception as e:
+                        logger.warning(
+                            f"Chromosome {futures_to_chrom[future]} generated an exception: {e}"
+                        )
+        # Computation is carried out sequentially.                
+        else:
+            for chrom in chromosomes:
+                variants[chrom], filtered[chrom], stats[chrom] = process_chromosome(chrom=chrom, 
+                                                                                    samples=samples, 
+                                                                                    header=HEADER, 
+                                                                                    FILES=FILES, 
+                                                                                    filters=filters, 
+                                                                                    compute=compute)
+
+        # Close the data stream
+        vcf.close()
+
+        # If a report is wanted, create plots
+        if compute:
+            library = visualization(file=basename(file), stats=stats)
+
+        return {
+            "info": utils.file_stats(file), # Get the information about the VCF file
+            "header": "\t".join(list(HEADER.keys())), # Get the header of the VCF file
+            "variants": concat(
+                list(itemgetter(*list(sorted(variants.keys())))(variants))
+            ), # Concatenate the chromosomes DataFrames
+            "filter": filtered, # Get the stats about filtered variants
+            "plots": library if compute else None, # Get the plots
+        }
+    
     else:
-        for chrom in chromosomes:
-            variants[chrom], filtered[chrom], stats[chrom] = process_chromosome(chrom=chrom, 
-                                                                                samples=samples, 
-                                                                                header=HEADER, 
-                                                                                FILES=FILES, 
-                                                                                filters=filters, 
-                                                                                compute=compute)
 
-    # Close the data stream
-    vcf.close()
-
-    # If a report is wanted, create plots
-    if compute:
-        library = visualization(file=basename(file), stats=stats)
-
-    return {
-        "info": utils.file_stats(file), # Get the information about the VCF file
-        "header": "\t".join(list(HEADER.keys())), # Get the header of the VCF file
-        "variants": concat(
-            list(itemgetter(*list(sorted(variants.keys())))(variants))
-        ), # Concatenate the chromosomes DataFrames
-        "filter": filtered, # Get the stats about filtered variants
-        "plots": library if compute else None, # Get the plots
-    }
+        raise errors.CompressionIndexError(f"Failed to compress and index {file}")
 
 
 def delta(params: object) -> int:
@@ -577,16 +598,28 @@ def delta(params: object) -> int:
             # Check if a process is completed
             for future in concurrent.futures.as_completed(futures_to_vcf):
 
-                logger.success(
-                    f"Process {future} for file {futures_to_vcf[future]} has completed."
-                )
                 # Get the returned result
                 try:
                     (result[futures_to_vcf[future]]) = future.result()
+                    logger.success(
+                    f"Process {future} for file {futures_to_vcf[future]} has completed."
+                    )
                 except Exception as e:
                     logger.error(
                         f"File {futures_to_vcf[future]} generated an exception: {e}"
                     )
+                    if len(futures_to_vcf) == 2:
+                        # Retrieve all futures
+                        futures: list[concurrent.futures.Future] = list(futures_to_vcf.keys())
+                        if future is futures[0]:
+                            # Attempt to cancel the other call.
+                            # If the call is currently being executed or finished running and cannot be cancelled then this attempt will fail.
+                                futures[1].cancel()
+                        else:
+                            # Attempt to cancel the other call.
+                            # If the call is currently being executed or finished running and cannot be cancelled then this attempt will fail.
+                            futures[0].cancel()
+                    
     # Computation is carried out sequentially.
     else:
         for vcf, index in zip(params.vcfs, params.indexes):
@@ -726,10 +759,14 @@ def delta(params: object) -> int:
     # Should a benchmark be computed ?
     if params.benchmark:
 
+        logger.debug(f"Computing benchmark metrics from {params.vcfs[0]}.")
+
         table: DataFrame = utils.evaluate(df)
 
     # Should the output be serialized ?
     if params.serialize:
+
+        logger.debug("Serializing output.")
 
         if params.process:
             # Parallelize the serialization process, with as much process as VCF files inputed
@@ -756,6 +793,8 @@ def delta(params: object) -> int:
 
     # Should the output be reported ?
     if params.report:
+
+        logger.debug("Generating a HTML report.")
 
         # Library of common plots between the two VCF files
         pcommon: PlotLibrary = PlotLibrary()

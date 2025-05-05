@@ -1,17 +1,104 @@
 import contextlib
 from cyvcf2 import VCF, Writer
 from datetime import datetime, timezone
+import errors
+import filetype
+import gzip
 from hashlib import sha256
 import json
 from loguru import logger
 import numpy as np
 import os
+import subprocess
 from pathlib import Path
 from pandas import Series, DataFrame, notna, isna
 import warnings
 import _pickle as cPickle
 
+# ===========================================================================================
 # I/O
+# ===========================================================================================
+
+def runcmd(cmd: list, stdout: str = None) -> subprocess.CompletedProcess:
+
+    logger.debug(f"Running command: {cmd}")
+
+    if stdout:
+
+        with open(stdout, mode = "wb") as out:
+
+            return subprocess.run(cmd, check=True, stdout=out)
+    
+    else:
+
+        return subprocess.run(cmd, check=True, capture_output=True)
+
+def compressing(file: str) -> str|None:
+
+    logger.debug(f"Compressing file {file}.")
+
+    EXT: str = "gz"
+
+    archive: str = f"{file}.{EXT}"
+
+    CMDS: dict = {"bcftools": ["bcftools", "view", "-O", "z", "-o", archive, file],
+                  "bgzip": ["bgzip", "-c", file]}
+
+    outcode: int = 1
+    retry: int = 0
+
+    # Call a process to compress the file
+    while retry < len(CMDS) and outcode != 0:
+        bin: str = list(CMDS.keys())[retry]
+        logger.debug(f"Compressing with {bin} binary.")
+        try:
+            process: subprocess.CompletedProcess = runcmd(CMDS[bin], stdout=archive) if bin == "bgzip" else runcmd(CMDS[bin])
+            outcode: int = process.returncode
+            logger.success(f"{file} has been successfully compressed.")
+        except subprocess.CalledProcessError as e:
+            logger.warning(f"Compressing {file} with {bin} binary did not succeed with exit code {outcode}.")
+            logger.warning(f"Standard output: {e.stdout}")
+            logger.warning(f"Standard error: {e.stderr}")
+            retry += 1
+
+    # Return archive path ONLY if exit code is 0
+    return None if outcode else archive
+
+def indexing(file: str) -> str|None:
+
+    logger.debug(f"Indexing file {file}.")
+
+    EXT: str = "tbi"
+
+    index: str = f"{file}.{EXT}"
+
+    CMDS: dict = {"bcftools": ["bcftools", "index", "-t", file],
+                  "tabix": ["tabix", "-f", "-p", "vcf", file]}
+
+    # cmd = ["./src/indexing.sh", file]
+
+    outcode: int = 1
+    retry: int = 0
+
+    # Call a process to index the file
+    while retry < len(CMDS) and outcode != 0:
+        bin: str = list(CMDS.keys())[retry]
+        logger.debug(f"Compressing {file} with {bin} binary.")
+        try:
+            process: subprocess.CompletedProcess = runcmd(CMDS[bin])
+            outcode: int = process.returncode
+            logger.success(f"{file} has been successfully indexed.")
+        except subprocess.CalledProcessError as e:
+            logger.warning(f"Compressing {file} with {bin} binary did not succeed with exit code {outcode}.")
+            logger.warning(f"Standard output: {e.stdout}")
+            logger.warning(f"Standard error: {e.stderr}")
+            retry += 1
+
+    # Verify that the index file has been created
+    # verify_files(file=file, index=index)
+
+    # Return index path ONLY if exit code is 0
+    return None if outcode else index
 
 def save(obj: DataFrame, path: Path, format: str = "pickle", target: str = "L", lookup: dict = None, out: str = os.getcwd()) -> int:
     """ Serialize DataFrame to file of specified format """
@@ -71,7 +158,7 @@ def save(obj: DataFrame, path: Path, format: str = "pickle", target: str = "L", 
             f"{outf}_delta.{FILES[format]['ext']}"
         ), "File was not created"
 
-        logger.debug(f"Results are seralized to {out}")
+        logger.success(f"Results are seralized to {out}")
 
         return 1
     else:
@@ -90,21 +177,154 @@ def is_empty(path: str) -> bool:
 
 def is_indexed(path: str) -> bool:
     """ Check if file is indexed """
-    return verify_file(path)
+    pass
 
+def is_compressed(path: str, type: str) -> bool:
+    """ Checks if a file is a compressed archive type """
+    return filetype.archive_match(path) == type
 
-def verify_file(file: str):
-    """ Verify file exists and is not empty """
+def verify_files(file: str, index: str = None) -> dict|None:
+    """ Verify files exists and are not empty """
 
-    assert isinstance(file, str), "Values must be of string instance"
+    files = {}
 
-    if not is_file(file):
+    def verify_VCF(file: str) -> str:
 
-        raise FileNotFoundError(f"Error: The file '{file}' does not exist.")
+        assert isinstance(file, str), "VCF must be of string instance"
 
-    if is_empty(file):
+        TYPE = {"compression": "Gz"}
 
-        raise ValueError(f"Error: The file '{file}' is empty.")
+        if not is_file(file):
+
+            raise errors.VCFError(f"Error: The file {file} does not exist.")
+
+        if is_empty(file):
+
+            raise errors.VCFError(f"Error: The file {file} is empty.")
+        
+        type = filetype.archive_match(file)
+        
+        # Is a archive
+        if type:
+
+            if not (type.__class__.__name__ == TYPE["compression"] and type.EXTENSION == TYPE["compression"].lower()):
+
+                raise errors.VCFError(f"Error: The compression of {file} is not supported.")
+            
+            # The file is a Gz archive
+            else:
+
+                try:
+
+                    with open(file, mode='rb') as vcf:
+
+                        header = vcf.read(4)
+
+                        # Gzip magic number and flag byte (3rd byte)
+                        # If 3rd bit (0x04) is set, header has extra field.
+                        if not (header[0:2] == b'\x1f\x8b' and header[3] & 0x04):
+
+                            raise errors.VCFError(f"Error: {file} is not a BGZF archive")
+                        
+                        else:
+
+                            # Check for BC extra sub-field
+
+                            pass
+
+                    with gzip.open(file,mode='rt') as vcf:
+                                
+                        line = vcf.readline()
+
+                        # Check if first line is empty
+                        if not line:
+
+                            raise errors.VCFError(f"Error: First line of {file} is empty.")
+                                
+                        else:
+                            # Check if first line start with "#"
+                            if line[0] != '#':
+
+                                raise errors.VCFError(f"Error: First line inconsistent with VCF header format")
+                            
+                except FileNotFoundError:
+
+                    raise errors.VCFError(f"{file} is not a valid path")
+                
+                except IOError:
+
+                    raise errors.VCFError(f"An error occurred while reading {file}")
+                
+            return "archive"
+        
+        # Is not a archive
+        else:
+
+            try:
+
+                with open(file, mode='r') as vcf:
+
+                    line = vcf.readline()
+
+                    if not line:
+
+                        raise errors.VCFError(f"Error: First line of {file} is empty.")
+                        
+                    else:
+                        # Check if first line start with "#"
+                        if line[0] != '#':
+
+                            raise errors.VCFError(f"Error: First line inconsistent with VCF header format")
+                        
+            except FileNotFoundError:
+
+                raise errors.VCFError(f"{file} is not a valid path")
+                
+            except IOError:
+
+                raise errors.VCFError(f"An error occurred while reading {file}")
+                    
+            return "file"
+
+    def verify_index(vcf: str, index: str) -> str:
+
+        assert isinstance(index, str), "VCF must be of string instance"
+
+        if not is_file(index):
+
+            raise errors.IndexError(f"Error: The file {index} does not exist.")
+
+        if is_empty(index):
+
+            raise errors.IndexError(f"Error: The file {index} is empty.")
+        
+        # Index should be newer than VCF
+        if os.path.getmtime(index) < os.path.getmtime(vcf):
+
+            raise errors.IndexError(f"Error: {index} is older than {vcf}.")
+
+        else:
+            # Try using the index file
+            cmd = ["tabix", "-l", vcf]
+
+            try:
+
+                runcmd(cmd)
+
+            except subprocess.CalledProcessError:
+
+                raise errors.IndexError(f"Error: {index} does not allow fast lookup for {vcf}")
+            
+        return "index"
+    
+    files[verify_VCF(file)] = file
+
+    # Index is considered ONLY if file is an archive
+    if "archive" in files and index:
+
+        files[verify_index(index)] = index
+
+    return files
     
 def file_stats(path: str) -> dict:
     """ Get file stats """
@@ -123,7 +343,9 @@ def suppress_warnings():
         warnings.filterwarnings("ignore", message="Mean of empty slice.")
         yield
 
+# ===========================================================================================
 # SETS
+# ===========================================================================================
 
 
 def intersect(a: set[str], b: set[str]) -> set:
@@ -142,20 +364,24 @@ def jaccard_index(shared: int, total: dict) -> float:
     except ZeroDivisionError:
         return None
 
+# ===========================================================================================
 # Variables
+# ===========================================================================================
 
 def convert(a: object) -> object:
     """ Convert variable to appropriate type """
     try:
         # If the variable contains a '/' or '|' character, it is a genotype information, return the variable as is
         # Else return the variable as an evaluated expression
-        return a if any(list(map(lambda x: x in a,('/','|')))) else eval(a)
+        return a if sum(list(map(lambda x: x in a, ('/','|')))) else eval(a)
     except Exception:
         # If the variable cannot be evaluated, return the variable as is
         return a
 
 
+# ===========================================================================================
 # Variants
+# ===========================================================================================
 
 def evaluate(df: DataFrame) -> DataFrame:
     """ Evaluate the performance of the variant caller based on the truth set """
