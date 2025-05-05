@@ -1,16 +1,13 @@
 FROM python:3.12-slim
 
-RUN mkdir /vcfdelta /apps
+ARG project=vcfdelta
 
-WORKDIR /vcfdelta
+RUN mkdir /${project} /apps
 
-COPY requirements.txt /vcfdelta
+WORKDIR /${project}
 
 RUN apt-get update \
 && apt-get install -y build-essential autoconf automake libtool zlib1g-dev libbz2-dev liblzma-dev libssl-dev wget bzip2
-
-RUN pip install --upgrade pip \
-&& pip install --no-cache-dir -r requirements.txt
 
 RUN cd /apps \
 && wget https://github.com/samtools/bcftools/releases/download/1.21/bcftools-1.21.tar.bz2 \
@@ -19,9 +16,16 @@ RUN cd /apps \
 && ./configure --prefix=/apps/bcftools \
 && make \
 && make install \
-&& cd - \
+&& cd -\
 && rm -r bcftools-1.21 bcftools-1.21.tar.bz2
 
 ENV PATH="/apps/bcftools/bin:$PATH"
 
-COPY src /vcfdelta
+COPY requirements.txt /${project}
+
+RUN pip install --upgrade pip \
+&& pip install --no-cache-dir -r /${project}/requirements.txt
+
+COPY src /${project}/src
+
+ENTRYPOINT [ "python", "src/main.py" ]
