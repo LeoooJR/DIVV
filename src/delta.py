@@ -1,6 +1,7 @@
 import concurrent.futures
 from cyvcf2 import VCF
 import errors
+import files
 from hashlib import sha256
 from itertools import chain, repeat
 from loguru import logger
@@ -10,11 +11,10 @@ from operator import itemgetter
 from os.path import basename, getsize
 from pandas import DataFrame, Index, concat
 from pathlib import Path
-from src.plots import visualization, PlotLibrary
+from plots import visualization, PlotLibrary
 from sys import argv
 from tabulate import tabulate
 from template import Report
-import pprint
 from psutil import cpu_count
 import utils
 
@@ -274,8 +274,8 @@ def process_chromosome(
 
 
 @logger.catch
-def process_files(
-    file: str, index: str = None, filters: dict = None, compute: bool = False, pool: int = 1
+def process_vcf(
+    file: files.VCF, filters: dict = None, compute: bool = False, pool: int = 1
 ) -> dict:
     """ 
     Main function to process a VCF file
@@ -286,7 +286,7 @@ def process_files(
         pool: to set the number of process available
     """
 
-    logger.debug(f"Processing file: {file}")
+    logger.debug(f"Processing file: {file.path}")
 
     assert pool >= 0, "Number of processes alocated must be an positive unsigned integer."
 
@@ -493,10 +493,14 @@ def delta(params: object) -> int:
 
     assert isinstance(params.vcfs[0], str) and isinstance(
         params.vcfs[1], str
-    ), "Input vcf should be string instance"
+    ), "Input VCF should be string instance"
 
     # Number of files to process
     PROCESS_FILE: int = 2
+
+    vcfs: list[files.VCF] = [files.VCF(path=params.vcfs[0], reference=True if params.benchmark else False, index=params.indexes[0]), 
+                             files.VCF(path=params.vcfs[1], index=params.indexes[0])] 
+
     # Number of CPUs available
     CPUS = cpu_count(logical=True)
 
@@ -509,7 +513,7 @@ def delta(params: object) -> int:
     else:
         if CPUS > 1:
             logger.debug("Computation will be parallelized by the number of VCF files.")
-            params.process = min(params.process,cpu_count(logical=True))
+            params.process = min(params.process, cpu_count(logical=True))
         else:
             logger.debug("Computation will be carried out sequentially.")
 
@@ -518,7 +522,6 @@ def delta(params: object) -> int:
     # Filters to apply during the parsing
     FILTERS = (
         {
-            "threshold": params.threshold,
             "exclude": {
                 "exclude_snps": params.exclude_snps,
                 "exclude_indels": params.exclude_indels,
@@ -532,7 +535,6 @@ def delta(params: object) -> int:
         # If no filters are set, used None for better memory management
         if any(
             [
-                params.threshold,
                 params.exclude_snps,
                 params.exclude_indels,
                 params.exclude_vars,
@@ -564,29 +566,29 @@ def delta(params: object) -> int:
                 # If the number of process available is odd, allocate the remaining process to the file with the biggest size
                 if pavailable != 0:
                     
-                    fsizes = list(map(getsize,params.vcfs))
+                    fsizes = list(map(getsize, params.vcfs))
 
                     maxid = 0 if fsizes[0] > fsizes[1] else 1
 
                     palloc[maxid] += 1
 
-                iterable: zip = zip(params.vcfs, params.indexes, palloc)
+                iterable: zip = zip(vcfs, palloc)
             
             else:
 
-                iterable: tuple = [(params.vcfs[1], params.indexes[1], 0)]
+                iterable: tuple = [(vcfs[1], 0)]
 
             # Submit the process for each file mapped to the vcf path
             futures_to_vcf = {
                 files_pool.submit(
-                    process_files, vcf, index, FILTERS, params.report, proc
+                    process_vcf, vcf, FILTERS, params.report, proc
                 ): vcf
-                for vcf, index, proc in iterable
+                for vcf, proc in iterable
             }
 
             # Should the main process compute a VCF, contributing to the workload ?
             if PROCESS_FILE > params.process:   
-                result[params.vcfs[0]] = process_files(file=params.vcfs[0], index=params.indexes[0], filters=FILTERS, compute=params.report, pool=0)
+                result[params.vcfs[0]] = process_vcf(file=params.vcfs[0], index=params.indexes[0], filters=FILTERS, compute=params.report, pool=0)
 
             # Check if a process is completed
             for future in concurrent.futures.as_completed(futures_to_vcf):
@@ -616,7 +618,7 @@ def delta(params: object) -> int:
     # Computation is carried out sequentially.
     else:
         for vcf, index in zip(params.vcfs, params.indexes):
-            result[vcf] = process_files(file=vcf, index=index, filters=FILTERS, compute=params.report, pool=0)
+            result[vcf] = process_vcf(file=vcf, index=index, filters=FILTERS, compute=params.report, pool=0)
 
     result["delta"] = {
         "common": {},
