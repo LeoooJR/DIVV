@@ -2,7 +2,6 @@ from glob import glob
 import os
 from jinja2 import Environment, FileSystemLoader
 from pandas import isna, DataFrame
-import pathlib
 from shutil import copy, copytree
 import zipfile
 

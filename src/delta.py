@@ -10,7 +10,7 @@ from operator import itemgetter
 from os.path import basename, getsize
 from pandas import DataFrame, Index, concat
 from pathlib import Path
-from plot import visualization, PlotLibrary
+from src.plots import visualization, PlotLibrary
 from sys import argv
 from tabulate import tabulate
 from template import Report
@@ -472,22 +472,15 @@ def process_files(
 def delta(params: object) -> int:
     """ 
     Main function to compute the delta between two VCF files 
-            params: object containing the parameters parsed by the CLI
+            params: object containing the command line parameters parsed.
     """
-
-    # Should the log be printed to CLI or saved in a file ?
-    if not params.verbosity:
-
-        logger.remove(0)
-
-        logger.add("VCFDelta.log")
 
     logger.debug(f"VCFS: {params.vcfs}")
 
     logger.debug(
-        f"{params.vcfs[0]} is set as truth"
+        f"{params.vcfs[0]} is set as truth."
         if params.benchmark
-        else "No VCF has been set as truth"
+        else "No VCF has been set as truth."
     )
 
     logger.debug(f"Indexes: {params.indexes}")
