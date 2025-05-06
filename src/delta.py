@@ -22,9 +22,7 @@ import utils
 @logger.catch
 def process_chromosome(
     chrom: str,
-    samples: list,
-    header: dict,
-    FILES: dict[str:str],
+    file: files.VCF,
     filters: dict = None,
     compute: bool = False,
 ) -> dict:
@@ -259,7 +257,7 @@ def process_chromosome(
     variants.index = Index(variants.index.values, dtype="string[pyarrow]")
 
     logger.debug(
-        f"Filtered: {filtered['snp']} SNP(s), {filtered['indel']} INDEL(s), {filtered['sv']} structural variant(s) variant(s) for chromosome {chrom} in file {FILES['archive']}"
+        f"Filtered: {filtered['snp']} SNP(s), {filtered['indel']} INDEL(s), {filtered['sv']} structural variant(s) variant(s) for chromosome {chrom} in file {file}"
     )
 
     # Set the statistics computed as the right type for better memory management
@@ -286,7 +284,7 @@ def process_vcf(
         pool: to set the number of process available
     """
 
-    logger.debug(f"Processing file: {file.path}")
+    logger.debug(f"Processing file: {file}")
 
     assert pool >= 0, "Number of processes alocated must be an positive unsigned integer."
 
@@ -295,102 +293,47 @@ def process_vcf(
 
     logger.debug(f"Computation will be {'parallelized' if pool else 'made sequentially'} by chromosome(s).")
 
-    # Map files to there respectives type
-    FILES = {}
-
     # Check if the file exists and is not empty
     try:
-        FILES = utils.verify_files(file=file, index=index)
+
+        file.verify()
+
+        if file.is_indexed():
+
+            file.index.verify()
+
     except (errors.VCFError, errors.IndexError) as e:
+
         logger.error(e)
+
         # Error raised by VCF file are critical
         if isinstance(e,errors.VCFError):
+            logger.error(f"{file} is not a valid VCF file.")
             raise errors.ProcessError(f"{file} is not a valid VCF file.")
+        
         # Errors caused by the provided index are treated as warnings.
         elif isinstance(e,errors.IndexError):
-            
-            # If error thrown by index, file is an archive
-            # Index is considered ONLY if file is an archive
-            FILES["archive"] = file
+            logger.warning(f"{file.index} is not a valid VCF index file.")
+            file.index = None
             
     # File must be indexed
-    if "index" not in FILES:
+    if not file.is_indexed():
         
         # Compression
-        if "file" in FILES:
-            FILES["archive"] = utils.compressing(file)
+        if not file.archive:
+
+            file.compressing()
 
         # Call a process to index the file
-        FILES["index"] = utils.indexing(FILES["archive"])
+        file.indexing()
     
-    if FILES["archive"] and FILES["index"]:
+    if file.archive and file.index:
         # From this point, the VCF file is supposed indexed
         try:
-            # Open the VCF file and set the index for faster lookup
-            vcf = VCF(FILES["archive"])
-            vcf.set_index(index_path=FILES["index"])
-        except FileNotFoundError as e:
+            # Open the VCF with CyVCF2 file and set the index for faster lookup
+            file.open()
+        except (FileNotFoundError, errors.VCFError) as e:
             logger.error(e)
-
-        # Get the chromosomes from the VCF file
-        chromosomes: list = vcf.seqnames
-
-        if len(chromosomes) == 0:
-
-            raise errors.VCFError(f"No chromosome found in {file}")
-        
-        else:
-
-            logger.debug(f"File {file} is composed of {chromosomes} chromosomes")
-
-        # Get the samples from the VCF file
-        samples: list = vcf.samples
-
-        if len(samples) == 0:
-
-            raise errors.VCFError(f"No sample found in {file}")
-        
-        else :
-
-            logger.debug(
-            f"{len(samples)} samples have been found in {file}: {samples}"
-            )
-
-        # Check if the samples are unique
-        if len(samples) != len(set(samples)):
-
-            raise errors.VCFError(f"Duplicated sample names found in {file}")
-
-        # Map the header values to there respectives indexes
-        HEADER = {
-            "CHROM": 0,
-            "POS": 1,
-            "ID": 2,
-            "REF": 3,
-            "ALT": 4,
-            "QUAL": 5,
-            "FILTER": 6,
-            "INFO": 7,
-            "FORMAT": 8,
-        }
-
-        # Add the samples to the mapper
-        HEADER.update(
-            {
-                s: i
-                for i, s in zip(
-                    range(
-                        (HEADER["FORMAT"] + 1),
-                        (HEADER["FORMAT"] + 1) + len(samples),
-                    ),
-                    samples,
-                )
-            }
-        )
-
-        logger.debug(
-            f"Header for {file} has such format: {' '.join(HEADER.keys())}"
-        )
 
         variants, filtered, stats = {}, {}, {}
 
@@ -405,19 +348,17 @@ def process_vcf(
                     chrom_executor.submit(
                         process_chromosome,
                         chrom,
-                        samples,
-                        HEADER,
-                        FILES,
+                        file,
                         filters,
                         compute,
                     ): chrom
-                    for chrom in chromosomes # VCF object cannot be pickled thus cannot be passed to a process
+                    for chrom in file.chromosomes # VCF object cannot be pickled thus cannot be passed to a process
                 }
                 # Check if a process is completed
                 for future in concurrent.futures.as_completed(futures_to_chrom):
 
                     logger.success(
-                        f"Process {future} for chromosome {futures_to_chrom[future]} in file {FILES['archive']} has completed."
+                        f"Process {future} for chromosome {futures_to_chrom[future]} in file {file} has completed."
                     )
                     # Get the returned result
                     try:
@@ -429,8 +370,8 @@ def process_vcf(
                         # If a report is wanted, add the length of the chromosome
                         if compute:
 
-                            stats[futures_to_chrom[future]]["length"] = vcf.seqlens[
-                                chromosomes.index(futures_to_chrom[future])
+                            stats[futures_to_chrom[future]]["length"] = file.stdin.seqlens[
+                                file.chromosomes.index(futures_to_chrom[future])
                             ]
 
                     except Exception as e:
@@ -439,24 +380,19 @@ def process_vcf(
                         )
         # Computation is carried out sequentially.                
         else:
-            for chrom in chromosomes:
+            for chrom in file.chromosomes:
                 variants[chrom], filtered[chrom], stats[chrom] = process_chromosome(chrom=chrom, 
-                                                                                    samples=samples, 
-                                                                                    header=HEADER, 
-                                                                                    FILES=FILES, 
+                                                                                    file=file, 
                                                                                     filters=filters, 
                                                                                     compute=compute)
 
-        # Close the data stream
-        vcf.close()
-
         # If a report is wanted, create plots
         if compute:
-            library = visualization(file=basename(file), stats=stats)
+            library = visualization(file=basename(file.path), stats=stats)
 
         return {
-            "info": utils.file_stats(file), # Get the information about the VCF file
-            "header": "\t".join(list(HEADER.keys())), # Get the header of the VCF file
+            "info": utils.file_stats(file.path), # Get the information about the VCF file
+            "header": "\t".join(list(file.header.keys())), # Get the header of the VCF file
             "variants": concat(
                 list(itemgetter(*list(sorted(variants.keys())))(variants))
             ), # Concatenate the chromosomes DataFrames
@@ -499,7 +435,7 @@ def delta(params: object) -> int:
     PROCESS_FILE: int = 2
 
     vcfs: list[files.VCF] = [files.VCF(path=params.vcfs[0], reference=True if params.benchmark else False, index=params.indexes[0]), 
-                             files.VCF(path=params.vcfs[1], index=params.indexes[0])] 
+                             files.VCF(path=params.vcfs[1], index=params.indexes[1])] 
 
     # Number of CPUs available
     CPUS = cpu_count(logical=True)
