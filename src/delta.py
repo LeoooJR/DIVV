@@ -1,5 +1,4 @@
 import concurrent.futures
-from cyvcf2 import VCF
 import errors
 import files
 from hashlib import sha256
@@ -10,29 +9,21 @@ import numpy as np
 from operator import itemgetter
 from os.path import basename, getsize
 from pandas import DataFrame, Index, concat
-from pathlib import Path
 from plots import visualization, PlotLibrary
 from sys import argv
 from tabulate import tabulate
-from template import Report
 from psutil import cpu_count
 import utils
-
-
 
 def process_chromosome(
     chrom: str,
     file: files.VCF,
-    filters: dict = None,
     compute: bool = False,
 ) -> dict:
     """
     Process a chromosome from a VCF file
         chrom: containing the chromosome to process
-        samples: containing the samples to process
-        header: containing the header of the VCF file
-        FILES: containing the path to the VCF file and the index file
-        filters: containing the filters to apply
+        file: containing the path to the VCF file and the index file
         compute: to compute the statistics if a report is wanted
     """
 
@@ -107,9 +98,9 @@ def process_chromosome(
                     for s in file.samples
                 }
                 # Should variant be filtered ?
-                if filters:
+                if file.variants.filters:
 
-                    exclude: bool = utils.exclude(v, filters)
+                    exclude: bool = utils.exclude(v, file.variants.filters)
                 # Should the variant be excluded ?
                 if exclude:
 
@@ -264,13 +255,12 @@ def process_chromosome(
 
 
 def process_vcf(
-    file: files.VCF, filters: dict = None, compute: bool = False, pool: int = 1
+    file: files.VCF, compute: bool = False, pool: int = 1
 ) -> dict:
     """ 
     Main function to process a VCF file
         file: containing the path to the VCF file
         index: containing the path to the index file
-        filters: containing the filters to apply
         compute: to compute the statistics if a report is wanted
         pool: to set the number of process available
     """
@@ -340,7 +330,6 @@ def process_vcf(
                         process_chromosome,
                         chrom,
                         file,
-                        filters,
                         compute,
                     ): chrom
                     for chrom in file.chromosomes # VCF object cannot be pickled thus cannot be passed to a process
@@ -374,7 +363,6 @@ def process_vcf(
             for chrom in file.chromosomes:
                 variants[chrom], filtered[chrom], stats[chrom] = process_chromosome(chrom=chrom, 
                                                                                     file=file, 
-                                                                                    filters=filters, 
                                                                                     compute=compute)
 
         # If a report is wanted, create plots
@@ -425,9 +413,6 @@ def delta(params: object) -> int:
     # Number of files to process
     PROCESS_FILE: int = 2
 
-    vcfs: list[files.VCF] = [files.VCF(path=params.vcfs[0], reference=True if params.benchmark else False, index=params.indexes[0]), 
-                             files.VCF(path=params.vcfs[1], index=params.indexes[1])] 
-
     # Number of CPUs available
     CPUS = cpu_count(logical=True)
 
@@ -444,37 +429,20 @@ def delta(params: object) -> int:
         else:
             logger.debug("Computation will be carried out sequentially.")
 
-    result: dict = {}
+    filters: dict[str:bool] = {"SNP": params.exclude_snps,
+                               "TRANSITION": params.exclude_trans,
+                               "MNP": params.exclude_mnps,
+                               "INDELS": params.exclude_indels,
+                               "SV": params.exclude_svs,
+                               "VARS": params.exclude_vars,
+                               "PASS_ONLY": params.pass_only}
+    
+    logger.debug(f"Filters used: {filters}")
 
-    # Filters to apply during the parsing
-    FILTERS = (
-        {
-            "exclude": {
-                "exclude_snps": params.exclude_snps,
-                "exclude_indels": params.exclude_indels,
-                "exclude_vars": params.exclude_vars,
-                "exclude_mnps": params.exclude_mnps,
-                "exclude_transitions": params.exclude_trans,
-                "exclude_svs": params.exclude_svs,
-                "pass_only": params.pass_only,
-            },
-        }
-        # If no filters are set, used None for better memory management
-        if any(
-            [
-                params.exclude_snps,
-                params.exclude_indels,
-                params.exclude_vars,
-                params.exclude_mnps,
-                params.exclude_trans,
-                params.exclude_svs,
-                params.pass_only,
-            ]
-        )
-        else None
-    )
+    vcfs: list[files.VCF] = [files.VCF(path=params.vcfs[0], reference=True if params.benchmark else False, index=params.indexes[0], filters=filters), 
+                             files.VCF(path=params.vcfs[1], index=params.indexes[1], filters=filters)]
 
-    logger.debug(f"Filters used: {FILTERS}")
+    results: dict = {}
 
     if params.process:
 
@@ -508,21 +476,21 @@ def delta(params: object) -> int:
             # Submit the process for each file mapped to the vcf path
             futures_to_vcf = {
                 files_pool.submit(
-                    process_vcf, vcf, FILTERS, params.report, proc
+                    process_vcf, vcf, params.report, proc
                 ): vcf
                 for vcf, proc in iterable
             }
 
             # Should the main process compute a VCF, contributing to the workload ?
             if PROCESS_FILE > params.process:   
-                result[vcfs] = process_vcf(file=vcfs[0], filters=FILTERS, compute=params.report, pool=0)
+                results[vcfs] = process_vcf(file=vcfs[0], compute=params.report, pool=0)
 
             # Check if a process is completed
             for future in concurrent.futures.as_completed(futures_to_vcf):
 
-                # Get the returned result
+                # Get the returned results
                 try:
-                    (result[futures_to_vcf[future]]) = future.result()
+                    (results[futures_to_vcf[future]]) = future.result()
                     logger.success(
                     f"Process {future} for file {futures_to_vcf[future]} has completed."
                     )
@@ -545,33 +513,33 @@ def delta(params: object) -> int:
     # Computation is carried out sequentially.
     else:
         for vcf in vcfs:
-            result[vcf] = process_vcf(file=vcf, filters=FILTERS, compute=params.report, pool=0)
+            results[vcf] = process_vcf(file=vcf, compute=params.report, pool=0)
 
-    result["delta"] = {
+    results["delta"] = {
         "common": {},
         "unique": {vcfs[0]: {}, vcfs[1]: {}},
         "jaccard": {},
     }
     # Compute unique variants in first VCF file
     uniqueL: set = utils.difference(
-        a=frozenset(result[vcfs[0]]["variants"].index),
-        b=frozenset(result[vcfs[1]]["variants"].index),
+        a=frozenset(results[vcfs[0]]["variants"].index),
+        b=frozenset(results[vcfs[1]]["variants"].index),
     )
     # Compute unique variants in second VCF file
     uniqueR: set = utils.difference(
-        a=frozenset(result[vcfs[1]]["variants"].index),
-        b=frozenset(result[vcfs[0]]["variants"].index),
+        a=frozenset(results[vcfs[1]]["variants"].index),
+        b=frozenset(results[vcfs[0]]["variants"].index),
     )
     # Compute common variants between both VCF files
     common: set = utils.intersect(
-        a=frozenset(result[vcfs[0]]["variants"].index),
-        b=frozenset(result[vcfs[1]]["variants"].index),
+        a=frozenset(results[vcfs[0]]["variants"].index),
+        b=frozenset(results[vcfs[1]]["variants"].index),
     )
 
     (
-        result["delta"]["common"],
-        result["delta"]["unique"][vcfs[0]],
-        result["delta"]["unique"][vcfs[1]],
+        results["delta"]["common"],
+        results["delta"]["unique"][vcfs[0]],
+        results["delta"]["unique"][vcfs[1]],
     ) = (
         len(common),
         len(uniqueL),
@@ -579,28 +547,28 @@ def delta(params: object) -> int:
     )
 
     logger.debug(
-        f"{result['delta']['common']} variant(s) is/are commom in both files"
+        f"{results['delta']['common']} variant(s) is/are commom in both files"
     )
 
     logger.debug(
-        f"{result['delta']['unique'][vcfs[0]]} variant(s) is/are unique in files {vcfs[0]}"
+        f"{results['delta']['unique'][vcfs[0]]} variant(s) is/are unique in files {vcfs[0]}"
     )
 
     logger.debug(
-        f"{result['delta']['unique'][vcfs[1]]} variant(s) is/are unique in files {vcfs[1]}"
+        f"{results['delta']['unique'][vcfs[1]]} variant(s) is/are unique in files {vcfs[1]}"
     )
 
     # Compute the Jaccard Index
-    result["delta"]["jaccard"] = utils.jaccard_index(
-        shared=result["delta"]["common"],
+    results["delta"]["jaccard"] = utils.jaccard_index(
+        shared=results["delta"]["common"],
         total=(
-            result["delta"]["common"]
-            + result["delta"]["unique"][vcfs[0]]
-            + result["delta"]["unique"][vcfs[1]]
+            results["delta"]["common"]
+            + results["delta"]["unique"][vcfs[0]]
+            + results["delta"]["unique"][vcfs[1]]
         ),
     )
 
-    logger.debug(f"Jaccard index: {result['delta']['jaccard']}")
+    logger.debug(f"Jaccard index: {results['delta']['jaccard']}")
 
     # Rename columns to avoid conflicts, inplace for better memory management
     list(
@@ -619,8 +587,8 @@ def delta(params: object) -> int:
                 )
             ),
             [
-                result[vcfs[0]]["variants"],
-                result[vcfs[1]]["variants"],
+                results[vcfs[0]]["variants"],
+                results[vcfs[1]]["variants"],
             ],
             ["L", "R"],
         )
@@ -629,8 +597,8 @@ def delta(params: object) -> int:
     # Merge is made on the hash index
     df: DataFrame = concat(
         [
-            result[vcfs[0]]["variants"],
-            result[vcfs[1]]["variants"],
+            results[vcfs[0]]["variants"],
+            results[vcfs[1]]["variants"],
         ],
         axis=1,
         join="outer",
@@ -671,8 +639,8 @@ def delta(params: object) -> int:
     )
 
     # Delete DataFrames not of use anymore, to reduce memory footprint
-    del result[vcfs[0]]["variants"]
-    del result[vcfs[1]]["variants"]
+    del results[vcfs[0]]["variants"]
+    del results[vcfs[1]]["variants"]
 
     # Key is a references to the Hash string object in the Dataframe
     # Allow a O(1) lookup while keeping memory footprint low
@@ -722,36 +690,36 @@ def delta(params: object) -> int:
         pcommon: PlotLibrary = PlotLibrary()
 
         # Create a Venn diagram to display the common, unique variants between the two VCF files
-        pcommon.venn((result["delta"]["unique"][vcfs[0]], result["delta"]["unique"][vcfs[1]], result["delta"]["common"]), ['L','R'])
+        pcommon.venn((results["delta"]["unique"][vcfs[0]], results["delta"]["unique"][vcfs[1]], results["delta"]["common"]), ['L','R'])
 
         # Create a report with the results
-        Report(
+        files.Report(
             vcfs=vcfs,
             prefix=params.out,
             cmd=" ".join(argv),
             infos={
-                vcfs[0]: result[vcfs[0]]["info"],
-                vcfs[1]: result[vcfs[1]]["info"],
+                vcfs[0]: results[vcfs[0]]["info"],
+                vcfs[1]: results[vcfs[1]]["info"],
             },
             view={
                 "headers": {
-                    vcfs[0]: result[vcfs[0]]["header"],
-                    vcfs[1]: result[vcfs[1]]["header"],
+                    vcfs[0]: results[vcfs[0]]["header"],
+                    vcfs[1]: results[vcfs[1]]["header"],
                 },
                 "variants": df,
-                "stats": result["delta"]
+                "stats": results["delta"]
             },
             plots={
-                vcfs[0]: result[vcfs[0]]["plots"],
-                vcfs[1]: result[vcfs[1]]["plots"],
+                vcfs[0]: results[vcfs[0]]["plots"],
+                vcfs[1]: results[vcfs[1]]["plots"],
                 "common": pcommon
             },
             table=table if params.benchmark else None,
         ).create()
     # Print the results to the CLI
     else:
-        print(f"{vcfs[0]}: [{result['delta']['unique'][vcfs[0]]} unique]────[{result['delta']['common']} common]────[{result['delta']['unique'][vcfs[1]]} unique] :{vcfs[1]}")
-        print(f"Jaccard index: {result['delta']['jaccard']}")
+        print(f"{vcfs[0]}: [{results['delta']['unique'][vcfs[0]]} unique]────[{results['delta']['common']} common]────[{results['delta']['unique'][vcfs[1]]} unique] :{vcfs[1]}")
+        print(f"Jaccard index: {results['delta']['jaccard']}")
         if params.benchmark:
             print(tabulate(table,headers='keys',tablefmt='grid',numalign='center', stralign='center'))
 
