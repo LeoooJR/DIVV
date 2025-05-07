@@ -119,7 +119,7 @@ def save(obj: DataFrame, path: Path, format: str = "pickle", target: str = "L", 
 
     if format in FILES:
 
-        outf = str(Path(out,path.stem))
+        outf = str(Path(out, path.stem))
 
         if format in ["json", "pickle"]:
             # Open data stream

@@ -19,7 +19,7 @@ from psutil import cpu_count
 import utils
 
 
-@logger.catch
+
 def process_chromosome(
     chrom: str,
     file: files.VCF,
@@ -37,22 +37,14 @@ def process_chromosome(
     """
 
     logger.debug(
-        f"Processing chromosome {chrom} for file {FILES['archive']}"
+        f"Processing chromosome {chrom} for file {file}"
     )
 
     # Open the VCF file and set the index for faster lookup
     try:
-        vcf = VCF(FILES["archive"], lazy=True)
-        vcf.set_index(index_path=FILES["index"])
-    except FileNotFoundError as e:
+        file.open(context=False)
+    except (FileNotFoundError, errors.VCFError) as e:
         logger.error(e)
-
-    # Map the FORMAT values to there respectives informations
-    FORMAT: dict = {
-        "genotype": ["GT"],
-        "genotype_quality": ["GQ"],
-        "depth": ["DP", "TRC"],
-    }
 
     try:
         # At first, set the filters to False
@@ -96,23 +88,23 @@ def process_chromosome(
         # Suppress warnings from cyvcf2 in case of missing values
         with utils.suppress_warnings():
             # Iterate over the VCF file
-            for i, v in enumerate(vcf(f"{chrom}")):
+            for i, v in enumerate(file.stdin(f"{chrom}")):
                 # Get the values from the VCF file
                 parts: list[str] = str(v).split("\t")
                 # Set the INFO values as a single character to reduce memory footprint
-                parts[header["INFO"]] = '.'
+                parts[file.header["INFO"]] = '.'
                 # First iteration, get the FORMAT values
                 if not i:
 
-                    format: str = parts[header["FORMAT"]]
+                    format: str = parts[file.header["FORMAT"]]
 
                     logger.debug(f"FORMAT for chromosome {chrom}: {format}")
                 # From FORMAT get the values for each sample
                 samples_values: dict[str:dict] = {
                     s: utils.format_to_values(
-                        format=format, values=parts[header[s]]
+                        format=format, values=parts[file.header[s]]
                     )
-                    for s in samples
+                    for s in file.samples
                 }
                 # Should variant be filtered ?
                 if filters:
@@ -162,17 +154,17 @@ def process_chromosome(
                             # If previous passes have raised a warning, do not search for genotype quality score.
                             if not "genotype_quality" in warnings:
                                 try:
-                                    stats[FORMAT["genotype_quality"][0]].append(
+                                    stats[file.format["genotype_quality"][0]].append(
                                         [
                                             samples_values[s][
-                                                FORMAT["genotype_quality"][0]
+                                                file.format["genotype_quality"][0]
                                             ]
-                                            for s in samples
+                                            for s in file.samples
                                         ]
                                     )
                                 except KeyError:
                                     logger.warning(
-                                        f"Genotype quality value cannot be retrieved with key(s): {FORMAT['genotype_quality']}"
+                                        f"Genotype quality value cannot be retrieved with key(s): {file.format['genotype_quality']}"
                                     )
                                     # Keep record of exception
                                     warnings["genotype_quality"] = True
@@ -186,10 +178,10 @@ def process_chromosome(
                                             map(
                                                 lambda sample: utils.is_homozygous(
                                                     GT=samples_values[sample][
-                                                        FORMAT["genotype"][0]
+                                                        file.format["genotype"][0]
                                                     ]
                                                 ),
-                                                samples,
+                                                file.samples,
                                             )
                                         )
                                     )
@@ -199,15 +191,15 @@ def process_chromosome(
                                             map(
                                                 lambda sample: utils.is_heterozygous(
                                                     GT=samples_values[sample][
-                                                        FORMAT["genotype"][0]
+                                                        file.format["genotype"][0]
                                                     ]
                                                 ),
-                                                samples,
+                                                file.samples,
                                             )
                                         )
                                     )
                                 except KeyError:
-                                    logger.warning(f"Genotype type cannot be retrieved with key(s): {FORMAT['genotype']}")
+                                    logger.warning(f"Genotype type cannot be retrieved with key(s): {file.format['genotype']}")
                                     # Keep record of exception
                                     warnings["genotype"] = True
 
@@ -221,22 +213,22 @@ def process_chromosome(
                                     stats["depth"].append(
                                         [
                                             (
-                                                samples_values[s][FORMAT["depth"][0]]
-                                                if FORMAT["depth"][0] in samples_values[s]
-                                                else [samples_values[s][FORMAT["depth"][1]]]
+                                                samples_values[s][file.format["depth"][0]]
+                                                if file.format["depth"][0] in samples_values[s]
+                                                else [samples_values[s][file.format["depth"][1]]]
                                             ) # Try to get the depth value from the first FORMAT value, if not found, get it from the second FORMAT value
-                                            for s in samples
+                                            for s in file.samples
                                         ]
                                     )
                                 except KeyError:
-                                    logger.warning(f"Sequencing depth value cannot be retrieved with key(s): {FORMAT['depth']}")
+                                    logger.warning(f"Sequencing depth value cannot be retrieved with key(s): {file.format['depth']}")
                                     # Keep record of exception
                                     warnings["depth"] = True
     except UserWarning as e:
         logger.warning(e)
 
     # Close the data stream, avoid memory leaks
-    vcf.close()
+    file.close()
 
     # Create a DataFrame from the variants,
     variants: DataFrame = DataFrame.from_dict(
@@ -271,7 +263,6 @@ def process_chromosome(
     return (variants, filtered, stats) if compute else (variants, filtered, {})
 
 
-@logger.catch
 def process_vcf(
     file: files.VCF, filters: dict = None, compute: bool = False, pool: int = 1
 ) -> dict:
@@ -331,7 +322,7 @@ def process_vcf(
         # From this point, the VCF file is supposed indexed
         try:
             # Open the VCF with CyVCF2 file and set the index for faster lookup
-            file.open()
+            file.open(context=True)
         except (FileNotFoundError, errors.VCFError) as e:
             logger.error(e)
 
@@ -370,7 +361,7 @@ def process_vcf(
                         # If a report is wanted, add the length of the chromosome
                         if compute:
 
-                            stats[futures_to_chrom[future]]["length"] = file.stdin.seqlens[
+                            stats[futures_to_chrom[future]]["length"] = file.seqlens[
                                 file.chromosomes.index(futures_to_chrom[future])
                             ]
 
@@ -524,7 +515,7 @@ def delta(params: object) -> int:
 
             # Should the main process compute a VCF, contributing to the workload ?
             if PROCESS_FILE > params.process:   
-                result[params.vcfs[0]] = process_vcf(file=params.vcfs[0], index=params.indexes[0], filters=FILTERS, compute=params.report, pool=0)
+                result[vcfs] = process_vcf(file=vcfs[0], filters=FILTERS, compute=params.report, pool=0)
 
             # Check if a process is completed
             for future in concurrent.futures.as_completed(futures_to_vcf):
@@ -535,7 +526,7 @@ def delta(params: object) -> int:
                     logger.success(
                     f"Process {future} for file {futures_to_vcf[future]} has completed."
                     )
-                except Exception as e:
+                except errors.ProcessError as e:
                     logger.error(
                         f"File {futures_to_vcf[future]} generated an exception: {e}"
                     )
@@ -553,34 +544,34 @@ def delta(params: object) -> int:
                     
     # Computation is carried out sequentially.
     else:
-        for vcf, index in zip(params.vcfs, params.indexes):
-            result[vcf] = process_vcf(file=vcf, index=index, filters=FILTERS, compute=params.report, pool=0)
+        for vcf in vcfs:
+            result[vcf] = process_vcf(file=vcf, filters=FILTERS, compute=params.report, pool=0)
 
     result["delta"] = {
         "common": {},
-        "unique": {params.vcfs[0]: {}, params.vcfs[1]: {}},
+        "unique": {vcfs[0]: {}, vcfs[1]: {}},
         "jaccard": {},
     }
     # Compute unique variants in first VCF file
     uniqueL: set = utils.difference(
-        a=frozenset(result[params.vcfs[0]]["variants"].index),
-        b=frozenset(result[params.vcfs[1]]["variants"].index),
+        a=frozenset(result[vcfs[0]]["variants"].index),
+        b=frozenset(result[vcfs[1]]["variants"].index),
     )
     # Compute unique variants in second VCF file
     uniqueR: set = utils.difference(
-        a=frozenset(result[params.vcfs[1]]["variants"].index),
-        b=frozenset(result[params.vcfs[0]]["variants"].index),
+        a=frozenset(result[vcfs[1]]["variants"].index),
+        b=frozenset(result[vcfs[0]]["variants"].index),
     )
     # Compute common variants between both VCF files
     common: set = utils.intersect(
-        a=frozenset(result[params.vcfs[0]]["variants"].index),
-        b=frozenset(result[params.vcfs[1]]["variants"].index),
+        a=frozenset(result[vcfs[0]]["variants"].index),
+        b=frozenset(result[vcfs[1]]["variants"].index),
     )
 
     (
         result["delta"]["common"],
-        result["delta"]["unique"][params.vcfs[0]],
-        result["delta"]["unique"][params.vcfs[1]],
+        result["delta"]["unique"][vcfs[0]],
+        result["delta"]["unique"][vcfs[1]],
     ) = (
         len(common),
         len(uniqueL),
@@ -592,11 +583,11 @@ def delta(params: object) -> int:
     )
 
     logger.debug(
-        f"{result['delta']['unique'][params.vcfs[0]]} variant(s) is/are unique in files {params.vcfs[0]}"
+        f"{result['delta']['unique'][vcfs[0]]} variant(s) is/are unique in files {vcfs[0]}"
     )
 
     logger.debug(
-        f"{result['delta']['unique'][params.vcfs[1]]} variant(s) is/are unique in files {params.vcfs[1]}"
+        f"{result['delta']['unique'][vcfs[1]]} variant(s) is/are unique in files {vcfs[1]}"
     )
 
     # Compute the Jaccard Index
@@ -604,8 +595,8 @@ def delta(params: object) -> int:
         shared=result["delta"]["common"],
         total=(
             result["delta"]["common"]
-            + result["delta"]["unique"][params.vcfs[0]]
-            + result["delta"]["unique"][params.vcfs[1]]
+            + result["delta"]["unique"][vcfs[0]]
+            + result["delta"]["unique"][vcfs[1]]
         ),
     )
 
@@ -628,8 +619,8 @@ def delta(params: object) -> int:
                 )
             ),
             [
-                result[params.vcfs[0]]["variants"],
-                result[params.vcfs[1]]["variants"],
+                result[vcfs[0]]["variants"],
+                result[vcfs[1]]["variants"],
             ],
             ["L", "R"],
         )
@@ -638,8 +629,8 @@ def delta(params: object) -> int:
     # Merge is made on the hash index
     df: DataFrame = concat(
         [
-            result[params.vcfs[0]]["variants"],
-            result[params.vcfs[1]]["variants"],
+            result[vcfs[0]]["variants"],
+            result[vcfs[1]]["variants"],
         ],
         axis=1,
         join="outer",
@@ -680,8 +671,8 @@ def delta(params: object) -> int:
     )
 
     # Delete DataFrames not of use anymore, to reduce memory footprint
-    del result[params.vcfs[0]]["variants"]
-    del result[params.vcfs[1]]["variants"]
+    del result[vcfs[0]]["variants"]
+    del result[vcfs[1]]["variants"]
 
     # Key is a references to the Hash string object in the Dataframe
     # Allow a O(1) lookup while keeping memory footprint low
@@ -690,14 +681,14 @@ def delta(params: object) -> int:
     # Should a benchmark be computed ?
     if params.benchmark:
 
-        logger.debug(f"Computing benchmark metrics from {params.vcfs[0]}.")
+        logger.debug(f"Computing benchmark metrics from {vcfs[0]}.")
 
         table: DataFrame = utils.evaluate(df)
 
     # Should the output be serialized ?
     if params.serialize:
 
-        logger.debug("Serializing output.")
+        logger.debug(f"Serializing output as {params.serialize}.")
 
         if params.process:
             # Parallelize the serialization process, with as much process as VCF files inputed
@@ -707,7 +698,7 @@ def delta(params: object) -> int:
                 futures_to_vcf = {
                     files_pool.submit(
                         utils.save, df, vcf, params.serialize, t, lookup
-                    ): vcf for vcf, t in zip([Path(params.vcfs[0]),Path(params.vcfs[1])],['L','R'])
+                    ): vcf for vcf, t in zip([vcfs[0].path, vcfs[1].path], ['L','R'])
                 }
                 # Check if a process is completed
                 for future in concurrent.futures.as_completed(futures_to_vcf):
@@ -719,8 +710,8 @@ def delta(params: object) -> int:
                        logger.error(e)
         # Computation is carried out sequentially.
         else:
-            for vcf, t in zip(params.vcfs, ['L','R']):
-                utils.save(obj=df, path=Path(vcf), format=params.serialize, target=t, lookup=lookup)
+            for vcf, t in zip(vcfs, ['L','R']):
+                utils.save(obj=df, path=vcf.path, format=params.serialize, target=t, lookup=lookup)
 
     # Should the output be reported ?
     if params.report:
@@ -731,35 +722,35 @@ def delta(params: object) -> int:
         pcommon: PlotLibrary = PlotLibrary()
 
         # Create a Venn diagram to display the common, unique variants between the two VCF files
-        pcommon.venn((result["delta"]["unique"][params.vcfs[0]], result["delta"]["unique"][params.vcfs[1]], result["delta"]["common"]), ['L','R'])
+        pcommon.venn((result["delta"]["unique"][vcfs[0]], result["delta"]["unique"][vcfs[1]], result["delta"]["common"]), ['L','R'])
 
         # Create a report with the results
         Report(
-            vcfs=params.vcfs,
+            vcfs=vcfs,
             prefix=params.out,
             cmd=" ".join(argv),
             infos={
-                params.vcfs[0]: result[params.vcfs[0]]["info"],
-                params.vcfs[1]: result[params.vcfs[1]]["info"],
+                vcfs[0]: result[vcfs[0]]["info"],
+                vcfs[1]: result[vcfs[1]]["info"],
             },
             view={
                 "headers": {
-                    params.vcfs[0]: result[params.vcfs[0]]["header"],
-                    params.vcfs[1]: result[params.vcfs[1]]["header"],
+                    vcfs[0]: result[vcfs[0]]["header"],
+                    vcfs[1]: result[vcfs[1]]["header"],
                 },
                 "variants": df,
                 "stats": result["delta"]
             },
             plots={
-                params.vcfs[0]: result[params.vcfs[0]]["plots"],
-                params.vcfs[1]: result[params.vcfs[1]]["plots"],
+                vcfs[0]: result[vcfs[0]]["plots"],
+                vcfs[1]: result[vcfs[1]]["plots"],
                 "common": pcommon
             },
             table=table if params.benchmark else None,
         ).create()
     # Print the results to the CLI
     else:
-        print(f"{params.vcfs[0]}: [{result['delta']['unique'][params.vcfs[0]]} unique]────[{result['delta']['common']} common]────[{result['delta']['unique'][params.vcfs[1]]} unique] :{params.vcfs[1]}")
+        print(f"{vcfs[0]}: [{result['delta']['unique'][vcfs[0]]} unique]────[{result['delta']['common']} common]────[{result['delta']['unique'][vcfs[1]]} unique] :{vcfs[1]}")
         print(f"Jaccard index: {result['delta']['jaccard']}")
         if params.benchmark:
             print(tabulate(table,headers='keys',tablefmt='grid',numalign='center', stralign='center'))

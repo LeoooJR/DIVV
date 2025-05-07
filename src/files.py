@@ -4,6 +4,7 @@ import filetype
 import gzip
 from loguru import logger
 import os
+import pathlib
 import subprocess
 from utils import runcmd
 
@@ -14,7 +15,7 @@ class GenomicFile():
     def __init__(self, path: str):
 
         # Path to the file
-        self.path = path
+        self.path: pathlib.Path = pathlib.Path(path)
 
     def is_empty(self) -> bool:
         """Check if file is empty"""
@@ -26,17 +27,17 @@ class GenomicFile():
 
         return os.path.isfile(self.path)
 
-    def get_path(self) -> str:
+    def get_path(self) -> pathlib.Path:
 
         return self.path
     
     def __str__(self):
         
-        return self.path
+        return str(self.path)
     
     def __repr__(self):
         
-        return self.path
+        return repr(self.path)
     
     def __hash__(self):
         
@@ -59,6 +60,13 @@ class VCF(GenomicFile):
         "FORMAT": 8,
     }
 
+    # Map the FORMAT values to there respectives informations
+    FORMAT: dict = {
+        "genotype": ["GT"],
+        "genotype_quality": ["GQ"],
+        "depth": ["DP", "TRC"],
+    }
+
     def __init__(self, path: str, reference: bool = False, index: str = None,  lazy: bool = True):
         
         super().__init__(path)
@@ -67,13 +75,21 @@ class VCF(GenomicFile):
 
         self.archive: str = None
 
+        self.stdin = None
+
         self.SAMPLES = None
 
         self.chromosomes = None
 
+        self.seqlens = None
+
         if index:
 
             self._index: VCFIndex = VCFIndex(path=index, vcf=self)
+
+        else:
+
+            self._index: VCFIndex = None
 
         if not lazy:
 
@@ -99,6 +115,11 @@ class VCF(GenomicFile):
         return self.HEADER
     
     @property
+    def format(self):
+
+        return self.FORMAT
+    
+    @property
     def samples(self):
 
         return self.SAMPLES
@@ -118,7 +139,7 @@ class VCF(GenomicFile):
 
             raise errors.VCFError(f"The file {self} does not exist.")
 
-        if not self.is_empty():
+        if self.is_empty():
 
             raise errors.VCFError(f"The file {self} is empty.")
         
@@ -133,8 +154,6 @@ class VCF(GenomicFile):
             
             # The file is a Gz archive
             else:
-
-                self.archive: str = self.path
 
                 try:
 
@@ -168,6 +187,8 @@ class VCF(GenomicFile):
                             if line[0] != '#':
 
                                 raise errors.VCFError(f"First line inconsistent with VCF header format")
+                            
+                    self.archive: str = self.path
                             
                 except FileNotFoundError:
 
@@ -216,8 +237,8 @@ class VCF(GenomicFile):
 
         archive: str = f"{self.path}.{EXT}"
 
-        CMDS: dict = {"bcftools": ["bcftools", "view", "-O", "z", "-o", archive, self.path],
-                    "bgzip": ["bgzip", "-c", self.path]}
+        CMDS: dict = {"bcftools": ["bcftools", "view", "-O", "z", "-o", archive, str(self.path)],
+                    "bgzip": ["bgzip", "-c", str(self.path)]}
 
         outcode: int = 1
         retry: int = 0
@@ -245,10 +266,10 @@ class VCF(GenomicFile):
 
         EXT: str = "tbi"
 
-        index: str = f"{self.path}.{EXT}"
+        index: str = f"{self.archive}.{EXT}"
 
-        CMDS: dict = {"bcftools": ["bcftools", "index", "-t", self.path],
-                    "tabix": ["tabix", "-f", "-p", "vcf", self.path]}
+        CMDS: dict = {"bcftools": ["bcftools", "index", "-t", self.archive],
+                    "tabix": ["tabix", "-f", "-p", "vcf", self.archive]}
 
         outcode: int = 1
         retry: int = 0
@@ -273,11 +294,11 @@ class VCF(GenomicFile):
         # Return index path ONLY if exit code is 0
         self._index = None if outcode else VCFIndex(path=index, vcf=self)
 
-    def open(self, lookup: str, context: bool = True):
+    def open(self, lookup: str = None, context: bool = True):
 
-        self.stdin: cyvcf2.VCF = cyvcf2.VCF(self.archive)
+        self.stdin: cyvcf2.VCF = cyvcf2.VCF(self.archive, lazy=True)
 
-        self.stdin.set_index(index_path=self._index.path)
+        self.stdin.set_index(index_path=str(self._index.path))
 
         if not self.SAMPLES:
 
@@ -304,15 +325,29 @@ class VCF(GenomicFile):
 
             chromosomes = self.stdin.seqnames
 
-            if len(chromosomes) == 0:
+            if len(chromosomes):
 
-                raise errors.VCFError(f"No chromosome found in {self}")
+                logger.debug(f"File {self} is composed of {chromosomes} chromosomes")
             
             else:
 
-                logger.debug(f"File {self} is composed of {chromosomes} chromosomes")
+                raise errors.VCFError(f"No chromosome found in {self}")
 
             self.chromosomes = chromosomes
+
+        if not self.seqlens:
+
+            seqlens = self.stdin.seqlens
+
+            if len(seqlens):
+
+                logger.debug(f"Length of sequences have been found.")
+
+            else:
+
+                raise errors.VCFError(f"Length of sequences cannot be extracted.")
+            
+            self.seqlens = seqlens
 
         if context:
 
@@ -324,6 +359,8 @@ class VCF(GenomicFile):
         if isinstance(self.stdin, cyvcf2.VCF):
 
             self.stdin.close()
+
+            self.stdin = None
 
     def update_header(self, samples: list):
 
