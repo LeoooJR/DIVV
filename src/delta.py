@@ -7,7 +7,7 @@ from loguru import logger
 from memory_profiler import profile
 import numpy as np
 from operator import itemgetter
-from os.path import basename, getsize
+from os.path import getsize
 from pandas import DataFrame, Index, concat
 from plots import visualization, PlotLibrary
 from sys import argv
@@ -18,13 +18,13 @@ import utils
 def process_chromosome(
     chrom: str,
     file: files.VCF,
-    compute: bool = False,
+    profile: bool = False,
 ) -> dict:
     """
     Process a chromosome from a VCF file
         chrom: containing the chromosome to process
         file: containing the path to the VCF file and the index file
-        compute: to compute the statistics if a report is wanted
+        profile: to compute the statistics if a report is wanted
     """
 
     logger.debug(
@@ -36,6 +36,7 @@ def process_chromosome(
         file.open(context=False)
     except (FileNotFoundError, errors.VCFError) as e:
         logger.error(e)
+        raise errors.ProcessError()
 
     try:
         # At first, set the filters to False
@@ -50,7 +51,7 @@ def process_chromosome(
         }
         # If a report is wanted, set the statistics to 0
         # If no report is wanted, the dictionary is not created reducing memory footprint
-        if compute:
+        if profile:
             stats: dict = {
                 "variant": {
                     "snp": {
@@ -123,7 +124,7 @@ def process_chromosome(
                             '\t'.join(parts),
                         ]
                         # Should the statistics be computed ?
-                        if compute:
+                        if profile:
                             # The variant type is common to all samples
                             if v.var_type == "snp":
                                 if v.is_transition:
@@ -244,24 +245,23 @@ def process_chromosome(
     )
 
     # Set the statistics computed as the right type for better memory management
-    if compute:
+    if profile:
         stats["depth"], stats["quality"], stats["GQ"] = (
             np.array(stats["depth"], dtype=np.uint16),
             np.array(stats["quality"], dtype=np.float16),
             np.array(stats["GQ"], dtype=np.uint16),
         )
 
-    return (variants, filtered, stats) if compute else (variants, filtered, {})
+    return (variants, filtered, stats) if profile else (variants, filtered, {})
 
 
 def process_vcf(
-    file: files.VCF, compute: bool = False, pool: int = 1
+    file: files.VCF, profile: bool = False, pool: int = 1
 ) -> dict:
     """ 
     Main function to process a VCF file
         file: containing the path to the VCF file
-        index: containing the path to the index file
-        compute: to compute the statistics if a report is wanted
+        profile: to compute the statistics if a report is wanted
         pool: to set the number of process available
     """
 
@@ -311,12 +311,10 @@ def process_vcf(
     if file.archive and file.index:
         # From this point, the VCF file is supposed indexed
         try:
-            # Open the VCF with CyVCF2 file and set the index for faster lookup
             file.open(context=True)
         except (FileNotFoundError, errors.VCFError) as e:
             logger.error(e)
-
-        variants, filtered, stats = {}, {}, {}
+            raise errors.ProcessError()
 
         if pool:
             # Process the chromosomes concurrently, using as much process as available
@@ -330,7 +328,7 @@ def process_vcf(
                         process_chromosome,
                         chrom,
                         file,
-                        compute,
+                        profile,
                     ): chrom
                     for chrom in file.chromosomes # VCF object cannot be pickled thus cannot be passed to a process
                 }
@@ -343,14 +341,12 @@ def process_vcf(
                     # Get the returned result
                     try:
                         (
-                            variants[futures_to_chrom[future]],
-                            filtered[futures_to_chrom[future]],
-                            stats[futures_to_chrom[future]],
-                        ) = future.result()
+                            file.variants.update_repository(futures_to_chrom[future], *future.result())
+                        )
                         # If a report is wanted, add the length of the chromosome
-                        if compute:
+                        if profile:
 
-                            stats[futures_to_chrom[future]]["length"] = file.seqlens[
+                            file.variants.profile[futures_to_chrom[future]]["length"] = file.seqlens[
                                 file.chromosomes.index(futures_to_chrom[future])
                             ]
 
@@ -361,22 +357,23 @@ def process_vcf(
         # Computation is carried out sequentially.                
         else:
             for chrom in file.chromosomes:
-                variants[chrom], filtered[chrom], stats[chrom] = process_chromosome(chrom=chrom, 
-                                                                                    file=file, 
-                                                                                    compute=compute)
+                file.variants.repository[chrom], file.variants.filtered[chrom], file.variants.profile[chrom] = process_chromosome(chrom=chrom, 
+                                                                                                                                    file=file, 
+                                                                                                                                    stats=file.variants.profile)
 
         # If a report is wanted, create plots
-        if compute:
-            library = visualization(file=basename(file.path), stats=stats)
+        if profile:
+
+            library = visualization(file=file.basename(), stats=file.variants.profile)
 
         return {
-            "info": utils.file_stats(file.path), # Get the information about the VCF file
+            "info": utils.file_infos(file.path), # Get the information about the VCF file
             "header": "\t".join(list(file.header.keys())), # Get the header of the VCF file
             "variants": concat(
-                list(itemgetter(*list(sorted(variants.keys())))(variants))
+                list(itemgetter(*list(sorted(file.variants.repository.keys())))(file.variants.repository))
             ), # Concatenate the chromosomes DataFrames
-            "filter": filtered, # Get the stats about filtered variants
-            "plots": library if compute else None, # Get the plots
+            "filter": file.variants.filtered, # Get the stats about filtered variants
+            "plots": library if profile else None, # Get the plots
         }
     
     else:

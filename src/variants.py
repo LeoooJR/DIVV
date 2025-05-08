@@ -1,3 +1,8 @@
+import numpy
+from pandas import Series, DataFrame, concat
+from plots import PlotLibrary
+import utils
+
 class VariantRepository():
 
     def __init__(self, filters: dict = None):
@@ -22,6 +27,12 @@ class VariantRepository():
 
             self.FILTERS: dict = None
 
+        self.repository: dict = {}
+
+        self.profile: dict = {}
+
+        self.filtered: dict = {}
+
     @property
     def filters(self):
 
@@ -45,9 +56,80 @@ class VariantRepository():
                                         },
                                     }
                                 )
+            
+    def update_repository(self, chromosome: str, variants: DataFrame = None, filtered: dict = None, profile: dict = None):
+
+        if not (variants.empty):
+
+            self.repository[chromosome] = variants
+
+        if filtered:
+
+            self.filtered[chromosome] =  filtered
+
+        if profile:
+
+            self.profile[chromosome] = profile
+
+    def visualization(self):
+
+        self.plots = PlotLibrary()
+
+        data = []
+
+        chromosomes = self.profile.keys()
+
+        for k in chromosomes:
+
+            data.append({"Chromosome": k, "Type": "Indel", "Count": self.profile[k]["variant"]["indel"]["deletion"] + self.profile[k]["variant"]["indel"]["insertion"]})
+            data.append({"Chromosome": k, "Type": "SNP", "Count": self.profile[k]["variant"]["snp"]["transition"] + self.profile[k]["variant"]["snp"]["transversion"]})
+            data.append({"Chromosome": k, "Type": "SV", "Count": self.profile[k]["variant"]["sv"]})
+
+        self.plots.barplot(data, "Chromosome","Count", "Type", "Variant by chromosome", "VariantByChromosome")
+
+        data = DataFrame([{"Chromosome": k, "Genotype": genotype, "Count": self.profile[k][code]} 
+                        for k in chromosomes 
+                        for genotype, code in [("Homozygous", "hom"), ("Heterozygous", "het")]])
+
+        self.plots.barplot(data, "Chromosome", "Count", "Genotype", "Genotype by chromosome","GenotypeByChromosome")
+
+        data = DataFrame([{"Chromosome": k, "SNP": snp, "Count": self.profile[k]["variant"]["snp"][snp]} for k in chromosomes for snp in ["transition","transversion"]])
+
+        self.plots.barplot(data, "Chromosome", "Count", "SNP", "SNP Type by Chromosome", "SNPTypeByChrom")
+
+        chromosome = list(chromosomes)[0]
+
+        if self.profile[chromosome]["GQ"].size:
+
+            pass
+
+        if self.profile[chromosome]["depth"].size:
+
+            with utils.suppress_warnings():       
+                data = DataFrame(list(map(lambda k: Series([k, numpy.mean(self.profile[k]["depth"])], index=["Chromosome", "Depth"]), chromosomes)))
+            
+            self.plots.barplot(data, "Chromosome", "Depth", color="Chromosome", title="Mean depth by chromosome", prefix="DepthByChromosomeBarPlot")
+
+            data = list(map(lambda k: DataFrame({"Chromosome": [k] * self.profile[k]["depth"].size,
+                                    "Depth": self.profile[k]["depth"].flatten()}), chromosomes))
+
+            df = concat(data, ignore_index=True).astype({"Chromosome": "category", "Depth": "int"})
+
+            self.plots.boxplot(df, "Chromosome", "Depth", "Chromosome", "Depth by chromosome", "DepthByChromosomeBoxPlot")
+
+            self.plots.histogram(df, "Depth", None, "Depth", "DepthHist")
+
+            data.clear()
+
+        if self.profile[chromosome]["quality"].size:
+
+            pass
+    
 class Chromosome():
 
-    def __init__(self, length):
+    def __init__(self, name: str, length: int):
+
+        self.name: str = name
         
         self._length: int = length
 

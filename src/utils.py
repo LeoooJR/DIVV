@@ -97,7 +97,7 @@ def save(obj: DataFrame, path: Path, format: str = "pickle", target: str = "L", 
     else:
         raise ValueError(f"Error: The file format {format} is not supported.")
 
-def file_stats(path: str) -> dict:
+def file_infos(path: str) -> dict:
     """ Get file stats """
     statinfo = os.stat(path)
 

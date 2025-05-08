@@ -10,7 +10,7 @@ from pandas import isna, DataFrame
 import pathlib
 from shutil import copy, copytree
 import subprocess
-from utils import runcmd
+from utils import runcmd, file_infos
 import variants
 import zipfile
 
@@ -36,6 +36,14 @@ class GenomicFile():
     def get_path(self) -> pathlib.Path:
 
         return self.path
+    
+    def basename(self) -> str:
+
+        return os.path.basename(self.path)
+    
+    def informations(self) -> dict:
+
+        return file_infos(self.path)
     
     def __str__(self):
         
@@ -308,6 +316,7 @@ class VCF(GenomicFile):
 
     def open(self, lookup: str = None, context: bool = True):
 
+        # Open the VCF with CyVCF2 and set the index for faster lookup
         self.stdin: cyvcf2.VCF = cyvcf2.VCF(self.archive, lazy=True)
 
         self.stdin.set_index(index_path=str(self._index.path))
@@ -480,9 +489,6 @@ class Report:
         # How to save the outputs
         self.out = out
 
-    def __str__(self):
-        pass
-
     def create(self):
 
         # Custom filter to check if a value is NaN with Jinja2
@@ -538,3 +544,7 @@ class Report:
                     zip.write(stylesheet, arcname=os.path.relpath(path=stylesheet, start=ressources))
                 for static in glob(statics):
                     zip.write(static, arcname=os.path.relpath(path=static, start=ressources))
+
+    def __str__(self):
+        
+        pass
