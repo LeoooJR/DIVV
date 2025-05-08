@@ -7,7 +7,7 @@ class VariantRepository():
 
     def __init__(self, filters: dict = None):
         
-        if any(filters):
+        if filters and any(filters):
 
             # Filters to apply during the parsing
             self.FILTERS: dict = (

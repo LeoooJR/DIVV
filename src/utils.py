@@ -1,9 +1,6 @@
 import contextlib
 from cyvcf2 import VCF, Writer
 from datetime import datetime, timezone
-import errors
-import filetype
-import gzip
 from hashlib import sha256
 import json
 from loguru import logger

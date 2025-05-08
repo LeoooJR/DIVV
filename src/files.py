@@ -1,3 +1,4 @@
+import copy as cp
 import cyvcf2
 import errors
 import filetype
@@ -5,6 +6,7 @@ from glob import glob
 import gzip
 from jinja2 import Environment, FileSystemLoader
 from loguru import logger
+import numpy as np
 import os
 from pandas import isna, DataFrame
 import pathlib
@@ -85,6 +87,10 @@ class VCF(GenomicFile):
         
         super().__init__(path)
 
+        if not lazy:
+
+            self.verify()
+
         self.reference: bool = reference
 
         self.archive: str = None
@@ -99,17 +105,22 @@ class VCF(GenomicFile):
 
         self.seqlens = None
 
-        if index:
+        if self.archive and index:
 
-            self._index: VCFIndex = VCFIndex(path=index, vcf=self)
+            try:
+
+                self._index: VCFIndex = VCFIndex(path=index, vcf=self, lazy=False)
+
+            # Errors caused by the provided index are treated as warnings.
+            except errors.IndexError:
+
+                logger.warning(f"{index} is not a valid VCF index file.")
+
+                self._index: VCFIndex = None
 
         else:
 
             self._index: VCFIndex = None
-
-        if not lazy:
-
-            self.verify()
 
     @property
     def index(self):
@@ -119,7 +130,19 @@ class VCF(GenomicFile):
     @index.setter
     def index(self, value: str):
 
-        self._index: VCFIndex = VCFIndex(path=value)
+        if isinstance(value, str):
+
+            try:
+
+                self._index: VCFIndex = VCFIndex(path=value, vcf=self, lazy=False)
+
+            except errors.IndexError:
+
+                self._index = None
+
+        elif isinstance(value, VCFIndex):
+
+            self._index: VCFIndex = value
 
     def is_indexed(self) -> bool:
 
@@ -128,6 +151,19 @@ class VCF(GenomicFile):
     def is_compressed(path: str, type: str) -> bool:
         """ Checks if a file is a compressed archive type """
         return filetype.archive_match(path) == type
+
+    def preprocessing(self):
+
+        # File must be indexed
+        if not self.is_indexed():
+            
+            # Compression
+            if not self.archive:
+
+                self.compressing()
+
+            # Call a process to index the file
+            self.indexing()
     
     @property
     def header(self):
@@ -217,10 +253,6 @@ class VCF(GenomicFile):
                 except IOError:
 
                     raise errors.VCFError(f"An error occurred while reading {self}")
-                
-                if self._index:
-
-                    self._index.verify()
         
         # Is not a archive
         else:
@@ -403,6 +435,10 @@ class VCF(GenomicFile):
             f"Header for {self} has such format: {' '.join(self.HEADER.keys())}"
         )
 
+    def package(self):
+
+        return cp.deepcopy(self)
+
 class VCFIndex(GenomicFile):
 
     """Class for VCF index files"""
@@ -411,11 +447,11 @@ class VCFIndex(GenomicFile):
         
         super().__init__(path)
 
-        self.vcf: VCF = vcf
-
         if not lazy:
 
             self.verify()
+
+        self.vcf: VCF = vcf
 
     def verify(self):
 

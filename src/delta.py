@@ -273,29 +273,6 @@ def process_vcf(
         raise ValueError("Number of processes alocated must be an positive unsigned integer.")
 
     logger.debug(f"Computation will be {'parallelized' if pool else 'made sequentially'} by chromosome(s).")
-
-    # Check if the file exists and is not empty
-    try:
-
-        file.verify()
-
-        if file.is_indexed():
-
-            file.index.verify()
-
-    except (errors.VCFError, errors.IndexError) as e:
-
-        logger.error(e)
-
-        # Error raised by VCF file are critical
-        if isinstance(e,errors.VCFError):
-            logger.error(f"{file} is not a valid VCF file.")
-            raise errors.ProcessError(f"{file} is not a valid VCF file.")
-        
-        # Errors caused by the provided index are treated as warnings.
-        elif isinstance(e,errors.IndexError):
-            logger.warning(f"{file.index} is not a valid VCF index file.")
-            file.index = None
             
     # File must be indexed
     if not file.is_indexed():
@@ -327,7 +304,7 @@ def process_vcf(
                     chrom_executor.submit(
                         process_chromosome,
                         chrom,
-                        file,
+                        file.package(),
                         profile,
                     ): chrom
                     for chrom in file.chromosomes # VCF object cannot be pickled thus cannot be passed to a process
@@ -378,7 +355,7 @@ def process_vcf(
     
     else:
 
-        raise errors.CompressionIndexError(f"Failed to compress and index {file}")
+        raise errors.CompressionIndexError(f"Failed to compress or/and index {file}")
 
 
 def delta(params: object) -> int:
@@ -436,8 +413,16 @@ def delta(params: object) -> int:
     
     logger.debug(f"Filters used: {filters}")
 
-    vcfs: list[files.VCF] = [files.VCF(path=params.vcfs[0], reference=True if params.benchmark else False, index=params.indexes[0], filters=filters), 
-                             files.VCF(path=params.vcfs[1], index=params.indexes[1], filters=filters)]
+    try:
+
+        vcfs: list[files.VCF] = [files.VCF(path=params.vcfs[0], reference=True if params.benchmark else False, index=params.indexes[0], filters=filters, lazy=False), 
+                                files.VCF(path=params.vcfs[1], index=params.indexes[1], filters=filters, lazy=False)]
+        
+    except errors.VCFError as e: # Error raised by VCF file are critical
+
+        logger.error(f"Error: {e}")
+
+        raise SystemExit()
 
     results: dict = {}
 
