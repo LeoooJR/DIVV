@@ -59,6 +59,10 @@ class GenomicFile():
         
         return hash(self.path)
     
+    def __eq__(self, value):
+        
+        return self.path == value.path
+    
 class VCF(GenomicFile):
 
     """Class for VCF files"""
@@ -151,19 +155,6 @@ class VCF(GenomicFile):
     def is_compressed(path: str, type: str) -> bool:
         """ Checks if a file is a compressed archive type """
         return filetype.archive_match(path) == type
-
-    def preprocessing(self):
-
-        # File must be indexed
-        if not self.is_indexed():
-            
-            # Compression
-            if not self.archive:
-
-                self.compressing()
-
-            # Call a process to index the file
-            self.indexing()
     
     @property
     def header(self):

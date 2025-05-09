@@ -1,3 +1,4 @@
+from operator import itemgetter
 import numpy
 from pandas import Series, DataFrame, concat
 from plots import PlotLibrary
@@ -70,6 +71,10 @@ class VariantRepository():
         if profile:
 
             self.profile[chromosome] = profile
+
+    def collapse(self) -> DataFrame:
+
+        return concat(list(itemgetter(*list(sorted(self.repository.keys())))(self.repository)))
 
     def visualization(self):
 

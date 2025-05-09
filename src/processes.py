@@ -1,33 +1,76 @@
+from collections.abc import Callable
 import concurrent.futures
 import errors
 import files
+from hashlib import sha256
+from itertools import chain
 from loguru import logger
+import numpy as np
+from pandas import Index, DataFrame
+from psutil import cpu_count
 import utils
 
 class TasksManager():
 
-    def __init__(self, vcfs: list[files.VCF], processes: int):
+    def __init__(self, vcfs: list[files.VCF], processes: int = 0):
 
         assert processes >= 0, "Number of processes alocated must be an positive unsigned integer."
-
-        if processes < 0:
-            raise ValueError("Number of processes alocated must be an positive unsigned integer.")
         
-        self.processes: int = processes
+        if processes:
 
-        self.processor: VCFProcessor = VCFProcessor()
+            if processes < 0:
 
-        self.vcfs: list[files.VCF] = vcfs
+                raise ValueError("Number of processes alocated must be an positive unsigned integer.")
 
-    def scheduling(self):
+            # Number of CPUs available
+            CPUS = cpu_count(logical=True)
 
-        self.tasks: list[tuple] = [(vcf, chrom for chrom in self.vcfs[i].chromosomes) for i, vcf in enumerate(self.vcfs)]
+            logger.debug(f"Number of logical(s) CPU(s) detected: {CPUS}.")
 
-    def commit(self, job: function, jobargs: dict[str:object], initializer: function = None, initargs: dict[str:object] = None):
+            if CPUS > 1:
+                self.processes = min(processes, CPUS)
+                logger.debug(f"Tasks will be parallelized on {self.processes} CPU(s).")
+            else:
+                self.processes = 0
+                logger.debug("Computation will be carried out sequentially.")
+
+        else:
+        
+            self.processes: int = processes
+
+        self.vcfs: list = vcfs
+
+        self.tasks = None
+
+        self.results: dict = {}
+
+    def scheduling(self, tasks: list[list[object]]):
+
+        self.tasks: dict[files.VCF:list] = {vcf: [(vcf, task) for task in tasks[i]] for i, vcf in enumerate(self.vcfs)}
+
+        logger.debug(f"Task(s) scheduled {self.flatten()}")
+
+    def flatten(self):
+
+        return list(chain.from_iterable(self.tasks.values()))
+
+    def commit(self, job: Callable, jobargs: dict[str:object], initializer: Callable = None, initargs: dict[str:object] = None):
+
+        if self.results:
+
+            self.results.clear()
 
         if initializer:
 
-            initializer(**initargs)
+            for vcf in self.vcfs:
+
+                try:
+
+                    initializer(vcf, *initargs)
+
+                except Exception as e:
+
+                    raise errors.ProcessError(e)
 
         if self.processes:
             # Process the chromosomes concurrently, using as much process as available
@@ -39,40 +82,35 @@ class TasksManager():
                 futures = {
                     chrom_executor.submit(
                         job,
-                        chrom,
-                        file.package(),
-                        profile,
+                        task,
+                        *jobargs
                     ): task
-                    for task in self.tasks # VCF object cannot be pickled thus cannot be passed to a process
+                    for task in self.flatten()
                 }
                 # Check if a process is completed
                 for future in concurrent.futures.as_completed(futures):
 
-                    logger.success(
-                        f"Process {future} for chromosome {futures[future][1]} in file {futures[future][0]} has completed."
-                    )
                     # Get the returned result
                     try:
-                        (
-                            futures[future][0].variants.update_repository(futures[future], *future.result())
+
+                        self.results[futures[future]] = future.result()
+                    
+                        logger.success(
+                            f"Process {future} for task {futures[future]} has completed."
                         )
-                        # If a report is wanted, add the length of the chromosome
-                        if profile:
 
-                            futures[future][0].variants.profile[futures[future]]["length"] = file.seqlens[
-                                futures[future][0].chromosomes.index(futures[future])
-                            ]
+                    except errors.ProcessError as e:
 
-                    except Exception as e:
                         logger.warning(
-                            f"Chromosome {futures[future][1]} in file {futures[future][0]} generated an exception: {e}"
+                            f"Process {future} for task {futures[future]} generated an exception: {e}"
                         )
+                        
         # Computation is carried out sequentially.                
         else:
-            for task in self.tasks:
-                task[0].variants.repository[chrom], task[0].variants.filtered[chrom], task[0].variants.profile[chrom] = job(chrom=chrom, 
-                                                                                                                            file=file, 
-                                                                                                                            stats=file.variants.profile)
+
+            for task in self.flatten():
+
+                self.results[futures[future]] = job(task, *jobargs)
 
 class VCFProcessor:
 
@@ -80,10 +118,35 @@ class VCFProcessor:
 
         pass
 
+    def is_supported():
+
+        pass
+    
+    @staticmethod
+    def preprocessing(vcf: files.VCF):
+
+        # File must be indexed
+        if not vcf.is_indexed():
+
+            try:
+            
+                # Compression
+                if not vcf.archive:
+
+                    vcf.compressing()
+
+                # Call a process to index the file
+                vcf.indexing()
+
+            except Exception as e:
+
+                raise errors.CompressionIndexError(f"Failed to compress or/and index {vcf}")
+            
+        vcf.open(context=True)
+
     @staticmethod
     def process_chromosome(
-        file: files.VCF,
-        chrom: str,
+        task,
         profile: bool = False,
     ) -> dict:
         """
@@ -94,12 +157,12 @@ class VCFProcessor:
         """
 
         logger.debug(
-            f"Processing chromosome {chrom} for file {file}"
+            f"Processing chromosome {task[1]} for file {task[0]}"
         )
 
         # Open the VCF file and set the index for faster lookup
         try:
-            file.open(context=False)
+            task[0].open(context=False)
         except (FileNotFoundError, errors.VCFError) as e:
             logger.error(e)
             raise errors.ProcessError()
@@ -146,28 +209,28 @@ class VCFProcessor:
             # Suppress warnings from cyvcf2 in case of missing values
             with utils.suppress_warnings():
                 # Iterate over the VCF file
-                for i, v in enumerate(file.stdin(f"{chrom}")):
+                for i, v in enumerate(task[0].stdin(f"{task[1]}")):
                     # Get the values from the VCF file
                     parts: list[str] = str(v).split("\t")
                     # Set the INFO values as a single character to reduce memory footprint
-                    parts[file.header["INFO"]] = '.'
+                    parts[task[0].header["INFO"]] = '.'
                     # First iteration, get the FORMAT values
                     if not i:
 
-                        format: str = parts[file.header["FORMAT"]]
+                        format: str = parts[task[0].header["FORMAT"]]
 
-                        logger.debug(f"FORMAT for chromosome {chrom}: {format}")
+                        logger.debug(f"FORMAT for chromosome {task[1]}: {format}")
                     # From FORMAT get the values for each sample
                     samples_values: dict[str:dict] = {
                         s: utils.format_to_values(
-                            format=format, values=parts[file.header[s]]
+                            format=format, values=parts[task[0].header[s]]
                         )
-                        for s in file.samples
+                        for s in task[0].samples
                     }
                     # Should variant be filtered ?
-                    if file.variants.filters:
+                    if task[0].variants.filters:
 
-                        exclude: bool = utils.exclude(v, file.variants.filters)
+                        exclude: bool = utils.exclude(v, task[0].variants.filters)
                     # Should the variant be excluded ?
                     if exclude:
 
@@ -212,17 +275,17 @@ class VCFProcessor:
                                 # If previous passes have raised a warning, do not search for genotype quality score.
                                 if not "genotype_quality" in warnings:
                                     try:
-                                        stats[file.format["genotype_quality"][0]].append(
+                                        stats[task[0].format["genotype_quality"][0]].append(
                                             [
                                                 samples_values[s][
-                                                    file.format["genotype_quality"][0]
+                                                    task[0].format["genotype_quality"][0]
                                                 ]
-                                                for s in file.samples
+                                                for s in task[0].samples
                                             ]
                                         )
                                     except KeyError:
                                         logger.warning(
-                                            f"Genotype quality value cannot be retrieved with key(s): {file.format['genotype_quality']}"
+                                            f"Genotype quality value cannot be retrieved with key(s): {task[0].format['genotype_quality']}"
                                         )
                                         # Keep record of exception
                                         warnings["genotype_quality"] = True
@@ -236,10 +299,10 @@ class VCFProcessor:
                                                 map(
                                                     lambda sample: utils.is_homozygous(
                                                         GT=samples_values[sample][
-                                                            file.format["genotype"][0]
+                                                            task[0].format["genotype"][0]
                                                         ]
                                                     ),
-                                                    file.samples,
+                                                    task[0].samples,
                                                 )
                                             )
                                         )
@@ -249,15 +312,15 @@ class VCFProcessor:
                                                 map(
                                                     lambda sample: utils.is_heterozygous(
                                                         GT=samples_values[sample][
-                                                            file.format["genotype"][0]
+                                                            task[0].format["genotype"][0]
                                                         ]
                                                     ),
-                                                    file.samples,
+                                                    task[0].samples,
                                                 )
                                             )
                                         )
                                     except KeyError:
-                                        logger.warning(f"Genotype type cannot be retrieved with key(s): {file.format['genotype']}")
+                                        logger.warning(f"Genotype type cannot be retrieved with key(s): {task[0].format['genotype']}")
                                         # Keep record of exception
                                         warnings["genotype"] = True
 
@@ -271,22 +334,25 @@ class VCFProcessor:
                                         stats["depth"].append(
                                             [
                                                 (
-                                                    samples_values[s][file.format["depth"][0]]
-                                                    if file.format["depth"][0] in samples_values[s]
-                                                    else [samples_values[s][file.format["depth"][1]]]
+                                                    samples_values[s][task[0].format["depth"][0]]
+                                                    if task[0].format["depth"][0] in samples_values[s]
+                                                    else [samples_values[s][task[0].format["depth"][1]]]
                                                 ) # Try to get the depth value from the first FORMAT value, if not found, get it from the second FORMAT value
-                                                for s in file.samples
+                                                for s in task[0].samples
                                             ]
                                         )
                                     except KeyError:
-                                        logger.warning(f"Sequencing depth value cannot be retrieved with key(s): {file.format['depth']}")
+                                        logger.warning(f"Sequencing depth value cannot be retrieved with key(s): {task[0].format['depth']}")
                                         # Keep record of exception
                                         warnings["depth"] = True
-        except UserWarning as e:
-            logger.warning(e)
+        except Exception as e:
+
+            logger.error(e)
+
+            raise errors.ProcessError(e)
 
         # Close the data stream, avoid memory leaks
-        file.close()
+        task[0].close()
 
         # Create a DataFrame from the variants,
         variants: DataFrame = DataFrame.from_dict(
@@ -307,7 +373,7 @@ class VCFProcessor:
         variants.index = Index(variants.index.values, dtype="string[pyarrow]")
 
         logger.debug(
-            f"Filtered: {filtered['snp']} SNP(s), {filtered['indel']} INDEL(s), {filtered['sv']} structural variant(s) variant(s) for chromosome {chrom} in file {file}"
+            f"Filtered: {filtered['snp']} SNP(s), {filtered['indel']} INDEL(s), {filtered['sv']} structural variant(s) variant(s) for chromosome {task[1]} in file {task[0]}"
         )
 
         # Set the statistics computed as the right type for better memory management
