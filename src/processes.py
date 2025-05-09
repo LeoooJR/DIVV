@@ -46,6 +46,10 @@ class TasksManager():
 
     def scheduling(self, tasks: list[list[object]]):
 
+        if len(tasks) != len(self.vcfs):
+
+            raise ValueError(f"{len(self.vcfs)} collection(s) of tasks is/are required.")
+
         self.tasks: dict[files.VCF:list] = {vcf: [(vcf, task) for task in tasks[i]] for i, vcf in enumerate(self.vcfs)}
 
         logger.debug(f"Task(s) scheduled {self.flatten()}")

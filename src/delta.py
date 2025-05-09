@@ -3,7 +3,6 @@ import errors
 import files
 from loguru import logger
 from memory_profiler import profile
-from operator import itemgetter
 from pandas import DataFrame, concat
 from plots import PlotLibrary
 import processes
@@ -18,6 +17,12 @@ def delta(params: object) -> int:
             params: object containing the command line parameters parsed.
     """
 
+    assert len(params.vcfs) == 2, "Two VCF files are required."
+
+    assert isinstance(params.vcfs[0], str) and isinstance(
+        params.vcfs[1], str
+    ), "Input VCF should be string instance"
+
     logger.debug(f"VCFS: {params.vcfs}")
 
     logger.debug(
@@ -31,12 +36,6 @@ def delta(params: object) -> int:
     logger.debug(f"Serialize output: {params.serialize}")
 
     logger.debug(f"Output a report: {params.report}")
-
-    assert len(params.vcfs) == 2, "Two VCF files are required."
-
-    assert isinstance(params.vcfs[0], str) and isinstance(
-        params.vcfs[1], str
-    ), "Input VCF should be string instance"
 
     # Number of files to process
     PROCESS_FILE: int = 2
@@ -60,7 +59,7 @@ def delta(params: object) -> int:
 
         logger.error(f"Error: {e}")
 
-        raise SystemExit()
+        raise SystemExit(e)
     
     processor: processes.VCFProcessor = processes.VCFProcessor()
 
@@ -69,7 +68,7 @@ def delta(params: object) -> int:
             processor.preprocessing(vcf)
         except (errors.CompressionIndexError, errors.VCFError) as e:
             logger.error(e)
-            raise SystemExit()
+            raise SystemExit(e)
 
     manager: processes.TasksManager = processes.TasksManager(vcfs, params.process)
 
@@ -83,7 +82,7 @@ def delta(params: object) -> int:
 
         logger.error(e)
 
-        raise SystemExit()
+        raise SystemExit(e)
     
     for vcf in vcfs:
 
@@ -280,10 +279,6 @@ def delta(params: object) -> int:
             vcfs=vcfs,
             prefix=params.out,
             cmd=" ".join(argv),
-            infos={
-                vcfs[0]: vcfs[0].informations(),
-                vcfs[1]: vcfs[1].informations(),
-            },
             view={
                 "headers": {
                     vcfs[0]: "\t".join(list(vcfs[0].header.keys())),
@@ -305,5 +300,3 @@ def delta(params: object) -> int:
         print(f"Jaccard index: {results['delta']['jaccard']}")
         if params.benchmark:
             print(tabulate(table,headers='keys',tablefmt='grid',numalign='center', stralign='center'))
-
-    return 1

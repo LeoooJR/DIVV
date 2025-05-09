@@ -20,14 +20,14 @@
         <div class="main-left">
             <img src="statics/vcf-left.png" alt="vcf-icon-white" class="header-icon">
             <h2 class="header-left">
-              {{ infos[vcfs[0]].basename|default(vcfs[0]) }}
+              {{ vcfs[0].informations().basename|default(vcfs[0]) }}
             </h2>
         </div>
 
         <div class="main-right">
             <img src="statics/vcf-right.png" alt="vcf-icon-black" class="header-icon">
             <h2 class="header-right">
-              {{ infos[vcfs[1]].basename|default(vcfs[1]) }}
+              {{ vcfs[1].informations().basename|default(vcfs[1]) }}
             </h2>
         </div>
 
@@ -44,21 +44,21 @@
               <div class="info-bubble">
                 <img src="statics/folder.png" class="info-small-icon">
                 <p class="info-text-left">
-                    {{ infos[vcfs[0]].path|default(vcfs[0]) }}
+                    {{ vcfs[0].informations().path|default(vcfs[0]) }}
                 </p>
               </div>
 
               <div class="info-bubble">
                 <img src="statics/database.png" class="info-small-icon">
                 <p class="info-text-left">
-                    {{ infos[vcfs[0]].size|default('NA') }} Mo
+                    {{ vcfs[0].informations().size|default('NA') }} Mo
                 </p>
               </div>
 
               <div class="info-bubble">
                 <img src="statics/file.png" class="info-small-icon">
                 <p class="info-text-left">
-                    {{ infos[vcfs[0]].mtime|default('NA') }}
+                    {{ vcfs[0].informations().mtime|default('NA') }}
                 </p>
               </div>
 
@@ -85,21 +85,21 @@
               <div class="info-bubble">
                 <img src="statics/folder.png" class="info-small-icon">
                 <p class="info-text-right">
-                    {{ infos[vcfs[1]].path|default(vcfs[1]) }}
+                    {{ vcfs[1].informations().path|default(vcfs[1]) }}
                 </p>
               </div>
 
               <div class="info-bubble">
                 <img src="statics/database.png" class="info-small-icon">
                 <p class="info-text-right">
-                    {{ infos[vcfs[1]].size|default('NA') }} Mo
+                    {{ vcfs[1].informations().size|default('NA') }} Mo
                 </p>
               </div>
 
               <div class="info-bubble">
                 <img src="statics/file.png" class="info-small-icon">
                 <p class="info-text-right">
-                    {{ infos[vcfs[1]].mtime|default('NA') }}
+                    {{ vcfs[1].informations().mtime|default('NA') }}
                 </p>
               </div>
 
@@ -274,7 +274,7 @@
     
             <div class="comparison-container">
               <div class="file1-view">
-                <div class="file1-title">{{ infos[vcfs[0]].basename|default(vcfs[0]) }} <p class="filterSummary" id="filterSummaryL">Showing all variants</p> </div>
+                <div class="file1-title">{{ vcfs[0].informations().basename|default(vcfs[0]) }} <p class="filterSummary" id="filterSummaryL">Showing all variants</p> </div>
                 <div class="file1-content" id="content1">
                   <div class="line header">
                     <div class="line-number">0</div>
@@ -304,7 +304,7 @@
                 </div>
               </div>
               <div class="file2-view">
-                <div class="file2-title">{{ infos[vcfs[1]].basename|default(vcfs[1]) }} <p class="filterSummary" id="filterSummaryR">Showing all variants</p> </div>
+                <div class="file2-title">{{ vcfs[1].informations().basename|default(vcfs[1]) }} <p class="filterSummary" id="filterSummaryR">Showing all variants</p> </div>
                 <div class="file2-content" id="content2">
                   <div class="line header">
                     <div class="line-number">0</div>
