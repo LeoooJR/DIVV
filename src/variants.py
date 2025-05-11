@@ -129,6 +129,10 @@ class VariantRepository():
         if self.profile[chromosome]["quality"].size:
 
             pass
+
+    def __len__(self):
+
+        return len(self.repository)
     
 class Chromosome():
 

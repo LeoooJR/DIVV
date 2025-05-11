@@ -349,7 +349,7 @@
                       </svg>
                     </div>
                     <div class="content">
-                      <p class="stat-value">{{ view["stats"]["common"] }}</p>
+                      <p class="stat-value">{{ view["common"] }}</p>
                       <p class="stat-label">Matching lines</p>
                     </div>
                   </div>
@@ -363,7 +363,7 @@
                       </svg>
                     </div>
                     <div class="content">
-                      <p class="stat-value">{{ view["stats"]["unique"][vcfs.repository[0]] + view["stats"]["unique"][vcfs.repository[1]] }}</p>
+                      <p class="stat-value">{{ view["unique"][vcfs.repository[0]] + view["unique"][vcfs.repository[1]] }}</p>
                       <p class="stat-label">Different lines</p>
                     </div>
                   </div>
@@ -378,7 +378,7 @@
                       </svg>
                     </div>
                     <div class="content">
-                      <p class="stat-value">{{  view["stats"]["jaccard"]|round(3,'common') }}</p>
+                      <p class="stat-value">{{  view["jaccard"]|round(3,'common') }}</p>
                       <p class="stat-label">Jaccard index</p>
                     </div>
                   </div>

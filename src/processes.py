@@ -2,13 +2,9 @@ from collections.abc import Callable
 import concurrent.futures
 import errors
 import files
-from hashlib import sha256
 from itertools import chain
 from loguru import logger
-import numpy as np
-from pandas import Index, DataFrame
 from psutil import cpu_count
-import utils
 
 class TasksManager():
 

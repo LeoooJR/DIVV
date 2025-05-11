@@ -53,17 +53,12 @@ def delta(params: object) -> int:
     try:
 
         vcfs: files.VCFRepository = files.VCFRepository(vcfs=params.vcfs, index=params.indexes, reference=params.benchmark, filters=filters)
-
-        # vcfs: list[files.VCF] = [files.VCF(path=params.vcfs[0], reference=True if params.benchmark else False, index=params.indexes[0], filters=filters, lazy=False), 
-        #                         files.VCF(path=params.vcfs[1], index=params.indexes[1], filters=filters, lazy=False)]
         
     except errors.VCFError as e: # Error raised by VCF file are critical
 
         logger.error(f"Error: {e}")
 
         raise SystemExit(e)
-    
-    # processor: processes.VCFProcessor = processes.VCFProcessor()
 
     for vcf in vcfs.repository:
 
@@ -97,146 +92,7 @@ def delta(params: object) -> int:
     
             vcf.variants.update_repository(task[1], *manager.results[task])
 
-    results: dict = {vcfs.repository[0]: {"variants": vcfs.repository[0].variants.collapse()},
-                     vcfs.repository[1]: {"variants": vcfs.repository[1].variants.collapse()}}
-
-    results["delta"] = {
-        "common": {},
-        "unique": {vcfs.repository[0]: {}, vcfs.repository[1]: {}},
-        "jaccard": {},
-    }
-    # Compute unique variants in first VCF file
-    uniqueL: set = utils.difference(
-        a=frozenset(results[vcfs.repository[0]]["variants"].index),
-        b=frozenset(results[vcfs.repository[1]]["variants"].index),
-    )
-    # Compute unique variants in second VCF file
-    uniqueR: set = utils.difference(
-        a=frozenset(results[vcfs.repository[1]]["variants"].index),
-        b=frozenset(results[vcfs.repository[0]]["variants"].index),
-    )
-    # Compute common variants between both VCF files
-    common: set = utils.intersect(
-        a=frozenset(results[vcfs.repository[0]]["variants"].index),
-        b=frozenset(results[vcfs.repository[1]]["variants"].index),
-    )
-
-    (
-        results["delta"]["common"],
-        results["delta"]["unique"][vcfs.repository[0]],
-        results["delta"]["unique"][vcfs.repository[1]],
-    ) = (
-        len(common),
-        len(uniqueL),
-        len(uniqueR),
-    )
-
-    logger.debug(
-        f"{results['delta']['common']} variant(s) is/are commom in both files"
-    )
-
-    logger.debug(
-        f"{results['delta']['unique'][vcfs.repository[0]]} variant(s) is/are unique in files {vcfs.repository[0]}"
-    )
-
-    logger.debug(
-        f"{results['delta']['unique'][vcfs.repository[1]]} variant(s) is/are unique in files {vcfs.repository[1]}"
-    )
-
-    # Compute the Jaccard Index
-    results["delta"]["jaccard"] = utils.jaccard_index(
-        shared=results["delta"]["common"],
-        total=(
-            results["delta"]["common"]
-            + results["delta"]["unique"][vcfs.repository[0]]
-            + results["delta"]["unique"][vcfs.repository[1]]
-        ),
-    )
-
-    logger.debug(f"Jaccard index: {results['delta']['jaccard']}")
-
-    # Rename columns to avoid conflicts, inplace for better memory management
-    list(
-        map(
-            (
-                lambda x, n: x.rename(
-                    columns={
-                        c: f"{c}.{n}"
-                        for c in x.columns
-                        if not (
-                            c in ["Chromosome", "Position", "Type"]
-                            and n == "L"
-                        )
-                    },
-                    inplace=True,
-                )
-            ),
-            [
-                results[vcfs.repository[0]]["variants"],
-                results[vcfs.repository[1]]["variants"],
-            ],
-            ["L", "R"],
-        )
-    )
-    # Merge the two DataFrames with a outer join algorithm,
-    # Merge is made on the hash index
-    df: DataFrame = concat(
-        [
-            results[vcfs.repository[0]]["variants"],
-            results[vcfs.repository[1]]["variants"],
-        ],
-        axis=1,
-        join="outer",
-        sort=False,
-    )
-    # Fill missing values with the values from the other VCF file
-    # This is done to avoid NaN values in the DataFrame
-    # These specific columns are used to identify the variants and are common to both VCF files
-    df["Chromosome"] = df["Chromosome"].fillna(df["Chromosome.R"])
-    df["Position"] = df["Position"].fillna(df["Position.R"])
-    df["Type"] = df["Type"].fillna(df["Type.R"])
-
-    # Drop redondant columns to reduce memory footprint
-    df.drop(columns=["Chromosome.R", "Position.R", "Type.R"], inplace=True)
-
-    # Reset the index for later use
-    df.reset_index(drop=False, names="Hash", inplace=True)
-
-    # Convert the DataFrame columns for better memory management,
-    # Make use of PyArrow for better performance to store string values
-    df = df.astype(
-        {
-            "Hash": "string[pyarrow]",
-            "Chromosome": "category",
-            "Position": "int64",
-            "Type": "category",
-            "Filter.L": "category",
-            "Filter.R": "category",
-        }
-    )
-    # Sort values with a stable algorithm for better view in the report
-    df.sort_values(
-        by=["Chromosome", "Position"],
-        axis=0,
-        ascending=True,
-        inplace=True,
-        kind="mergesort",
-    )
-
-    # Delete DataFrames not of use anymore, to reduce memory footprint
-    del results[vcfs.repository[0]]["variants"]
-    del results[vcfs.repository[1]]["variants"]
-
-    # Key is a references to the Hash string object in the Dataframe
-    # Allow a O(1) lookup while keeping memory footprint low
-    lookup = {hash: row for row, hash in enumerate(df["Hash"])}
-
-    # Should a benchmark be computed ?
-    if params.benchmark:
-
-        logger.debug(f"Computing benchmark metrics from {vcfs.repository[0]}.")
-
-        table: DataFrame = utils.evaluate(df)
+    comparaisons: dict = vcfs.compare()
 
     # Should the output be serialized ?
     if params.serialize:
@@ -250,7 +106,7 @@ def delta(params: object) -> int:
                 # Submit the process for each file mapped to the vcf path
                 futures_to_vcf = {
                     files_pool.submit(
-                        utils.save, df, vcf, params.serialize, t, lookup
+                        utils.save, comparaisons[(vcfs.repository[0],vcfs.repository[1])]["variants"], vcf, params.serialize, t, comparaisons[(vcfs.repository[0],vcfs.repository[1])]["index"]
                     ): vcf for vcf, t in zip([vcfs.repository[0].path, vcfs.repository[1].path], ['L','R'])
                 }
                 # Check if a process is completed
@@ -264,7 +120,7 @@ def delta(params: object) -> int:
         # Computation is carried out sequentially.
         else:
             for vcf, t in zip(vcfs.repository, ['L','R']):
-                utils.save(obj=df, path=vcf.path, format=params.serialize, target=t, lookup=lookup)
+                utils.save(obj=comparaisons[(vcfs.repository[0],vcfs.repository[1])]["variants"], path=vcf.path, format=params.serialize, target=t, lookup=comparaisons[(vcfs.repository[0],vcfs.repository[1])]["index"])
 
     # Should the output be reported ?
     if params.report:
@@ -279,31 +135,24 @@ def delta(params: object) -> int:
         pcommon: PlotLibrary = PlotLibrary()
 
         # Create a Venn diagram to display the common, unique variants between the two VCF files
-        pcommon.venn((results["delta"]["unique"][vcfs.repository[0]], results["delta"]["unique"][vcfs.repository[1]], results["delta"]["common"]), ['L','R'])
+        pcommon.venn((comparaisons[(vcfs.repository[0],vcfs.repository[1])]["unique"][vcfs.repository[0]], comparaisons[(vcfs.repository[0],vcfs.repository[1])]["unique"][vcfs.repository[1]], comparaisons[(vcfs.repository[0],vcfs.repository[1])]["common"]), ['L','R'])
 
         # Create a report with the results
         files.Report(
             vcfs=vcfs,
             prefix=params.out,
             cmd=" ".join(argv),
-            view={
-                "headers": {
-                    vcfs.repository[0]: "\t".join(list(vcfs.repository[0].header.keys())),
-                    vcfs.repository[1]: "\t".join(list(vcfs.repository[1].header.keys())),
-                },
-                "variants": df,
-                "stats": results["delta"]
-            },
+            view=comparaisons[(vcfs.repository[0],vcfs.repository[1])],
             plots={
                 vcfs.repository[0]: vcfs.repository[0].variants.plots,
                 vcfs.repository[1]: vcfs.repository[1].variants.plots,
                 "common": pcommon
             },
-            table=table if params.benchmark else None,
+            table=comparaisons[(vcfs.repository[0],vcfs.repository[1])]["benchmark"] if params.benchmark else None,
         ).create()
     # Print the results to the CLI
     else:
-        print(f"{vcfs.repository[0]}: [{results['delta']['unique'][vcfs.repository[0]]} unique]────[{results['delta']['common']} common]────[{results['delta']['unique'][vcfs.repository[1]]} unique] :{vcfs.repository[1]}")
-        print(f"Jaccard index: {results['delta']['jaccard']}")
+        print(f"{vcfs.repository[0]}: [{comparaisons[(vcfs.repository[0],vcfs.repository[1])]['unique'][vcfs.repository[0]]} unique]────[{comparaisons[(vcfs.repository[0],vcfs.repository[1])]['common']} common]────[{comparaisons[(vcfs.repository[0],vcfs.repository[1])]['unique'][vcfs.repository[1]]} unique] :{vcfs.repository[1]}")
+        print(f"Jaccard index: {comparaisons[(vcfs.repository[0],vcfs.repository[1])]['jaccard']}")
         if params.benchmark:
-            print(tabulate(table,headers='keys',tablefmt='grid',numalign='center', stralign='center'))
+            print(tabulate(comparaisons[(vcfs.repository[0],vcfs.repository[1])]["benchmark"],headers='keys',tablefmt='grid',numalign='center', stralign='center'))

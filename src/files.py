@@ -5,11 +5,12 @@ import filetype
 from glob import glob
 import gzip
 from hashlib import sha256
+from itertools import pairwise
 from jinja2 import Environment, FileSystemLoader
 from loguru import logger
 import numpy as np
 import os
-from pandas import isna, Index, DataFrame
+from pandas import isna, concat, Index, DataFrame
 import pathlib
 from shutil import copy, copytree
 import subprocess
@@ -767,6 +768,152 @@ class VCFRepository():
         assert len(vcfs) == len(index), "VFC(s) and Index(s) collections must be the same size"
 
         self.repository.extend([VCF(path=vcf, index=index[i], lazy=False) for i, vcf in enumerate(vcfs)])
+
+    def compare(self):
+
+        results: dict = {}
+
+        for pair in pairwise(self.repository):
+
+            results.setdefault("pairs", []).append(pair)
+
+            results[pair] = {
+                "common": 0,
+                "unique": {pair[0]: 0, pair[1]: 0},
+                "jaccard": 0,
+            }
+
+            variantsL: DataFrame = pair[0].variants.collapse()
+
+            variantsR: DataFrame = pair[1].variants.collapse()
+
+            # Compute unique variants in first VCF file
+            results[pair]["unique"][pair[0]] = len(utils.difference(
+                a=frozenset(variantsL.index),
+                b=frozenset(variantsR.index),
+            ))
+            # Compute unique variants in second VCF file
+            results[pair]["unique"][pair[1]] = len(utils.difference(
+                a=frozenset(variantsR.index),
+                b=frozenset(variantsL.index),
+            ))
+            # Compute common variants between both VCF files
+            results[pair]["common"] = len(utils.intersect(
+                a=frozenset(variantsL.index),
+                b=frozenset(variantsR.index),
+            ))
+
+            logger.debug(
+                f"{results[pair]['common']} variant(s) is/are commom in both files"
+            )
+
+            logger.debug(
+                f"{results[pair]['unique'][pair[0]]} variant(s) is/are unique in files {pair[0]}"
+            )
+
+            logger.debug(
+                f"{results[pair]['unique'][pair[1]]} variant(s) is/are unique in files {pair[1]}"
+            )
+
+            # Compute the Jaccard Index
+            results[pair]["jaccard"] = utils.jaccard_index(
+                shared=results[pair]["common"],
+                total=(
+                    results[pair]["common"]
+                    + results[pair]["unique"][pair[0]]
+                    + results[pair]["unique"][pair[1]]
+                ),
+            )
+
+            logger.debug(f"Jaccard index: {results[pair]['jaccard']}")
+
+            results[pair]["headers"] = {pair[0]: "\t".join(list(pair[0].header.keys())),
+                                        pair[1]: "\t".join(list(pair[1].header.keys()))}
+
+            # Rename columns to avoid conflicts, inplace for better memory management
+            list(
+                map(
+                    (
+                        lambda x, n: x.rename(
+                            columns={
+                                c: f"{c}.{n}"
+                                for c in x.columns
+                                if not (
+                                    c in ["Chromosome", "Position", "Type"]
+                                    and n == "L"
+                                )
+                            },
+                            inplace=True,
+                        )
+                    ),
+                    [
+                        variantsL,
+                        variantsR,
+                    ],
+                    ["L", "R"],
+                )
+            )
+            # Merge the two DataFrames with a outer join algorithm,
+            # Merge is made on the hash index
+            df: DataFrame = concat(
+                [
+                    variantsL,
+                    variantsR,
+                ],
+                axis=1,
+                join="outer",
+                sort=False,
+            )
+            # Fill missing values with the values from the other VCF file
+            # This is done to avoid NaN values in the DataFrame
+            # These specific columns are used to identify the variants and are common to both VCF files
+            df["Chromosome"] = df["Chromosome"].fillna(df["Chromosome.R"])
+            df["Position"] = df["Position"].fillna(df["Position.R"])
+            df["Type"] = df["Type"].fillna(df["Type.R"])
+
+            # Drop redondant columns to reduce memory footprint
+            df.drop(columns=["Chromosome.R", "Position.R", "Type.R"], inplace=True)
+
+            # Reset the index for later use
+            df.reset_index(drop=False, names="Hash", inplace=True)
+
+            # Convert the DataFrame columns for better memory management,
+            # Make use of PyArrow for better performance to store string values
+            df = df.astype(
+                {
+                    "Hash": "string[pyarrow]",
+                    "Chromosome": "category",
+                    "Position": "int64",
+                    "Type": "category",
+                    "Filter.L": "category",
+                    "Filter.R": "category",
+                }
+            )
+            # Sort values with a stable algorithm for better view in the report
+            df.sort_values(
+                by=["Chromosome", "Position"],
+                axis=0,
+                ascending=True,
+                inplace=True,
+                kind="mergesort",
+            )
+
+            results[pair]["variants"] = df
+
+            # Key is a references to the Hash string object in the Dataframe
+            # Allow a O(1) lookup while keeping memory footprint low
+            lookup = {hash: row for row, hash in enumerate(df["Hash"])}
+
+            results[pair]["index"] = lookup
+
+            # Should a benchmark be computed ?
+            if pair[0].reference:
+
+                logger.debug(f"Computing benchmark metrics from {pair[0]}.")
+
+                results[pair]["benchmark"] = utils.evaluate(df)
+
+        return results
 
     def __len__(self):
 
