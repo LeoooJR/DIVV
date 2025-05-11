@@ -12,6 +12,7 @@ import numpy as np
 import os
 from pandas import isna, concat, Index, DataFrame
 import pathlib
+from plots import PlotLibrary
 from shutil import copy, copytree
 import subprocess
 import utils
@@ -747,6 +748,14 @@ class VCFProcessor:
 
         return (variants, filtered, stats) if profile else (variants, filtered, {})
     
+    def serialize(self):
+
+        pass
+
+    def write(self):
+
+        pass
+    
 class VCFRepository():
 
     processor: VCFProcessor = VCFProcessor()
@@ -906,6 +915,11 @@ class VCFRepository():
 
             results[pair]["index"] = lookup
 
+            results[pair]["plots"] = PlotLibrary()
+
+            # Create a Venn diagram to display the common, unique variants between the two VCF files
+            results[pair]["plots"].venn((results[pair]["unique"][pair[0]], results[pair]["unique"][pair[1]], results[pair]["common"]), ['L','R'])
+
             # Should a benchmark be computed ?
             if pair[0].reference:
 
@@ -914,6 +928,10 @@ class VCFRepository():
                 results[pair]["benchmark"] = utils.evaluate(df)
 
         return results
+    
+    def evaluate(self):
+
+        pass
 
     def __len__(self):
 
@@ -931,29 +949,21 @@ class Report:
         table: The benchmark table (truth metrics) object as a DataFrame
     """
     # Make use of __slots__ to avoid the creation of __dict__ and __weakref__ for each instance, reducing the memory footprint
-    __slots__ = ('vcfs', 'cmd', 'view', 'plots', 'prefix', 'table', 'out')
+    __slots__ = ('vcfs', 'cmd', 'view', 'prefix', 'table', 'out')
 
-    def __init__(self, vcfs: VCFRepository, prefix: str, cmd: str, view: dict, plots: dict, table: DataFrame = None, out: str = "archive"):
+    def __init__(self, vcfs: VCFRepository, prefix: str, cmd: str, view: dict, table: DataFrame = None, out: str = "archive"):
 
         # The list of VCF files
         self.vcfs = vcfs
 
         # The command used to generate the report
         self.cmd = cmd
-
-        # The information about the VCF files
-        # self.infos = infos
         
         # The view object as a DataFrame
         self.view = view
 
         # Set one library of plots to dark mode
-        plots[vcfs.repository[1]].dark()
-
-        # The plots as html
-        self.plots = {vcfs.repository[0]:plots[vcfs.repository[0]].as_html(),
-                      vcfs.repository[1]:plots[vcfs.repository[1]].as_html(),
-                      "common":plots["common"].as_html()}
+        vcfs.repository[1].variants.plots.dark()
 
         # The prefix of the report
         self.prefix = prefix
@@ -992,7 +1002,7 @@ class Report:
         template = env.get_template("template.html")
 
         # Render the template
-        html = template.render(vcfs=self.vcfs, cmd=self.cmd, view=self.view, table=self.table, plots=self.plots)
+        html = template.render(vcfs=self.vcfs, cmd=self.cmd, view=self.view, table=self.table)
 
         if self.out == "dir":
 

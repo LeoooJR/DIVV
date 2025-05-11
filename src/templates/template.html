@@ -146,7 +146,7 @@
     <section class="plots-section">
 
         <div class="plots-left-grid">
-            {% for plot in plots[vcfs.repository[0]] %}
+            {% for plot in vcfs.repository[0].variants.plots.as_html() %}
               <div class="plot {% if loop.index == 1 %}active{% endif %}" id="left-plot{{ loop.index }}">
                 {{ plot }}
               </div>
@@ -161,7 +161,7 @@
         </div>
 
         <div class="plots-right-grid">
-            {% for plot in plots[vcfs.repository[1]] %}
+            {% for plot in vcfs.repository[1].variants.plots.as_html() %}
               <div class="plot {% if loop.index == 1 %}active{% endif %}" id="right-plot{{ loop.index }}">
                 {{ plot }}
               </div>
@@ -387,7 +387,7 @@
               </section>
 
               <div class="plot active common">
-                {{ plots["common"][0] }}
+                {{ view["plots"].as_html()[0] }}
               </div>
 
             </div>

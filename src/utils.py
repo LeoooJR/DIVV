@@ -30,7 +30,7 @@ def runcmd(cmd: list, stdout: str = None) -> subprocess.CompletedProcess:
 
         return subprocess.run(cmd, check=True, capture_output=True)
 
-def save(obj: DataFrame, path: Path, format: str = "pickle", target: str = "L", lookup: dict = None, out: str = os.getcwd()) -> int:
+def save(obj: DataFrame, path: Path, format: str = "pickle", lookup: dict = None, out: str = os.getcwd()) -> int:
     """ Serialize DataFrame to file of specified format """
 
     assert (isinstance(obj,DataFrame)), "Input provided is not a Dataframe instance"

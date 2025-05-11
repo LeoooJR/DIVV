@@ -3,8 +3,6 @@ import errors
 import files
 from loguru import logger
 from memory_profiler import profile
-from pandas import DataFrame, concat
-from plots import PlotLibrary
 import processes
 from sys import argv
 from tabulate import tabulate
@@ -106,8 +104,8 @@ def delta(params: object) -> int:
                 # Submit the process for each file mapped to the vcf path
                 futures_to_vcf = {
                     files_pool.submit(
-                        utils.save, comparaisons[(vcfs.repository[0],vcfs.repository[1])]["variants"], vcf, params.serialize, t, comparaisons[(vcfs.repository[0],vcfs.repository[1])]["index"]
-                    ): vcf for vcf, t in zip([vcfs.repository[0].path, vcfs.repository[1].path], ['L','R'])
+                        utils.save, comparaisons[(vcfs.repository[0],vcfs.repository[1])]["variants"], vcf, params.serialize, comparaisons[(vcfs.repository[0],vcfs.repository[1])]["index"]
+                    ): vcf for vcf in [vcfs.repository[0].path, vcfs.repository[1].path]
                 }
                 # Check if a process is completed
                 for future in concurrent.futures.as_completed(futures_to_vcf):
@@ -131,25 +129,15 @@ def delta(params: object) -> int:
 
         vcfs.repository[1].variants.visualization()
 
-        # Library of common plots between the two VCF files
-        pcommon: PlotLibrary = PlotLibrary()
-
-        # Create a Venn diagram to display the common, unique variants between the two VCF files
-        pcommon.venn((comparaisons[(vcfs.repository[0],vcfs.repository[1])]["unique"][vcfs.repository[0]], comparaisons[(vcfs.repository[0],vcfs.repository[1])]["unique"][vcfs.repository[1]], comparaisons[(vcfs.repository[0],vcfs.repository[1])]["common"]), ['L','R'])
-
         # Create a report with the results
         files.Report(
             vcfs=vcfs,
             prefix=params.out,
             cmd=" ".join(argv),
             view=comparaisons[(vcfs.repository[0],vcfs.repository[1])],
-            plots={
-                vcfs.repository[0]: vcfs.repository[0].variants.plots,
-                vcfs.repository[1]: vcfs.repository[1].variants.plots,
-                "common": pcommon
-            },
             table=comparaisons[(vcfs.repository[0],vcfs.repository[1])]["benchmark"] if params.benchmark else None,
         ).create()
+
     # Print the results to the CLI
     else:
         print(f"{vcfs.repository[0]}: [{comparaisons[(vcfs.repository[0],vcfs.repository[1])]['unique'][vcfs.repository[0]]} unique]────[{comparaisons[(vcfs.repository[0],vcfs.repository[1])]['common']} common]────[{comparaisons[(vcfs.repository[0],vcfs.repository[1])]['unique'][vcfs.repository[1]]} unique] :{vcfs.repository[1]}")
