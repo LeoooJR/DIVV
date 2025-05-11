@@ -52,8 +52,10 @@ def delta(params: object) -> int:
 
     try:
 
-        vcfs: list[files.VCF] = [files.VCF(path=params.vcfs[0], reference=True if params.benchmark else False, index=params.indexes[0], filters=filters, lazy=False), 
-                                files.VCF(path=params.vcfs[1], index=params.indexes[1], filters=filters, lazy=False)]
+        vcfs: files.VCFRepository = files.VCFRepository(vcfs=params.vcfs, index=params.indexes, reference=params.benchmark, filters=filters)
+
+        # vcfs: list[files.VCF] = [files.VCF(path=params.vcfs[0], reference=True if params.benchmark else False, index=params.indexes[0], filters=filters, lazy=False), 
+        #                         files.VCF(path=params.vcfs[1], index=params.indexes[1], filters=filters, lazy=False)]
         
     except errors.VCFError as e: # Error raised by VCF file are critical
 
@@ -61,22 +63,27 @@ def delta(params: object) -> int:
 
         raise SystemExit(e)
     
-    processor: processes.VCFProcessor = processes.VCFProcessor()
+    # processor: processes.VCFProcessor = processes.VCFProcessor()
 
-    for vcf in vcfs:
+    for vcf in vcfs.repository:
+
         try:
-            processor.preprocessing(vcf)
+
+            vcfs.processor.preprocessing(vcf)
+
         except (errors.CompressionIndexError, errors.VCFError) as e:
+
             logger.error(e)
+
             raise SystemExit(e)
 
     manager: processes.TasksManager = processes.TasksManager(vcfs, params.process)
 
-    manager.scheduling(tasks=[vcfs[0].chromosomes, vcfs[1].chromosomes])
+    manager.scheduling(tasks=[vcfs.repository[0].chromosomes, vcfs.repository[1].chromosomes])
 
     try:
 
-        manager.commit(job=processor.process_chromosome, jobargs=[True])
+        manager.commit(job=vcfs.processor.process_chromosome, jobargs=[True])
 
     except errors.ProcessError as e:
 
@@ -84,40 +91,40 @@ def delta(params: object) -> int:
 
         raise SystemExit(e)
     
-    for vcf in vcfs:
+    for vcf in vcfs.repository:
 
         for task in manager.tasks[vcf]:
     
             vcf.variants.update_repository(task[1], *manager.results[task])
 
-    results: dict = {vcfs[0]: {"variants": vcfs[0].variants.collapse()},
-                     vcfs[1]: {"variants": vcfs[1].variants.collapse()}}
+    results: dict = {vcfs.repository[0]: {"variants": vcfs.repository[0].variants.collapse()},
+                     vcfs.repository[1]: {"variants": vcfs.repository[1].variants.collapse()}}
 
     results["delta"] = {
         "common": {},
-        "unique": {vcfs[0]: {}, vcfs[1]: {}},
+        "unique": {vcfs.repository[0]: {}, vcfs.repository[1]: {}},
         "jaccard": {},
     }
     # Compute unique variants in first VCF file
     uniqueL: set = utils.difference(
-        a=frozenset(results[vcfs[0]]["variants"].index),
-        b=frozenset(results[vcfs[1]]["variants"].index),
+        a=frozenset(results[vcfs.repository[0]]["variants"].index),
+        b=frozenset(results[vcfs.repository[1]]["variants"].index),
     )
     # Compute unique variants in second VCF file
     uniqueR: set = utils.difference(
-        a=frozenset(results[vcfs[1]]["variants"].index),
-        b=frozenset(results[vcfs[0]]["variants"].index),
+        a=frozenset(results[vcfs.repository[1]]["variants"].index),
+        b=frozenset(results[vcfs.repository[0]]["variants"].index),
     )
     # Compute common variants between both VCF files
     common: set = utils.intersect(
-        a=frozenset(results[vcfs[0]]["variants"].index),
-        b=frozenset(results[vcfs[1]]["variants"].index),
+        a=frozenset(results[vcfs.repository[0]]["variants"].index),
+        b=frozenset(results[vcfs.repository[1]]["variants"].index),
     )
 
     (
         results["delta"]["common"],
-        results["delta"]["unique"][vcfs[0]],
-        results["delta"]["unique"][vcfs[1]],
+        results["delta"]["unique"][vcfs.repository[0]],
+        results["delta"]["unique"][vcfs.repository[1]],
     ) = (
         len(common),
         len(uniqueL),
@@ -129,11 +136,11 @@ def delta(params: object) -> int:
     )
 
     logger.debug(
-        f"{results['delta']['unique'][vcfs[0]]} variant(s) is/are unique in files {vcfs[0]}"
+        f"{results['delta']['unique'][vcfs.repository[0]]} variant(s) is/are unique in files {vcfs.repository[0]}"
     )
 
     logger.debug(
-        f"{results['delta']['unique'][vcfs[1]]} variant(s) is/are unique in files {vcfs[1]}"
+        f"{results['delta']['unique'][vcfs.repository[1]]} variant(s) is/are unique in files {vcfs.repository[1]}"
     )
 
     # Compute the Jaccard Index
@@ -141,8 +148,8 @@ def delta(params: object) -> int:
         shared=results["delta"]["common"],
         total=(
             results["delta"]["common"]
-            + results["delta"]["unique"][vcfs[0]]
-            + results["delta"]["unique"][vcfs[1]]
+            + results["delta"]["unique"][vcfs.repository[0]]
+            + results["delta"]["unique"][vcfs.repository[1]]
         ),
     )
 
@@ -165,8 +172,8 @@ def delta(params: object) -> int:
                 )
             ),
             [
-                results[vcfs[0]]["variants"],
-                results[vcfs[1]]["variants"],
+                results[vcfs.repository[0]]["variants"],
+                results[vcfs.repository[1]]["variants"],
             ],
             ["L", "R"],
         )
@@ -175,8 +182,8 @@ def delta(params: object) -> int:
     # Merge is made on the hash index
     df: DataFrame = concat(
         [
-            results[vcfs[0]]["variants"],
-            results[vcfs[1]]["variants"],
+            results[vcfs.repository[0]]["variants"],
+            results[vcfs.repository[1]]["variants"],
         ],
         axis=1,
         join="outer",
@@ -217,8 +224,8 @@ def delta(params: object) -> int:
     )
 
     # Delete DataFrames not of use anymore, to reduce memory footprint
-    del results[vcfs[0]]["variants"]
-    del results[vcfs[1]]["variants"]
+    del results[vcfs.repository[0]]["variants"]
+    del results[vcfs.repository[1]]["variants"]
 
     # Key is a references to the Hash string object in the Dataframe
     # Allow a O(1) lookup while keeping memory footprint low
@@ -227,7 +234,7 @@ def delta(params: object) -> int:
     # Should a benchmark be computed ?
     if params.benchmark:
 
-        logger.debug(f"Computing benchmark metrics from {vcfs[0]}.")
+        logger.debug(f"Computing benchmark metrics from {vcfs.repository[0]}.")
 
         table: DataFrame = utils.evaluate(df)
 
@@ -244,7 +251,7 @@ def delta(params: object) -> int:
                 futures_to_vcf = {
                     files_pool.submit(
                         utils.save, df, vcf, params.serialize, t, lookup
-                    ): vcf for vcf, t in zip([vcfs[0].path, vcfs[1].path], ['L','R'])
+                    ): vcf for vcf, t in zip([vcfs.repository[0].path, vcfs.repository[1].path], ['L','R'])
                 }
                 # Check if a process is completed
                 for future in concurrent.futures.as_completed(futures_to_vcf):
@@ -256,7 +263,7 @@ def delta(params: object) -> int:
                        logger.error(e)
         # Computation is carried out sequentially.
         else:
-            for vcf, t in zip(vcfs, ['L','R']):
+            for vcf, t in zip(vcfs.repository, ['L','R']):
                 utils.save(obj=df, path=vcf.path, format=params.serialize, target=t, lookup=lookup)
 
     # Should the output be reported ?
@@ -264,15 +271,15 @@ def delta(params: object) -> int:
 
         logger.debug("Generating a HTML report.")
 
-        vcfs[0].variants.visualization()
+        vcfs.repository[0].variants.visualization()
 
-        vcfs[1].variants.visualization()
+        vcfs.repository[1].variants.visualization()
 
         # Library of common plots between the two VCF files
         pcommon: PlotLibrary = PlotLibrary()
 
         # Create a Venn diagram to display the common, unique variants between the two VCF files
-        pcommon.venn((results["delta"]["unique"][vcfs[0]], results["delta"]["unique"][vcfs[1]], results["delta"]["common"]), ['L','R'])
+        pcommon.venn((results["delta"]["unique"][vcfs.repository[0]], results["delta"]["unique"][vcfs.repository[1]], results["delta"]["common"]), ['L','R'])
 
         # Create a report with the results
         files.Report(
@@ -281,22 +288,22 @@ def delta(params: object) -> int:
             cmd=" ".join(argv),
             view={
                 "headers": {
-                    vcfs[0]: "\t".join(list(vcfs[0].header.keys())),
-                    vcfs[1]: "\t".join(list(vcfs[1].header.keys())),
+                    vcfs.repository[0]: "\t".join(list(vcfs.repository[0].header.keys())),
+                    vcfs.repository[1]: "\t".join(list(vcfs.repository[1].header.keys())),
                 },
                 "variants": df,
                 "stats": results["delta"]
             },
             plots={
-                vcfs[0]: vcfs[0].variants.plots,
-                vcfs[1]: vcfs[1].variants.plots,
+                vcfs.repository[0]: vcfs.repository[0].variants.plots,
+                vcfs.repository[1]: vcfs.repository[1].variants.plots,
                 "common": pcommon
             },
             table=table if params.benchmark else None,
         ).create()
     # Print the results to the CLI
     else:
-        print(f"{vcfs[0]}: [{results['delta']['unique'][vcfs[0]]} unique]────[{results['delta']['common']} common]────[{results['delta']['unique'][vcfs[1]]} unique] :{vcfs[1]}")
+        print(f"{vcfs.repository[0]}: [{results['delta']['unique'][vcfs.repository[0]]} unique]────[{results['delta']['common']} common]────[{results['delta']['unique'][vcfs.repository[1]]} unique] :{vcfs.repository[1]}")
         print(f"Jaccard index: {results['delta']['jaccard']}")
         if params.benchmark:
             print(tabulate(table,headers='keys',tablefmt='grid',numalign='center', stralign='center'))

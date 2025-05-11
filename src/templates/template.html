@@ -20,14 +20,14 @@
         <div class="main-left">
             <img src="statics/vcf-left.png" alt="vcf-icon-white" class="header-icon">
             <h2 class="header-left">
-              {{ vcfs[0].informations().basename|default(vcfs[0]) }}
+              {{ vcfs.repository[0].informations().basename|default(vcfs.repository[0]) }}
             </h2>
         </div>
 
         <div class="main-right">
             <img src="statics/vcf-right.png" alt="vcf-icon-black" class="header-icon">
             <h2 class="header-right">
-              {{ vcfs[1].informations().basename|default(vcfs[1]) }}
+              {{ vcfs.repository[1].informations().basename|default(vcfs.repository[1]) }}
             </h2>
         </div>
 
@@ -44,21 +44,21 @@
               <div class="info-bubble">
                 <img src="statics/folder.png" class="info-small-icon">
                 <p class="info-text-left">
-                    {{ vcfs[0].informations().path|default(vcfs[0]) }}
+                    {{ vcfs.repository[0].informations().path|default(vcfs.repository[0]) }}
                 </p>
               </div>
 
               <div class="info-bubble">
                 <img src="statics/database.png" class="info-small-icon">
                 <p class="info-text-left">
-                    {{ vcfs[0].informations().size|default('NA') }} Mo
+                    {{ vcfs.repository[0].informations().size|default('NA') }} Mo
                 </p>
               </div>
 
               <div class="info-bubble">
                 <img src="statics/file.png" class="info-small-icon">
                 <p class="info-text-left">
-                    {{ vcfs[0].informations().mtime|default('NA') }}
+                    {{ vcfs.repository[0].informations().mtime|default('NA') }}
                 </p>
               </div>
 
@@ -85,21 +85,21 @@
               <div class="info-bubble">
                 <img src="statics/folder.png" class="info-small-icon">
                 <p class="info-text-right">
-                    {{ vcfs[1].informations().path|default(vcfs[1]) }}
+                    {{ vcfs.repository[1].informations().path|default(vcfs.repository[1]) }}
                 </p>
               </div>
 
               <div class="info-bubble">
                 <img src="statics/database.png" class="info-small-icon">
                 <p class="info-text-right">
-                    {{ vcfs[1].informations().size|default('NA') }} Mo
+                    {{ vcfs.repository[1].informations().size|default('NA') }} Mo
                 </p>
               </div>
 
               <div class="info-bubble">
                 <img src="statics/file.png" class="info-small-icon">
                 <p class="info-text-right">
-                    {{ vcfs[1].informations().mtime|default('NA') }}
+                    {{ vcfs.repository[1].informations().mtime|default('NA') }}
                 </p>
               </div>
 
@@ -146,7 +146,7 @@
     <section class="plots-section">
 
         <div class="plots-left-grid">
-            {% for plot in plots[vcfs[0]] %}
+            {% for plot in plots[vcfs.repository[0]] %}
               <div class="plot {% if loop.index == 1 %}active{% endif %}" id="left-plot{{ loop.index }}">
                 {{ plot }}
               </div>
@@ -161,7 +161,7 @@
         </div>
 
         <div class="plots-right-grid">
-            {% for plot in plots[vcfs[1]] %}
+            {% for plot in plots[vcfs.repository[1]] %}
               <div class="plot {% if loop.index == 1 %}active{% endif %}" id="right-plot{{ loop.index }}">
                 {{ plot }}
               </div>
@@ -274,12 +274,12 @@
     
             <div class="comparison-container">
               <div class="file1-view">
-                <div class="file1-title">{{ vcfs[0].informations().basename|default(vcfs[0]) }} <p class="filterSummary" id="filterSummaryL">Showing all variants</p> </div>
+                <div class="file1-title">{{ vcfs.repository[0].informations().basename|default(vcfs.repository[0]) }} <p class="filterSummary" id="filterSummaryL">Showing all variants</p> </div>
                 <div class="file1-content" id="content1">
                   <div class="line header">
                     <div class="line-number">0</div>
                       <span class="header column">
-                        {{ view['headers'][vcfs[0]] }}
+                        {{ view['headers'][vcfs.repository[0]] }}
                       </span>
                   </div>
                   {% for index, series in view['variants'].iterrows() %}
@@ -304,12 +304,12 @@
                 </div>
               </div>
               <div class="file2-view">
-                <div class="file2-title">{{ vcfs[1].informations().basename|default(vcfs[1]) }} <p class="filterSummary" id="filterSummaryR">Showing all variants</p> </div>
+                <div class="file2-title">{{ vcfs.repository[1].informations().basename|default(vcfs.repository[1]) }} <p class="filterSummary" id="filterSummaryR">Showing all variants</p> </div>
                 <div class="file2-content" id="content2">
                   <div class="line header">
                     <div class="line-number">0</div>
                       <span class="header column">
-                        {{ view['headers'][vcfs[1]] }}
+                        {{ view['headers'][vcfs.repository[1]] }}
                       </span>
                   </div>
                   {% for index, series in view['variants'].iterrows() %}
@@ -363,7 +363,7 @@
                       </svg>
                     </div>
                     <div class="content">
-                      <p class="stat-value">{{ view["stats"]["unique"][vcfs[0]] + view["stats"]["unique"][vcfs[1]] }}</p>
+                      <p class="stat-value">{{ view["stats"]["unique"][vcfs.repository[0]] + view["stats"]["unique"][vcfs.repository[1]] }}</p>
                       <p class="stat-label">Different lines</p>
                     </div>
                   </div>
