@@ -1,12 +1,10 @@
 import matplotlib.pyplot as plt
 from matplotlib_venn import venn2
 from memory_profiler import profile
-import numpy
 import plotly.express as px
 import plotly.graph_objs as go
 import plotly.io as pio
-from pandas import Series, DataFrame, concat
-import utils
+from pandas import DataFrame, concat
 
 class Plot:
 

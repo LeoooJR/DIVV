@@ -34,9 +34,6 @@ def delta(params: object) -> int:
 
     logger.debug(f"Output a report: {params.report}")
 
-    # Number of files to process
-    PROCESS_FILE: int = 2
-
     filters: dict[str:bool] = {"SNP": params.exclude_snps,
                                "TRANSITION": params.exclude_trans,
                                "MNP": params.exclude_mnps,
