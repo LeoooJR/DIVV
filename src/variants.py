@@ -74,7 +74,18 @@ class VariantRepository():
 
     def collapse(self) -> DataFrame:
 
-        return concat(list(itemgetter(*list(sorted(self.repository.keys())))(self.repository)))
+        df: DataFrame = concat(list(itemgetter(*list(sorted(self.repository.keys())))(self.repository))).astype(
+                                                                                                                    {
+                                                                                                                        "Chromosome": "category",
+                                                                                                                        "Position": "int",
+                                                                                                                        "Type": "category",
+                                                                                                                        "Filter": "category",
+                                                                                                                        "Variant": "string[pyarrow]",
+                                                                                                                    }
+                                                                                                                )
+        df["Type"] = df["Type"].cat.set_categories(["snp", "indel", "sv"])
+
+        return df
 
     def visualization(self):
 

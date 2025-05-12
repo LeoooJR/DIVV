@@ -372,31 +372,29 @@ class VCF(GenomicFile):
 
         if not self.chromosomes:
 
-            chromosomes = self.stdin.seqnames
+            try:
 
+                chromosomes = self.stdin.seqnames
+
+            except AttributeError as e:
+
+                raise errors.VCFError(e)
+            
             if len(chromosomes):
 
                 logger.debug(f"File {self} is composed of {chromosomes} chromosomes")
-            
-            else:
-
-                raise errors.VCFError(f"No chromosome found in {self}")
 
             self.chromosomes = chromosomes
 
         if not self.seqlens:
 
-            seqlens = self.stdin.seqlens
+            try:
 
-            if len(seqlens):
+                self.seqlens = self.stdin.seqlens
 
-                logger.debug(f"Length of sequences have been found.")
+            except AttributeError as e:
 
-            else:
-
-                raise errors.VCFError(f"Length of sequences cannot be extracted.")
-            
-            self.seqlens = seqlens
+                logger.warning(e)
 
         if context:
 
@@ -733,6 +731,8 @@ class VCFProcessor:
             }
         ) # Set the columns to the right type for better memory management
 
+        variants["Type"].cat.set_categories(["snp", "indel", "sv"])
+
         # Set the hash values as the index
         variants.index = Index(variants.index.values, dtype="string[pyarrow]")
 
@@ -854,8 +854,14 @@ class VCFRepository():
             }
 
             variantsL: DataFrame = pair[0].variants.collapse()
-
+            
             variantsR: DataFrame = pair[1].variants.collapse()
+            
+            chromosomes = set(variantsL['Chromosome'].dropna().unique()) | set(variantsR['Chromosome'].dropna().unique())
+
+            variantsL["Chromosome"] = variantsL["Chromosome"].cat.set_categories(chromosomes)
+            
+            variantsR["Chromosome"] = variantsR["Chromosome"].cat.set_categories(chromosomes)
 
             # Compute unique variants in first VCF file
             results[pair]["unique"][pair[0]] = len(utils.difference(
