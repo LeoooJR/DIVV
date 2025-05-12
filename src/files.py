@@ -284,7 +284,7 @@ class VCF(GenomicFile):
         archive: str = f"{self.path}.{EXT}"
 
         CMDS: dict = {"bcftools": ["bcftools", "view", "-O", "z", "-o", archive, str(self.path)],
-                    "bgzip": ["bgzip", "-c", str(self.path)]}
+                    "bgzip": ["bgzip", "-c", "-f", str(self.path)]}
 
         outcode: int = 1
         retry: int = 0
