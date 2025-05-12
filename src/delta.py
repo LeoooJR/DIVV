@@ -1,12 +1,11 @@
-import concurrent.futures
 import errors
 import files
 from loguru import logger
 from memory_profiler import profile
+import os
 import processes
 from sys import argv
 from tabulate import tabulate
-import utils
 
 
 def delta(params: object) -> int:
@@ -97,28 +96,23 @@ def delta(params: object) -> int:
 
         logger.debug(f"Serializing output as {params.serialize}.")
 
-        if params.process:
-            # Parallelize the serialization process, with as much process as VCF files inputed
-            # use a context manager to avoid memory leaks
-            with concurrent.futures.ProcessPoolExecutor(max_workers=min(params.process, PROCESS_FILE)) as files_pool:
-                # Submit the process for each file mapped to the vcf path
-                futures_to_vcf = {
-                    files_pool.submit(
-                        utils.save, comparaisons[(vcfs.repository[0],vcfs.repository[1])]["variants"], vcf, params.serialize, comparaisons[(vcfs.repository[0],vcfs.repository[1])]["index"]
-                    ): vcf for vcf in [vcfs.repository[0].path, vcfs.repository[1].path]
-                }
-                # Check if a process is completed
-                for future in concurrent.futures.as_completed(futures_to_vcf):
-                    # Get the returned result
-                    try:
-                        out: int = future.result()
-                        logger.success(f"Process {future} has successfully serialized {futures_to_vcf[future]}") if out else logger.error(f"Process {future} did not successfully serialized with a {out} output code.")
-                    except ValueError as e:
-                       logger.error(e)
-        # Computation is carried out sequentially.
+        if params.serialize in ["vcf", "vcf.gz"]:
+
+            manager.scheduling(tasks=[[vcfs.repository[0].path.parent], [vcfs.repository[1].path.parent]])
+
+            try:
+
+                manager.commit(job=vcfs.processor.serialize, jobargs=[comparaisons[(vcfs.repository[0],vcfs.repository[1])], params.serialize])
+
+            except errors.ProcessError as e:
+
+                logger.error(e)
+
+                raise SystemExit(e)
+            
         else:
-            for vcf, t in zip(vcfs.repository, ['L','R']):
-                utils.save(obj=comparaisons[(vcfs.repository[0],vcfs.repository[1])]["variants"], path=vcf.path, format=params.serialize, target=t, lookup=comparaisons[(vcfs.repository[0],vcfs.repository[1])]["index"])
+
+            files.VCFRepository.processor.serialize([None, os.getcwd()], comparaisons[(vcfs.repository[0],vcfs.repository[1])]["variants"], params.serialize)
 
     # Should the output be reported ?
     if params.report:

@@ -1,4 +1,5 @@
 import copy as cp
+import json
 import cyvcf2
 import errors
 import filetype
@@ -10,7 +11,7 @@ from jinja2 import Environment, FileSystemLoader
 from loguru import logger
 import numpy as np
 import os
-from pandas import isna, concat, Index, DataFrame
+from pandas import isna, concat, Index, DataFrame, notna
 import pathlib
 from plots import PlotLibrary
 from shutil import copy, copytree
@@ -18,6 +19,7 @@ import subprocess
 import utils
 import variants
 import zipfile
+import _pickle as cPickle
 
 class GenomicFile():
 
@@ -748,13 +750,72 @@ class VCFProcessor:
 
         return (variants, filtered, stats) if profile else (variants, filtered, {})
     
-    def serialize(self):
+    @staticmethod
+    def serialize(task, obj, format: str = "pickle", out: str = os.getcwd()) -> int:
+        """ Serialize DataFrame to file of specified format """
 
-        pass
+        def write(task, obj, out, ext):
 
-    def write(self):
+            # Open the initial VCF file to get the template
+            vcf = cyvcf2.VCF(f"{task[0].archive}")
+            # Add match data in INFO column
+            vcf.add_info_to_header({'ID': 'match', 'Description': 'overlapping variant', 'Type': 'String', 'Number': '1'})
+            # Open the output VCF file for writing, open the data stream
+            w = cyvcf2.Writer(f"{out}_delta.{ext}", vcf)
+            # Iterate over the variants in the VCF file
+            for i, v in enumerate(vcf):
+                # Hash the variant to allow fast lookup
+                hash = sha256(
+                    string=f"{(v.CHROM).removeprefix('chr')}:{v.POS}:{v.REF}:{'|'.join(v.ALT)}".encode()
+                ).hexdigest()
+                # O(1) lookup
+                if hash in obj["index"]:
+                    # Get the corresponding row from the DataFrame, O(1) lookup by index
+                    series = obj["variants"].iloc[obj["index"][hash]]
+                    # Add the match information to the INFO dictionary
+                    v.INFO["match"] = int((notna(series["Variant.L"])) & (notna(series["Variant.R"])))
+                # Write the variant to the output VCF file
+                w.write_record(v)
+            # Close data streams
+            w.close(); vcf.close()
 
-        pass
+        # Map file formats to respective file extensions, write modes, and functions
+        FILES = {
+                "json": {"ext": "json", "mode": "w", "func": json.dump},
+                "pickle": {"ext": "pkl", "mode": "wb", "func": cPickle.dump},
+                "vcf": {"ext": "vcf", "mode": "wz", "func": None},
+                "vcf.gz": {"ext": "vcf.gz", "mode":"wz", "func": None}
+            }
+        
+        assert (
+            format in FILES
+        ), "File format is not supported"
+
+        if format in FILES:
+
+            if format in ["json", "pickle"]:
+                outf = str(pathlib.Path(task[1], "summary"))
+                # Open data stream
+                with open(
+                    file=f"{outf}_delta.{FILES[format]['ext']}",
+                    mode=FILES[format]["mode"],
+                ) as f:
+                    obj = obj.to_dict(orient='list')
+                    FILES[format]["func"](obj, f)
+            # Write a VCF
+            else:
+                outf = str(pathlib.Path(task[1], task[0].path.stem))
+                write(task, obj, outf, FILES[format]['ext'])
+
+            assert os.path.isfile(
+                f"{outf}_delta.{FILES[format]['ext']}"
+            ), "File was not created"
+
+            logger.success(f"Results are seralized to {task[1]}")
+
+            return 1
+        else:
+            raise ValueError(f"Error: The file format {format} is not supported.")
     
 class VCFRepository():
 
