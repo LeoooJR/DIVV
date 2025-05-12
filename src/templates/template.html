@@ -252,6 +252,7 @@
                         <option selected disabled>Select a filter...</option>
                         <option>ALL</option>
                         <option>PASS</option>
+                        <option>FAIL</option>
                     </select>
                 </div>
                 <img src="statics/dna.png" alt="dna-icon" class="filter-icon">
@@ -604,7 +605,8 @@
       });
       function filter() {
 
-          let totalCount = document.querySelectorAll(".file1-content .line:not(.header)").length;
+          let totalCountLeft = document.querySelectorAll(".file1-content .line:not(.header) span").length;
+          let totalCountRight = document.querySelectorAll(".file2-content .line:not(.header) span").length;
           
           let chromosomeInput = document.querySelector(".search-container .search-field input.input");
           if (!chromosomeInput) {
@@ -621,7 +623,8 @@
           let rowsLeft = document.querySelectorAll(".file1-content .line:not(.header)");
           let rowsRight = document.querySelectorAll(".file2-content .line:not(.header)");
 
-          let visibleCount = 0;
+          let visibleCountLeft = 0;
+          let visibleCountRight = 0;
 
           rowsLeft.forEach((row, index) => {
               let idParts = row.id.split(" ");
@@ -643,13 +646,16 @@
               console.log(`Row ${index}:`, {
                   chromMatch, typeMatch, rowClassMatch, filterMatchLeft, filterMatchRight, rowVisible
               });
-              visibleCount = rowVisible ? ++visibleCount : visibleCount;
+
+              visibleCountLeft = rowVisible && row.querySelector("span") ? ++visibleCountLeft : visibleCountLeft;
+              visibleCountRight = rowVisible && rowRight.querySelector("span") ? ++visibleCountRight : visibleCountRight;
+
               row.style.display = rowVisible ? "flex" : "none";
               rowRight.style.display = rowVisible ? "flex" : "none";
           });
           
-          document.getElementById("filterSummaryL").innerText = `Showing ${visibleCount} variants out of ${totalCount}`;
-          document.getElementById("filterSummaryR").innerText = `Showing ${visibleCount} variants out of ${totalCount}`;
+          document.getElementById("filterSummaryL").innerText = `Showing ${visibleCountLeft} variants out of ${totalCountLeft}`;
+          document.getElementById("filterSummaryR").innerText = `Showing ${visibleCountRight} variants out of ${totalCountRight}`;
       }
       function resetFilters() {
           document.querySelector(".search-box .input").value = "";
