@@ -472,6 +472,7 @@ body {
 
 .stat-label {
     text-transform: capitalize;
+    font-family: var(--font-family);
 }
 
 @media (min-width: 640px) {
@@ -484,4 +485,36 @@ body {
     .stats-container {
       grid-template-columns: 1fr 1fr 1fr;
     }
+}
+
+.stats-info-icon {
+    width: 20px;
+    height: 20px;
+    transform: translateY(-2px);
+    margin-right: 8px;
+    padding-left: 100px;
+}
+  
+.stats-info-icon path {
+    fill: #509AF8;
+}
+
+.stats-info-icon svg:hover + .stats-info-message {
+    display: block;
+}
+
+.stats-info-message {
+    display: none;
+    width: 150px;
+}
+
+.stats-info-message p {
+    background-color: white;
+    border-style: solid;
+    border-color: rgb(204, 204, 204);
+    border-radius: 16px;
+    padding-top: 0.01em;
+    padding-right: 16px;
+    padding-bottom: 0.01em;
+    padding-left: 16px;
 }
