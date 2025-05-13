@@ -625,6 +625,8 @@
 
           let visibleCountLeft = 0;
           let visibleCountRight = 0;
+          let matchCount = 0;
+          let diffCount = 0;
 
           rowsLeft.forEach((row, index) => {
               let idParts = row.id.split(" ");
@@ -642,6 +644,9 @@
               let filterMatchRight = filterType === "ALL" || idPartsRight[2] === filterType;
     
               let rowVisible = (chromMatch && typeMatch && rowClassMatch && (filterMatchLeft || filterMatchRight));
+
+              matchCount = rowVisible && row.className.split(" ")[1] == "match" ? ++matchCount : matchCount;
+              diffCount = rowVisible && row.className.split(" ")[1] == "diff" ? ++diffCount : diffCount;
       
               console.log(`Row ${index}:`, {
                   chromMatch, typeMatch, rowClassMatch, filterMatchLeft, filterMatchRight, rowVisible
@@ -656,6 +661,11 @@
           
           document.getElementById("filterSummaryL").innerText = `Showing ${visibleCountLeft} variants out of ${totalCountLeft}`;
           document.getElementById("filterSummaryR").innerText = `Showing ${visibleCountRight} variants out of ${totalCountRight}`;
+
+          let linesStats = document.querySelectorAll(".stat-card .content .stat-value");
+          linesStats[0].textContent = matchCount
+          linesStats[1].textContent = diffCount
+          linesStats[3].textContent = (matchCount / (visibleCountLeft + visibleCountRight - matchCount)).toPrecision(3)
       }
       function resetFilters() {
           document.querySelector(".search-box .input").value = "";
