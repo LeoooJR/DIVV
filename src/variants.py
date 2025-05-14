@@ -1,7 +1,7 @@
-from operator import itemgetter
 import numpy
 from pandas import Series, DataFrame, concat
 from plots import PlotLibrary
+from sortedcontainers import SortedSet
 import utils
 
 class VariantRepository():
@@ -33,6 +33,38 @@ class VariantRepository():
         self.profile: dict = {}
 
         self.filtered: dict = {}
+
+        self._chromosomes: SortedSet = None
+
+        self.seqlens: list = None
+
+    @staticmethod
+    def chromosome_sort_key(item: str):
+        """Key to be used for sorting chromosomes."""
+
+        # If the item is a digit, return a tuple with 0 and the integer value
+        # If the item is not a digit, return a tuple with 1 and the item itself
+        # This will ensure that digits are sorted before non-digits
+
+        item: str = item.removeprefix('chr')
+
+        if item.isdigit():
+
+            return (0, int(item))
+        
+        else:
+
+            return (1, item)
+        
+    @property
+    def chromosomes(self):
+
+        return self._chromosomes
+    
+    @chromosomes.setter
+    def chromosomes(self, values: set):
+
+        self._chromosomes: SortedSet = SortedSet(iterable=values, key=VariantRepository.chromosome_sort_key)
 
     @property
     def filters(self):
@@ -74,15 +106,15 @@ class VariantRepository():
 
     def collapse(self) -> DataFrame:
 
-        df: DataFrame = concat(list(itemgetter(*list(sorted(self.repository.keys())))(self.repository))).astype(
-                                                                                                                    {
-                                                                                                                        "Chromosome": "category",
-                                                                                                                        "Position": "int",
-                                                                                                                        "Type": "category",
-                                                                                                                        "Filter": "category",
-                                                                                                                        "Variant": "string[pyarrow]",
-                                                                                                                    }
-                                                                                                                )
+        df: DataFrame = concat([self.repository[chrom] for chrom in self.chromosomes if chrom in self.repository]).astype(
+                                                                                                                            {
+                                                                                                                                "Chromosome": "category",
+                                                                                                                                "Position": "int",
+                                                                                                                                "Type": "category",
+                                                                                                                                "Filter": "category",
+                                                                                                                                "Variant": "string[pyarrow]",
+                                                                                                                            }
+                                                                                                                        )
         df["Type"] = df["Type"].cat.set_categories(["snp", "indel", "sv"])
 
         return df

@@ -15,6 +15,7 @@ from pandas import isna, concat, Index, DataFrame, notna
 import pathlib
 from plots import PlotLibrary
 from shutil import copy, copytree
+from sortedcontainers import SortedSet
 import subprocess
 import utils
 import variants
@@ -109,10 +110,6 @@ class VCF(GenomicFile):
         self.SAMPLES = None
 
         self.variants: variants.VariantRepository = variants.VariantRepository(filters)
-
-        self.chromosomes = None
-
-        self.seqlens = None
 
         if self.archive and index:
 
@@ -370,11 +367,11 @@ class VCF(GenomicFile):
 
             self.samples = samples
 
-        if not self.chromosomes:
+        if not self.variants.chromosomes:
 
             try:
 
-                chromosomes = self.stdin.seqnames
+                chromosomes = set(self.stdin.seqnames)
 
             except AttributeError as e:
 
@@ -384,13 +381,13 @@ class VCF(GenomicFile):
 
                 logger.debug(f"File {self} is composed of {chromosomes} chromosomes")
 
-            self.chromosomes = chromosomes
+            self.variants.chromosomes = chromosomes
 
-        if not self.seqlens:
+        if not self.variants.seqlens:
 
             try:
 
-                self.seqlens = self.stdin.seqlens
+                self.variants.seqlens = self.stdin.seqlens
 
             except AttributeError as e:
 
@@ -857,7 +854,7 @@ class VCFRepository():
             
             variantsR: DataFrame = pair[1].variants.collapse()
             
-            chromosomes = set(variantsL['Chromosome'].dropna().unique()) | set(variantsR['Chromosome'].dropna().unique())
+            chromosomes = sorted(list(set(variantsL['Chromosome'].dropna().unique()) | set(variantsR['Chromosome'].dropna().unique())))
 
             variantsL["Chromosome"] = variantsL["Chromosome"].cat.set_categories(chromosomes)
             
@@ -972,6 +969,7 @@ class VCFRepository():
                 ascending=True,
                 inplace=True,
                 kind="mergesort",
+                key=lambda serie: serie.astype(str).map(variants.VariantRepository.chromosome_sort_key) if serie.name == "Chromosome" else serie
             )
 
             results[pair]["variants"] = df
