@@ -632,6 +632,10 @@
       });
       function filter() {
 
+          let matchs = ["MATCH","MISMATCH"]
+          let filters = ["PASS", "FAIL"]
+          let variants = ["SNP", "INDEL", "OTHER"]
+
           let totalCountLeft = document.querySelectorAll(".file1-content .line:not(.header) span").length;
           let totalCountRight = document.querySelectorAll(".file2-content .line:not(.header) span").length;
           
@@ -642,11 +646,10 @@
           let chromosome = chromosomeInput ? chromosomeInput.value.trim().toUpperCase() : "";
           
           let filterSelectsL = document.querySelector(".filter-container-left .filter");
-          let matchType = filterSelectsL ? filterSelectsL.value : "ALL";
+          let matchType = matchs.includes(filterSelectsL.value.toUpperCase()) ? filterSelectsL.value : "ALL";
           let filterSelects = document.querySelectorAll(".filter-container-right .filter");
-          let filterType = filterSelects.length > 0 ? filterSelects[0].value.toUpperCase() : "ALL";
-          let variantType = filterSelects.length > 1 ? filterSelects[1].value.toUpperCase() : "ALL";
-
+          let filterType = filterSelects.length > 0 && filters.includes(filterSelects[0].value) ? filterSelects[0].value.toUpperCase() : "ALL";
+          let variantType = filterSelects.length > 1 && variants.includes(filterSelects[1].value) ? filterSelects[1].value.toUpperCase() : "ALL";
           let rowsLeft = document.querySelectorAll(".file1-content .line:not(.header)");
           let rowsRight = document.querySelectorAll(".file2-content .line:not(.header)");
 
@@ -674,7 +677,7 @@
 
               matchCount = rowVisible && row.className.split(" ")[1] == "match" ? ++matchCount : matchCount;
               diffCount = rowVisible && row.className.split(" ")[1] == "diff" ? ++diffCount : diffCount;
-      
+
               console.log(`Row ${index}:`, {
                   chromMatch, typeMatch, rowClassMatch, filterMatchLeft, filterMatchRight, rowVisible
               });
@@ -692,7 +695,7 @@
           let linesStats = document.querySelectorAll(".stat-card .content .stat-value");
           linesStats[0].textContent = matchCount
           linesStats[1].textContent = diffCount
-          linesStats[3].textContent = (matchCount / (visibleCountLeft + visibleCountRight - matchCount)).toPrecision(3)
+          linesStats[2].textContent = (matchCount / (visibleCountLeft + visibleCountRight - matchCount)).toPrecision(3)
       }
       function resetFilters() {
           document.querySelector(".search-box .input").value = "";
