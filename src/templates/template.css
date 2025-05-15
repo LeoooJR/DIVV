@@ -100,6 +100,10 @@ body {
     margin-right: 5px;
 }
 
+#dropdown-icon, #terminal-icon:hover {
+    cursor: pointer;
+}
+
 .notification-dot {
     position: absolute;
     top: -0.25rem; 
@@ -340,7 +344,6 @@ body {
     margin: 5px;
     vertical-align: center;
     padding-top: 5px;
-    margin: 5px;
 }
 
 .FlexMain {
@@ -392,6 +395,10 @@ body {
 
 .filter.right {
     background-color: #eef0f1;
+}
+
+.filter:hover {
+    cursor: pointer;
 }
 
 .reset-button {

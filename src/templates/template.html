@@ -8,8 +8,8 @@
   <link rel="stylesheet" href="file.css" />
   <link rel="stylesheet" href="search.css" />
   <link rel="stylesheet" href="table.css" />
-  <link rel="stylesheet" href="tickets.css" />
   <link rel="stylesheet" href="cmd.css" />
+  <link rel="stylesheet" href="terminal.css" />
   <script src="https://cdn.plot.ly/plotly-3.0.0.min.js" charset="utf-8"></script>
 </head>
 
@@ -265,9 +265,43 @@
                         <option>OTHER</option>
                     </select>
                 </div>
+                <img src="statics/terminal.png" class="filter-icon" id="terminal-icon">
                 <button class="reset-button" onclick="resetFilters()">Reset</button>
             </div>
         </div>
+    </div>
+
+    <div class="terminal">
+      <div class="terminal-header">
+        <span class="terminal-title">
+          <svg
+            class="terminal-icon"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M4 17l6-6-6-6M12 19h8"></path>
+          </svg>
+          Terminal
+        </span>
+      </div>
+      <div class="terminal-body">
+        <div class="command-line">
+          <div class="input-wrapper">
+            <input
+              type="text"
+              class="input-field"
+              placeholder="Enter query..."
+            />
+            <span class="cursor"></span>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div class="Container">
@@ -707,12 +741,19 @@
     <script>
       document.addEventListener("DOMContentLoaded", function () {
         document.getElementById("dropdown-icon").addEventListener("click", show)
+        document.getElementById("terminal-icon").addEventListener("click", show)
       });
       function show() {
-        element = document.querySelector(".command")
-        element.style.display = element.style.display == "none" ? "flex" : "none";
-        element = document.querySelector(".popup-left")
-        element.style.display = element.style.display == "none" ? "flex" : "none";
+        if (this.id === "dropdown-icon") {
+          element = document.querySelector(".command")
+          element.style.display = element.style.display == "none" ? "flex" : "none";
+          element = document.querySelector(".popup-left")
+          element.style.display = element.style.display == "none" ? "flex" : "none";
+        }
+        else if (this.id === "terminal-icon") {
+          element = document.querySelector(".terminal")
+          element.style.display = element.style.display == "none" ? "block" : "none";
+        }
       }
     </script>
     <script>
