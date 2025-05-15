@@ -525,3 +525,46 @@ body {
     padding-bottom: 0.01em;
     padding-left: 16px;
 }
+
+.stats-files {
+    display: flex;
+    flex-direction: row;
+    background-color: #f3f4f6;
+    margin-top: 10px;
+}
+
+.stats-file {
+    width: 100%;
+    margin-left: 10px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 1.0rem;
+}
+
+.stats-bar {
+    width: 100%;
+    height: 30px;
+    border-radius: 10px;
+    background-color: #b3b3b3;
+    color: white;
+    text-align: center;
+}
+
+.progress-left {
+    height: 100%;
+    background-color: tomato;
+    opacity: 0.75;
+    float: left;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+}
+
+.progress-right {
+    height: 100%;
+    background-color: LightGreen;
+    opacity: 0.75;
+    float: left;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+}

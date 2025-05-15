@@ -13,7 +13,7 @@
   <script src="https://cdn.plot.ly/plotly-3.0.0.min.js" charset="utf-8"></script>
 </head>
 
-<body>
+<body onload="filter()">
 
     <div class="main">
 
@@ -374,77 +374,311 @@
 
               <section class="stats-section">
 
-                <div class="stats-container">
-                  
-                  <div class="stat-card">
-                    <div class="stats-container-match">
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="currentColor" class="icon">
-                        <rect x="96" y="176" width="320" height="48" rx="8" ry="8"/>
-                        <rect x="96" y="288" width="320" height="48" rx="8" ry="8"/>
-                      </svg>
+                <div class="stats-general">
+                  <div class="stats-container">
+                    
+                    <div class="stat-card">
+                      <div class="stats-container-match">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="currentColor" class="icon">
+                          <rect x="96" y="176" width="320" height="48" rx="8" ry="8"/>
+                          <rect x="96" y="288" width="320" height="48" rx="8" ry="8"/>
+                        </svg>
+                      </div>
+                      <div class="content">
+                        <p class="stat-value">1854</p>
+                        <p class="stat-label">Matching lines</p>
+                      </div>
+                      <div class="stats-info-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" height="24" fill="none">
+                          <path fill="#393a37" d="m12 1.5c-5.79844 0-10.5 4.70156-10.5 10.5 0 5.7984 4.70156 10.5 10.5 10.5 5.7984 0 10.5-4.7016 10.5-10.5 0-5.79844-4.7016-10.5-10.5-10.5zm.75 15.5625c0 .1031-.0844.1875-.1875.1875h-1.125c-.1031 0-.1875-.0844-.1875-.1875v-6.375c0-.1031.0844-.1875.1875-.1875h1.125c.1031 0 .1875.0844.1875.1875zm-.75-8.0625c-.2944-.00601-.5747-.12718-.7808-.3375-.206-.21032-.3215-.49305-.3215-.7875s.1155-.57718.3215-.7875c.2061-.21032.4864-.33149.7808-.3375.2944.00601.5747.12718.7808.3375.206.21032.3215.49305.3215.7875s-.1155.57718-.3215.7875c-.2061.21032-.4864.33149-.7808.3375z">
+                          </path>
+                        </svg>
+                        <div class="stats-info-message">
+                          <p class="message"><strong>Matching</strong> criteria is based on: <strong>chromosome - position - reference allele - alternative allele</strong></p>
+                        </div>
+                      </div>
                     </div>
-                    <div class="content">
-                      <p class="stat-value">{{ view["common"] }}</p>
-                      <p class="stat-label">Matching lines</p>
+                    
+                    <div class="stat-card">
+                      <div class="stats-container-diff">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="currentColor" class="icon">
+                          <rect x="96" y="176" width="320" height="48" rx="8" ry="8"/>
+                          <rect x="96" y="288" width="320" height="48" rx="8" ry="8"/>
+                          <line x1="120" y1="400" x2="392" y2="112" stroke="currentColor" stroke-width="48" stroke-linecap="round"/>
+                        </svg>
+                      </div>
+                      <div class="content">
+                        <p class="stat-value">7</p>
+                        <p class="stat-label">Different lines</p>
+                      </div>
+                      <div class="stats-info-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" height="24" fill="none">
+                          <path fill="#393a37" d="m12 1.5c-5.79844 0-10.5 4.70156-10.5 10.5 0 5.7984 4.70156 10.5 10.5 10.5 5.7984 0 10.5-4.7016 10.5-10.5 0-5.79844-4.7016-10.5-10.5-10.5zm.75 15.5625c0 .1031-.0844.1875-.1875.1875h-1.125c-.1031 0-.1875-.0844-.1875-.1875v-6.375c0-.1031.0844-.1875.1875-.1875h1.125c.1031 0 .1875.0844.1875.1875zm-.75-8.0625c-.2944-.00601-.5747-.12718-.7808-.3375-.206-.21032-.3215-.49305-.3215-.7875s.1155-.57718.3215-.7875c.2061-.21032.4864-.33149.7808-.3375.2944.00601.5747.12718.7808.3375.206.21032.3215.49305.3215.7875s-.1155.57718-.3215.7875c-.2061.21032-.4864.33149-.7808.3375z">
+                          </path>
+                        </svg>
+                        <div class="stats-info-message">
+                          <p class="message"><strong>Matching</strong> criteria is based on: <strong>chromosome - position - reference allele - alternative allele</strong></p>
+                        </div>
+                      </div>
                     </div>
-                    <div class="stats-info-icon">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" height="24" fill="none">
-                        <path fill="#393a37" d="m12 1.5c-5.79844 0-10.5 4.70156-10.5 10.5 0 5.7984 4.70156 10.5 10.5 10.5 5.7984 0 10.5-4.7016 10.5-10.5 0-5.79844-4.7016-10.5-10.5-10.5zm.75 15.5625c0 .1031-.0844.1875-.1875.1875h-1.125c-.1031 0-.1875-.0844-.1875-.1875v-6.375c0-.1031.0844-.1875.1875-.1875h1.125c.1031 0 .1875.0844.1875.1875zm-.75-8.0625c-.2944-.00601-.5747-.12718-.7808-.3375-.206-.21032-.3215-.49305-.3215-.7875s.1155-.57718.3215-.7875c.2061-.21032.4864-.33149.7808-.3375.2944.00601.5747.12718.7808.3375.206.21032.3215.49305.3215.7875s-.1155.57718-.3215.7875c-.2061.21032-.4864.33149-.7808.3375z">
-                        </path>
-                      </svg>
-                      <div class="stats-info-message">
-                        <p class="message"><strong>Matching</strong> criteria is based on: <strong>chromosome - position - reference allele - alternative allele</strong></p>
+                    
+                    <div class="stat-card">
+                      <div class="stats-container-index">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="currentColor" class="icon">
+                          <circle cx="200" cy="256" r="120" fill="none" stroke="currentColor" stroke-width="24" opacity="0.8"/>
+                          <circle cx="312" cy="256" r="120" fill="none" stroke="currentColor" stroke-width="24" opacity="0.8"/>
+                          <path d="M256,184 a72,72 0 0,1 0,144 a72,72 0 0,1 0,-144" fill="currentColor" opacity="0.6"/>
+                          <text x="256" y="256" font-size="40" text-anchor="middle" dominant-baseline="middle" fill="currentColor">J</text>
+                        </svg>
+                      </div>
+                      <div class="content">
+                        <p class="stat-value">0.996</p>
+                        <p class="stat-label">Jaccard index</p>
+                      </div>
+                      <div class="stats-info-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" height="24" fill="none">
+                          <path fill="#393a37" d="m12 1.5c-5.79844 0-10.5 4.70156-10.5 10.5 0 5.7984 4.70156 10.5 10.5 10.5 5.7984 0 10.5-4.7016 10.5-10.5 0-5.79844-4.7016-10.5-10.5-10.5zm.75 15.5625c0 .1031-.0844.1875-.1875.1875h-1.125c-.1031 0-.1875-.0844-.1875-.1875v-6.375c0-.1031.0844-.1875.1875-.1875h1.125c.1031 0 .1875.0844.1875.1875zm-.75-8.0625c-.2944-.00601-.5747-.12718-.7808-.3375-.206-.21032-.3215-.49305-.3215-.7875s.1155-.57718.3215-.7875c.2061-.21032.4864-.33149.7808-.3375.2944.00601.5747.12718.7808.3375.206.21032.3215.49305.3215.7875s-.1155.57718-.3215.7875c-.2061.21032-.4864.33149-.7808.3375z">
+                          </path>
+                        </svg>
+                        <div class="stats-info-message">
+                          <p class="message">Jaccard Index calculated as: <strong>common variant / total unique variants</strong></p>
+                        </div>
                       </div>
                     </div>
                   </div>
-                  
-                  <div class="stat-card">
-                    <div class="stats-container-diff">
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="currentColor" class="icon">
-                        <rect x="96" y="176" width="320" height="48" rx="8" ry="8"/>
-                        <rect x="96" y="288" width="320" height="48" rx="8" ry="8"/>
-                        <line x1="120" y1="400" x2="392" y2="112" stroke="currentColor" stroke-width="48" stroke-linecap="round"/>
+                </div> 
+                <div class="stats-files">
+                  <div class="stats-file">
+                    <div class="stat-card">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 250" width="150" height="200">
+                        <g transform="translate(100, 100)">
+                        <!-- SNP (Single Nucleotide Polymorphism) Icon -->
+                          <circle cx="0" cy="0" r="70" fill="#f8f9fa" stroke="#6c757d" stroke-width="3"/>
+                          <text x="0" y="-20" font-family="Ubuntu" font-size="18" text-anchor="middle" fill="#212529">SNP</text>
+                          <!-- DNA base representation -->
+                          <rect x="-40" y="5" width="20" height="20" fill="#4285F4" rx="3" ry="3"/>
+                          <rect x="-10" y="5" width="20" height="20" fill="#EA4335" rx="3" ry="3"/>
+                          <rect x="20" y="5" width="20" height="20" fill="#34A853" rx="3" ry="3"/>
+                          <text x="-30" y="20" font-family="Ubuntu" font-size="16" text-anchor="middle" fill="white">A</text>
+                          <text x="0" y="20" font-family="Ubuntu" font-size="16" text-anchor="middle" fill="white">C</text>
+                          <text x="30" y="20" font-family="Ubuntu" font-size="16" text-anchor="middle" fill="white">T</text>
+                          <path d="M0,35 L0,45 M-10,45 L10,45" stroke="#212529" stroke-width="3"/>
+                          <path d="M-3,50 L3,50" stroke="#EA4335" stroke-width="5" stroke-linecap="round"/>
+                        </g>
                       </svg>
-                    </div>
-                    <div class="content">
-                      <p class="stat-value">{{ view["unique"][vcfs.repository[0]] + view["unique"][vcfs.repository[1]] }}</p>
-                      <p class="stat-label">Different lines</p>
-                    </div>
-                    <div class="stats-info-icon">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" height="24" fill="none">
-                        <path fill="#393a37" d="m12 1.5c-5.79844 0-10.5 4.70156-10.5 10.5 0 5.7984 4.70156 10.5 10.5 10.5 5.7984 0 10.5-4.7016 10.5-10.5 0-5.79844-4.7016-10.5-10.5-10.5zm.75 15.5625c0 .1031-.0844.1875-.1875.1875h-1.125c-.1031 0-.1875-.0844-.1875-.1875v-6.375c0-.1031.0844-.1875.1875-.1875h1.125c.1031 0 .1875.0844.1875.1875zm-.75-8.0625c-.2944-.00601-.5747-.12718-.7808-.3375-.206-.21032-.3215-.49305-.3215-.7875s.1155-.57718.3215-.7875c.2061-.21032.4864-.33149.7808-.3375.2944.00601.5747.12718.7808.3375.206.21032.3215.49305.3215.7875s-.1155.57718-.3215.7875c-.2061.21032-.4864.33149-.7808.3375z">
-                        </path>
-                      </svg>
-                      <div class="stats-info-message">
-                        <p class="message"><strong>Matching</strong> criteria is based on: <strong>chromosome - position - reference allele - alternative allele</strong></p>
+                      <div class="content">
+                        <p class="stat-value">150 | 800</p>
+                        <div class="stats-bar" id="stats-bar-snp">
+                          <div class="progress-left">
+                          </div>
+                          <div class="progress-right">
+                          </div>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  
-                  <div class="stat-card">
-                    <div class="stats-container-index">
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="currentColor" class="icon">
-                        <circle cx="200" cy="256" r="120" fill="none" stroke="currentColor" stroke-width="24" opacity="0.8"/>
-                        <circle cx="312" cy="256" r="120" fill="none" stroke="currentColor" stroke-width="24" opacity="0.8"/>
-                        <path d="M256,184 a72,72 0 0,1 0,144 a72,72 0 0,1 0,-144" fill="currentColor" opacity="0.6"/>
-                        <text x="256" y="256" font-size="40" text-anchor="middle" dominant-baseline="middle" fill="currentColor">J</text>
+
+                    <div class="stat-card">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 250" width="150" height="200">
+                        <g transform="translate(100, 100)">
+                          <circle cx="0" cy="0" r="70" fill="#f8f9fa" stroke="#6c757d" stroke-width="3"/>
+                          <text x="0" y="-20" font-family="Ubuntu" font-size="18" text-anchor="middle" fill="#212529">MNP</text>
+                          <!-- Multiple DNA bases -->
+                          <rect x="-50" y="5" width="20" height="20" fill="#4285F4" rx="3" ry="3"/>
+                          <rect x="-25" y="5" width="20" height="20" fill="#EA4335" rx="3" ry="3"/>
+                          <rect x="0" y="5" width="20" height="20" fill="#FBBC05" rx="3" ry="3"/>
+                          <rect x="25" y="5" width="20" height="20" fill="#34A853" rx="3" ry="3"/>
+                          <text x="-40" y="20" font-family="Ubuntu" font-size="16" text-anchor="middle" fill="white">A</text>
+                          <text x="-15" y="20" font-family="Ubuntu" font-size="16" text-anchor="middle" fill="white">C</text>
+                          <text x="10" y="20" font-family="Ubuntu" font-size="16" text-anchor="middle" fill="white">G</text>
+                          <text x="35" y="20" font-family="Ubuntu" font-size="16" text-anchor="middle" fill="white">T</text>
+                          <path d="M0,35 L0,45 M-25,45 L25,45" stroke="#212529" stroke-width="3"/>
+                          <path d="M-18,50 L18,50" stroke="#EA4335" stroke-width="5" stroke-linecap="round"/>
+                        </g>
                       </svg>
-                    </div>
-                    <div class="content">
-                      <p class="stat-value">{{  view["jaccard"]|round(3,'common') }}</p>
-                      <p class="stat-label">Jaccard index</p>
-                    </div>
-                    <div class="stats-info-icon">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" height="24" fill="none">
-                        <path fill="#393a37" d="m12 1.5c-5.79844 0-10.5 4.70156-10.5 10.5 0 5.7984 4.70156 10.5 10.5 10.5 5.7984 0 10.5-4.7016 10.5-10.5 0-5.79844-4.7016-10.5-10.5-10.5zm.75 15.5625c0 .1031-.0844.1875-.1875.1875h-1.125c-.1031 0-.1875-.0844-.1875-.1875v-6.375c0-.1031.0844-.1875.1875-.1875h1.125c.1031 0 .1875.0844.1875.1875zm-.75-8.0625c-.2944-.00601-.5747-.12718-.7808-.3375-.206-.21032-.3215-.49305-.3215-.7875s.1155-.57718.3215-.7875c.2061-.21032.4864-.33149.7808-.3375.2944.00601.5747.12718.7808.3375.206.21032.3215.49305.3215.7875s-.1155.57718-.3215.7875c-.2061.21032-.4864.33149-.7808.3375z">
-                        </path>
-                      </svg>
-                      <div class="stats-info-message">
-                        <p class="message">Jaccard Index calculated as: <strong>common variant / total unique variants</strong></p>
+                      <div class="content">
+                        <p class="stat-value">150 | 800</p>
+                        <div class="stats-bar" id="stats-bar-mnp">
+                          <div class="progress-left">
+                          </div>
+                          <div class="progress-right">
+                          </div>
+                        </div>
                       </div>
                     </div>
+
+                    <div class="stat-card">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 250" width="150" height="200">
+                        <g transform="translate(100, 100)">
+                          <circle cx="0" cy="0" r="70" fill="#f8f9fa" stroke="#6c757d" stroke-width="3"/>
+                          <text x="0" y="-20" font-family="Ubuntu" font-size="18" text-anchor="middle" fill="#212529">SV</text>
+                          <!-- DNA strand restructuring representation -->
+                          <path d="M-45,5 L-15,5 L-15,15 L-45,15 Z" fill="#4285F4"/>
+                          <path d="M-10,5 L20,5 L20,15 L-10,15 Z" fill="#34A853"/>
+                          <path d="M25,5 L45,5 L45,15 L25,15 Z" fill="#EA4335"/>
+                          <path d="M-45,20 L-25,20 L-25,30 L-45,30 Z" fill="#4285F4"/>
+                          <path d="M25,20 L45,20 L45,30 L25,30 Z" fill="#34A853"/>
+                          <path d="M-20,20 L20,20 L20,30 L-20,30 Z" fill="#EA4335"/>
+                          <!-- Arrows indicating structural change -->
+                          <path d="M0,35 C-15,45 15,45 0,55" fill="none" stroke="#212529" stroke-width="2" marker-end="url(#arrowhead)"/>
+                          <path d="M-25,35 C-40,45 -10,45 -25,55" fill="none" stroke="#212529" stroke-width="2" marker-end="url(#arrowhead)"/>
+                          <path d="M25,35 C10,45 40,45 25,55" fill="none" stroke="#212529" stroke-width="2" marker-end="url(#arrowhead)"/>
+                          <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                            <polygon points="0 0, 10 3.5, 0 7" fill="#212529"/>
+                          </marker>
+                        </g>
+                      </svg>
+                      <div class="content">
+                        <p class="stat-value">150 | 800</p>
+                        <div class="stats-bar" id="stats-bar-sv">
+                          <div class="progress-left">
+                          </div>
+                          <div class="progress-right">
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+
+                    <div class="stat-card">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 250" width="150" height="200">
+                        <g transform="translate(100, 100)">
+                          <circle cx="0" cy="0" r="70" fill="#f8f9fa" stroke="#6c757d" stroke-width="3"/>
+                          <text x="0" y="-20" font-family="Ubuntu" font-size="18" text-anchor="middle" fill="#212529">INDEL</text>
+                          <!-- DNA strand with insertion/deletion -->
+                          <rect x="-45" y="0" width="15" height="15" fill="#4285F4" rx="2" ry="2"/>
+                          <rect x="-25" y="0" width="15" height="15" fill="#EA4335" rx="2" ry="2"/>
+                          <rect x="-5" y="0" width="15" height="15" fill="#FBBC05" rx="2" ry="2"/>
+                          <rect x="15" y="0" width="15" height="15" fill="#34A853" rx="2" ry="2"/>
+                          <rect x="35" y="0" width="15" height="15" fill="#4285F4" rx="2" ry="2"/>
+                          
+                          <!-- Reference strand -->
+                          <rect x="-45" y="25" width="15" height="15" fill="#4285F4" rx="2" ry="2"/>
+                          <rect x="-25" y="25" width="15" height="15" fill="#EA4335" rx="2" ry="2"/>
+                          <!-- Gap representing deletion -->
+                          <rect x="15" y="25" width="15" height="15" fill="#34A853" rx="2" ry="2"/>
+                          <rect x="35" y="25" width="15" height="15" fill="#4285F4" rx="2" ry="2"/>
+                          
+                          <!-- Arrows indicating insertion/deletion -->
+                          <path d="M-5,17 L15,17" stroke="#212529" stroke-width="1.5"/>
+                          <path d="M5,15 L5,19" stroke="#212529" stroke-width="1.5"/>
+                          <path d="M-5,42 L15,42" stroke="#212529" stroke-width="1.5"/>
+                          <line x1="5" y1="25" x2="5" y2="42" stroke="#212529" stroke-width="1.5" stroke-dasharray="3,3"/>
+                        </g>
+                      </svg>
+                      <div class="content">
+                        <p class="stat-value">150 | 800</p>
+                        <div class="stats-bar" id="stats-bar-indel">
+                          <div class="progress-left">
+                          </div>
+                          <div class="progress-right">
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+
+                    <div class="stat-card">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 250" width="150" height="200">
+                        <g transform="translate(100, 100)">
+                          <circle cx="0" cy="0" r="70" fill="#f8f9fa" stroke="#6c757d" stroke-width="3"/>
+                          <text x="0" y="-20" font-family="Ubuntu" font-size="18" text-anchor="middle" fill="#212529">INV</text>
+                          
+                          <!-- Original DNA sequence -->
+                          <rect x="-45" y="0" width="15" height="15" fill="#4285F4" rx="2" ry="2"/>
+                          <rect x="-25" y="0" width="15" height="15" fill="#EA4335" rx="2" ry="2"/>
+                          <rect x="-5" y="0" width="15" height="15" fill="#FBBC05" rx="2" ry="2"/>
+                          <rect x="15" y="0" width="15" height="15" fill="#34A853" rx="2" ry="2"/>
+                          <rect x="35" y="0" width="15" height="15" fill="#4285F4" rx="2" ry="2"/>
+                          
+                          <text x="-37.5" y="12" font-family="Ubuntu" font-size="12" text-anchor="middle" fill="white">A</text>
+                          <text x="-17.5" y="12" font-family="Ubuntu" font-size="12" text-anchor="middle" fill="white">C</text>
+                          <text x="2.5" y="12" font-family="Ubuntu" font-size="12" text-anchor="middle" fill="white">G</text>
+                          <text x="22.5" y="12" font-family="Ubuntu" font-size="12" text-anchor="middle" fill="white">T</text>
+                          <text x="42.5" y="12" font-family="Ubuntu" font-size="12" text-anchor="middle" fill="white">A</text>
+                          
+                          <!-- Inverted DNA sequence -->
+                          <rect x="-45" y="35" width="15" height="15" fill="#4285F4" rx="2" ry="2"/>
+                          <rect x="-25" y="35" width="15" height="15" fill="#34A853" rx="2" ry="2"/>
+                          <rect x="-5" y="35" width="15" height="15" fill="#FBBC05" rx="2" ry="2"/>
+                          <rect x="15" y="35" width="15" height="15" fill="#EA4335" rx="2" ry="2"/>
+                          <rect x="35" y="35" width="15" height="15" fill="#4285F4" rx="2" ry="2"/>
+                          
+                          <text x="-37.5" y="47" font-family="Ubuntu" font-size="12" text-anchor="middle" fill="white">A</text>
+                          <text x="-17.5" y="47" font-family="Ubuntu" font-size="12" text-anchor="middle" fill="white">T</text>
+                          <text x="2.5" y="47" font-family="Ubuntu" font-size="12" text-anchor="middle" fill="white">G</text>
+                          <text x="22.5" y="47" font-family="Ubuntu" font-size="12" text-anchor="middle" fill="white">C</text>
+                          <text x="42.5" y="47" font-family="Ubuntu" font-size="12" text-anchor="middle" fill="white">A</text>
+                          
+                          <!-- Arrows showing inversion -->
+                          <path d="M-15,20 C-15,25 15,30 15,20" fill="none" stroke="#212529" stroke-width="2" marker-end="url(#arrowhead2)"/>
+                          <path d="M15,20 C15,25 -15,30 -15,20" fill="none" stroke="#212529" stroke-width="2" marker-end="url(#arrowhead2)"/>
+                          <marker id="arrowhead2" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                            <polygon points="0 0, 10 3.5, 0 7" fill="#212529"/>
+                          </marker>
+                        </g>
+                      </svg>
+                      <div class="content">
+                        <p class="stat-value">150 | 800</p>
+                        <div class="stats-bar" id="stats-bar-inv">
+                          <div class="progress-left">
+                          </div>
+                          <div class="progress-right">
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    
+
+                    <div class="stat-card">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 250" width="150" height="200">
+                        <g transform="translate(100, 100)">
+                          <circle cx="0" cy="0" r="70" fill="#f8f9fa" stroke="#6c757d" stroke-width="3"/>
+                          <text x="0" y="-20" font-family="Arial" font-size="18" text-anchor="middle" fill="#212529">Complex</text>
+                          
+                          <!-- DNA sequences with multiple variant types -->
+                          <rect x="-45" y="-5" width="15" height="15" fill="#4285F4" rx="2" ry="2"/>
+                          <rect x="-25" y="-5" width="15" height="15" fill="#EA4335" rx="2" ry="2"/>
+                          <rect x="-5" y="-5" width="15" height="15" fill="#FBBC05" rx="2" ry="2"/>
+                          <rect x="15" y="-5" width="15" height="15" fill="#34A853" rx="2" ry="2"/>
+                          <rect x="35" y="-5" width="15" height="15" fill="#4285F4" rx="2" ry="2"/>
+                          
+                          <!-- Modified sequence with multiple variant types -->
+                          <rect x="-45" y="25" width="15" height="15" fill="#4285F4" rx="2" ry="2"/>
+                          <!-- Missing base (deletion) -->
+                          <rect x="-5" y="25" width="25" height="15" fill="#EA4335" rx="2" ry="2"/>
+                          <!-- Different base (SNP) -->
+                          <rect x="25" y="25" width="15" height="15" fill="#34A853" rx="2" ry="2"/>
+                          <rect x="45" y="25" width="15" height="15" fill="#4285F4" rx="2" ry="2"/>
+                          
+                          <!-- Mixed effect indicators -->
+                          <path d="M-37.5,-5 L-37.5,25" stroke="#212529" stroke-width="1" stroke-dasharray="2,2"/>
+                          <path d="M-17.5,-5 L-17.5,10" stroke="#212529" stroke-width="1" stroke-dasharray="2,2"/>
+                          <path d="M2.5,-5 L7.5,25" stroke="#212529" stroke-width="1" stroke-dasharray="2,2"/>
+                          <path d="M22.5,-5 L32.5,25" stroke="#212529" stroke-width="1" stroke-dasharray="2,2"/>
+                          <path d="M42.5,-5 L52.5,25" stroke="#212529" stroke-width="1" stroke-dasharray="2,2"/>
+                          
+                          <!-- Variant type symbols -->
+                          <circle cx="-17.5" y="15" r="3" fill="#EA4335"/>
+                          <rect x="2.5" y="12" width="6" height="6" fill="#FBBC05"/>
+                          <path d="M30,15 l4,-4 l4,4 l-4,4 z" fill="#34A853"/>
+                          
+                          <!-- "Multiple effects" indicator -->
+                          <path d="M0,50 L-20,60 L20,60 Z" fill="#6c757d"/>
+                        </g>
+                      </svg>
+                      <div class="content">
+                        <p class="stat-value">150 | 800</p>
+                        <div class="stats-bar" id="stats-bar-comp">
+                          <div class="progress-left">
+                          </div>
+                          <div class="progress-right">
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
                   </div>
-                </div>
+                </div> 
 
               </section>
 
@@ -666,7 +900,7 @@
       });
       function filter() {
 
-          let matchs = ["MATCH","MISMATCH"]
+        let matchs = ["MATCH","MISMATCH"]
           let filters = ["PASS", "FAIL"]
           let variants = ["SNP", "INDEL", "OTHER"]
 
@@ -687,10 +921,16 @@
           let rowsLeft = document.querySelectorAll(".file1-content .line:not(.header)");
           let rowsRight = document.querySelectorAll(".file2-content .line:not(.header)");
 
+          let stats_bars = document.querySelectorAll(".content .stats-bar");
+
           let visibleCountLeft = 0;
           let visibleCountRight = 0;
           let matchCount = 0;
           let diffCount = 0;
+
+          let countSNP = [0, 0]
+          let countINDEL = [0, 0]
+          let countSV = [0, 0]
 
           rowsLeft.forEach((row, index) => {
               let idParts = row.id.split(" ");
@@ -712,24 +952,130 @@
               matchCount = rowVisible && row.className.split(" ")[1] == "match" ? ++matchCount : matchCount;
               diffCount = rowVisible && row.className.split(" ")[1] == "diff" ? ++diffCount : diffCount;
 
+              if (rowVisible){
+                if (row.querySelector("span")){
+                  let variant = idParts[1].toUpperCase()
+                  if (variant == "SNP") {
+                    ++countSNP[0];
+                  }
+                  else if (variant == "INDEL"){
+                    ++countINDEL[0];
+                  }
+                  else if (variant == "SV"){
+                    ++countSV[0];
+                  }
+                }
+
+                if (rowRight.querySelector("span")){
+                  let variant = idPartsRight[1].toUpperCase()
+                  if (variant == "SNP") {
+                    ++countSNP[1];
+                  }
+                  else if (variant == "INDEL"){
+                    ++countINDEL[1];
+                  }
+                  else if (variant == "SV"){
+                    ++countSV[1];
+                  }
+                }
+              }
+
               console.log(`Row ${index}:`, {
                   chromMatch, typeMatch, rowClassMatch, filterMatchLeft, filterMatchRight, rowVisible
               });
+
+              console.log(`SNP:`, countSNP);
 
               visibleCountLeft = rowVisible && row.querySelector("span") ? ++visibleCountLeft : visibleCountLeft;
               visibleCountRight = rowVisible && rowRight.querySelector("span") ? ++visibleCountRight : visibleCountRight;
 
               row.style.display = rowVisible ? "flex" : "none";
               rowRight.style.display = rowVisible ? "flex" : "none";
+
+
           });
           
           document.getElementById("filterSummaryL").innerText = `Showing ${visibleCountLeft} variants out of ${totalCountLeft}`;
           document.getElementById("filterSummaryR").innerText = `Showing ${visibleCountRight} variants out of ${totalCountRight}`;
 
           let linesStats = document.querySelectorAll(".stat-card .content .stat-value");
-          linesStats[0].textContent = matchCount
-          linesStats[1].textContent = diffCount
-          linesStats[2].textContent = (matchCount / (visibleCountLeft + visibleCountRight - matchCount)).toPrecision(3)
+          linesStats[0].textContent = matchCount;
+          linesStats[1].textContent = diffCount;
+          linesStats[2].textContent = (matchCount / (visibleCountLeft + visibleCountRight - matchCount)).toPrecision(3);
+
+          stats_bars.forEach((bar) => {
+            let progresses = bar.children;
+            
+            if (bar.id == "stats-bar-snp"){
+              let sumSNP = (countSNP.reduce((accumulator, currentValue) => accumulator + currentValue, 0))
+              let pourcentageLeft = sumSNP ? ((countSNP[0] / sumSNP) * 100) : 0;
+              let pourcentageRight = sumSNP ? ((countSNP[1] / sumSNP) * 100) : 0;
+              
+              if (pourcentageLeft == 100) {
+                progresses[0].style.borderTopRightRadius = "10px";
+                progresses[0].style.borderBottomRightRadius = "10px";  
+              }
+              else if (pourcentageRight == 100){
+                progresses[1].style.borderTopLeftRadius = "10px";
+                progresses[1].style.borderBottomLeftRadius = "10px";
+              }
+              else {
+                progresses[0].style.borderTopRightRadius = "0px";
+                progresses[0].style.borderBottomRightRadius = "0px";
+                progresses[1].style.borderTopLeftRadius = "0px";
+                progresses[1].style.borderBottomLeftRadius = "0px";
+              }
+
+              progresses[0].style.width = pourcentageLeft + "%";
+              progresses[1].style.width = pourcentageRight + "%";
+            }
+            else if (bar.id == "stats-bar-indel"){
+              let sumINDEL = (countINDEL.reduce((accumulator, currentValue) => accumulator + currentValue, 0))
+              let pourcentageLeft = sumINDEL ? ((countINDEL[0] / sumINDEL) * 100) : 0;
+              let pourcentageRight = sumINDEL ? ((countINDEL[1] / sumINDEL) * 100) : 0;
+              
+              if (pourcentageLeft == 100) {
+                progresses[0].style.borderTopRightRadius = "10px";
+                progresses[0].style.borderBottomRightRadius = "10px";  
+              }
+              else if (pourcentageRight == 100){
+                progresses[1].style.borderTopLeftRadius = "10px";
+                progresses[1].style.borderBottomLeftRadius = "10px";
+              }
+              else {
+                progresses[0].style.borderTopRightRadius = "0px";
+                progresses[0].style.borderBottomRightRadius = "0px";
+                progresses[1].style.borderTopLeftRadius = "0px";
+                progresses[1].style.borderBottomLeftRadius = "0px";
+              }
+
+              progresses[0].style.width = pourcentageLeft + "%";
+              progresses[1].style.width = pourcentageRight + "%";
+            }
+            else if (bar.id == "stats-bar-sv"){
+              let sumSV = (countSV.reduce((accumulator, currentValue) => accumulator + currentValue, 0))
+              let pourcentageLeft = sumSV ? ((countSV[0] / sumSV) * 100) : 0;
+              let pourcentageRight = sumSV ? ((countSV[1] / sumSV) * 100) : 0;
+              
+              if (pourcentageLeft == 100) {
+                progresses[0].style.borderTopRightRadius = "10px";
+                progresses[0].style.borderBottomRightRadius = "10px";  
+              }
+              else if (pourcentageRight == 100){
+                progresses[1].style.borderTopLeftRadius = "10px";
+                progresses[1].style.borderBottomLeftRadius = "10px";
+              }
+              else {
+                progresses[0].style.borderTopRightRadius = "0px";
+                progresses[0].style.borderBottomRightRadius = "0px";
+                progresses[1].style.borderTopLeftRadius = "0px";
+                progresses[1].style.borderBottomLeftRadius = "0px";
+              }
+
+              progresses[0].style.width = pourcentageLeft + "%";
+              progresses[1].style.width = pourcentageRight + "%";
+            }
+          })
       }
       function resetFilters() {
           document.querySelector(".search-box .input").value = "";
