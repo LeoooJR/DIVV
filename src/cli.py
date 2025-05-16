@@ -68,6 +68,15 @@ class Program:
             help="Number of processes to be used in addition to the main process.",
         )
         self.parser.add_argument(
+            "-e",
+            "--env-binaries",
+            dest="env_binaries",
+            required=False,
+            default=False,
+            action="store_true",
+            help="Binaries to be used for processes such as compressing and indexing VCF. If this option flag is specified, the program will attempt to call binaries such as bgzip and tabix from the user's local environment."
+        )
+        self.parser.add_argument(
             "--exclude-snps",
             dest="exclude_snps",
             action="store_true",

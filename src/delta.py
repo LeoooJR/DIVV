@@ -58,7 +58,7 @@ def delta(params: object) -> int:
 
         try:
 
-            vcfs.processor.preprocessing(vcf)
+            vcfs.processor.preprocessing(vcf, bins="env" if params.env_binaries else "project")
 
         except (errors.CompressionIndexError, errors.VCFError) as e:
 

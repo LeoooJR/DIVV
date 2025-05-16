@@ -274,7 +274,7 @@ class VCF(GenomicFile):
 
                 raise errors.VCFError(f"An error occurred while reading {self}")
             
-    def compressing(self):
+    def compressing(self, bin: str = "project"):
 
         logger.debug(f"Compressing file {self}.")
 
@@ -282,8 +282,11 @@ class VCF(GenomicFile):
 
         archive: str = f"{self.path}.{EXT}"
 
-        CMDS: dict = {"bcftools": ["bcftools", "view", "-O", "z", "-o", archive, str(self.path)],
-                    "bgzip": ["bgzip", "-c", "-f", str(self.path)]}
+        if bin == "env":
+            CMDS: dict = {"bcftools": ["bcftools", "view", "-O", "z", "-o", archive, str(self.path)],
+                        "bgzip": ["bgzip", "-c", "-f", str(self.path)]}
+        else:
+            CMDS: dict = {"bgzip": [f"{os.path.dirname(os.path.abspath(__file__))}/htslib/bin/bgzip", "-c", "-f", str(self.path)]}
 
         outcode: int = 1
         retry: int = 0
@@ -305,7 +308,7 @@ class VCF(GenomicFile):
         # Set archive path ONLY if exit code is 0
         self.archive = None if outcode else archive
 
-    def indexing(self):
+    def indexing(self, bin: str = "project"):
 
         logger.debug(f"Indexing file {self}.")
 
@@ -313,8 +316,11 @@ class VCF(GenomicFile):
 
         index: str = f"{self.archive}.{EXT}"
 
-        CMDS: dict = {"bcftools": ["bcftools", "index", "-t", self.archive],
-                    "tabix": ["tabix", "-f", "-p", "vcf", self.archive]}
+        if bin == "env":
+            CMDS: dict = {"bcftools": ["bcftools", "index", "-t", self.archive],
+                        "tabix": ["tabix", "-f", "-p", "vcf", self.archive]}
+        else:
+            CMDS: dict = {"tabix": [f"{os.path.dirname(os.path.abspath(__file__))}/htslib/bin/tabix", "-f", "-p", "vcf", self.archive]}
 
         outcode: int = 1
         retry: int = 0
@@ -482,24 +488,30 @@ class VCFProcessor:
         pass
     
     @staticmethod
-    def preprocessing(vcf: VCF):
+    def preprocessing(vcf: VCF, bins: str = "project"):
 
         # File must be indexed
         if not vcf.is_indexed():
+            
+            # Compression
+            if not vcf.archive:
+
+                try:
+
+                    vcf.compressing(bin=bins)
+
+                except Exception as e:
+
+                    raise errors.CompressionIndexError(f"Failed to compress {vcf}: {e}")
 
             try:
-            
-                # Compression
-                if not vcf.archive:
-
-                    vcf.compressing()
 
                 # Call a process to index the file
-                vcf.indexing()
+                vcf.indexing(bin=bins)
 
             except Exception as e:
 
-                raise errors.CompressionIndexError(f"Failed to compress or/and index {vcf}")
+                raise errors.CompressionIndexError(f"Failed to index {vcf}: {e}")
             
         vcf.open(context=True)
 
