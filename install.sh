@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-PROJECT_DIR=$(PWD)
+PROJECT_DIR=${PWD}
 
 if [ ! -d htslib ]; then
     mkdir ${PROJECT_DIR}/htslib
