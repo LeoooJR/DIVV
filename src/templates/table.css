@@ -1,12 +1,8 @@
 .benchmark-table {
     width: 90%;
-    border-width: 1px;
-    border-style: solid;
-    border-color: #3D444D;
-    border-radius: 6px;
-    border-spacing: 0px;
-    border-collapse: separate;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); 
     font-family: Ubuntu;
+    color: #6B7280;
 }
 
 .row-table, .header-table, .cell-table {
@@ -18,7 +14,7 @@
 .row-table {
     border-bottom-style: solid;
     border-bottom-width: 1px;
-    border-bottom-color: #3D444D;
+    border-bottom-color: #E5E7EB;
     background-color: white;
     &:nth-of-type(odd) {
 		background:#EEEEEE;
@@ -26,8 +22,12 @@
 }
 
 .header-table {
-    background-color: #0d1117;
-    color: white;
+    background-color: #E5E7EB;
+    color: #4a5568;
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem; 
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
 }
 
 .cell-table {
