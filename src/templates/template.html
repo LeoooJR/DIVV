@@ -117,17 +117,28 @@
         </div>
     </div>
 
-    <div class="info-expand-container">
+    <div class="expand-container">
 
       {% if table is not none %}
-        <div class="popup-left">
-          <div class="popup-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" height="24" fill="none">
-              <path fill="#393a37" d="m12 1.5c-5.79844 0-10.5 4.70156-10.5 10.5 0 5.7984 4.70156 10.5 10.5 10.5 5.7984 0 10.5-4.7016 10.5-10.5 0-5.79844-4.7016-10.5-10.5-10.5zm.75 15.5625c0 .1031-.0844.1875-.1875.1875h-1.125c-.1031 0-.1875-.0844-.1875-.1875v-6.375c0-.1031.0844-.1875.1875-.1875h1.125c.1031 0 .1875.0844.1875.1875zm-.75-8.0625c-.2944-.00601-.5747-.12718-.7808-.3375-.206-.21032-.3215-.49305-.3215-.7875s.1155-.57718.3215-.7875c.2061-.21032.4864-.33149.7808-.3375.2944.00601.5747.12718.7808.3375.206.21032.3215.49305.3215.7875s-.1155.57718-.3215.7875c-.2061.21032-.4864.33149-.7808.3375z">
-              </path>
-            </svg>
+        <div class="popups">
+          <div class="popup-left">
+            <div class="popup-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" height="24" fill="none">
+                <path fill="#393a37" d="m12 1.5c-5.79844 0-10.5 4.70156-10.5 10.5 0 5.7984 4.70156 10.5 10.5 10.5 5.7984 0 10.5-4.7016 10.5-10.5 0-5.79844-4.7016-10.5-10.5-10.5zm.75 15.5625c0 .1031-.0844.1875-.1875.1875h-1.125c-.1031 0-.1875-.0844-.1875-.1875v-6.375c0-.1031.0844-.1875.1875-.1875h1.125c.1031 0 .1875.0844.1875.1875zm-.75-8.0625c-.2944-.00601-.5747-.12718-.7808-.3375-.206-.21032-.3215-.49305-.3215-.7875s.1155-.57718.3215-.7875c.2061-.21032.4864-.33149.7808-.3375.2944.00601.5747.12718.7808.3375.206.21032.3215.49305.3215.7875s-.1155.57718-.3215.7875c-.2061.21032-.4864.33149-.7808.3375z">
+                </path>
+              </svg>
+            </div>
+            <div class="popup-title">This VCF has been set as <strong>reference</strong>.</div>
           </div>
-          <div class="popup-title">This VCF has been set as reference.</div>
+          <div class="popup-right">
+            <div class="popup-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" height="24" fill="none">
+                <path fill="#393a37" d="m12 1.5c-5.79844 0-10.5 4.70156-10.5 10.5 0 5.7984 4.70156 10.5 10.5 10.5 5.7984 0 10.5-4.7016 10.5-10.5 0-5.79844-4.7016-10.5-10.5-10.5zm.75 15.5625c0 .1031-.0844.1875-.1875.1875h-1.125c-.1031 0-.1875-.0844-.1875-.1875v-6.375c0-.1031.0844-.1875.1875-.1875h1.125c.1031 0 .1875.0844.1875.1875zm-.75-8.0625c-.2944-.00601-.5747-.12718-.7808-.3375-.206-.21032-.3215-.49305-.3215-.7875s.1155-.57718.3215-.7875c.2061-.21032.4864-.33149.7808-.3375.2944.00601.5747.12718.7808.3375.206.21032.3215.49305.3215.7875s-.1155.57718-.3215.7875c-.2061.21032-.4864.33149-.7808.3375z">
+                </path>
+              </svg>
+            </div>
+            <div class="popup-title">This VCF has been set as <strong>query</strong>.</div>
+          </div>
         </div>
       {% endif %}
 
@@ -271,34 +282,36 @@
         </div>
     </div>
 
-    <div class="terminal">
-      <div class="terminal-header">
-        <span class="terminal-title">
-          <svg
-            class="terminal-icon"
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <path d="M4 17l6-6-6-6M12 19h8"></path>
-          </svg>
-          Terminal
-        </span>
-      </div>
-      <div class="terminal-body">
-        <div class="command-line">
-          <div class="input-wrapper">
-            <input
-              type="text"
-              class="input-field"
-              placeholder="Enter query..."
-            />
-            <span class="cursor"></span>
+    <div class="expand-container">
+      <div class="terminal">
+        <div class="terminal-header">
+          <span class="terminal-title">
+            <svg
+              class="terminal-icon"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M4 17l6-6-6-6M12 19h8"></path>
+            </svg>
+            Terminal
+          </span>
+        </div>
+        <div class="terminal-body">
+          <div class="command-line">
+            <div class="input-wrapper">
+              <input
+                type="text"
+                class="input-field"
+                placeholder="Enter query..."
+              />
+              <span class="cursor"></span>
+            </div>
           </div>
         </div>
       </div>
@@ -1167,8 +1180,9 @@
         if (this.id === "dropdown-icon") {
           element = document.querySelector(".command")
           element.style.display = element.style.display == "none" ? "flex" : "none";
-          element = document.querySelector(".popup-left")
-          element.style.display = element.style.display == "none" ? "flex" : "none";
+          element = document.querySelector(".popups")
+          element.children[0].style.display = element.children[0].style.display == "none" ? "flex" : "none";
+          element.children[1].style.display = element.children[1].style.display == "none" ? "flex" : "none";
         }
         else if (this.id === "terminal-icon") {
           element = document.querySelector(".terminal")
