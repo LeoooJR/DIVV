@@ -901,181 +901,183 @@
       function filter() {
 
         let matchs = ["MATCH","MISMATCH"]
-          let filters = ["PASS", "FAIL"]
-          let variants = ["SNP", "INDEL", "OTHER"]
+        let filters = ["PASS", "FAIL"]
+        let variants = ["SNP", "INDEL", "OTHER"]
 
-          let totalCountLeft = document.querySelectorAll(".file1-content .line:not(.header) span").length;
-          let totalCountRight = document.querySelectorAll(".file2-content .line:not(.header) span").length;
+        let rowsLeft = document.querySelectorAll(".file1-content .line:not(.header)");
+        let rowsRight = document.querySelectorAll(".file2-content .line:not(.header)");
+
+        let totalLineLeft = document.querySelectorAll(".file1-content .line:not(.header) span").length;
+        let totalLineRight = document.querySelectorAll(".file2-content .line:not(.header) span").length;
           
-          let chromosomeInput = document.querySelector(".search-container .search-field input.input");
-          if (!chromosomeInput) {
-              chromosomeInput = document.querySelector(".search .search-field input.input");
-          }
-          let chromosome = chromosomeInput ? chromosomeInput.value.trim().toUpperCase() : "";
+        let chromosomeUserInput = document.querySelector(".search-container .search-field input.input");
+        if (!chromosomeUserInput) {
+            chromosomeUserInput = document.querySelector(".search .search-field input.input");
+        }
+        
+        let chromosomeQuery = chromosomeUserInput ? chromosomeUserInput.value.trim().toUpperCase() : "";
           
-          let filterSelectsL = document.querySelector(".filter-container-left .filter");
-          let matchType = matchs.includes(filterSelectsL.value.toUpperCase()) ? filterSelectsL.value : "ALL";
-          let filterSelects = document.querySelectorAll(".filter-container-right .filter");
-          let filterType = filterSelects.length > 0 && filters.includes(filterSelects[0].value) ? filterSelects[0].value.toUpperCase() : "ALL";
-          let variantType = filterSelects.length > 1 && variants.includes(filterSelects[1].value) ? filterSelects[1].value.toUpperCase() : "ALL";
-          let rowsLeft = document.querySelectorAll(".file1-content .line:not(.header)");
-          let rowsRight = document.querySelectorAll(".file2-content .line:not(.header)");
+        let filtersLeft = document.querySelector(".filter-container-left .filter");
+        let filtersRight = document.querySelectorAll(".filter-container-right .filter");
 
-          let stats_bars = document.querySelectorAll(".content .stats-bar");
+        let matchQuery = matchs.includes(filtersLeft.value.toUpperCase()) ? filtersLeft.value : "ALL";
+        let variantFilterQuery = filtersRight.length > 0 && filters.includes(filtersRight[0].value) ? filtersRight[0].value.toUpperCase() : "ALL";
+        let variantTypeQuery = filtersRight.length > 1 && variants.includes(filtersRight[1].value) ? filtersRight[1].value.toUpperCase() : "ALL";
 
-          let visibleCountLeft = 0;
-          let visibleCountRight = 0;
-          let matchCount = 0;
-          let diffCount = 0;
+        let statsByVariantType = document.querySelectorAll(".content .stats-bar");
 
-          let countSNP = [0, 0]
-          let countINDEL = [0, 0]
-          let countSV = [0, 0]
+        let countVisibleLeft = 0;
+        let countVisibleRight = 0;
+        let countMatchLine = 0;
+        let countMismatchLine = 0;
 
-          rowsLeft.forEach((row, index) => {
-              let idParts = row.id.split(" ");
-              if (idParts.length < 3) return;
+        let countSNP = [0, 0]
+        let countINDEL = [0, 0]
+        let countSV = [0, 0]
+
+        rowsLeft.forEach((rowLeft, index) => {
+
+            let rowLeftInfs = rowLeft.id.split(" ");
+            if (rowLeftInfs.length < 3) return;
+
+            let rowRight = rowsRight[index];
+            let rowRightInfs = rowRight.id.split(" ");
               
-              let rowClassMatch = matchType === "ALL" || row.className.split(" ")[1] === (matchType === "MATCH" ? "match": "diff");
+            let isLineClass = matchQuery === "ALL" || rowLeft.className.split(" ")[1] === (matchQuery === "MATCH" ? "match": "diff");
       
-              let chromMatch = chromosome === "" || idParts[0] == chromosome;
-              let typeMatch = variantType === "ALL" || idParts[1] === variantType;
-              let filterMatchLeft = filterType === "ALL" || idParts[2] === filterType;
-      
-              let rowRight = rowsRight[index];
-              let idPartsRight = rowRight.id.split(" ");
-      
-              let filterMatchRight = filterType === "ALL" || idPartsRight[2] === filterType;
+            let isChromosome = chromosomeQuery === "" || rowLeftInfs[0] == chromosomeQuery;
+            let isVariantType = variantTypeQuery === "ALL" || rowLeftInfs[1] === variantTypeQuery;
+            let isVariantFilterLeft = variantFilterQuery === "ALL" || rowLeftInfs[2] === variantFilterQuery;
+            let isVariantFilterRight = variantFilterQuery === "ALL" || rowRightInfs[2] === variantFilterQuery;
     
-              let rowVisible = (chromMatch && typeMatch && rowClassMatch && (filterMatchLeft || filterMatchRight));
+            let isRowVisible = (isChromosome && isVariantType && isLineClass && (isVariantFilterLeft || isVariantFilterRight));
 
-              matchCount = rowVisible && row.className.split(" ")[1] == "match" ? ++matchCount : matchCount;
-              diffCount = rowVisible && row.className.split(" ")[1] == "diff" ? ++diffCount : diffCount;
+            countMatchLine = isRowVisible && rowLeft.className.split(" ")[1] == "match" ? ++countMatchLine : countMatchLine;
+            countMismatchLine = isRowVisible && rowLeft.className.split(" ")[1] == "diff" ? ++countMismatchLine : countMismatchLine;
 
-              if (rowVisible){
-                if (row.querySelector("span")){
-                  let variant = idParts[1].toUpperCase()
-                  if (variant == "SNP") {
-                    ++countSNP[0];
-                  }
-                  else if (variant == "INDEL"){
-                    ++countINDEL[0];
-                  }
-                  else if (variant == "SV"){
-                    ++countSV[0];
-                  }
+            if (isRowVisible){
+              let variantType
+              if (rowLeft.querySelector("span")){
+                variantType = rowLeftInfs[1].toUpperCase()
+                if (variantType == "SNP") {
+                  ++countSNP[0];
                 }
-
-                if (rowRight.querySelector("span")){
-                  let variant = idPartsRight[1].toUpperCase()
-                  if (variant == "SNP") {
-                    ++countSNP[1];
-                  }
-                  else if (variant == "INDEL"){
-                    ++countINDEL[1];
-                  }
-                  else if (variant == "SV"){
-                    ++countSV[1];
-                  }
+                else if (variantType == "INDEL"){
+                  ++countINDEL[0];
+                }
+                else if (variantType == "SV"){
+                  ++countSV[0];
                 }
               }
 
-              console.log(`Row ${index}:`, {
-                  chromMatch, typeMatch, rowClassMatch, filterMatchLeft, filterMatchRight, rowVisible
-              });
+              if (rowRight.querySelector("span")){
+                variantType = rowRightInfs[1].toUpperCase()
+                if (variantType == "SNP") {
+                  ++countSNP[1];
+                }
+                else if (variantType == "INDEL"){
+                  ++countINDEL[1];
+                }
+                else if (variantType == "SV"){
+                  ++countSV[1];
+                }
+              }
+            }
 
-              console.log(`SNP:`, countSNP);
+            console.log(`Row ${index}:`, {
+                isChromosome, isVariantType, isLineClass, isVariantFilterLeft, isVariantFilterRight, isRowVisible
+            });
 
-              visibleCountLeft = rowVisible && row.querySelector("span") ? ++visibleCountLeft : visibleCountLeft;
-              visibleCountRight = rowVisible && rowRight.querySelector("span") ? ++visibleCountRight : visibleCountRight;
+            countVisibleLeft = isRowVisible && rowLeft.querySelector("span") ? ++countVisibleLeft : countVisibleLeft;
+            countVisibleRight = isRowVisible && rowRight.querySelector("span") ? ++countVisibleRight : countVisibleRight;
 
-              row.style.display = rowVisible ? "flex" : "none";
-              rowRight.style.display = rowVisible ? "flex" : "none";
+            rowLeft.style.display = isRowVisible ? "flex" : "none";
+            rowRight.style.display = isRowVisible ? "flex" : "none";
 
-
-          });
+        });
           
-          document.getElementById("filterSummaryL").innerText = `Showing ${visibleCountLeft} variants out of ${totalCountLeft}`;
-          document.getElementById("filterSummaryR").innerText = `Showing ${visibleCountRight} variants out of ${totalCountRight}`;
+        document.getElementById("filterSummaryL").innerText = `Showing ${countVisibleLeft} variants out of ${totalLineLeft}`;
+        document.getElementById("filterSummaryR").innerText = `Showing ${countVisibleRight} variants out of ${totalLineRight}`;
 
-          let linesStats = document.querySelectorAll(".stat-card .content .stat-value");
-          linesStats[0].textContent = matchCount;
-          linesStats[1].textContent = diffCount;
-          linesStats[2].textContent = (matchCount / (visibleCountLeft + visibleCountRight - matchCount)).toPrecision(3);
+        let statsGeneral = document.querySelectorAll(".stat-card .content .stat-value");
+        statsGeneral[0].textContent = countMatchLine;
+        statsGeneral[1].textContent = countMismatchLine;
+        statsGeneral[2].textContent = (countMatchLine / (countVisibleLeft + countVisibleRight - countMatchLine)).toPrecision(3);
 
-          stats_bars.forEach((bar) => {
-            let progresses = bar.children;
+        statsByVariantType.forEach((composition) => {
+
+          let progresses = composition.children;
             
-            if (bar.id == "stats-bar-snp"){
-              let sumSNP = (countSNP.reduce((accumulator, currentValue) => accumulator + currentValue, 0))
-              let pourcentageLeft = sumSNP ? ((countSNP[0] / sumSNP) * 100) : 0;
-              let pourcentageRight = sumSNP ? ((countSNP[1] / sumSNP) * 100) : 0;
+          if (composition.id == "stats-bar-snp"){
+            let sumSNP = (countSNP.reduce((accumulator, currentValue) => accumulator + currentValue, 0))
+            let pourcentageLeft = sumSNP ? ((countSNP[0] / sumSNP) * 100) : 0;
+            let pourcentageRight = sumSNP ? ((countSNP[1] / sumSNP) * 100) : 0;
               
-              if (pourcentageLeft == 100) {
-                progresses[0].style.borderTopRightRadius = "10px";
-                progresses[0].style.borderBottomRightRadius = "10px";  
-              }
-              else if (pourcentageRight == 100){
-                progresses[1].style.borderTopLeftRadius = "10px";
-                progresses[1].style.borderBottomLeftRadius = "10px";
-              }
-              else {
-                progresses[0].style.borderTopRightRadius = "0px";
-                progresses[0].style.borderBottomRightRadius = "0px";
-                progresses[1].style.borderTopLeftRadius = "0px";
-                progresses[1].style.borderBottomLeftRadius = "0px";
-              }
-
-              progresses[0].style.width = pourcentageLeft + "%";
-              progresses[1].style.width = pourcentageRight + "%";
+            if (pourcentageLeft == 100) {
+              progresses[0].style.borderTopRightRadius = "10px";
+              progresses[0].style.borderBottomRightRadius = "10px";  
             }
-            else if (bar.id == "stats-bar-indel"){
-              let sumINDEL = (countINDEL.reduce((accumulator, currentValue) => accumulator + currentValue, 0))
-              let pourcentageLeft = sumINDEL ? ((countINDEL[0] / sumINDEL) * 100) : 0;
-              let pourcentageRight = sumINDEL ? ((countINDEL[1] / sumINDEL) * 100) : 0;
+            else if (pourcentageRight == 100){
+              progresses[1].style.borderTopLeftRadius = "10px";
+              progresses[1].style.borderBottomLeftRadius = "10px";
+            }
+            else {
+              progresses[0].style.borderTopRightRadius = "0px";
+              progresses[0].style.borderBottomRightRadius = "0px";
+              progresses[1].style.borderTopLeftRadius = "0px";
+              progresses[1].style.borderBottomLeftRadius = "0px";
+            }
+
+            progresses[0].style.width = pourcentageLeft + "%";
+            progresses[1].style.width = pourcentageRight + "%";
+          }
+          else if (composition.id == "stats-bar-indel"){
+            let sumINDEL = (countINDEL.reduce((accumulator, currentValue) => accumulator + currentValue, 0))
+            let pourcentageLeft = sumINDEL ? ((countINDEL[0] / sumINDEL) * 100) : 0;
+            let pourcentageRight = sumINDEL ? ((countINDEL[1] / sumINDEL) * 100) : 0;
               
-              if (pourcentageLeft == 100) {
-                progresses[0].style.borderTopRightRadius = "10px";
-                progresses[0].style.borderBottomRightRadius = "10px";  
-              }
-              else if (pourcentageRight == 100){
-                progresses[1].style.borderTopLeftRadius = "10px";
-                progresses[1].style.borderBottomLeftRadius = "10px";
-              }
-              else {
-                progresses[0].style.borderTopRightRadius = "0px";
-                progresses[0].style.borderBottomRightRadius = "0px";
-                progresses[1].style.borderTopLeftRadius = "0px";
-                progresses[1].style.borderBottomLeftRadius = "0px";
-              }
-
-              progresses[0].style.width = pourcentageLeft + "%";
-              progresses[1].style.width = pourcentageRight + "%";
+            if (pourcentageLeft == 100) {
+              progresses[0].style.borderTopRightRadius = "10px";
+              progresses[0].style.borderBottomRightRadius = "10px";  
             }
-            else if (bar.id == "stats-bar-sv"){
-              let sumSV = (countSV.reduce((accumulator, currentValue) => accumulator + currentValue, 0))
-              let pourcentageLeft = sumSV ? ((countSV[0] / sumSV) * 100) : 0;
-              let pourcentageRight = sumSV ? ((countSV[1] / sumSV) * 100) : 0;
-              
-              if (pourcentageLeft == 100) {
-                progresses[0].style.borderTopRightRadius = "10px";
-                progresses[0].style.borderBottomRightRadius = "10px";  
-              }
-              else if (pourcentageRight == 100){
-                progresses[1].style.borderTopLeftRadius = "10px";
-                progresses[1].style.borderBottomLeftRadius = "10px";
-              }
-              else {
-                progresses[0].style.borderTopRightRadius = "0px";
-                progresses[0].style.borderBottomRightRadius = "0px";
-                progresses[1].style.borderTopLeftRadius = "0px";
-                progresses[1].style.borderBottomLeftRadius = "0px";
-              }
-
-              progresses[0].style.width = pourcentageLeft + "%";
-              progresses[1].style.width = pourcentageRight + "%";
+            else if (pourcentageRight == 100){
+              progresses[1].style.borderTopLeftRadius = "10px";
+              progresses[1].style.borderBottomLeftRadius = "10px";
             }
-          })
+            else {
+              progresses[0].style.borderTopRightRadius = "0px";
+              progresses[0].style.borderBottomRightRadius = "0px";
+              progresses[1].style.borderTopLeftRadius = "0px";
+              progresses[1].style.borderBottomLeftRadius = "0px";
+            }
+
+            progresses[0].style.width = pourcentageLeft + "%";
+            progresses[1].style.width = pourcentageRight + "%";
+          }
+          else if (composition.id == "stats-bar-sv"){
+            let sumSV = (countSV.reduce((accumulator, currentValue) => accumulator + currentValue, 0))
+            let pourcentageLeft = sumSV ? ((countSV[0] / sumSV) * 100) : 0;
+            let pourcentageRight = sumSV ? ((countSV[1] / sumSV) * 100) : 0;
+            
+            if (pourcentageLeft == 100) {
+              progresses[0].style.borderTopRightRadius = "10px";
+              progresses[0].style.borderBottomRightRadius = "10px";  
+            }
+            else if (pourcentageRight == 100){
+              progresses[1].style.borderTopLeftRadius = "10px";
+              progresses[1].style.borderBottomLeftRadius = "10px";
+            }
+            else {
+              progresses[0].style.borderTopRightRadius = "0px";
+              progresses[0].style.borderBottomRightRadius = "0px";
+              progresses[1].style.borderTopLeftRadius = "0px";
+              progresses[1].style.borderBottomLeftRadius = "0px";
+            }
+
+            progresses[0].style.width = pourcentageLeft + "%";
+            progresses[1].style.width = pourcentageRight + "%";
+          }
+        })
       }
       function resetFilters() {
           document.querySelector(".search-box .input").value = "";
