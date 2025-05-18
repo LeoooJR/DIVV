@@ -71,7 +71,7 @@ def delta(params: object) -> int:
     manager.scheduling(tasks=[vcfs.repository[0].variants.chromosomes, vcfs.repository[1].variants.chromosomes])
 
     try:
-
+        
         manager.commit(job=vcfs.processor.process_chromosome, jobargs=[True])
 
     except errors.ProcessError as e:

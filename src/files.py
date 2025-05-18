@@ -73,19 +73,6 @@ class VCF(GenomicFile):
 
     """Class for VCF files"""
 
-    # Map the header values to there respectives indexes
-    HEADER = {
-        "CHROM": 0,
-        "POS": 1,
-        "ID": 2,
-        "REF": 3,
-        "ALT": 4,
-        "QUAL": 5,
-        "FILTER": 6,
-        "INFO": 7,
-        "FORMAT": 8,
-    }
-
     # Map the FORMAT values to there respectives informations
     FORMAT: dict = {
         "genotype": ["GT"],
@@ -106,6 +93,19 @@ class VCF(GenomicFile):
         self.archive: str = None
 
         self.stdin = None
+
+        # Map the header values to there respectives indexes
+        self.HEADER = HEADER = {
+                                    "CHROM": 0,
+                                    "POS": 1,
+                                    "ID": 2,
+                                    "REF": 3,
+                                    "ALT": 4,
+                                    "QUAL": 5,
+                                    "FILTER": 6,
+                                    "INFO": 7,
+                                    "FORMAT": 8,
+                                }
 
         self.SAMPLES = None
 
@@ -716,7 +716,7 @@ class VCFProcessor:
                                         logger.warning(f"Sequencing depth value cannot be retrieved with key(s): {task[0].format['depth']}")
                                         # Keep record of exception
                                         warnings["depth"] = True
-        except Exception as e:
+        except FileExistsError as e:
 
             logger.error(e)
 
