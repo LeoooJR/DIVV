@@ -165,7 +165,7 @@ class VariantRepository():
 
             self.plots.boxplot(df, "Chromosome", "Depth", "Chromosome", "Depth by chromosome", "DepthByChromosomeBoxPlot")
 
-            self.plots.histogram(df, "Depth", None, "Depth", "DepthHist")
+            self.plots.histogram(df, "Depth", None, "Depth distribution", "DepthHist")
 
             data.clear()
 

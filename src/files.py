@@ -716,7 +716,7 @@ class VCFProcessor:
                                         logger.warning(f"Sequencing depth value cannot be retrieved with key(s): {task[0].format['depth']}")
                                         # Keep record of exception
                                         warnings["depth"] = True
-        except FileExistsError as e:
+        except Exception as e:
 
             logger.error(e)
 
@@ -872,6 +872,12 @@ class VCFRepository():
             
             variantsR["Chromosome"] = variantsR["Chromosome"].cat.set_categories(chromosomes)
 
+            filters = list(set(variantsL["Filter"].dropna()) | set(variantsR["Filter"].dropna()))
+
+            variantsL["Filter"] = variantsL["Filter"].cat.set_categories(filters)
+            
+            variantsR["Filter"] = variantsR["Filter"].cat.set_categories(filters)
+
             # Compute unique variants in first VCF file
             results[pair]["unique"][pair[0]] = len(utils.difference(
                 a=frozenset(variantsL.index),
@@ -995,7 +1001,7 @@ class VCFRepository():
             results[pair]["plots"] = PlotLibrary()
 
             # Create a Venn diagram to display the common, unique variants between the two VCF files
-            results[pair]["plots"].venn((results[pair]["unique"][pair[0]], results[pair]["unique"][pair[1]], results[pair]["common"]), ['L','R'])
+            results[pair]["plots"].venn((results[pair]["unique"][pair[0]], results[pair]["unique"][pair[1]], results[pair]["common"]), [pair[0].basename(), pair[1].basename()])
 
             # Should a benchmark be computed ?
             if pair[0].reference:

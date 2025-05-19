@@ -121,23 +121,27 @@
 
       {% if table is not none %}
         <div class="popups">
-          <div class="popup-left">
-            <div class="popup-icon">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" height="24" fill="none">
-                <path fill="#393a37" d="m12 1.5c-5.79844 0-10.5 4.70156-10.5 10.5 0 5.7984 4.70156 10.5 10.5 10.5 5.7984 0 10.5-4.7016 10.5-10.5 0-5.79844-4.7016-10.5-10.5-10.5zm.75 15.5625c0 .1031-.0844.1875-.1875.1875h-1.125c-.1031 0-.1875-.0844-.1875-.1875v-6.375c0-.1031.0844-.1875.1875-.1875h1.125c.1031 0 .1875.0844.1875.1875zm-.75-8.0625c-.2944-.00601-.5747-.12718-.7808-.3375-.206-.21032-.3215-.49305-.3215-.7875s.1155-.57718.3215-.7875c.2061-.21032.4864-.33149.7808-.3375.2944.00601.5747.12718.7808.3375.206.21032.3215.49305.3215.7875s-.1155.57718-.3215.7875c-.2061.21032-.4864.33149-.7808.3375z">
-                </path>
-              </svg>
+          <div class="popups-container">
+            <div class="popup">
+              <div class="popup-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" height="24" fill="none">
+                  <path fill="#393a37" d="m12 1.5c-5.79844 0-10.5 4.70156-10.5 10.5 0 5.7984 4.70156 10.5 10.5 10.5 5.7984 0 10.5-4.7016 10.5-10.5 0-5.79844-4.7016-10.5-10.5-10.5zm.75 15.5625c0 .1031-.0844.1875-.1875.1875h-1.125c-.1031 0-.1875-.0844-.1875-.1875v-6.375c0-.1031.0844-.1875.1875-.1875h1.125c.1031 0 .1875.0844.1875.1875zm-.75-8.0625c-.2944-.00601-.5747-.12718-.7808-.3375-.206-.21032-.3215-.49305-.3215-.7875s.1155-.57718.3215-.7875c.2061-.21032.4864-.33149.7808-.3375.2944.00601.5747.12718.7808.3375.206.21032.3215.49305.3215.7875s-.1155.57718-.3215.7875c-.2061.21032-.4864.33149-.7808.3375z">
+                  </path>
+                </svg>
+              </div>
+              <div class="popup-title">This VCF has been set as <strong>reference</strong>.</div>
             </div>
-            <div class="popup-title">This VCF has been set as <strong>reference</strong>.</div>
           </div>
-          <div class="popup-right">
-            <div class="popup-icon">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" height="24" fill="none">
-                <path fill="#393a37" d="m12 1.5c-5.79844 0-10.5 4.70156-10.5 10.5 0 5.7984 4.70156 10.5 10.5 10.5 5.7984 0 10.5-4.7016 10.5-10.5 0-5.79844-4.7016-10.5-10.5-10.5zm.75 15.5625c0 .1031-.0844.1875-.1875.1875h-1.125c-.1031 0-.1875-.0844-.1875-.1875v-6.375c0-.1031.0844-.1875.1875-.1875h1.125c.1031 0 .1875.0844.1875.1875zm-.75-8.0625c-.2944-.00601-.5747-.12718-.7808-.3375-.206-.21032-.3215-.49305-.3215-.7875s.1155-.57718.3215-.7875c.2061-.21032.4864-.33149.7808-.3375.2944.00601.5747.12718.7808.3375.206.21032.3215.49305.3215.7875s-.1155.57718-.3215.7875c-.2061.21032-.4864.33149-.7808.3375z">
-                </path>
-              </svg>
+          <div class="popups-container">
+            <div class="popup">
+              <div class="popup-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" height="24" fill="none">
+                  <path fill="#393a37" d="m12 1.5c-5.79844 0-10.5 4.70156-10.5 10.5 0 5.7984 4.70156 10.5 10.5 10.5 5.7984 0 10.5-4.7016 10.5-10.5 0-5.79844-4.7016-10.5-10.5-10.5zm.75 15.5625c0 .1031-.0844.1875-.1875.1875h-1.125c-.1031 0-.1875-.0844-.1875-.1875v-6.375c0-.1031.0844-.1875.1875-.1875h1.125c.1031 0 .1875.0844.1875.1875zm-.75-8.0625c-.2944-.00601-.5747-.12718-.7808-.3375-.206-.21032-.3215-.49305-.3215-.7875s.1155-.57718.3215-.7875c.2061-.21032.4864-.33149.7808-.3375.2944.00601.5747.12718.7808.3375.206.21032.3215.49305.3215.7875s-.1155.57718-.3215.7875c-.2061.21032-.4864.33149-.7808.3375z">
+                  </path>
+                </svg>
+              </div>
+              <div class="popup-title">This VCF has been set as <strong>query</strong>.</div>
             </div>
-            <div class="popup-title">This VCF has been set as <strong>query</strong>.</div>
           </div>
         </div>
       {% endif %}
@@ -480,7 +484,7 @@
                         </g>
                       </svg>
                       <div class="content">
-                        <p class="stat-value">150 | 800</p>
+                        <p class="stat-value">NA | NA</p>
                         <div class="stats-bar" id="stats-bar-snp">
                           <div class="progress-left">
                           </div>
@@ -509,7 +513,7 @@
                         </g>
                       </svg>
                       <div class="content">
-                        <p class="stat-value">150 | 800</p>
+                        <p class="stat-value">NA | NA</p>
                         <div class="stats-bar" id="stats-bar-mnp">
                           <div class="progress-left">
                           </div>
@@ -541,7 +545,7 @@
                         </g>
                       </svg>
                       <div class="content">
-                        <p class="stat-value">150 | 800</p>
+                        <p class="stat-value">NA | NA</p>
                         <div class="stats-bar" id="stats-bar-sv">
                           <div class="progress-left">
                           </div>
@@ -1009,7 +1013,7 @@
         let variantFilterQuery = filtersRight.length > 0 && filters.includes(filtersRight[0].value) ? filtersRight[0].value.toUpperCase() : "ALL";
         let variantTypeQuery = filtersRight.length > 1 && variants.includes(filtersRight[1].value) ? filtersRight[1].value.toUpperCase() : "ALL";
 
-        let statsByVariantType = document.querySelectorAll(".content .stats-bar");
+        let statsByVariantType = document.querySelectorAll(".stats-file .stat-card .content");
 
         let countVisibleLeft = 0;
         let countVisibleRight = 0;
@@ -1091,9 +1095,16 @@
 
         statsByVariantType.forEach((composition) => {
 
-          let progresses = composition.children;
+          let value = composition.firstElementChild
+
+          let bar = composition.lastElementChild
+
+          let progresses = bar.children;
             
-          if (composition.id == "stats-bar-snp"){
+          if (bar.id == "stats-bar-snp"){
+
+            value.textContent = `${countSNP[0]} | ${countSNP[1]}`
+
             let sumSNP = (countSNP.reduce((accumulator, currentValue) => accumulator + currentValue, 0))
             let pourcentageLeft = sumSNP ? ((countSNP[0] / sumSNP) * 100) : 0;
             let pourcentageRight = sumSNP ? ((countSNP[1] / sumSNP) * 100) : 0;
@@ -1116,7 +1127,10 @@
             progresses[0].style.width = pourcentageLeft + "%";
             progresses[1].style.width = pourcentageRight + "%";
           }
-          else if (composition.id == "stats-bar-indel"){
+          else if (bar.id == "stats-bar-indel"){
+
+            value.textContent = `${countINDEL[0]} | ${countINDEL[1]}`
+
             let sumINDEL = (countINDEL.reduce((accumulator, currentValue) => accumulator + currentValue, 0))
             let pourcentageLeft = sumINDEL ? ((countINDEL[0] / sumINDEL) * 100) : 0;
             let pourcentageRight = sumINDEL ? ((countINDEL[1] / sumINDEL) * 100) : 0;
@@ -1139,7 +1153,10 @@
             progresses[0].style.width = pourcentageLeft + "%";
             progresses[1].style.width = pourcentageRight + "%";
           }
-          else if (composition.id == "stats-bar-sv"){
+          else if (bar.id == "stats-bar-sv"){
+
+            value.textContent = `${countSV[0]} | ${countSV[1]}`
+
             let sumSV = (countSV.reduce((accumulator, currentValue) => accumulator + currentValue, 0))
             let pourcentageLeft = sumSV ? ((countSV[0] / sumSV) * 100) : 0;
             let pourcentageRight = sumSV ? ((countSV[1] / sumSV) * 100) : 0;

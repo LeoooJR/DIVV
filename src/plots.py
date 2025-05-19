@@ -115,7 +115,7 @@ class PlotLibrary:
         NSUBSETS = 3
         PADDING = 0.2
         
-        v = venn2(sizes,labels)
+        v = venn2(sizes, labels)
 
         plt.close()
 
@@ -130,20 +130,21 @@ class PlotLibrary:
                          y1=v.centers[i].y + v.radii[i], 
                          fillcolor=colors[i], 
                          line_color=colors[i], 
-                         opacity=0.75) for i in range(0,NSETS)]
+                         opacity=0.75, 
+                         name=labels[i]) for i in range(0,NSETS)]
         
         annotations: list = [go.layout.Annotation(xref="x",
                                                   yref="y", 
-                                                  x= v.set_labels[i].get_position()[0], 
+                                                  x=v.set_labels[i].get_position()[0], 
                                                   y=v.set_labels[i].get_position()[1], 
-                                                  text= v.set_labels[i].get_text(), 
+                                                  text=v.set_labels[i].get_text(), 
                                                   showarrow=False) for i in range(0,NSETS)]
         
         annotations.extend(go.layout.Annotation(xref="x",
                                                 yref="y", 
-                                                x= v.subset_labels[i].get_position()[0], 
+                                                x=v.subset_labels[i].get_position()[0], 
                                                 y=v.subset_labels[i].get_position()[1], 
-                                                text= v.subset_labels[i].get_text(), 
+                                                text=v.subset_labels[i].get_text(), 
                                                 showarrow=False) for i in range(0,NSUBSETS))
         
         xmin = min(v.centers[i].x - v.radii[i] for i in range(0,NSETS)) - PADDING
@@ -164,9 +165,12 @@ class PlotLibrary:
             height=400,
             shapes=shapes, 
             annotations=annotations,
+            title="Venn Diagram"
         )
 
         plot = Plot(fig=fig)
+
+        Plot.set_layout(plot.fig)
 
         self.save(plot)
 
