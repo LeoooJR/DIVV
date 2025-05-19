@@ -1,31 +1,29 @@
-FROM python:3.12-slim
+FROM python:3.12-slim as builder
 
 ARG project=vcfdelta
+ARG branch=main
+ARG binary=vcfdelta
 
-RUN mkdir /${project} /apps
+RUN apt-get update \
+&& apt-get install -y git build-essential autoconf automake libtool zlib1g-dev libbz2-dev liblzma-dev libssl-dev bzip2 \
+&& apt-get clean \
+&& rm -rf /var/lib/apt/lists/*
 
 WORKDIR /${project}
 
-RUN apt-get update \
-&& apt-get install -y build-essential autoconf automake libtool zlib1g-dev libbz2-dev liblzma-dev libssl-dev wget bzip2
+RUN git clone --depth 1 --branch ${branch} https://github.com/LeoooJR/VCFDelta.git /${project} \
+&& ./install.sh \
+&& pip install --upgrade pip \
+&& pip install --no-cache-dir -r /${project}/requirements.txt \
+&& pip install --no-chache-dir pyinstaller \
+&& pyinstaller --clean --onefile --paths src --add-data src/templates:templates --add-data src/htslib/bin/:htslib/bin/ --workpath build --distpath dist -n ${binary} src/main.py
 
-RUN cd /apps \
-&& wget https://github.com/samtools/bcftools/releases/download/1.21/bcftools-1.21.tar.bz2 \
-&& tar -jxvf bcftools-1.21.tar.bz2 \
-&& cd bcftools-1.21 \
-&& ./configure --prefix=/apps/bcftools \
-&& make \
-&& make install \
-&& cd -\
-&& rm -r bcftools-1.21 bcftools-1.21.tar.bz2
+FROM python:3.12-slim
 
-ENV PATH="/apps/bcftools/bin:$PATH"
+WORKDIR /${project}
 
-COPY requirements.txt /${project}
+ENV PATH="$PATH:/${project}/bin"
 
-RUN pip install --upgrade pip \
-&& pip install --no-cache-dir -r /${project}/requirements.txt
+COPY --from=builder /${project}/dist/${binary} /${project}/bin 
 
-COPY src /${project}/src
-
-ENTRYPOINT [ "python", "src/main.py" ]
+ENTRYPOINT [ "${binary}" ]

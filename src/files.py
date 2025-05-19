@@ -15,7 +15,7 @@ from pandas import isna, concat, Index, DataFrame, notna
 import pathlib
 from plots import PlotLibrary
 from shutil import copy, copytree
-from sortedcontainers import SortedSet
+import stat
 import subprocess
 import utils
 import variants
@@ -286,7 +286,9 @@ class VCF(GenomicFile):
             CMDS: dict = {"bcftools": ["bcftools", "view", "-O", "z", "-o", archive, str(self.path)],
                         "bgzip": ["bgzip", "-c", "-f", str(self.path)]}
         else:
-            CMDS: dict = {"bgzip": [f"{os.path.dirname(os.path.abspath(__file__))}/htslib/bin/bgzip", "-c", "-f", str(self.path)]}
+            binary = f"{os.path.dirname(os.path.abspath(__file__))}/htslib/bin/bgzip"
+            os.chmod(binary, os.stat(binary).st_mode | stat.S_IEXEC)
+            CMDS: dict = {"bgzip": [binary, "-c", "-f", str(self.path)]}
 
         outcode: int = 1
         retry: int = 0
@@ -320,7 +322,9 @@ class VCF(GenomicFile):
             CMDS: dict = {"bcftools": ["bcftools", "index", "-t", self.archive],
                         "tabix": ["tabix", "-f", "-p", "vcf", self.archive]}
         else:
-            CMDS: dict = {"tabix": [f"{os.path.dirname(os.path.abspath(__file__))}/htslib/bin/tabix", "-f", "-p", "vcf", self.archive]}
+            binary = f"{os.path.dirname(os.path.abspath(__file__))}/htslib/bin/tabix"
+            os.chmod(binary, os.stat(binary).st_mode | stat.S_IEXEC)
+            CMDS: dict = {"tabix": [binary, "-f", "-p", "vcf", self.archive]}
 
         outcode: int = 1
         retry: int = 0
