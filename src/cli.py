@@ -169,6 +169,15 @@ class Program:
             default=False,
         )
         self.parser.add_argument(
+            "-t",
+            "--tags",
+            dest="tags",
+            type=str,
+            nargs=2,
+            required=False,
+            help="For the final report, add more information about VCFs with tags. Values must be separated by commas, e.g. [tag,tag,...]."
+        )
+        self.parser.add_argument(
             "--verbosity",
             dest="verbosity",
             action="store_true",

@@ -123,6 +123,7 @@ def delta(params: object) -> int:
         # Create a report with the results
         files.Report(
             vcfs=vcfs,
+            tags=params.tags,
             prefix=params.out,
             cmd=" ".join(argv),
             view=comparaisons[(vcfs.repository[0],vcfs.repository[1])],

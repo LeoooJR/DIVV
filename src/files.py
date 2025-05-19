@@ -1032,12 +1032,15 @@ class Report:
         table: The benchmark table (truth metrics) object as a DataFrame
     """
     # Make use of __slots__ to avoid the creation of __dict__ and __weakref__ for each instance, reducing the memory footprint
-    __slots__ = ('vcfs', 'cmd', 'view', 'prefix', 'table', 'out')
+    __slots__ = ('vcfs', 'tags', 'cmd', 'view', 'prefix', 'table', 'out')
 
-    def __init__(self, vcfs: VCFRepository, prefix: str, cmd: str, view: dict, table: DataFrame = None, out: str = "archive"):
+    def __init__(self, vcfs: VCFRepository, tags: list[str], prefix: str, cmd: str, view: dict, table: DataFrame = None, out: str = "archive"):
 
         # The list of VCF files
         self.vcfs = vcfs
+
+        # Tags provided by user about VCFs
+        self.tags = list(map(lambda x: x.split(','), tags))
 
         # The command used to generate the report
         self.cmd = cmd
@@ -1085,7 +1088,7 @@ class Report:
         template = env.get_template("template.html")
 
         # Render the template
-        html = template.render(vcfs=self.vcfs, cmd=self.cmd, view=self.view, table=self.table)
+        html = template.render(vcfs=self.vcfs, tags=self.tags, cmd=self.cmd, view=self.view, table=self.table)
 
         if self.out == "dir":
 

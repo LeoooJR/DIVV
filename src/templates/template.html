@@ -326,7 +326,16 @@
     
             <div class="comparison-container">
               <div class="file1-view">
-                <div class="file1-title">{{ vcfs.repository[0].informations().basename|default(vcfs.repository[0]) }} <p class="filterSummary" id="filterSummaryL">Showing all variants</p> </div>
+                <div class="file1-title">2124FH000284F_S45_DV.vcf
+                  <div class="metadatas">
+                    <p class="filterSummary" id="filterSummaryL">Showing all variants</p>
+                    <div class="tags">
+                      {% for tag in tags[0] %}
+                        <span class="tag">{{ tag | trim }}</span>
+                      {% endfor %}
+                    </div>  
+                  </div>
+                </div>
                 <div class="file1-content" id="content1">
                   <div class="line header">
                     <div class="line-number">0</div>
@@ -356,7 +365,16 @@
                 </div>
               </div>
               <div class="file2-view">
-                <div class="file2-title">{{ vcfs.repository[1].informations().basename|default(vcfs.repository[1]) }} <p class="filterSummary" id="filterSummaryR">Showing all variants</p> </div>
+                <div class="file2-title">{{ vcfs.repository[1].informations().basename|default(vcfs.repository[1]) }} 
+                  <div class="metadatas">
+                    <p class="filterSummary" id="filterSummaryR">Showing all variants</p>
+                    <div class="tags">
+                      {% for tag in tags[1] %}
+                        <span class="tag">{{ tag | trim }}</span>
+                      {% endfor %}
+                    </div>  
+                  </div> 
+                </div>
                 <div class="file2-content" id="content2">
                   <div class="line header">
                     <div class="line-number">0</div>
@@ -583,7 +601,7 @@
                         </g>
                       </svg>
                       <div class="content">
-                        <p class="stat-value">150 | 800</p>
+                        <p class="stat-value">NA | NA</p>
                         <div class="stats-bar" id="stats-bar-indel">
                           <div class="progress-left">
                           </div>
@@ -635,7 +653,7 @@
                         </g>
                       </svg>
                       <div class="content">
-                        <p class="stat-value">150 | 800</p>
+                        <p class="stat-value">NA | NA</p>
                         <div class="stats-bar" id="stats-bar-inv">
                           <div class="progress-left">
                           </div>
@@ -684,7 +702,7 @@
                         </g>
                       </svg>
                       <div class="content">
-                        <p class="stat-value">150 | 800</p>
+                        <p class="stat-value">NA | NA</p>
                         <div class="stats-bar" id="stats-bar-comp">
                           <div class="progress-left">
                           </div>
