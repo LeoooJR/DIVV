@@ -173,7 +173,7 @@ class Program:
             "--tags",
             dest="tags",
             type=str,
-            nargs=2,
+            nargs='+',
             required=False,
             help="For the final report, add more information about VCFs with tags. Values must be separated by commas, e.g. [tag,tag,...]."
         )

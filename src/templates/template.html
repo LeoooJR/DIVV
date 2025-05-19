@@ -329,11 +329,13 @@
                 <div class="file1-title">2124FH000284F_S45_DV.vcf
                   <div class="metadatas">
                     <p class="filterSummary" id="filterSummaryL">Showing all variants</p>
-                    <div class="tags">
-                      {% for tag in tags[0] %}
-                        <span class="tag">{{ tag | trim }}</span>
-                      {% endfor %}
-                    </div>  
+                    {% if tags[0] %}
+                      <div class="tags">
+                        {% for tag in tags[0] %}
+                          <span class="tag">{{ tag | trim }}</span>
+                        {% endfor %}
+                      </div>
+                    {% endif %}  
                   </div>
                 </div>
                 <div class="file1-content" id="content1">
@@ -368,11 +370,13 @@
                 <div class="file2-title">{{ vcfs.repository[1].informations().basename|default(vcfs.repository[1]) }} 
                   <div class="metadatas">
                     <p class="filterSummary" id="filterSummaryR">Showing all variants</p>
-                    <div class="tags">
-                      {% for tag in tags[1] %}
-                        <span class="tag">{{ tag | trim }}</span>
-                      {% endfor %}
-                    </div>  
+                    {% if tags[1] %}
+                      <div class="tags">
+                        {% for tag in tags[1] %}
+                          <span class="tag">{{ tag | trim }}</span>
+                        {% endfor %}
+                      </div>
+                    {% endif %}  
                   </div> 
                 </div>
                 <div class="file2-content" id="content2">
