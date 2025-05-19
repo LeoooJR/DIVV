@@ -1,8 +1,8 @@
-FROM python:3.12-slim as builder
-
 ARG project=vcfdelta
 ARG branch=main
 ARG binary=vcfdelta
+
+FROM python:3.12-slim as builder
 
 RUN apt-get update \
 && apt-get install -y git build-essential autoconf automake libtool zlib1g-dev libbz2-dev liblzma-dev libssl-dev bzip2 \
