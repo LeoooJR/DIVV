@@ -119,7 +119,7 @@ class PlotLibrary:
 
         plt.close()
 
-        colors: list = ['Tomato', 'LightGreen']
+        colors: list = ['#00BFA6', '#FF6B35']
 
         shapes: list = [go.layout.Shape(type="circle",
                          xref="x",

@@ -412,7 +412,7 @@ body {
 }
 
 .reset-button {
-    background-color: #29903b;
+    background-color: rgba(79, 70, 229, 0.9);
     color: var(--color-right);
     border: none;
     border-radius: 6px;
@@ -423,6 +423,10 @@ body {
     border-radius: 16px;
     font-family: var(--font-family);
     font-weight: bold;
+}
+
+.reset-button:hover{
+    background-color: rgba(67, 56, 202, 0.9);
 }
 
 .stats-section {
@@ -529,7 +533,8 @@ body {
     background-color: white;
     border-style: solid;
     border-color: rgb(204, 204, 204);
-    border-radius: 16px;
+    border-radius: 1rem;
+    border-width: 1px;
     padding-top: 0.01em;
     padding-right: 16px;
     padding-bottom: 0.01em;
@@ -561,7 +566,7 @@ body {
 
 .progress-left {
     height: 100%;
-    background-color: tomato;
+    background-color: #00BFA6;
     opacity: 0.75;
     float: left;
     border-top-left-radius: 9999px;
@@ -570,7 +575,7 @@ body {
 
 .progress-right {
     height: 100%;
-    background-color: LightGreen;
+    background-color: #FF6B35;
     opacity: 0.75;
     float: left;
     border-top-right-radius: 9999px;
@@ -601,8 +606,76 @@ body {
   fill: #fff;
 }
 
-.error__message {
+.error__title {
   font-weight: 500;
   font-size: 14px;
   color: #fff;
+}
+
+.error__close {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  margin-left: auto;
+}
+
+.error__close path {
+  fill: #fff;
+}
+
+.benchmark-button {
+    position: relative;
+    padding: 12px 24px;
+    margin-left: 90px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: white;
+    background-color: #509AF8;
+    border-radius: 0.75rem;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    outline: none;
+    border: none;
+    cursor: pointer;
+}
+
+.benchmark-button:hover {
+  background-color: #2F8CF5;
+}
+
+.benchmark-button-background {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to right, rgba(80, 154, 248, 0.2), rgba(80, 154, 248, 0.2));
+    filter: blur(20px);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 0;
+}
+
+.benchmark-button:hover .benchmark-button-background {
+  opacity: 0.75;
+}
+
+.benchmark-button-content{
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    z-index: 1;
+}
+
+.benchmark-button-icon {
+    width: 1rem;
+    height: 1rem;
+}
+
+.benchmark-info-message {
+    display: none;
+}
+
+.benchmark-button:hover .benchmark-info-message {
+    display: block;
+    left: 0;
+    top: 0;
 }

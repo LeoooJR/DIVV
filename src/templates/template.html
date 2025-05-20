@@ -750,6 +750,26 @@
         </div>
 
         {% if table is not none %}
+          <button class="benchmark-button">
+            <div class="benchmark-button-background"></div>
+            <span class="benchmark-button-content">
+              <svg
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                fill="none"
+                class="benchmark-button-icon"
+              >
+                <path
+                  d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                  stroke-width="2"
+                  stroke-linejoin="round"
+                  stroke-linecap="round"
+                ></path>
+              </svg>
+              Hover for Info
+            </span>
+            <p class="benchmark-info-message">Benchmarking is carried out on exact equality in terms of chromosome, position, reference and alternative allele.</p>
+          </button>
           <div style="display: flex; width: 100%; justify-content: center; align-items: center; background: white;">
             <table class="benchmark-table">
               <tbody>
