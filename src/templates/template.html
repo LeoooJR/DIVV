@@ -444,7 +444,7 @@
                         </svg>
                       </div>
                       <div class="content">
-                        <p class="stat-value">1854</p>
+                        <p class="stat-value">{{ view["common"] }}</p>
                         <p class="stat-label">Matching lines</p>
                       </div>
                       <div class="stats-info-icon">
@@ -467,7 +467,7 @@
                         </svg>
                       </div>
                       <div class="content">
-                        <p class="stat-value">7</p>
+                        <p class="stat-value">{{ view["unique"].values() | sum }}</p>
                         <p class="stat-label">Different lines</p>
                       </div>
                       <div class="stats-info-icon">
@@ -491,7 +491,7 @@
                         </svg>
                       </div>
                       <div class="content">
-                        <p class="stat-value">0.996</p>
+                        <p class="stat-value">{{ view["jaccard"] }}</p>
                         <p class="stat-label">Jaccard index</p>
                       </div>
                       <div class="stats-info-icon">
@@ -533,6 +533,7 @@
                           <div class="progress-right">
                           </div>
                         </div>
+                        <img src="statics/versus.png" alt="versus-icon" class="info-icon">
                       </div>
                     </div>
 
@@ -562,6 +563,7 @@
                           <div class="progress-right">
                           </div>
                         </div>
+                        <img src="statics/versus.png" alt="versus-icon" class="info-icon">
                       </div>
                     </div>
 
@@ -594,6 +596,7 @@
                           <div class="progress-right">
                           </div>
                         </div>
+                        <img src="statics/versus.png" alt="versus-icon" class="info-icon">
                       </div>
                     </div>
 
@@ -632,6 +635,7 @@
                           <div class="progress-right">
                           </div>
                         </div>
+                        <img src="statics/versus.png" alt="versus-icon" class="info-icon">
                       </div>
                     </div>
 
@@ -684,6 +688,7 @@
                           <div class="progress-right">
                           </div>
                         </div>
+                        <img src="statics/versus.png" alt="versus-icon" class="info-icon">
                       </div>
                     </div>
                     
@@ -733,6 +738,7 @@
                           <div class="progress-right">
                           </div>
                         </div>
+                        <img src="statics/versus.png" alt="versus-icon" class="info-icon">
                       </div>
                     </div>
 
@@ -742,7 +748,9 @@
               </section>
 
               <div class="plot active common">
-                {{ view["plots"].as_html()[0] }}
+                {% if view["jaccard"] < 0.9 %}
+                  {{ view["plots"].as_html()[0] }}
+                {% endif %}
               </div>
 
             </div>
@@ -1166,7 +1174,7 @@
 
           let value = composition.firstElementChild
 
-          let bar = composition.lastElementChild
+          let bar = composition.children[1]
 
           let progresses = bar.children;
             
