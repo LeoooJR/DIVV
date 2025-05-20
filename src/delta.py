@@ -1,5 +1,6 @@
 import errors
 import files
+from itertools import repeat
 from loguru import logger
 from memory_profiler import profile
 import os
@@ -119,6 +120,14 @@ def delta(params: object) -> int:
         vcfs.repository[0].variants.visualization()
 
         vcfs.repository[1].variants.visualization()
+
+        tags = list(repeat(None, 2))
+
+        if isinstance(params.tags, list):
+
+            for i in range(len(params.tags[:2])):
+
+                tags[i] = params.tags[i]
 
         # Create a report with the results
         files.Report(

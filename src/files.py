@@ -1044,7 +1044,7 @@ class Report:
         self.vcfs = vcfs
 
         # Tags provided by user about VCFs
-        self.tags = list(map(lambda x: x.split(','), tags))
+        self.tags = tags
 
         # The command used to generate the report
         self.cmd = cmd
