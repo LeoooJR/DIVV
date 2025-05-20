@@ -1046,8 +1046,6 @@ class Report:
         # Tags provided by user about VCFs
         self.tags = tags
 
-        print(tags)
-
         # The command used to generate the report
         self.cmd = cmd
         
