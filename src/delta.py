@@ -127,12 +127,14 @@ def delta(params: object) -> int:
 
             for i in range(len(params.tags[:2])):
 
-                tags[i] = params.tags[i]
+                if isinstance(params.tags[i], str):
+
+                    tags[i] = params.tags[i].split(',')
 
         # Create a report with the results
         files.Report(
             vcfs=vcfs,
-            tags=params.tags,
+            tags=tags,
             prefix=params.out,
             cmd=" ".join(argv),
             view=comparaisons[(vcfs.repository[0],vcfs.repository[1])],
