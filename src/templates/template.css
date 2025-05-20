@@ -566,7 +566,7 @@ body {
 
 .progress-left {
     height: 100%;
-    background-color: #00BFA6;
+    background-color: #2C7A7B;
     opacity: 0.75;
     float: left;
     border-top-left-radius: 9999px;
@@ -575,7 +575,7 @@ body {
 
 .progress-right {
     height: 100%;
-    background-color: #FF6B35;
+    background-color: #CC6E3D;
     opacity: 0.75;
     float: left;
     border-top-right-radius: 9999px;
