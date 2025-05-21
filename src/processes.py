@@ -5,6 +5,7 @@ import files
 from itertools import chain
 from loguru import logger
 from psutil import cpu_count
+import re
 
 class TasksManager():
 
@@ -18,10 +19,25 @@ class TasksManager():
 
                 raise ValueError("Number of processes alocated must be an positive unsigned integer.")
 
-            # Number of CPUs available
-            CPUS = cpu_count(logical=True)
+            try:
 
-            logger.debug(f"Number of logical(s) CPU(s) detected: {CPUS}.")
+                with open("/proc/self/status", mode="r") as f:
+
+                    m = re.search(r"(?m)^Cpus_allowed:\s*(.*)$", f.read())
+
+                    if m:
+
+                        cpuset = bin(int(m.group(1).replace(",", ""), base=16)).count("1")
+
+                        if cpuset > 0:
+
+                            CPUS = min(cpuset, cpu_count(logical=True))
+            
+            except OSError:
+
+                CPUS = cpu_count(logical=True)
+
+            logger.debug(f"Number of logical(s) CPU(s) available: {CPUS}.")
 
             if CPUS > 1:
                 self.processes = min(processes, CPUS)
