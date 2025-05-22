@@ -4,12 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>VCF comparison report</title>
-  <link rel="stylesheet" href="template.css" />
-  <link rel="stylesheet" href="file.css" />
-  <link rel="stylesheet" href="search.css" />
-  <link rel="stylesheet" href="table.css" />
-  <link rel="stylesheet" href="cmd.css" />
-  <link rel="stylesheet" href="terminal.css" />
   <script src="https://cdn.plot.ly/plotly-3.0.0.min.js" charset="utf-8"></script>
   <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
@@ -42,23 +36,23 @@
 
             <div class="flex flex-row justify-center items-center flex-wrap w-full pt-[5px]">
 
-              <div class="flex flex-row border-[solid] border-transparent rounded-[2em] m-[2px] bg-[#111d2f]">
-                <img src="statics/folder.png" class="w-[20px] h-[20px] pl-[5px] pt-[5px] pb-[5px] self-center align-middle">
-                <p class="items-center text-[14px] h-[20px] pl-[5px] pr-[5px] font-bold text-center leading-[22px] overflow-scroll font-[Ubuntu] text-[white]">
+              <div class="flex flex-row border-[solid] border-transparent rounded-[2em] m-[2px] h-[90%] bg-[#111d2f] items-center">
+                <img src="statics/folder.png" class="w-[20px] pl-[5px] pt-[5px] pb-[5px] self-center align-middle">
+                <p class="items-center text-[15px] pl-[5px] pr-[5px] font-bold text-center leading-[22px] overflow-scroll font-[Ubuntu] text-[white]">
                     {{ vcfs.repository[0].informations().path|default(vcfs.repository[0]) }}
                 </p>
               </div>
 
-              <div class="flex flex-row border-[solid] border-transparent rounded-[2em] m-[2px] bg-[#111d2f]">
-                <img src="statics/database.png" class="w-[20px] h-[20px] pl-[5px] pt-[5px] pb-[5px] self-center align-middle">
-                <p class="items-center text-[14px] h-[20px] pl-[5px] pr-[5px] font-bold text-center leading-[22px] overflow-scroll font-[Ubuntu] text-[white]">
+              <div class="flex flex-row border-[solid] border-transparent rounded-[2em] m-[2px] h-[90%] bg-[#111d2f] items-center">
+                <img src="statics/database.png" class="w-[20px] pl-[5px] pt-[5px] pb-[5px] self-center align-middle">
+                <p class="items-center text-[15px] pl-[5px] pr-[5px] font-bold text-center leading-[22px] overflow-scroll font-[Ubuntu] text-[white]">
                     {{ vcfs.repository[0].informations().size|default('NA') }} Mo
                 </p>
               </div>
 
-              <div class="flex flex-row border-[solid] border-transparent rounded-[2em] m-[2px] bg-[#111d2f]">
-                <img src="statics/file.png" class="w-[20px] h-[20px] pl-[5px] pt-[5px] pb-[5px] self-center align-middle">
-                <p class="items-center text-[14px] h-[20px] pl-[5px] pr-[5px] font-bold text-center leading-[22px] overflow-scroll font-[Ubuntu] text-[white]">
+              <div class="flex flex-row border-[solid] border-transparent rounded-[2em] m-[2px] h-[90%] bg-[#111d2f] items-center">
+                <img src="statics/file.png" class="w-[20px] pl-[5px] pt-[5px] pb-[5px] self-center align-middle">
+                <p class="items-center text-[15px] pl-[5px] pr-[5px] font-bold text-center leading-[22px] overflow-scroll font-[Ubuntu] text-[white]">
                     {{ vcfs.repository[0].informations().mtime|default('NA') }}
                 </p>
               </div>
@@ -67,9 +61,9 @@
 
             <div class="relative mr-[10px] mt-[10px]">
 
-              <img src="statics/down-arrow-left.png" class="w-[39px] h-[39px] ml-[10px] mt-[5px] mb-[5px] self-center align-middle mr-[5px]" id="dropdown-icon">
+              <img src="statics/down-arrow-left.png" class="w-[39px] h-[39px] ml-[10px] mt-[5px] mb-[5px] self-center align-middle mr-[5px] cursor-pointer" id="dropdown-icon">
 
-              <div class="absolute -top-1 -right-1 w-3.5 h-3.5 bg-red-400 border-2 border-transparent rounded-full">
+              <div class="absolute -top-1 -right-1 w-4 h-4">
                 <div class="w-full h-full bg-red-400 rounded-full animate-ping"></div>
               </div>
 
@@ -83,23 +77,23 @@
 
             <div class="flex flex-row justify-center items-center flex-wrap w-full pt-[5px]">
 
-              <div class="flex flex-row border-[solid] border-transparent rounded-[2em] m-[2px] bg-[#111d2f]">
-                <img src="statics/folder.png" class="w-[20px] h-[20px] pl-[5px] pt-[5px] pb-[5px] self-center align-middle">
-                <p class="items-center text-[14px] h-[20px] pl-[5px] pr-[5px] font-bold text-center leading-[22px] overflow-scroll font-[Ubuntu] text-[white]">
+              <div class="flex flex-row border-[solid] border-transparent rounded-[2em] m-[2px] h-[90%] bg-[#111d2f] items-center">
+                <img src="statics/folder.png" class="w-[20px] pl-[5px] pt-[5px] pb-[5px] self-center align-middle">
+                <p class="items-center text-[15px] pl-[5px] pr-[5px] font-bold text-center leading-[22px] overflow-scroll font-[Ubuntu] text-[white]">
                     {{ vcfs.repository[1].informations().path|default(vcfs.repository[1]) }}
                 </p>
               </div>
 
-              <div class="flex flex-row border-[solid] border-transparent rounded-[2em] m-[2px] bg-[#111d2f]">
-                <img src="statics/database.png" class="w-[20px] h-[20px] pl-[5px] pt-[5px] pb-[5px] self-center align-middle">
-                <p class="items-center text-[14px] h-[20px] pl-[5px] pr-[5px] font-bold text-center leading-[22px] overflow-scroll font-[Ubuntu] text-[white]">
+              <div class="flex flex-row border-[solid] border-transparent rounded-[2em] m-[2px] h-[90%] bg-[#111d2f] items-center">
+                <img src="statics/database.png" class="w-[20px] pl-[5px] pt-[5px] pb-[5px] self-center align-middle">
+                <p class="items-center text-[15px] pl-[5px] pr-[5px] font-bold text-center leading-[22px] overflow-scroll font-[Ubuntu] text-[white]">
                     {{ vcfs.repository[1].informations().size|default('NA') }} Mo
                 </p>
               </div>
 
-              <div class="flex flex-row border-[solid] border-transparent rounded-[2em] m-[2px] bg-[#111d2f]">
-                <img src="statics/file.png" class="w-[20px] h-[20px] pl-[5px] pt-[5px] pb-[5px] self-center align-middle">
-                <p class="items-center text-[14px] h-[20px] pl-[5px] pr-[5px] font-bold text-center leading-[22px] overflow-scroll font-[Ubuntu] text-[white]">
+              <div class="flex flex-row border-[solid] border-transparent rounded-[2em] m-[2px] h-[90%] bg-[#111d2f] items-center">
+                <img src="statics/file.png" class="w-[20px] pl-[5px] pt-[5px] pb-[5px] self-center align-middle">
+                <p class="items-center text-[15px] pl-[5px] pr-[5px] font-bold text-center leading-[22px] overflow-scroll font-[Ubuntu] text-[white]">
                     {{ vcfs.repository[1].informations().mtime|default('NA') }}
                 </p>
               </div>
@@ -108,9 +102,9 @@
 
             <div class="relative mr-[10px] mt-[10px]">
 
-              <img src="statics/down-arrow-right.png" class="w-[39px] h-[39px] ml-[10px] mt-[5px] mb-[5px] self-center align-middle mr-[5px]" id="dropdown-icon">
+              <img src="statics/down-arrow-right.png" class="w-[39px] h-[39px] ml-[10px] mt-[5px] mb-[5px] self-center align-middle mr-[5px] cursor-pointer" id="dropdown-icon">
 
-              <div class="absolute -top-1 -right-1 w-3.5 h-3.5 bg-red-400 border-2 border-transparent rounded-full">
+              <div class="absolute -top-1 -right-1 w-4 h-4">
                 <div class="w-full h-full bg-red-400 rounded-full animate-ping"></div>
               </div>
 
@@ -123,7 +117,7 @@
       {% if table is not none %}
         <div class="flex flex-row w-full bg-[linear-gradient(to_right,_#eef0f1_50%,_#333333_50%)]">
           <div class="flex w-1/2 justify-center">
-            <div class="font-[system-ui,_-apple-system,_BlinkMacSystemFont,_'Segoe_UI',_Roboto,_Oxygen,_Ubuntu,_Cantarell,_'Open_Sans',_'Helvetica_Neue',_sans-serif] w-[320px] p-[12px] mb-[5px] hidden flex-row items-center bg-[#D7F1FD] rounded-[8px] [box-shadow:0px_0px_5px_-3px_#111]">
+            <div data-component="info-popup" class="font-[system-ui,_-apple-system,_BlinkMacSystemFont,_'Segoe_UI',_Roboto,_Oxygen,_Ubuntu,_Cantarell,_'Open_Sans',_'Helvetica_Neue',_sans-serif] w-[320px] p-[12px] mb-[5px] hidden flex-row items-center bg-[#D7F1FD] rounded-[8px] [box-shadow:0px_0px_5px_-3px_#111]">
               <div class="w-[20px] h-[20px] -translate-y-[2px] mr-[8px]">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" height="24" fill="none">
                   <path fill="#509AF8" d="m12 1.5c-5.79844 0-10.5 4.70156-10.5 10.5 0 5.7984 4.70156 10.5 10.5 10.5 5.7984 0 10.5-4.7016 10.5-10.5 0-5.79844-4.7016-10.5-10.5-10.5zm.75 15.5625c0 .1031-.0844.1875-.1875.1875h-1.125c-.1031 0-.1875-.0844-.1875-.1875v-6.375c0-.1031.0844-.1875.1875-.1875h1.125c.1031 0 .1875.0844.1875.1875zm-.75-8.0625c-.2944-.00601-.5747-.12718-.7808-.3375-.206-.21032-.3215-.49305-.3215-.7875s.1155-.57718.3215-.7875c.2061-.21032.4864-.33149.7808-.3375.2944.00601.5747.12718.7808.3375.206.21032.3215.49305.3215.7875s-.1155.57718-.3215.7875c-.2061.21032-.4864.33149-.7808.3375z">
@@ -134,7 +128,7 @@
             </div>
           </div>
           <div class="flex w-1/2 justify-center">
-            <div class="font-[system-ui,_-apple-system,_BlinkMacSystemFont,_'Segoe_UI',_Roboto,_Oxygen,_Ubuntu,_Cantarell,_'Open_Sans',_'Helvetica_Neue',_sans-serif] w-[320px] p-[12px] mb-[5px] hidden flex-row items-center bg-[#D7F1FD] rounded-[8px] [box-shadow:0px_0px_5px_-3px_#111]">
+            <div data-component="info-popup" class="font-[system-ui,_-apple-system,_BlinkMacSystemFont,_'Segoe_UI',_Roboto,_Oxygen,_Ubuntu,_Cantarell,_'Open_Sans',_'Helvetica_Neue',_sans-serif] w-[320px] p-[12px] mb-[5px] hidden flex-row items-center bg-[#D7F1FD] rounded-[8px] [box-shadow:0px_0px_5px_-3px_#111]">
               <div class="w-[20px] h-[20px] -translate-y-[2px] mr-[8px]">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" height="24" fill="none">
                   <path fill="#509AF8" d="m12 1.5c-5.79844 0-10.5 4.70156-10.5 10.5 0 5.7984 4.70156 10.5 10.5 10.5 5.7984 0 10.5-4.7016 10.5-10.5 0-5.79844-4.7016-10.5-10.5-10.5zm.75 15.5625c0 .1031-.0844.1875-.1875.1875h-1.125c-.1031 0-.1875-.0844-.1875-.1875v-6.375c0-.1031.0844-.1875.1875-.1875h1.125c.1031 0 .1875.0844.1875.1875zm-.75-8.0625c-.2944-.00601-.5747-.12718-.7808-.3375-.206-.21032-.3215-.49305-.3215-.7875s.1155-.57718.3215-.7875c.2061-.21032.4864-.33149.7808-.3375.2944.00601.5747.12718.7808.3375.206.21032.3215.49305.3215.7875s-.1155.57718-.3215.7875c-.2061.21032-.4864.33149-.7808.3375z">
@@ -147,13 +141,13 @@
         </div>
       {% endif %}
 
-      <div class="ml-[20px] mr-[20px] hidden items-center bg-[#0F172A] px-[15px] py-[10px] gap-[5px] rounded-[20px]">
+      <div id="command" class="ml-[20px] mr-[20px] hidden items-center bg-[#0F172A] px-[15px] py-[10px] gap-[5px] rounded-[20px]">
 
         <p class="text-[.8rem] text-[white]">
-          <span class="text-[#E879F9]">user</span><span class="text-[#2DD4BF]">@vcfdelta</span>:<span class="text-[#A78BFA]">~</span>$
+          <span id="command-metadata" class="text-[#E879F9]">user</span><span class="text-[#2DD4BF]">@vcfdelta</span>:<span class="text-[#A78BFA]">~</span>$
         </p>
 
-        <input class="bg-transparent border-[none] outline-[none] text-[white] placeholder-white" placeholder="{{ cmd }}" type="text" disabled>
+        <input class="bg-transparent border-[none] outline-[none] text-[white] placeholder:text-white" placeholder="{{ cmd }}" type="text" disabled>
 
       </div>
 
@@ -164,20 +158,20 @@
         <div class="grid grid-cols-[1fr] grid-rows-[1fr] [direction:ltr] gap-[8px] flex-wrap w-[50%] bg-[white]">
             {% for plot in vcfs.repository[0].variants.plots.as_html() %}
               {% if loop.index == 1 %}
-                <div class="w-full visible opacity-100 relative" id="left-plot{{ loop.index }}">
+                <div class="w-full visible opacity-100 relative" id="left-plot{{ loop.index }}" data-component="plot-left">
                   {{ plot }}
                 </div>
               {% else %}
-                <div class="invisible opacity-0 w-full [transition:opacity_0.3s_ease-in-out]" id="left-plot{{ loop.index }}">
+                <div class="invisible opacity-0 w-full [transition:opacity_0.3s_ease-in-out]" id="left-plot{{ loop.index }}" data-component="plot-left">
                   {{ plot }}
                 </div>
               {% endif %}
             {% endfor %}
             <div class="flex justify-between items-center w-full mx-[0] my-[10px]">
               <div class="flex justify-center w-full pl-[20px]">
-                  <div class="cursor-pointer text-[24px] bg-[rgba(200,_200,_200,_0.3)] rounded-[50%] flex items-center justify-center w-[40px] h-[40px] [transition:all_0.3s_ease] mb-[5px] text-[white] hover:bg-[rgba(150,_150,_150,_0.7)] hover:scale-110" id="leftPrevArrow">&#8592;</div>
+                  <div class="cursor-pointer text-[24px] bg-[rgba(200,_200,_200,_0.3)] rounded-[50%] flex items-center justify-center w-[40px] h-[40px] [transition:all_0.3s_ease] mb-[5px] text-[black] hover:bg-[rgba(150,_150,_150,_0.7)] hover:scale-110" id="leftPrevArrow">&#8592;</div>
                   <div class="flex gap-[5px] mx-[15px] my-[0] items-center" id="leftPlotIndicator"></div>
-                  <div class="cursor-pointer text-[24px] bg-[rgba(200,_200,_200,_0.3)] rounded-[50%] flex items-center justify-center w-[40px] h-[40px] [transition:all_0.3s_ease] mb-[5px] text-[white] hover:bg-[rgba(150,_150,_150,_0.7)] hover:scale-110" id="leftNextArrow">&#8594;</div>
+                  <div class="cursor-pointer text-[24px] bg-[rgba(200,_200,_200,_0.3)] rounded-[50%] flex items-center justify-center w-[40px] h-[40px] [transition:all_0.3s_ease] mb-[5px] text-[black] hover:bg-[rgba(150,_150,_150,_0.7)] hover:scale-110" id="leftNextArrow">&#8594;</div>
               </div>
             </div>
         </div>
@@ -185,11 +179,11 @@
         <div class="grid grid-cols-[1fr] grid-rows-[1fr] [direction:ltr] gap-[8px] flex-wrap w-[50%] bg-[#111111]">
             {% for plot in vcfs.repository[1].variants.plots.as_html() %}
               {% if loop.index == 1 %}
-                <div class="w-full visible opacity-100 relative" id="right-plot{{ loop.index }}">
+                <div class="w-full visible opacity-100 relative" id="right-plot{{ loop.index }}" data-component="plot-right">
                   {{ plot }}
                 </div>
               {% else %}
-                <div class="invisible opacity-0 w-full [transition:opacity_0.3s_ease-in-out]" id="right-plot{{ loop.index }}">
+                <div class="invisible opacity-0 w-full [transition:opacity_0.3s_ease-in-out]" id="right-plot{{ loop.index }}" data-component="plot-right">
                   {{ plot }}
                 </div>
               {% endif %}
@@ -209,13 +203,13 @@
 
         <div class="flex flex-row w-[50%] bg-[#EEF0F1]">
             <div class="block mr-auto ml-auto">
-                <img src="statics/search.png" alt="search-icon" class="w-[39px] h-[39px] m-[5px] pt-[5px]">
+                <img src="statics/search.png" alt="search-icon" class="w-[45px] h-[45px] m-[5px] pt-[5px]">
             </div>
         </div>
 
         <div class="flex flex-row w-[50%] bg-[#333333]">
             <div class="block mr-auto ml-auto">
-                <img src="statics/filters.png" alt="parameters-icon" class="w-[39px] h-[39px] m-[5px] pt-[5px]">
+                <img src="statics/filters.png" alt="parameters-icon" class="w-[45px] h-[45px] m-[5px] pt-[5px]">
             </div>
         </div>
 
@@ -227,21 +221,21 @@
 
             <div class="flex flex-row ml-[50px] mr-[50px] w-full">
 
-                <img src="statics/chromosome.png" alt="chromosomes-icon" class="w-[39px] h-[39px] m-[5px] pt-[5px]">
+                <img src="statics/chromosome.png" alt="chromosomes-icon" class="w-[45px] m-[10px] pt-[5px]">
 
                 <div class="search">
 
-                  <div class="max-w-[400px] min-w-[300px] h-[35px] border-[1px] border-[solid] border-[#3d444d] rounded-xl px-[15px] py-[5px] bg-[#0d1117] [box-shadow:0_0_20px_rgba(0,_0,_0,_0.5)] [transition:150ms_cubic-bezier(0.4,0,0.2,1)]
+                  <div class="max-w-[400px] min-w-[300px] m-[10px] h-[45px] border-[1px] border-[solid] border-[#3d444d] rounded-xl px-[15px] py-[5px] bg-[#0d1117] [box-shadow:0_0_20px_rgba(0,_0,_0,_0.5)] [transition:150ms_cubic-bezier(0.4,0,0.2,1)]
  align-middle w-full m-[5px] hover:border-[#999999]">
 
                     <div class="relative w-full h-full -left-[5px] border-[0] flex items-center">
 
-                      <input placeholder="Search chromosome" class="w-[calc(100% - 29px)] h-full border-[0] border-transparent text-[1rem] pr-0 text-[#cccccc] bg-[#0d1117] border-r-[2px_solid_#3d444d] outline-[none] placeholder-white focus:text-[transparent] focus:placeholder:text-[transparent]" type="text">
+                      <input id="query-chromosome" placeholder="Search chromosome" class="w-[calc(100% - 29px)] h-full border-[0] border-transparent text-[1rem] pr-0 text-[#cccccc] bg-[#0d1117] border-r-[2px_solid_#3d444d] outline-[none] placeholder:text-white focus:text-[transparent] focus:placeholder:text-[transparent]" type="text">
 
-                      <div class="search-box-icon">
+                      <div class="w-[52px] h-[35px] absolute -top-[6px] -right-[21px] bg-transparent rounded-br-[var(--border-radius)] rounded-tr-[var(--border-radius)] [transition:var(--transition-cubic-bezier)] flex items-center mt-[5px] hover:bg-[#3d444d]">
 
-                        <button class="btn-icon-content">
-                          <i class="search-icon">
+                        <button class="w-[52px] h-[35px] -top-[6px] -right-[21px] bg-transparent border-[none] cursor-pointer rounded-br-[var(--border-radius)] rounded-tr-[var(--border-radius)] [transition:var(--transition-cubic-bezier)] opacity-[.4] flex items-center justify-center hover:opacity-[.8]">
+                          <i class="w-[21px] h-[21px] absolute top-[7px] right-[15px] flex items-center justify-center">
                             <svg xmlns="://www.w3.org/2000/svg" version="1.1" viewBox="0 0 512 512">
                               <path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z" fill="#fff">
                               </path>
@@ -259,11 +253,11 @@
 
             </div>
 
-            <div class="flex flex-row mr-auto ml-auto">
-              <img src="statics/puzzle.png" alt="puzzle-icon" class="w-[39px] h-[39px] m-[5px] pt-[5px]">
-              <div class="mr-[50px] w-full">
-                <select class="px-[15px] py-[10px] rounded-[5px] border-[none] min-w-[200px] text-[14px] m-[10px] content-center font-[Ubuntu] bg-[#0d1117] text-[white] focus-within-[white] hover:cursor-pointer">
-                    <option selected disabled>Select a filter...</option>
+            <div class="flex flex-row items-stretch w-1/2">
+              <img src="statics/puzzle.png" alt="puzzle-icon" class="w-[45px] m-[10px] pt-[5px]">
+              <div class="mr-[50px] mt-[5px] w-full">
+                <select id="query-status" class="px-[15px] py-[10px] rounded-[5px] border-[none] min-w-[200px] text-[14px] m-[10px] content-center font-[Ubuntu] bg-[#0d1117] text-[white] focus-within-[white] cursor-pointer">
+                    <option selected disabled>Select a status...</option>
                     <option>ALL</option>
                     <option>MATCH</option>
                     <option>MISMATCH</option>
@@ -275,18 +269,18 @@
 
         <div class="flex flex-row items-stretch w-1/2 bg-[#111111]">
             <div class="flex flex-row mr-auto ml-auto">
-                <img src="statics/filter.png" alt="filter-icon" class="w-[39px] h-[39px] m-[5px] pt-[5px]">
-                <div class="mr-[50px] w-full">
-                    <select class="px-[15px] py-[10px] rounded-[5px] border-[none] min-w-[200px] text-[14px] m-[10px] content-center font-[Ubuntu] bg-[#eef0f1] text-[white] focus-within-[white] hover:cursor-pointer">
+                <img src="statics/filter.png" alt="filter-icon" class="w-[45px] m-[10px] pt-[5px]">
+                <div class="mr-[50px] mt-[5px] w-full">
+                    <select id="query-filter" class="px-[15px] py-[10px] rounded-[5px] border-[none] min-w-[200px] text-[14px] m-[10px] content-center font-[Ubuntu] bg-[#eef0f1] text-[black] focus-within-[white] cursor-pointer">
                         <option selected disabled>Select a filter...</option>
                         <option>ALL</option>
                         <option>PASS</option>
                         <option>FAIL</option>
                     </select>
                 </div>
-                <img src="statics/dna.png" alt="dna-icon" class="w-[39px] h-[39px] m-[5px] pt-[5px]">
-                <div class="mr-[50px] w-full">
-                    <select class="px-[15px] py-[10px] rounded-[5px] border-[none] min-w-[200px] text-[14px] m-[10px] content-center font-[Ubuntu] bg-[#eef0f1] text-[white] focus-within-[white] hover:cursor-pointer">
+                <img src="statics/dna.png" alt="dna-icon" class="w-[45px] m-[10px] pt-[5px]">
+                <div class="mr-[50px] mt-[5px] w-full">
+                    <select id="query-variant" class="px-[15px] py-[10px] rounded-[5px] border-[none] min-w-[200px] text-[14px] m-[10px] content-center font-[Ubuntu] bg-[#eef0f1] text-[black] focus-within-[white] cursor-pointer">
                         <option selected disabled>Select a variant...</option>
                         <option>ALL</option>
                         <option>SNP</option>
@@ -294,18 +288,18 @@
                         <option>OTHER</option>
                     </select>
                 </div>
-                <img src="statics/terminal.png" alt="terminal-icon" class="w-[39px] h-[39px] m-[5px] pt-[5px]" id="terminal-icon">
-                <button class="bg-[rgba(79,_70,_229,_0.9)] border-[none] rounded-[6px] px-[20px] py-[10px] m-[10px] cursor-pointer text-[14px] rounded-[16px] font-[Ubuntu] font-bold hover:bg-[rgba(67,_56,_202,_0.9)]" onclick="resetFilters()">Reset</button>
+                <img src="statics/terminal.png" alt="terminal-icon" class="w-[45px] m-[10px] cursor-pointer" id="terminal-icon">
+                <button id="reset-button" class="bg-[rgba(79,_70,_229,_0.9)] border-[none] rounded-[6px] px-[20px] py-[10px] m-[10px] cursor-pointer text-[14px] rounded-[16px] font-[Ubuntu] font-bold hover:bg-[rgba(67,_56,_202,_0.9)]" onclick="resetFilters()">Reset</button>
             </div>
         </div>
     </div>
 
     <div class="bg-[linear-gradient(to_right,_#eef0f1_50%,_#333333_50%)] w-full block pt-[2px] pb-[2px]">
-      <div class="terminal">
-        <div class="terminal-header">
-          <span class="terminal-title">
+      <div id="terminal" class="bg-[rgba(217,_217,_217,_0.18)] backdrop-filter backdrop-blur rounded-[12px] [box-shadow:0_4px_6px_rgba(0,_0,_0,_0.1)] overflow-hidden w-full h-[250px] hidden">
+        <div class="bg-[#202425] px-[15px] py-[10px] flex items-center">
+          <span class="text-[#ffffff] text-[14px] font-semibold flex items-center gap-[8px] font-[Ubuntu]">
             <svg
-              class="terminal-icon"
+              class="text-[#006adc]"
               width="16"
               height="16"
               viewBox="0 0 24 24"
@@ -320,15 +314,15 @@
             Terminal
           </span>
         </div>
-        <div class="terminal-body">
-          <div class="command-line">
+        <div class="bg-[#202425] text-[#ffffff] p-[15px] font-['Courier_New',_Courier,_monospace] h-full">
+          <div class="flex items-center">
             <div class="input-wrapper">
               <input
                 type="text"
-                class="input-field"
+                class="bg-transparent border-[none] text-[#006adc] [font-family:inherit] text-[14px] outline-[none] w-full placeholder:text-[[rgba(255,_255,_255,_0.5)]"
                 placeholder="Enter query..."
               />
-              <span class="cursor"></span>
+              <span class="w-[8px] h-[15px] bg-[#ffffff] inline-block animate-[blink_1s_step-end_infinite] ml-[2px]"></span>
             </div>
           </div>
         </div>
@@ -337,8 +331,8 @@
 
     <div class="flex flex-row w-full bg-[linear-gradient(to_right,_#eef0f1_50%,_#333333_50%)]">
       <div class="flex w-1/2 justify-center">
-        <div class="error">
-          <div class="error__icon">
+        <div data-component="error-popup" class="font-[system-ui,_-apple-system,_BlinkMacSystemFont,_'Segoe_UI',_Roboto,_Oxygen,_Ubuntu,_Cantarell,_'Open_Sans',_'Helvetica_Neue',_sans-serif] w-[320px] p-[12px] hidden flex-row items-center bg-[#EF665B] rounded-[8px] [box-shadow:0px_0px_5px_-3px_#111]">
+          <div class="w-[20px] h-[20px] -translate-y-[2px] mr-[8px]">
               <svg xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" height="24" fill="none"><path fill="#393a37" d="m13 13h-2v-6h2zm0 4h-2v-2h2zm-1-15c-1.3132 0-2.61358.25866-3.82683.7612-1.21326.50255-2.31565 1.23915-3.24424 2.16773-1.87536 1.87537-2.92893 4.41891-2.92893 7.07107 0 2.6522 1.05357 5.1957 2.92893 7.0711.92859.9286 2.03098 1.6651 3.24424 2.1677 1.21325.5025 2.51363.7612 3.82683.7612 2.6522 0 5.1957-1.0536 7.0711-2.9289 1.8753-1.8754 2.9289-4.4189 2.9289-7.0711 0-1.3132-.2587-2.61358-.7612-3.82683-.5026-1.21326-1.2391-2.31565-2.1677-3.24424-.9286-.92858-2.031-1.66518-3.2443-2.16773-1.2132-.50254-2.5136-.7612-3.8268-.7612z"></path></svg>
           </div>
           <div class="error__message">No variants were found with these filters.</div>
@@ -346,8 +340,8 @@
       </div>
       
       <div class="flex w-1/2 justify-center">
-        <div class="error">
-          <div class="error__icon">
+        <div data-component="error-popup" class="font-[system-ui,_-apple-system,_BlinkMacSystemFont,_'Segoe_UI',_Roboto,_Oxygen,_Ubuntu,_Cantarell,_'Open_Sans',_'Helvetica_Neue',_sans-serif] w-[320px] p-[12px] hidden flex-row items-center bg-[#EF665B] rounded-[8px] [box-shadow:0px_0px_5px_-3px_#111]">
+          <div class="w-[20px] h-[20px] -translate-y-[2px] mr-[8px]">
               <svg xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" height="24" fill="none"><path fill="#393a37" d="m13 13h-2v-6h2zm0 4h-2v-2h2zm-1-15c-1.3132 0-2.61358.25866-3.82683.7612-1.21326.50255-2.31565 1.23915-3.24424 2.16773-1.87536 1.87537-2.92893 4.41891-2.92893 7.07107 0 2.6522 1.05357 5.1957 2.92893 7.0711.92859.9286 2.03098 1.6651 3.24424 2.1677 1.21325.5025 2.51363.7612 3.82683.7612 2.6522 0 5.1957-1.0536 7.0711-2.9289 1.8753-1.8754 2.9289-4.4189 2.9289-7.0711 0-1.3132-.2587-2.61358-.7612-3.82683-.5026-1.21326-1.2391-2.31565-2.1677-3.24424-.9286-.92858-2.031-1.66518-3.2443-2.16773-1.2132-.50254-2.5136-.7612-3.8268-.7612z"></path></svg>
           </div>
           <div class="error__message">No variants were found with these filters.</div>
@@ -356,43 +350,43 @@
     </div>
 
     <div class="Container">
-        <div class="file-container" id="fileTab">
+        <div class="flex flex-col max-w-full" id="fileTab">
     
-            <div class="comparison-container">
-              <div class="file1-view">
-                <div class="file1-title">2124FH000284F_S45_DV.vcf
-                  <div class="metadatas">
-                    <p class="filterSummary" id="filterSummaryL">Showing all variants</p>
+            <div class="flex h-[700px] bg-[white]">
+              <div class="flex-[1] overflow-hidden relative border-r-[2px_solid_#888]">
+                <div class="pt-[15px] text-center border-b-[2px_solid_#ccc] font-[Ubuntu] font-bold bg-[#EEF0F1]">2124FH000284F_S45_DV.vcf
+                  <div class="flex flex-row">
+                    <p class="text-[15px] mb-0 ml-[5px] font-normal" id="filterSummaryL">Showing all variants</p>
                     {% if tags[0] %}
-                      <div class="tags">
+                      <div class="flex flex-row w-1/2 ml-[50px] mt-[2px] mb-[2px] justify-center">
                         {% for tag in tags[0] %}
-                          <span class="tag">{{ tag | trim }}</span>
+                          <span class="text-[0.875rem] font-bold px-2.5 py-0.5 rounded-full inline-block bg-[#dbeafe] text-[#1e40af] border-solid border border-[#60A5FA] font-[Ubuntu]">{{ tag | trim }}</span>
                         {% endfor %}
                       </div>
                     {% endif %}  
                   </div>
                 </div>
-                <div class="file1-content" id="content1">
-                  <div class="line header">
-                    <div class="line-number">0</div>
-                      <span class="header column">
+                <div class="absolute mt-[30px] top-[37px] bottom-[0] left-[0] right-[0] overflow-y-scroll overflow-x-auto bg-white" id="content1">
+                  <div id="file-header-left" class="min-h-[24px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] w-max min-w-full bg-[rgba(255,_255,_255,_0.2)]">
+                    <div class="text-[#888] mr-[10px] select-none min-w-[30px] text-right">0</div>
+                      <span data-component="column-header" class="w-max min-w-full bg-[rgba(255,_255,_255,_0.2)] table-cell px-[8px] py-[2px] whitespace-nowrap">
                         {{ view['headers'][vcfs.repository[0]] }}
                       </span>
                   </div>
                   {% for index, series in view['variants'].iterrows() %}
                     {% if series['Variant.L']|is_nan or series['Variant.R']|is_nan %}
-                      <div class="line diff" id="{{ series['Chromosome']|upper() }} {{ series['Type']|upper() }} {{ series['Filter.L']|upper() }}">
-                        <div class="line-number">{{ loop.index }}</div>
+                      <div data-component="file-content-left" status="mismatch" class="min-h-[24px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] w-max min-w-full bg-[rgba(255,_0,_0,_0.2)]" id="{{ series['Chromosome']|upper() }} {{ series['Type']|upper() }} {{ series['Filter.L']|upper() }}">
+                        <div class="text-[#888] mr-[10px] select-none min-w-[30px] text-right">{{ loop.index }}</div>
                         {% if not series['Variant.L']|is_nan %}
-                          <span class="diff column">
+                          <span data-component="column-diff" class="w-max min-w-full bg-[rgba(255,_0,_0,_0.2)] table-cell px-[8px] py-[2px] whitespace-nowrap">
                             {{ series['Variant.L'] }}
                           </span>
                         {% endif %}
                       </div>
                     {% else %}
-                      <div class="line match" id="{{ series['Chromosome']|upper() }} {{ series['Type']|upper() }} {{ series['Filter.L']|upper() }}">
-                        <div class="line-number">{{ loop.index }}</div>
-                        <span class="match column">
+                      <div data-component="file-content-left" status="match" class="min-h-[24px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] w-max min-w-full bg-[rgba(0,_255,_0,_0.2)]" id="{{ series['Chromosome']|upper() }} {{ series['Type']|upper() }} {{ series['Filter.L']|upper() }}">
+                        <div class="text-[#888] mr-[10px] select-none min-w-[30px] text-right">{{ loop.index }}</div>
+                        <span data-component="column-match" class="w-max min-w-full bg-[rgba(0,_255,_0,_0.2)] table-cell px-[8px] py-[2px] whitespace-nowrap">
                           {{ series['Variant.L'] }}
                         </span>
                       </div>
@@ -400,40 +394,40 @@
                   {% endfor %}
                 </div>
               </div>
-              <div class="file2-view">
-                <div class="file2-title">{{ vcfs.repository[1].informations().basename|default(vcfs.repository[1]) }} 
-                  <div class="metadatas">
-                    <p class="filterSummary" id="filterSummaryR">Showing all variants</p>
+              <div class="flex-[1] overflow-hidden relative border-[#ccc]">
+                <div class="pt-[15px] text-center border-b-[2px_solid_#ccc] font-[Ubuntu] font-bold bg-[#333333] text-white">{{ vcfs.repository[1].informations().basename|default(vcfs.repository[1]) }} 
+                  <div class="flex flex-row">
+                    <p class="text-[15px] mb-0 ml-[5px] font-normal" id="filterSummaryR">Showing all variants</p>
                     {% if tags[1] %}
-                      <div class="tags">
+                      <div class="flex flex-row w-1/2 ml-[50px] mt-[2px] mb-[2px] justify-center">
                         {% for tag in tags[1] %}
-                          <span class="tag">{{ tag | trim }}</span>
+                          <span class="text-[0.875rem] font-bold px-2.5 py-0.5 rounded-full inline-block bg-[#dbeafe] text-[#1e40af] border-solid border border-[#60A5FA] font-[Ubuntu]">{{ tag | trim }}</span>
                         {% endfor %}
                       </div>
                     {% endif %}  
                   </div> 
                 </div>
-                <div class="file2-content" id="content2">
-                  <div class="line header">
-                    <div class="line-number">0</div>
-                      <span class="header column">
+                <div class="absolute mt-[30px] top-[37px] bottom-[0] left-[0] right-[0] overflow-y-scroll overflow-x-auto bg-white" id="content2">
+                  <div id="file-header-right" class="min-h-[24px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] w-max min-w-full bg-[rgba(255,_255,_255,_0.2)]">
+                    <div class="text-[#888] mr-[10px] select-none min-w-[30px] text-right">0</div>
+                      <span data-component="column-header" class="w-max min-w-full bg-[rgba(255,_255,_255,_0.2)] table-cell px-[8px] py-[2px] whitespace-nowrap">
                         {{ view['headers'][vcfs.repository[1]] }}
                       </span>
                   </div>
                   {% for index, series in view['variants'].iterrows() %}
                     {% if series['Variant.L']|is_nan or series['Variant.R']|is_nan %}
-                      <div class="line diff" id="{{ series['Chromosome']|upper() }} {{ series['Type']|upper() }} {{ series['Filter.R']|upper() }}">
-                        <div class="line-number">{{ loop.index }}</div>
+                      <div data-component="file-content-right" statys="mismatch" class="min-h-[24px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] w-max min-w-full bg-[rgba(255,_0,_0,_0.2)]" id="{{ series['Chromosome']|upper() }} {{ series['Type']|upper() }} {{ series['Filter.R']|upper() }}">
+                        <div class="text-[#888] mr-[10px] select-none min-w-[30px] text-right">{{ loop.index }}</div>
                         {% if not series['Variant.R']|is_nan %}
-                          <span class="diff column">
+                          <span data-component="column-diff" class="w-max min-w-full bg-[rgba(255,_0,_0,_0.2)] table-cell px-[8px] py-[2px] whitespace-nowrap">
                             {{ series['Variant.R'] }}
                           </span>
                         {% endif %}
                       </div>
                     {% else %}
-                      <div class="line match" id="{{ series['Chromosome']|upper() }} {{ series['Type']|upper() }} {{ series['Filter.R']|upper() }}">
-                        <div class="line-number">{{ loop.index }}</div>
-                        <span class="match column">
+                      <div data-component="file-content-right" status="match" class="min-h-[24px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] w-max min-w-full bg-[rgba(0,_255,_0,_0.2)]" id="{{ series['Chromosome']|upper() }} {{ series['Type']|upper() }} {{ series['Filter.R']|upper() }}">
+                        <div class="text-[#888] mr-[10px] select-none min-w-[30px] text-right">{{ loop.index }}</div>
+                        <span data-component="column-match" class="w-max min-w-full bg-[rgba(0,_255,_0,_0.2)] table-cell px-[8px] py-[2px] whitespace-nowrap">
                           {{ series['Variant.R'] }}
                         </span>
                       </div>
@@ -445,84 +439,84 @@
             
             <div class="summary-container" id="stats">
 
-              <section class="stats-section">
+              <section class="p-6 bg-[#f3f4f6] text-[#1f2937]">
 
                 <div class="stats-general">
-                  <div class="stats-container">
+                  <div class="w-full max-w-[1200px] mx-[auto] my-[0] grid grid-cols-[1fr_1fr_1fr] gap-6">
                     
-                    <div class="stat-card">
-                      <div class="stats-container-match">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="currentColor" class="icon">
+                    <div class="flex p-4 rounded-lg bg-[#fafafa] text-[#1f2937] gap-4">
+                      <div class="flex justify-center items-center p-2 rounded-lg bg-[#29903b]">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="currentColor" class="h-9 w-9 text-[#f3f4f6]">
                           <rect x="96" y="176" width="320" height="48" rx="8" ry="8"/>
                           <rect x="96" y="288" width="320" height="48" rx="8" ry="8"/>
                         </svg>
                       </div>
-                      <div class="content">
-                        <p class="stat-value">{{ view["common"] }}</p>
-                        <p class="stat-label">Matching lines</p>
+                      <div data-component="general-card-datas" class="flex flex-col justify-center">
+                        <p class="text-[1.875rem] font-semibold leading-none">{{ view["common"] }}</p>
+                        <p class="capitalize font-[Ubuntu]">Matching lines</p>
                       </div>
-                      <div class="stats-info-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" height="24" fill="none">
-                          <path fill="#393a37" d="m12 1.5c-5.79844 0-10.5 4.70156-10.5 10.5 0 5.7984 4.70156 10.5 10.5 10.5 5.7984 0 10.5-4.7016 10.5-10.5 0-5.79844-4.7016-10.5-10.5-10.5zm.75 15.5625c0 .1031-.0844.1875-.1875.1875h-1.125c-.1031 0-.1875-.0844-.1875-.1875v-6.375c0-.1031.0844-.1875.1875-.1875h1.125c.1031 0 .1875.0844.1875.1875zm-.75-8.0625c-.2944-.00601-.5747-.12718-.7808-.3375-.206-.21032-.3215-.49305-.3215-.7875s.1155-.57718.3215-.7875c.2061-.21032.4864-.33149.7808-.3375.2944.00601.5747.12718.7808.3375.206.21032.3215.49305.3215.7875s-.1155.57718-.3215.7875c-.2061.21032-.4864.33149-.7808.3375z">
+                      <div class="relative group flex items-start">
+                        <svg class="w-5 h-5 -translate-y-[2px] ml-[100px]" xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" height="24" fill="none">
+                          <path fill="#509AF8" d="m12 1.5c-5.79844 0-10.5 4.70156-10.5 10.5 0 5.7984 4.70156 10.5 10.5 10.5 5.7984 0 10.5-4.7016 10.5-10.5 0-5.79844-4.7016-10.5-10.5-10.5zm.75 15.5625c0 .1031-.0844.1875-.1875.1875h-1.125c-.1031 0-.1875-.0844-.1875-.1875v-6.375c0-.1031.0844-.1875.1875-.1875h1.125c.1031 0 .1875.0844.1875.1875zm-.75-8.0625c-.2944-.00601-.5747-.12718-.7808-.3375-.206-.21032-.3215-.49305-.3215-.7875s.1155-.57718.3215-.7875c.2061-.21032.4864-.33149.7808-.3375.2944.00601.5747.12718.7808.3375.206.21032.3215.49305.3215.7875s-.1155.57718-.3215.7875c-.2061.21032-.4864.33149-.7808.3375z">
                           </path>
                         </svg>
-                        <div class="stats-info-message">
-                          <p class="message"><strong>Matching</strong> criteria is based on: <strong>chromosome - position - reference allele - alternative allele</strong></p>
+                        <div class="absolute left-full ml-2 w-[300px] hidden group-hover:block">
+                          <p class="bg-[white] border-solid border-[rgb(204,_204,_204)] rounded-2xl border pt-[0.01em] pr-[16px] pb-[0.01em] pl-[16px]"><strong>Matching</strong> criteria is based on: <strong>chromosome - position - reference allele - alternative allele</strong></p>
                         </div>
                       </div>
                     </div>
                     
-                    <div class="stat-card">
-                      <div class="stats-container-diff">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="currentColor" class="icon">
+                    <div class="flex p-4 rounded-lg bg-[#fafafa] text-[#1f2937] gap-4">
+                      <div class="flex justify-center items-center p-2 rounded-lg bg-[red]">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="currentColor" class="h-9 w-9 text-[#f3f4f6]">
                           <rect x="96" y="176" width="320" height="48" rx="8" ry="8"/>
                           <rect x="96" y="288" width="320" height="48" rx="8" ry="8"/>
                           <line x1="120" y1="400" x2="392" y2="112" stroke="currentColor" stroke-width="48" stroke-linecap="round"/>
                         </svg>
                       </div>
-                      <div class="content">
-                        <p class="stat-value">{{ view["unique"].values() | sum }}</p>
-                        <p class="stat-label">Different lines</p>
+                      <div data-component="general-card-datas" class="flex flex-col justify-center">
+                        <p class="text-[1.875rem] font-semibold leading-none">{{ view["unique"].values() | sum }}</p>
+                        <p class="capitalize font-[Ubuntu]">Different lines</p>
                       </div>
-                      <div class="stats-info-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" height="24" fill="none">
-                          <path fill="#393a37" d="m12 1.5c-5.79844 0-10.5 4.70156-10.5 10.5 0 5.7984 4.70156 10.5 10.5 10.5 5.7984 0 10.5-4.7016 10.5-10.5 0-5.79844-4.7016-10.5-10.5-10.5zm.75 15.5625c0 .1031-.0844.1875-.1875.1875h-1.125c-.1031 0-.1875-.0844-.1875-.1875v-6.375c0-.1031.0844-.1875.1875-.1875h1.125c.1031 0 .1875.0844.1875.1875zm-.75-8.0625c-.2944-.00601-.5747-.12718-.7808-.3375-.206-.21032-.3215-.49305-.3215-.7875s.1155-.57718.3215-.7875c.2061-.21032.4864-.33149.7808-.3375.2944.00601.5747.12718.7808.3375.206.21032.3215.49305.3215.7875s-.1155.57718-.3215.7875c-.2061.21032-.4864.33149-.7808.3375z">
+                      <div class="relative group flex items-start">
+                        <svg class="w-5 h-5 -translate-y-[2px] ml-[100px]" xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" height="24" fill="none">
+                          <path fill="#509AF8" d="m12 1.5c-5.79844 0-10.5 4.70156-10.5 10.5 0 5.7984 4.70156 10.5 10.5 10.5 5.7984 0 10.5-4.7016 10.5-10.5 0-5.79844-4.7016-10.5-10.5-10.5zm.75 15.5625c0 .1031-.0844.1875-.1875.1875h-1.125c-.1031 0-.1875-.0844-.1875-.1875v-6.375c0-.1031.0844-.1875.1875-.1875h1.125c.1031 0 .1875.0844.1875.1875zm-.75-8.0625c-.2944-.00601-.5747-.12718-.7808-.3375-.206-.21032-.3215-.49305-.3215-.7875s.1155-.57718.3215-.7875c.2061-.21032.4864-.33149.7808-.3375.2944.00601.5747.12718.7808.3375.206.21032.3215.49305.3215.7875s-.1155.57718-.3215.7875c-.2061.21032-.4864.33149-.7808.3375z">
                           </path>
                         </svg>
-                        <div class="stats-info-message">
-                          <p class="message"><strong>Matching</strong> criteria is based on: <strong>chromosome - position - reference allele - alternative allele</strong></p>
+                        <div class="absolute left-full ml-2 w-[300px] hidden group-hover:block">
+                          <p class="bg-[white] border-solid border-[rgb(204,_204,_204)] rounded-2xl border pt-[0.01em] pr-[16px] pb-[0.01em] pl-[16px]"><strong>Matching</strong> criteria is based on: <strong>chromosome - position - reference allele - alternative allele</strong></p>
                         </div>
                       </div>
                     </div>
                     
-                    <div class="stat-card">
-                      <div class="stats-container-index">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="currentColor" class="icon">
+                    <div class="flex p-4 rounded-lg bg-[#fafafa] text-[#1f2937] gap-4">
+                      <div class="flex justify-center items-center p-2 rounded-lg bg-[#7c3aed]">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="currentColor" class="h-9 w-9 text-[#f3f4f6]">
                           <circle cx="200" cy="256" r="120" fill="none" stroke="currentColor" stroke-width="24" opacity="0.8"/>
                           <circle cx="312" cy="256" r="120" fill="none" stroke="currentColor" stroke-width="24" opacity="0.8"/>
                           <path d="M256,184 a72,72 0 0,1 0,144 a72,72 0 0,1 0,-144" fill="currentColor" opacity="0.6"/>
                           <text x="256" y="256" font-size="40" text-anchor="middle" dominant-baseline="middle" fill="currentColor">J</text>
                         </svg>
                       </div>
-                      <div class="content">
-                        <p class="stat-value">{{ view["jaccard"] }}</p>
-                        <p class="stat-label">Jaccard index</p>
+                      <div data-component="general-card-datas" class="flex flex-col justify-center">
+                        <p class="text-[1.875rem] font-semibold leading-none">{{ view["jaccard"] }}</p>
+                        <p class="capitalize font-[Ubuntu]">Jaccard index</p>
                       </div>
-                      <div class="stats-info-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" height="24" fill="none">
-                          <path fill="#393a37" d="m12 1.5c-5.79844 0-10.5 4.70156-10.5 10.5 0 5.7984 4.70156 10.5 10.5 10.5 5.7984 0 10.5-4.7016 10.5-10.5 0-5.79844-4.7016-10.5-10.5-10.5zm.75 15.5625c0 .1031-.0844.1875-.1875.1875h-1.125c-.1031 0-.1875-.0844-.1875-.1875v-6.375c0-.1031.0844-.1875.1875-.1875h1.125c.1031 0 .1875.0844.1875.1875zm-.75-8.0625c-.2944-.00601-.5747-.12718-.7808-.3375-.206-.21032-.3215-.49305-.3215-.7875s.1155-.57718.3215-.7875c.2061-.21032.4864-.33149.7808-.3375.2944.00601.5747.12718.7808.3375.206.21032.3215.49305.3215.7875s-.1155.57718-.3215.7875c-.2061.21032-.4864.33149-.7808.3375z">
+                      <div class="relative group flex items-start">
+                        <svg class="w-5 h-5 -translate-y-[2px] ml-[100px]" xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" height="24" fill="none">
+                          <path fill="#509AF8" d="m12 1.5c-5.79844 0-10.5 4.70156-10.5 10.5 0 5.7984 4.70156 10.5 10.5 10.5 5.7984 0 10.5-4.7016 10.5-10.5 0-5.79844-4.7016-10.5-10.5-10.5zm.75 15.5625c0 .1031-.0844.1875-.1875.1875h-1.125c-.1031 0-.1875-.0844-.1875-.1875v-6.375c0-.1031.0844-.1875.1875-.1875h1.125c.1031 0 .1875.0844.1875.1875zm-.75-8.0625c-.2944-.00601-.5747-.12718-.7808-.3375-.206-.21032-.3215-.49305-.3215-.7875s.1155-.57718.3215-.7875c.2061-.21032.4864-.33149.7808-.3375.2944.00601.5747.12718.7808.3375.206.21032.3215.49305.3215.7875s-.1155.57718-.3215.7875c-.2061.21032-.4864.33149-.7808.3375z">
                           </path>
                         </svg>
-                        <div class="stats-info-message">
-                          <p class="message">Jaccard Index calculated as: <strong>common variant / total unique variants</strong></p>
+                        <div class="absolute left-full ml-2 w-[300px] hidden group-hover:block">
+                          <p class="bg-[white] border-solid border-[rgb(204,_204,_204)] rounded-2xl border pt-[0.01em] pr-[16px] pb-[0.01em] pl-[16px]">Jaccard Index calculated as: <strong>common variant / total unique variants</strong></p>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div> 
-                <div class="stats-files">
-                  <div class="stats-file">
-                    <div class="stat-card">
+                <div class="flex flex-row bg-[#f3f4f6] mt-[10px]">
+                  <div class="w-full ml-[10px] grid grid-cols-[1fr_1fr_1fr] grid-rows-[1fr_1fr] gap-[1.0rem]">
+                    <div class="flex p-4 rounded-lg bg-[#fafafa] text-[#1f2937] gap-4">
                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 250" width="150" height="200">
                         <g transform="translate(100, 100)">
                         <!-- SNP (Single Nucleotide Polymorphism) Icon -->
@@ -539,19 +533,19 @@
                           <path d="M-3,50 L3,50" stroke="#EA4335" stroke-width="5" stroke-linecap="round"/>
                         </g>
                       </svg>
-                      <div class="content">
-                        <p class="stat-value">NA | NA</p>
-                        <div class="stats-bar" id="stats-bar-snp">
-                          <div class="progress-left">
+                      <div data-component="variant-card-datas" class="flex flex-col justify-center">
+                        <p class="text-[1.875rem] font-semibold leading-none">NA | NA</p>
+                        <div class="w-[250px] h-[30px] rounded-full bg-[#E5E7EB]" id="stats-bar-snp">
+                          <div class="h-full bg-[#2C7A7B] opacity-75 float-left rounded-tl-full rounded-bl-full">
                           </div>
-                          <div class="progress-right">
+                          <div class="h-full bg-[#822E4A] opacity-75 float-left rounded-tr-full rounded-br-full">
                           </div>
                         </div>
                         <img src="statics/versus.png" alt="versus-icon" class="w-[39px] h-[39px] ml-[10px] mt-[5px] mb-[5px] self-center align-middle mr-[5px]">
                       </div>
                     </div>
 
-                    <div class="stat-card">
+                    <div class="flex p-4 rounded-lg bg-[#fafafa] text-[#1f2937] gap-4">
                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 250" width="150" height="200">
                         <g transform="translate(100, 100)">
                           <circle cx="0" cy="0" r="70" fill="#f8f9fa" stroke="#6c757d" stroke-width="3"/>
@@ -569,19 +563,19 @@
                           <path d="M-18,50 L18,50" stroke="#EA4335" stroke-width="5" stroke-linecap="round"/>
                         </g>
                       </svg>
-                      <div class="content">
-                        <p class="stat-value">NA | NA</p>
-                        <div class="stats-bar" id="stats-bar-mnp">
-                          <div class="progress-left">
+                      <div data-component="variant-card-datas" class="flex flex-col justify-center">
+                        <p class="text-[1.875rem] font-semibold leading-none">NA | NA</p>
+                        <div class="w-[250px] h-[30px] rounded-full bg-[#E5E7EB]" id="stats-bar-mnp">
+                          <div class="h-full bg-[#2C7A7B] opacity-75 float-left rounded-tl-full rounded-bl-full">
                           </div>
-                          <div class="progress-right">
+                          <div class="h-full bg-[#822E4A] opacity-75 float-left rounded-tr-full rounded-br-full">
                           </div>
                         </div>
                         <img src="statics/versus.png" alt="versus-icon" class="w-[39px] h-[39px] ml-[10px] mt-[5px] mb-[5px] self-center align-middle mr-[5px]">
                       </div>
                     </div>
 
-                    <div class="stat-card">
+                    <div class="flex p-4 rounded-lg bg-[#fafafa] text-[#1f2937] gap-4">
                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 250" width="150" height="200">
                         <g transform="translate(100, 100)">
                           <circle cx="0" cy="0" r="70" fill="#f8f9fa" stroke="#6c757d" stroke-width="3"/>
@@ -602,12 +596,12 @@
                           </marker>
                         </g>
                       </svg>
-                      <div class="content">
-                        <p class="stat-value">NA | NA</p>
-                        <div class="stats-bar" id="stats-bar-sv">
-                          <div class="progress-left">
+                      <div data-component="variant-card-datas" class="flex flex-col justify-center">
+                        <p class="text-[1.875rem] font-semibold leading-none">NA | NA</p>
+                        <div class="w-[250px] h-[30px] rounded-full bg-[#E5E7EB]" id="stats-bar-sv">
+                          <div class="h-full bg-[#2C7A7B] opacity-75 float-left rounded-tl-full rounded-bl-full">
                           </div>
-                          <div class="progress-right">
+                          <div class="h-full bg-[#822E4A] opacity-75 float-left rounded-tr-full rounded-br-full">
                           </div>
                         </div>
                         <img src="statics/versus.png" alt="versus-icon" class="w-[39px] h-[39px] ml-[10px] mt-[5px] mb-[5px] self-center align-middle mr-[5px]">
@@ -615,7 +609,7 @@
                     </div>
 
 
-                    <div class="stat-card">
+                    <div class="flex p-4 rounded-lg bg-[#fafafa] text-[#1f2937] gap-4">
                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 250" width="150" height="200">
                         <g transform="translate(100, 100)">
                           <circle cx="0" cy="0" r="70" fill="#f8f9fa" stroke="#6c757d" stroke-width="3"/>
@@ -641,12 +635,12 @@
                           <line x1="5" y1="25" x2="5" y2="42" stroke="#212529" stroke-width="1.5" stroke-dasharray="3,3"/>
                         </g>
                       </svg>
-                      <div class="content">
-                        <p class="stat-value">NA | NA</p>
-                        <div class="stats-bar" id="stats-bar-indel">
-                          <div class="progress-left">
+                      <div data-component="variant-card-datas" class="flex flex-col justify-center">
+                        <p class="text-[1.875rem] font-semibold leading-none">NA | NA</p>
+                        <div class="w-[250px] h-[30px] rounded-full bg-[#E5E7EB]" id="stats-bar-indel">
+                          <div class="h-full bg-[#2C7A7B] opacity-75 float-left rounded-tl-full rounded-bl-full">
                           </div>
-                          <div class="progress-right">
+                          <div class="h-full bg-[#822E4A] opacity-75 float-left rounded-tr-full rounded-br-full">
                           </div>
                         </div>
                         <img src="statics/versus.png" alt="versus-icon" class="w-[39px] h-[39px] ml-[10px] mt-[5px] mb-[5px] self-center align-middle mr-[5px]">
@@ -654,7 +648,7 @@
                     </div>
 
 
-                    <div class="stat-card">
+                    <div class="flex p-4 rounded-lg bg-[#fafafa] text-[#1f2937] gap-4">
                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 250" width="150" height="200">
                         <g transform="translate(100, 100)">
                           <circle cx="0" cy="0" r="70" fill="#f8f9fa" stroke="#6c757d" stroke-width="3"/>
@@ -694,12 +688,12 @@
                           </marker>
                         </g>
                       </svg>
-                      <div class="content">
-                        <p class="stat-value">NA | NA</p>
-                        <div class="stats-bar" id="stats-bar-inv">
-                          <div class="progress-left">
+                      <div data-component="variant-card-datas" class="flex flex-col justify-center">
+                        <p class="text-[1.875rem] font-semibold leading-none">NA | NA</p>
+                        <div class="w-[250px] h-[30px] rounded-full bg-[#E5E7EB]" id="stats-bar-inv">
+                          <div class="h-full bg-[#2C7A7B] opacity-75 float-left rounded-tl-full rounded-bl-full">
                           </div>
-                          <div class="progress-right">
+                          <div class="h-full bg-[#822E4A] opacity-75 float-left rounded-tr-full rounded-br-full">
                           </div>
                         </div>
                         <img src="statics/versus.png" alt="versus-icon" class="w-[39px] h-[39px] ml-[10px] mt-[5px] mb-[5px] self-center align-middle mr-[5px]">
@@ -707,7 +701,7 @@
                     </div>
                     
 
-                    <div class="stat-card">
+                    <div class="flex p-4 rounded-lg bg-[#fafafa] text-[#1f2937] gap-4">
                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 250" width="150" height="200">
                         <g transform="translate(100, 100)">
                           <circle cx="0" cy="0" r="70" fill="#f8f9fa" stroke="#6c757d" stroke-width="3"/>
@@ -744,12 +738,12 @@
                           <path d="M0,50 L-20,60 L20,60 Z" fill="#6c757d"/>
                         </g>
                       </svg>
-                      <div class="content">
-                        <p class="stat-value">NA | NA</p>
-                        <div class="stats-bar" id="stats-bar-comp">
-                          <div class="progress-left">
+                      <div data-component="variant-card-datas" class="flex flex-col justify-center">
+                        <p class="text-[1.875rem] font-semibold leading-none">NA | NA</p>
+                        <div class="w-[250px] h-[30px] rounded-full bg-[#E5E7EB]" id="stats-bar-comp">
+                          <div class="h-full bg-[#2C7A7B] opacity-75 float-left rounded-tl-full rounded-bl-full">
                           </div>
-                          <div class="progress-right">
+                          <div class="h-full bg-[#822E4A] opacity-75 float-left rounded-tr-full rounded-br-full">
                           </div>
                         </div>
                         <img src="statics/versus.png" alt="versus-icon" class="w-[39px] h-[39px] ml-[10px] mt-[5px] mb-[5px] self-center align-middle mr-[5px]">
@@ -761,7 +755,7 @@
 
               </section>
 
-              <div class="plot active common">
+              <div class="visible opacity-100 w-full relative flex justify-center [transition:opacity_0.3s_ease-in-out]">
                 {% if view["jaccard"] < 0.9 %}
                   {{ view["plots"].as_html()[0] }}
                 {% endif %}
@@ -772,14 +766,14 @@
         </div>
 
         {% if table is not none %}
-          <button class="benchmark-button">
-            <div class="benchmark-button-background"></div>
-            <span class="benchmark-button-content">
+          <button class="relative px-[24px] py-[12px] ml-[90px] text-[0.875rem] font-semibold text-[white] bg-[#509AF8] rounded-xl overflow-hidden [transition:all_0.3s_ease] outline-[none] border-[none] cursor-pointer hover:bg-[#2F8CF5] group">
+            <div class="absolute bg-[linear-gradient(to_right,_rgba(80,_154,_248,_0.2),_rgba(80,_154,_248,_0.2))] filter blur-[20px] opacity-0 [transition:opacity_0.3s_ease] z-0 group-hover:opacity-75"></div>
+            <span class="relative flex items-center gap-2">
               <svg
                 viewBox="0 0 24 24"
                 stroke="currentColor"
                 fill="none"
-                class="benchmark-button-icon"
+                class="w-4 h-4"
               >
                 <path
                   d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
@@ -790,15 +784,15 @@
               </svg>
               Hover for Info
             </span>
-            <p class="benchmark-info-message">Benchmarking is carried out on exact equality in terms of chromosome, position, reference and alternative allele.</p>
+            <p class="hidden group-hover:block group-hover:left-[0] group-hover:top-[0]">Benchmarking is carried out on exact equality in terms of chromosome, position, reference and alternative allele.</p>
           </button>
           <div style="display: flex; width: 100%; justify-content: center; align-items: center; background: white;">
-            <table class="benchmark-table">
+            <table class="w-[90%] [box-shadow:0_4px_6px_-1px_rgba(0,_0,_0,_0.1),_0_2px_4px_-1px_rgba(0,_0,_0,_0.06)] font-[Ubuntu] text-[#6B7280]">
               <tbody>
-                <tr class="row-table">
-                  <th class="header-table">TYPE</th>
-                  <th class="header-table">FILTER</th>
-                  <th class="header-table">
+                <tr class="flex flex-row w-full border-b border-gray-200 bg-[#E5E7EB] h-[50px] items-center">
+                  <th class="flex flex-row w-full">TYPE</th>
+                  <th class="flex flex-row w-full">FILTER</th>
+                  <th class="flex flex-row w-full">
                     <div style="display: flex; align-items: center;">
                       TRUTH TOTAL
                       <a href="#">
@@ -808,7 +802,7 @@
                       </a>
                     </div>
                   </th>
-                  <th class="header-table">
+                  <th class="flex flex-row w-full">
                     <div style="display: flex; align-items: center;">
                       TRUE POSITIVE
                       <a href="#">
@@ -818,7 +812,7 @@
                       </a>
                     </div>
                   </th>
-                  <th class="header-table">
+                  <th class="flex flex-row w-full">
                     <div style="display: flex; align-items: center;">
                       FALSE NEGATIVE
                       <a href="#">
@@ -828,7 +822,7 @@
                       </a>
                     </div>
                   </th>
-                  <th class="header-table">
+                  <th class="flex flex-row w-full">
                     <div style="display: flex; align-items: center;">
                       QUERY TOTAL
                       <a href="#">
@@ -838,7 +832,7 @@
                       </a>
                     </div>
                   </th>
-                  <th class="header-table">
+                  <th class="flex flex-row w-full">
                     <div style="display: flex; align-items: center;">
                       FALSE POSITIVE
                       <a href="#">
@@ -848,7 +842,7 @@
                       </a>
                     </div>
                   </th>
-                  <th class="header-table">
+                  <th class="flex flex-row w-full">
                     <div style="display: flex; align-items: center;">
                       RECALL
                       <a href="#">
@@ -858,7 +852,7 @@
                       </a>
                     </div>
                   </th>
-                  <th class="header-table">
+                  <th class="flex flex-row w-full">
                     <div style="display: flex; align-items: center;">
                       PRECISION
                       <a href="#">
@@ -868,7 +862,7 @@
                       </a>
                     </div>
                   </th>
-                  <th class="header-table">
+                  <th class="flex flex-row w-full">
                     <div style="display: flex; align-items: center;">
                       F1 SCORE
                       <a href="#">
@@ -880,14 +874,14 @@
                   </th>
                 </tr>
                 {% for row, metrics in table.iterrows() %}
-                  <tr class="row-table">
+                  <tr class="flex flex-row w-full border-b border-gray-200 bg-white odd:bg-gray-100 h-[50px] items-center">
                     {% for index, metric in metrics.items() %}
                       {% if metric is float() %}
-                        <td class="cell-table">{{ metric|round(2, 'common') }}</td>
+                        <td class="flex flex-row w-full mt-[5px] mb-[5px] items-center">{{ metric|round(2, 'common') }}</td>
                       {% elif metric is string() %}
-                        <td class="cell-table">{{ metric|upper() }}</td>
+                        <td class="flex flex-row w-full mt-[5px] mb-[5px] items-center">{{ metric|upper() }}</td>
                       {% else %}
-                        <td class="cell-table">{{ metric }}</td>
+                        <td class="flex flex-row w-full mt-[5px] mb-[5px] items-center">{{ metric }}</td>
                       {% endif %}  
                     {% endfor %}
                   </tr>
@@ -919,26 +913,26 @@
         content1El.scrollLeft = content2El.scrollLeft;
         });
         
-        function interpretTabs(className) {
-        document.querySelectorAll("." + className).forEach(element => {
+        function interpretTabs(component) {
+        document.querySelectorAll(`[data-component="${component}"]`).forEach(element => {
             element.innerHTML = element.innerHTML.split("\\t").join('&nbsp;&nbsp;&nbsp;&nbsp;');
         });
         }
-        interpretTabs("header.column")
-        interpretTabs("match.column");
-        interpretTabs("diff.column");
+        interpretTabs("column-header")
+        interpretTabs("column-match");
+        interpretTabs("column-diff");
     </script>
     <script>
       document.addEventListener('DOMContentLoaded', function() {
           // Left side plot navigation
-          const leftPlots = document.querySelectorAll('.plots-left-grid .plot');
+          const leftPlots = document.querySelectorAll('[data-component="plot-left"]');
           const leftPrevArrow = document.getElementById('leftPrevArrow');
           const leftNextArrow = document.getElementById('leftNextArrow');
           const leftPlotIndicator = document.getElementById('leftPlotIndicator');
           let leftCurrentPlot = 0;
           
           // Right side plot navigation
-          const rightPlots = document.querySelectorAll('.plots-right-grid .plot');
+          const rightPlots = document.querySelectorAll('[data-component="plot-right"]');
           const rightPrevArrow = document.getElementById('rightPrevArrow');
           const rightNextArrow = document.getElementById('rightNextArrow');
           const rightPlotIndicator = document.getElementById('rightPlotIndicator');
@@ -946,13 +940,13 @@
           
           // Hide arrows if only one plot
           if (leftPlots.length <= 1) {
-              leftPrevArrow.style.display = 'none';
-              leftNextArrow.style.display = 'none';
+              leftPrevArrow.classList.replace('flex', 'hidden')
+              leftNextArrow.classList.replace('flex', 'hidden')
           }
           
           if (rightPlots.length <= 1) {
-              rightPrevArrow.style.display = 'none';
-              rightNextArrow.style.display = 'none';
+              rightPrevArrow.classList.replace('flex', 'hidden')
+              rightNextArrow.classList.replace('flex', 'hidden')
           }
           
           // Create dot indicators for left plots
@@ -972,104 +966,117 @@
           // Ensure inactive plots are fully hidden
           leftPlots.forEach((plot, index) => {
               if (index !== leftCurrentPlot) {
-                  plot.style.display = 'none';
-                  plot.style.visibility = 'hidden';
-                  plot.style.gridArea = 'none'; // Remove from grid layout
+                  plot.classList.remove('hidden', 'block', 'flex', 'grid', 'inline', 'inline-block');
+                  plot.classList.add('hidden');
+                  plot.classList.replace("visible", "invisible");
+                  plot.classList.remove('col-auto', 'row-auto'); // Remove from grid layout
               } else {
-                  plot.style.display = 'block';
-                  plot.style.visibility = 'visible';
-                  plot.style.gridArea = 'auto'; // Use default grid positioning
+                  plot.classList.remove('hidden');
+                  plot.classList.add('block');
+                  plot.classList.replace("invisible", "visible");
+                  plot.classList.add('col-auto', 'row-auto'); // Add to grid layout
               }
           });
           
           rightPlots.forEach((plot, index) => {
               if (index !== rightCurrentPlot) {
-                  plot.style.display = 'none';
-                  plot.style.visibility = 'hidden';
-                  plot.style.gridArea = 'none'; // Remove from grid layout
+                  plot.classList.remove('hidden', 'block', 'flex', 'grid', 'inline', 'inline-block');
+                  plot.classList.add('hidden');
+                  plot.classList.replace("visible", "invisible");
+                  plot.classList.remove('col-auto', 'row-auto'); // Remove from grid layout
               } else {
-                  plot.style.display = 'block';
-                  plot.style.visibility = 'visible';
-                  plot.style.gridArea = 'auto'; // Use default grid positioning
+                  plot.classList.remove('hidden');
+                  plot.classList.add('block');
+                  plot.classList.replace("invisible", "visible");
+                  plot.classList.add('col-auto', 'row-auto'); // Add to grid layout
               }
           });
           
           // Left plot navigation
           leftPrevArrow.addEventListener('click', () => {
-              leftPlots[leftCurrentPlot].classList.remove('active');
-              leftPlots[leftCurrentPlot].style.display = 'none';
-              leftPlots[leftCurrentPlot].style.visibility = 'hidden';
-              leftPlots[leftCurrentPlot].style.gridArea = 'none';
+              leftPlots[leftCurrentPlot].classList.replace('block', 'hidden');
+              leftPlots[leftCurrentPlot].classList.replace("visible", "invisible");
+              leftPlots[leftCurrentPlot].classList.replace("opacity-100", "opacity-0");
+              leftPlots[leftCurrentPlot].classList.remove('col-auto', 'row-auto');
+              leftPlots[leftCurrentPlot].classList.remove('relative');
               
-              leftPlotIndicator.children[leftCurrentPlot].classList.remove('active');
+              leftPlotIndicator.children[leftCurrentPlot].classList.replace("bg-[#555]", "bg-[#ccc]");
               leftCurrentPlot = (leftCurrentPlot - 1 + leftPlots.length) % leftPlots.length;
               
-              leftPlots[leftCurrentPlot].classList.add('active');
-              leftPlots[leftCurrentPlot].style.display = 'block';
-              leftPlots[leftCurrentPlot].style.visibility = 'visible';
-              leftPlots[leftCurrentPlot].style.gridArea = 'auto';
+              leftPlots[leftCurrentPlot].classList.replace('hidden', 'block');
+              leftPlots[leftCurrentPlot].classList.replace("invisible", "visible");
+              leftPlots[leftCurrentPlot].classList.replace("opacity-0", "opacity-100");
+              leftPlots[leftCurrentPlot].classList.add('col-auto', 'row-auto');
+              leftPlots[leftCurrentPlot].classList.add('relative');
               
-              leftPlotIndicator.children[leftCurrentPlot].classList.add('active');
+              leftPlotIndicator.children[leftCurrentPlot].classList.replace("bg-[#ccc]", "bg-[#555]");
           });
           
           leftNextArrow.addEventListener('click', () => {
-              leftPlots[leftCurrentPlot].classList.remove('active');
-              leftPlots[leftCurrentPlot].style.display = 'none';
-              leftPlots[leftCurrentPlot].style.visibility = 'hidden';
-              leftPlots[leftCurrentPlot].style.gridArea = 'none';
+              leftPlots[leftCurrentPlot].classList.replace('block', 'hidden');
+              leftPlots[leftCurrentPlot].classList.replace("visible", "invisible");
+              leftPlots[leftCurrentPlot].classList.replace("opacity-100", "opacity-0");
+              leftPlots[leftCurrentPlot].classList.remove('col-auto', 'row-auto');
+              leftPlots[leftCurrentPlot].classList.remove('relative');
               
-              leftPlotIndicator.children[leftCurrentPlot].classList.remove('active');
+              leftPlotIndicator.children[leftCurrentPlot].classList.replace("bg-[#555]", "bg-[#ccc]");
               leftCurrentPlot = (leftCurrentPlot + 1) % leftPlots.length;
               
-              leftPlots[leftCurrentPlot].classList.add('active');
-              leftPlots[leftCurrentPlot].style.display = 'block';
-              leftPlots[leftCurrentPlot].style.visibility = 'visible';
-              leftPlots[leftCurrentPlot].style.gridArea = 'auto';
+              leftPlots[leftCurrentPlot].classList.replace('hidden', 'block');
+              leftPlots[leftCurrentPlot].classList.replace("invisible", "visible");
+              leftPlots[leftCurrentPlot].classList.replace("opacity-0", "opacity-100");
+              leftPlots[leftCurrentPlot].classList.add('col-auto', 'row-auto');
+              leftPlots[leftCurrentPlot].classList.add('relative');
               
-              leftPlotIndicator.children[leftCurrentPlot].classList.add('active');
+              leftPlotIndicator.children[leftCurrentPlot].classList.replace("bg-[#ccc]", "bg-[#555]");
           });
           
           // Right plot navigation
           rightPrevArrow.addEventListener('click', () => {
-              rightPlots[rightCurrentPlot].classList.remove('active');
-              rightPlots[rightCurrentPlot].style.display = 'none';
-              rightPlots[rightCurrentPlot].style.visibility = 'hidden';
-              rightPlots[rightCurrentPlot].style.gridArea = 'none';
+              rightPlots[rightCurrentPlot].classList.replace('block', 'hidden');
+              rightPlots[rightCurrentPlot].classList.replace("visible", "invisible");
+              rightPlots[rightCurrentPlot].classList.replace("opacity-100", "opacity-0");
+              rightPlots[rightCurrentPlot].classList.remove('col-auto', 'row-auto');
+              rightPlots[rightCurrentPlot].classList.remove('relative');
               
-              rightPlotIndicator.children[rightCurrentPlot].classList.remove('active');
+              rightPlotIndicator.children[rightCurrentPlot].classList.replace("bg-[#555]", "bg-[#ccc]");
               rightCurrentPlot = (rightCurrentPlot - 1 + rightPlots.length) % rightPlots.length;
               
-              rightPlots[rightCurrentPlot].classList.add('active');
-              rightPlots[rightCurrentPlot].style.display = 'block';
-              rightPlots[rightCurrentPlot].style.visibility = 'visible';
-              rightPlots[rightCurrentPlot].style.gridArea = 'auto';
+              rightPlots[rightCurrentPlot].classList.replace('hidden', 'block');
+              rightPlots[rightCurrentPlot].classList.replace("invisible", "visible");
+              rightPlots[rightCurrentPlot].classList.replace("opacity-0", "opacity-100");
+              rightPlots[rightCurrentPlot].classList.add('col-auto', 'row-auto');
+              rightPlots[rightCurrentPlot].classList.add('relative');
               
-              rightPlotIndicator.children[rightCurrentPlot].classList.add('active');
+              rightPlotIndicator.children[rightCurrentPlot].classList.replace("bg-[#ccc]", "bg-[#555]");
           });
           
           rightNextArrow.addEventListener('click', () => {
-              rightPlots[rightCurrentPlot].classList.remove('active');
-              rightPlots[rightCurrentPlot].style.display = 'none';
-              rightPlots[rightCurrentPlot].style.visibility = 'hidden';
-              rightPlots[rightCurrentPlot].style.gridArea = 'none';
+              rightPlots[rightCurrentPlot].classList.replace('block', 'hidden');
+              rightPlots[rightCurrentPlot].classList.replace("visible", "invisible");
+              rightPlots[rightCurrentPlot].classList.replace("opacity-100", "opacity-0");
+              rightPlots[rightCurrentPlot].classList.remove('col-auto', 'row-auto');
+              rightPlots[rightCurrentPlot].classList.remove('relative');
               
-              rightPlotIndicator.children[rightCurrentPlot].classList.remove('active');
+              rightPlotIndicator.children[rightCurrentPlot].classList.replace("bg-[#555]", "bg-[#ccc]");
               rightCurrentPlot = (rightCurrentPlot + 1) % rightPlots.length;
               
-              rightPlots[rightCurrentPlot].classList.add('active');
-              rightPlots[rightCurrentPlot].style.display = 'block';
-              rightPlots[rightCurrentPlot].style.visibility = 'visible';
-              rightPlots[rightCurrentPlot].style.gridArea = 'auto';
+              rightPlots[rightCurrentPlot].classList.replace('hidden', 'block');
+              rightPlots[rightCurrentPlot].classList.replace("invisible", "visible");
+              rightPlots[rightCurrentPlot].classList.replace("opacity-0", "opacity-100");
+              rightPlots[rightCurrentPlot].classList.add('col-auto', 'row-auto');
+              rightPlots[rightCurrentPlot].classList.add('relative');
               
-              rightPlotIndicator.children[rightCurrentPlot].classList.add('active');
+              rightPlotIndicator.children[rightCurrentPlot].classList.replace("bg-[#ccc]", "bg-[#555]");
           });
       });
     </script>
     <script>
       document.addEventListener("DOMContentLoaded", function () {
-          document.querySelector(".search-box .input").addEventListener("input", filter);
-          document.querySelectorAll(".filter-container-right select").forEach(select => select.addEventListener("change", filter));
-          document.querySelector(".filter-container-left select").addEventListener("change",filter);
+          document.getElementById("query-chromosome").addEventListener("input", filter);
+          document.getElementById("query-status").addEventListener("change", filter);
+          document.getElementById("query-filter").addEventListener("change", filter);
+          document.getElementById("query-variant").addEventListener("change", filter);
       });
       function filter() {
 
@@ -1077,27 +1084,24 @@
         let filters = ["PASS", "FAIL"]
         let variants = ["SNP", "INDEL", "OTHER"]
 
-        let rowsLeft = document.querySelectorAll(".file1-content .line:not(.header)");
-        let rowsRight = document.querySelectorAll(".file2-content .line:not(.header)");
+        let rowsLeft = document.querySelectorAll('[data-component="file-content-left"]');
+        let rowsRight = document.querySelectorAll('[data-component="file-content-right"]');
 
-        let totalLineLeft = document.querySelectorAll(".file1-content .line:not(.header) span").length;
-        let totalLineRight = document.querySelectorAll(".file2-content .line:not(.header) span").length;
+        let totalLineLeft = document.querySelectorAll('[data-component="file-content-left"] span').length;
+        let totalLineRight = document.querySelectorAll('[data-component="file-content-right"] span').length;
           
-        let chromosomeUserInput = document.querySelector(".search-container .search-field input.input");
-        if (!chromosomeUserInput) {
-            chromosomeUserInput = document.querySelector(".search .search-field input.input");
-        }
+        let chromosomeUserInput = document.getElementById("query-chromosome");
         
         let chromosomeQuery = chromosomeUserInput ? chromosomeUserInput.value.trim().toUpperCase() : "";
           
-        let filtersLeft = document.querySelector(".filter-container-left .filter");
-        let filtersRight = document.querySelectorAll(".filter-container-right .filter");
+        let filtersLeft = document.getElementById("query-status");
+        let filtersRight = [document.getElementById("query-filter"), document.getElementById("query-variant")];
 
         let matchQuery = matchs.includes(filtersLeft.value.toUpperCase()) ? filtersLeft.value : "ALL";
         let variantFilterQuery = filtersRight.length > 0 && filters.includes(filtersRight[0].value) ? filtersRight[0].value.toUpperCase() : "ALL";
         let variantTypeQuery = filtersRight.length > 1 && variants.includes(filtersRight[1].value) ? filtersRight[1].value.toUpperCase() : "ALL";
 
-        let statsByVariantType = document.querySelectorAll(".stats-file .stat-card .content");
+        let statsByVariantType = document.querySelectorAll('[data-component="variant-card-datas"]');
 
         let countVisibleLeft = 0;
         let countVisibleRight = 0;
@@ -1116,7 +1120,7 @@
             let rowRight = rowsRight[index];
             let rowRightInfs = rowRight.id.split(" ");
               
-            let isLineClass = matchQuery === "ALL" || rowLeft.className.split(" ")[1] === (matchQuery === "MATCH" ? "match": "diff");
+            let isLineClass = matchQuery === "ALL" || rowLeft.getAttribute("status").toUpperCase() === matchQuery;
       
             let isChromosome = chromosomeQuery === "" || rowLeftInfs[0] == chromosomeQuery;
             let isVariantType = variantTypeQuery === "ALL" || rowLeftInfs[1] === variantTypeQuery;
@@ -1125,8 +1129,8 @@
     
             let isRowVisible = (isChromosome && isVariantType && isLineClass && (isVariantFilterLeft || isVariantFilterRight));
 
-            countMatchLine = isRowVisible && rowLeft.className.split(" ")[1] == "match" ? ++countMatchLine : countMatchLine;
-            countMismatchLine = isRowVisible && rowLeft.className.split(" ")[1] == "diff" ? ++countMismatchLine : countMismatchLine;
+            countMatchLine = isRowVisible && rowLeft.getAttribute("status").toUpperCase() === "MATCH" ? ++countMatchLine : countMatchLine;
+            countMismatchLine = isRowVisible && rowLeft.getAttribute("status").toUpperCase() === "MISMATCH" ? ++countMismatchLine : countMismatchLine;
 
             if (isRowVisible){
               let variantType
@@ -1164,25 +1168,30 @@
             countVisibleLeft = isRowVisible && rowLeft.querySelector("span") ? ++countVisibleLeft : countVisibleLeft;
             countVisibleRight = isRowVisible && rowRight.querySelector("span") ? ++countVisibleRight : countVisibleRight;
 
-            rowLeft.style.display = isRowVisible ? "flex" : "none";
-            rowRight.style.display = isRowVisible ? "flex" : "none";
-
+            if (isRowVisible) {
+              rowLeft.classList.replace("hidden", "flex");
+              rowRight.classList.replace("hidden", "flex");
+            }
+            else {
+              rowLeft.classList.replace("flex", "hidden");
+              rowRight.classList.replace("flex", "hidden");
+            }
         });
           
         document.getElementById("filterSummaryL").innerText = `Showing ${countVisibleLeft} variants out of ${totalLineLeft}`;
         document.getElementById("filterSummaryR").innerText = `Showing ${countVisibleRight} variants out of ${totalLineRight}`;
 
         if (countVisibleLeft+countVisibleRight == 0) {
-          document.querySelectorAll(".error").forEach(error => error.style.display = "flex")
+          document.querySelectorAll('[data-component="error-popup"]').forEach(error => error.classList.replace('hidden', 'flex'));
         }
         else {
-          document.querySelectorAll(".error").forEach(error => error.style.display = "none")
+          document.querySelectorAll('[data-component="error-popup"]').forEach(error => error.classList.replace('flex', 'hidden'));
         }
 
-        let statsGeneral = document.querySelectorAll(".stat-card .content .stat-value");
-        statsGeneral[0].textContent = countMatchLine;
-        statsGeneral[1].textContent = countMismatchLine;
-        statsGeneral[2].textContent = (countMatchLine / (countVisibleLeft + countVisibleRight - countMatchLine)).toPrecision(3);
+        let statsGeneral = document.querySelectorAll('[data-component="general-card-datas"]');
+        statsGeneral[0].children[0].textContent = countMatchLine;
+        statsGeneral[1].children[0].textContent = countMismatchLine;
+        statsGeneral[2].children[0].textContent = (countMatchLine / (countVisibleLeft + countVisibleRight - countMatchLine)).toPrecision(3);
 
         statsByVariantType.forEach((composition) => {
 
@@ -1273,16 +1282,11 @@
         })
       }
       function resetFilters() {
-          document.querySelector(".search-box .input").value = "";
-          document.querySelectorAll(".filter-container-right select").forEach(select => select.value = "ALL");
-          document.querySelector(".filter-container-left select").value = "ALL";
-          document.querySelectorAll(".error").forEach(error => error.style.display = "none")
-          filter();
-      }
-      function resetFilters() {
-          document.querySelector(".search-box .input").value = "";
-          document.querySelectorAll(".filter-container-right select").forEach(select => select.value = "ALL");
-          document.querySelector(".filter-container-left select").value = "ALL";
+          document.getElementById("query-chromosome").value = "";
+          document.getElementById("query-filter").value = "ALL";
+          document.getElementById("query-variant").value = "ALL";
+          document.getElementById("query-status").value = "ALL";
+          document.querySelectorAll('[data-component="error-popup"]').forEach(error => error.classList.replace('flex', 'hidden'));
           filter();
       }
     </script>
@@ -1293,13 +1297,31 @@
       });
       function show() {
         if (this.id === "dropdown-icon") {
-          element = document.querySelector(".command")
-          element.style.display = element.style.display == "none" ? "flex" : "none";
-          element = document.querySelectorAll(".popups .popups-container .popup").forEach(popup => popup.style.display = popup.style.display == "none" ? "flex": "none")
+          element = document.getElementById("command")
+          if (element.classList.includes('hidden')) {
+            element.classList.replace('hidden', 'flex')
+          }
+          else {
+            element.classList.replace('flex', 'hidden')
+          }
+          elements = document.querySelectorAll('[data-component="info-popup"]');
+          elements.forEach(popup => {
+            if (popup.classList.includes('hidden')) {
+              popup.classList.replace('hidden', 'flex');
+            }
+            else {
+              popup.classList.replace('flex', 'hidden')
+            }
+          });
         }
         else if (this.id === "terminal-icon") {
-          element = document.querySelector(".terminal")
-          element.style.display = element.style.display == "none" ? "block" : "none";
+          element = document.getElementById("terminal");
+          if (element.classList.includes('hidden')) {
+            element.classList.replace('hidden', 'block')
+          }
+          else {
+            element.classList.replace('block', 'hidden')
+          }
         }
       }
     </script>
@@ -1344,7 +1366,7 @@
 
       // Function to update diff elements array
       function updateDiffElements() {
-          const file1Diffs = Array.from(document.querySelectorAll('.file1-content .diff')).filter(el => el.style.display !== 'none');
+          const file1Diffs = Array.from(document.getElementById('content1').querySelectorAll('[data-component="column-diff"]')).filter(el => el.style.display !== 'none');
           diffElements = file1Diffs;
           console.log(`Found ${diffElements.length} differences`);
           currentDiffIndex = diffElements.length > 0 ? 0 : -1;
@@ -1419,8 +1441,10 @@
       // Update diff elements when filters change
       document.addEventListener('DOMContentLoaded', function() {
           const filterElements = [
-              document.querySelector(".search-box .input"),
-              ...document.querySelectorAll(".filter-container-right select")
+              document.getElementById("query-chromosome"),
+              ...document.getElementById("query-status"),
+              ...document.getElementById("query-filter"),
+              ...document.getElementById("query-variant"),
           ];
           
           filterElements.forEach(element => {
@@ -1450,7 +1474,7 @@
           });
           
           // Also update when reset button is clicked
-          const resetButton = document.querySelector(".reset-button");
+          const resetButton = document.getElementById("reset-button");
           if (resetButton) {
               resetButton.addEventListener("click", function() {
                   setTimeout(updateDiffElements, 100); // Small delay to ensure filters are reset
