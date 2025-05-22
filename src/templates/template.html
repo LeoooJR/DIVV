@@ -61,10 +61,10 @@
 
             <div class="relative mr-[10px] mt-[10px]">
 
-              <img src="statics/down-arrow-left.png" class="w-[39px] h-[39px] ml-[10px] mt-[5px] mb-[5px] self-center align-middle mr-[5px] cursor-pointer" id="dropdown-icon">
+              <img src="statics/down-arrow-left.png" class="w-[39px] h-[39px] ml-[10px] mt-[5px] mb-[5px] self-center align-middle mr-[5px] cursor-pointer" id="dropdown-icon-left">
 
-              <div class="absolute -top-1 -right-1 w-4 h-4">
-                <div class="w-full h-full bg-red-400 rounded-full animate-ping"></div>
+              <div data-component="notification-metadata" class="absolute -top-1 -right-1 w-4 h-4">
+                <div id="ping-metadata-left" class="w-full h-full bg-red-400 rounded-full animate-ping"></div>
               </div>
 
             </div>
@@ -102,10 +102,10 @@
 
             <div class="relative mr-[10px] mt-[10px]">
 
-              <img src="statics/down-arrow-right.png" class="w-[39px] h-[39px] ml-[10px] mt-[5px] mb-[5px] self-center align-middle mr-[5px] cursor-pointer" id="dropdown-icon">
+              <img src="statics/down-arrow-right.png" class="w-[39px] h-[39px] ml-[10px] mt-[5px] mb-[5px] self-center align-middle mr-[5px] cursor-pointer" id="dropdown-icon-right">
 
-              <div class="absolute -top-1 -right-1 w-4 h-4">
-                <div class="w-full h-full bg-red-400 rounded-full animate-ping"></div>
+              <div data-component="notification-metadata" class="absolute -top-1 -right-1 w-4 h-4">
+                <div id="ping-metadata-right" class="w-full h-full bg-red-400 rounded-full animate-ping"></div>
               </div>
 
             </div>
@@ -147,7 +147,7 @@
           <span id="command-metadata" class="text-[#E879F9]">user</span><span class="text-[#2DD4BF]">@vcfdelta</span>:<span class="text-[#A78BFA]">~</span>$
         </p>
 
-        <input class="bg-transparent border-[none] outline-[none] text-[white] placeholder:text-white" placeholder="{{ cmd }}" type="text" disabled>
+        <input class="w-full bg-transparent border-[none] outline-[none] text-[white] placeholder-white" placeholder="{{ cmd }}" type="text" disabled>
 
       </div>
 
@@ -219,7 +219,7 @@
 
         <div class="flex flex-row items-stretch w-1/2 bg-[white]">
 
-            <div class="flex flex-row ml-[50px] mr-[50px] w-full">
+            <div class="flex flex-row ml-[50px] w-1/2">
 
                 <img src="statics/chromosome.png" alt="chromosomes-icon" class="w-[45px] m-[10px] pt-[5px]">
 
@@ -255,7 +255,7 @@
 
             <div class="flex flex-row items-stretch w-1/2">
               <img src="statics/puzzle.png" alt="puzzle-icon" class="w-[45px] m-[10px] pt-[5px]">
-              <div class="mr-[50px] mt-[5px] w-full">
+              <div class="mt-[5px] w-full">
                 <select id="query-status" class="px-[15px] py-[10px] rounded-[5px] border-[none] min-w-[200px] text-[14px] m-[10px] content-center font-[Ubuntu] bg-[#0d1117] text-[white] focus-within-[white] cursor-pointer">
                     <option selected disabled>Select a status...</option>
                     <option>ALL</option>
@@ -289,7 +289,7 @@
                     </select>
                 </div>
                 <img src="statics/terminal.png" alt="terminal-icon" class="w-[45px] m-[10px] cursor-pointer" id="terminal-icon">
-                <button id="reset-button" class="bg-[rgba(79,_70,_229,_0.9)] border-[none] rounded-[6px] px-[20px] py-[10px] m-[10px] cursor-pointer text-[14px] rounded-[16px] font-[Ubuntu] font-bold hover:bg-[rgba(67,_56,_202,_0.9)]" onclick="resetFilters()">Reset</button>
+                <button id="reset-button" class="bg-[rgba(79,_70,_229,_0.9)] border-[none] rounded-[6px] px-[20px] m-[15px] cursor-pointer text-[14px] text-white rounded-[16px] font-[Ubuntu] font-bold hover:bg-[rgba(67,_56,_202,_0.9)]" onclick="resetFilters()">Reset</button>
             </div>
         </div>
     </div>
@@ -316,10 +316,10 @@
         </div>
         <div class="bg-[#202425] text-[#ffffff] p-[15px] font-['Courier_New',_Courier,_monospace] h-full">
           <div class="flex items-center">
-            <div class="input-wrapper">
+            <div class="w-full">
               <input
                 type="text"
-                class="bg-transparent border-[none] text-[#006adc] [font-family:inherit] text-[14px] outline-[none] w-full placeholder:text-[[rgba(255,_255,_255,_0.5)]"
+                class="bg-transparent border-[none] text-[#006adc] [font-family:inherit] text-[14px] outline-[none] w-full placeholder-[rgba(255,_255,_255,_0.5)]"
                 placeholder="Enter query..."
               />
               <span class="w-[8px] h-[15px] bg-[#ffffff] inline-block animate-[blink_1s_step-end_infinite] ml-[2px]"></span>
@@ -358,9 +358,9 @@
                   <div class="flex flex-row">
                     <p class="text-[15px] mb-0 ml-[5px] font-normal" id="filterSummaryL">Showing all variants</p>
                     {% if tags[0] %}
-                      <div class="flex flex-row w-1/2 ml-[50px] mt-[2px] mb-[2px] justify-center">
+                      <div class="flex flex-row w-1/2 justify-center gap-1">
                         {% for tag in tags[0] %}
-                          <span class="text-[0.875rem] font-bold px-2.5 py-0.5 rounded-full inline-block bg-[#dbeafe] text-[#1e40af] border-solid border border-[#60A5FA] font-[Ubuntu]">{{ tag | trim }}</span>
+                          <span class="text-[0.875rem] font-bold px-2.5 py-0.5 mb-[5px] rounded-full inline-block bg-[#dbeafe] text-[#1e40af] border-solid border border-[#60A5FA] font-[Ubuntu]">{{ tag | trim }}</span>
                         {% endfor %}
                       </div>
                     {% endif %}  
@@ -399,9 +399,9 @@
                   <div class="flex flex-row">
                     <p class="text-[15px] mb-0 ml-[5px] font-normal" id="filterSummaryR">Showing all variants</p>
                     {% if tags[1] %}
-                      <div class="flex flex-row w-1/2 ml-[50px] mt-[2px] mb-[2px] justify-center">
+                      <div class="flex flex-row w-1/2 justify-center gap-1">
                         {% for tag in tags[1] %}
-                          <span class="text-[0.875rem] font-bold px-2.5 py-0.5 rounded-full inline-block bg-[#dbeafe] text-[#1e40af] border-solid border border-[#60A5FA] font-[Ubuntu]">{{ tag | trim }}</span>
+                          <span class="text-[0.875rem] font-bold px-2.5 py-0.5 mb-[5px] rounded-full inline-block bg-[#dbeafe] text-[#1e40af] border-solid border border-[#60A5FA] font-[Ubuntu]">{{ tag | trim }}</span>
                         {% endfor %}
                       </div>
                     {% endif %}  
@@ -455,8 +455,8 @@
                         <p class="text-[1.875rem] font-semibold leading-none">{{ view["common"] }}</p>
                         <p class="capitalize font-[Ubuntu]">Matching lines</p>
                       </div>
-                      <div class="relative group flex items-start">
-                        <svg class="w-5 h-5 -translate-y-[2px] ml-[100px]" xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" height="24" fill="none">
+                      <div class="relative group flex items-start ml-[100px] w-5 h-5">
+                        <svg class="" xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" height="24" fill="none">
                           <path fill="#509AF8" d="m12 1.5c-5.79844 0-10.5 4.70156-10.5 10.5 0 5.7984 4.70156 10.5 10.5 10.5 5.7984 0 10.5-4.7016 10.5-10.5 0-5.79844-4.7016-10.5-10.5-10.5zm.75 15.5625c0 .1031-.0844.1875-.1875.1875h-1.125c-.1031 0-.1875-.0844-.1875-.1875v-6.375c0-.1031.0844-.1875.1875-.1875h1.125c.1031 0 .1875.0844.1875.1875zm-.75-8.0625c-.2944-.00601-.5747-.12718-.7808-.3375-.206-.21032-.3215-.49305-.3215-.7875s.1155-.57718.3215-.7875c.2061-.21032.4864-.33149.7808-.3375.2944.00601.5747.12718.7808.3375.206.21032.3215.49305.3215.7875s-.1155.57718-.3215.7875c-.2061.21032-.4864.33149-.7808.3375z">
                           </path>
                         </svg>
@@ -478,8 +478,8 @@
                         <p class="text-[1.875rem] font-semibold leading-none">{{ view["unique"].values() | sum }}</p>
                         <p class="capitalize font-[Ubuntu]">Different lines</p>
                       </div>
-                      <div class="relative group flex items-start">
-                        <svg class="w-5 h-5 -translate-y-[2px] ml-[100px]" xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" height="24" fill="none">
+                      <div class="relative group flex items-start ml-[100px] w-5 h-5">
+                        <svg class="" xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" height="24" fill="none">
                           <path fill="#509AF8" d="m12 1.5c-5.79844 0-10.5 4.70156-10.5 10.5 0 5.7984 4.70156 10.5 10.5 10.5 5.7984 0 10.5-4.7016 10.5-10.5 0-5.79844-4.7016-10.5-10.5-10.5zm.75 15.5625c0 .1031-.0844.1875-.1875.1875h-1.125c-.1031 0-.1875-.0844-.1875-.1875v-6.375c0-.1031.0844-.1875.1875-.1875h1.125c.1031 0 .1875.0844.1875.1875zm-.75-8.0625c-.2944-.00601-.5747-.12718-.7808-.3375-.206-.21032-.3215-.49305-.3215-.7875s.1155-.57718.3215-.7875c.2061-.21032.4864-.33149.7808-.3375.2944.00601.5747.12718.7808.3375.206.21032.3215.49305.3215.7875s-.1155.57718-.3215.7875c-.2061.21032-.4864.33149-.7808.3375z">
                           </path>
                         </svg>
@@ -502,8 +502,8 @@
                         <p class="text-[1.875rem] font-semibold leading-none">{{ view["jaccard"] }}</p>
                         <p class="capitalize font-[Ubuntu]">Jaccard index</p>
                       </div>
-                      <div class="relative group flex items-start">
-                        <svg class="w-5 h-5 -translate-y-[2px] ml-[100px]" xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" height="24" fill="none">
+                      <div class="relative group flex items-start ml-[100px] w-5 h-5">
+                        <svg class="" xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" height="24" fill="none">
                           <path fill="#509AF8" d="m12 1.5c-5.79844 0-10.5 4.70156-10.5 10.5 0 5.7984 4.70156 10.5 10.5 10.5 5.7984 0 10.5-4.7016 10.5-10.5 0-5.79844-4.7016-10.5-10.5-10.5zm.75 15.5625c0 .1031-.0844.1875-.1875.1875h-1.125c-.1031 0-.1875-.0844-.1875-.1875v-6.375c0-.1031.0844-.1875.1875-.1875h1.125c.1031 0 .1875.0844.1875.1875zm-.75-8.0625c-.2944-.00601-.5747-.12718-.7808-.3375-.206-.21032-.3215-.49305-.3215-.7875s.1155-.57718.3215-.7875c.2061-.21032.4864-.33149.7808-.3375.2944.00601.5747.12718.7808.3375.206.21032.3215.49305.3215.7875s-.1155.57718-.3215.7875c-.2061.21032-.4864.33149-.7808.3375z">
                           </path>
                         </svg>
@@ -1292,31 +1292,34 @@
     </script>
     <script>
       document.addEventListener("DOMContentLoaded", function () {
-        document.getElementById("dropdown-icon").addEventListener("click", show)
-        document.getElementById("terminal-icon").addEventListener("click", show)
+        document.getElementById("dropdown-icon-left").addEventListener("click", updateDisplay)
+        document.getElementById("dropdown-icon-right").addEventListener("click", updateDisplay)
+        document.getElementById("terminal-icon").addEventListener("click", updateDisplay)
       });
-      function show() {
-        if (this.id === "dropdown-icon") {
-          element = document.getElementById("command")
-          if (element.classList.includes('hidden')) {
-            element.classList.replace('hidden', 'flex')
+      function updateDisplay() {
+        if (this.id === "dropdown-icon-left" || this.id === "dropdown-icon-right") {
+          element = document.getElementById("command");
+          if (element.classList.contains('hidden')) {
+            element.classList.replace('hidden', 'flex');
+            document.querySelectorAll('[data-component="notification-metadata"]').forEach((notification) => notification.classList.add('hidden'))
           }
           else {
-            element.classList.replace('flex', 'hidden')
+            element.classList.replace('flex', 'hidden');
+            document.querySelectorAll('[data-component="notification-metadata"]').forEach((notification) => notification.classList.remove('hidden'))
           }
           elements = document.querySelectorAll('[data-component="info-popup"]');
           elements.forEach(popup => {
-            if (popup.classList.includes('hidden')) {
+            if (popup.classList.contains('hidden')) {
               popup.classList.replace('hidden', 'flex');
             }
             else {
-              popup.classList.replace('flex', 'hidden')
+              popup.classList.replace('flex', 'hidden');
             }
           });
         }
         else if (this.id === "terminal-icon") {
           element = document.getElementById("terminal");
-          if (element.classList.includes('hidden')) {
+          if (element.classList.contains('hidden')) {
             element.classList.replace('hidden', 'block')
           }
           else {
