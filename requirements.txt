@@ -12,3 +12,4 @@ matplotlib==3.10.1
 matplotlib-venn==1.1.2
 filetype==1.2.0
 sortedcontainers==2.4.0
+rich==14.0.0
