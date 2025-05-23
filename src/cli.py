@@ -2,6 +2,7 @@ from __init__ import __version__
 import argparse
 from delta import delta
 from loguru import logger
+import os
 from sys import argv
 
 class Program:
@@ -43,12 +44,12 @@ class Program:
         self.parser.add_argument(
             "-o",
             "--output",
-            dest="out",
+            dest="output",
             metavar="PATH",
             type=str,
             required=False,
-            default="delta",
-            help="Prefix of the outputs files",
+            default=os.getcwd(),
+            help="Path to the output directory",
         )
         self.parser.add_argument(
             "-s",

@@ -17,3 +17,7 @@ class IndexError(FileError):
 class ProcessError(RuntimeError):
 
     pass
+
+class ReportError(FileError):
+
+    pass

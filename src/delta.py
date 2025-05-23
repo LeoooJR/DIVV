@@ -4,6 +4,7 @@ from itertools import repeat
 from loguru import logger
 from memory_profiler import profile
 import os
+from pathlib import Path
 import processes
 from sys import argv
 from tabulate import tabulate
@@ -12,7 +13,7 @@ from tabulate import tabulate
 def delta(params: object) -> int:
     """ 
     Main function to compute the delta between two VCF files 
-            params: object containing the command line parameters parsed.
+            params: Namespace containing the command line parameters parsed.
     """
 
     assert len(params.vcfs) == 2, "Two VCF files are required."
@@ -20,6 +21,22 @@ def delta(params: object) -> int:
     assert isinstance(params.vcfs[0], str) and isinstance(
         params.vcfs[1], str
     ), "Input VCF should be string instance"
+
+    if not (os.path.isdir(params.output)):
+
+        logger.error(f"No such directory: '{params.output}'")
+
+        raise SystemExit(f"No such directory: '{params.output}'")
+        
+    else:
+
+        if not os.access(params.output, os.W_OK):
+
+            logger.error(f"Write permissions are not granted for the directory: {params.output}")
+
+            raise SystemExit(f"Write permissions are not granted for the directory: {params.output}")
+            
+    params.output = Path(params.output)
 
     logger.debug(f"VCFS: {params.vcfs}")
 
@@ -92,11 +109,11 @@ def delta(params: object) -> int:
     # Should the output be serialized ?
     if params.serialize:
 
-        logger.debug(f"Serializing output as {params.serialize}.")
+        logger.debug(f"Serializing output as {params.serialize} to {params.output}.")
 
         if params.serialize in ["vcf", "vcf.gz"]:
 
-            manager.scheduling(tasks=[[vcfs.repository[0].path.parent], [vcfs.repository[1].path.parent]])
+            manager.scheduling(tasks=[[params.output], [params.output]])
 
             try:
 
@@ -110,12 +127,13 @@ def delta(params: object) -> int:
             
         else:
 
-            files.VCFRepository.processor.serialize([None, os.getcwd()], comparaisons[(vcfs.repository[0],vcfs.repository[1])]["variants"], params.serialize)
+            pass
+            # files.VCFRepository.processor.serialize([None, os.getcwd()], comparaisons[(vcfs.repository[0],vcfs.repository[1])]["variants"], params.serialize)
 
     # Should the output be reported ?
     if params.report:
 
-        logger.debug("Generating a HTML report.")
+        logger.debug(f"Generating a HTML report to {params.output}.")
 
         vcfs.repository[0].variants.visualization()
 
@@ -135,11 +153,10 @@ def delta(params: object) -> int:
         files.Report(
             vcfs=vcfs,
             tags=tags,
-            prefix=params.out,
             cmd=" ".join(argv),
             view=comparaisons[(vcfs.repository[0],vcfs.repository[1])],
             table=comparaisons[(vcfs.repository[0],vcfs.repository[1])]["benchmark"] if params.benchmark else None,
-        ).create()
+        ).create(output=params.output)
 
     # Print the results to the CLI
     else:

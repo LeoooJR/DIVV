@@ -764,17 +764,17 @@ class VCFProcessor:
         return (variants, filtered, stats) if profile else (variants, filtered, {})
     
     @staticmethod
-    def serialize(task, obj, format: str = "pickle", out: str = os.getcwd()) -> int:
+    def serialize(task, obj, format: str = "pickle") -> int:
         """ Serialize DataFrame to file of specified format """
 
-        def write(task, obj, out, ext):
+        def write(task, obj, prefix, ext):
 
             # Open the initial VCF file to get the template
             vcf = cyvcf2.VCF(f"{task[0].archive}")
             # Add match data in INFO column
             vcf.add_info_to_header({'ID': 'match', 'Description': 'overlapping variant', 'Type': 'String', 'Number': '1'})
             # Open the output VCF file for writing, open the data stream
-            w = cyvcf2.Writer(f"{out}_delta.{ext}", vcf)
+            w = cyvcf2.Writer(f"{prefix}_delta.{ext}", vcf)
             # Iterate over the variants in the VCF file
             for i, v in enumerate(vcf):
                 # Hash the variant to allow fast lookup
@@ -806,22 +806,22 @@ class VCFProcessor:
 
         if format in FILES:
 
+            prefix = pathlib.Path(task[1], task[0].path.stem)
+
             if format in ["json", "pickle"]:
-                outf = str(pathlib.Path(task[1], "summary"))
                 # Open data stream
                 with open(
-                    file=f"{outf}_delta.{FILES[format]['ext']}",
+                    file=f"{prefix}_delta.{FILES[format]['ext']}",
                     mode=FILES[format]["mode"],
                 ) as f:
                     obj = obj.to_dict(orient='list')
                     FILES[format]["func"](obj, f)
             # Write a VCF
             else:
-                outf = str(pathlib.Path(task[1], task[0].path.stem))
-                write(task, obj, outf, FILES[format]['ext'])
+                write(task, obj, prefix, FILES[format]['ext'])
 
             assert os.path.isfile(
-                f"{outf}_delta.{FILES[format]['ext']}"
+                f"{prefix}_delta.{FILES[format]['ext']}"
             ), "File was not created"
 
             logger.success(f"Results are seralized to {task[1]}")
@@ -1036,9 +1036,9 @@ class Report:
         table: The benchmark table (truth metrics) object as a DataFrame
     """
     # Make use of __slots__ to avoid the creation of __dict__ and __weakref__ for each instance, reducing the memory footprint
-    __slots__ = ('vcfs', 'tags', 'cmd', 'view', 'prefix', 'table', 'out')
+    __slots__ = ('vcfs', 'tags', 'cmd', 'view', 'table', 'out')
 
-    def __init__(self, vcfs: VCFRepository, tags: list[str], prefix: str, cmd: str, view: dict, table: DataFrame = None, out: str = "archive"):
+    def __init__(self, vcfs: VCFRepository, tags: list[str], cmd: str, view: dict, table: DataFrame = None, out: str = "archive"):
 
         # The list of VCF files
         self.vcfs = vcfs
@@ -1055,16 +1055,13 @@ class Report:
         # Set one library of plots to dark mode
         vcfs.repository[1].variants.plots.dark()
 
-        # The prefix of the report
-        self.prefix = prefix
-
         # The benchmark table (truth metrics) object as a DataFrame
         self.table = table
 
         # How to save the outputs
         self.out = out
 
-    def create(self):
+    def create(self, output: pathlib.Path = pathlib.Path.cwd()):
 
         # Custom filter to check if a value is NaN with Jinja2
         def is_nan(value):
@@ -1078,9 +1075,6 @@ class Report:
 
         # Path to look for the statics
         statics = os.path.join(ressources, 'statics', "*.png")
-
-        # HTML output
-        output = f"{self.prefix}.html"
         
         # Create the environment
         env = Environment(loader=FileSystemLoader(ressources))
@@ -1096,30 +1090,39 @@ class Report:
 
         if self.out == "dir":
 
+            path = output.joinpath("delta")
+
             # Open data stream
             try:
-                os.mkdir(f"{self.prefix}")
-            except (FileNotFoundError, NotImplementedError, PermissionError):
-                raise IOError("Report cannot be created.")
+                os.mkdir(path)
+            except (PermissionError):
+                raise errors.ReportError("Report cannot be created.")
 
-            with open(os.path.join(self.prefix, output),'w') as f:
+            with open(path.joinpath("delta.html"),'w') as f:
                 f.writelines(html)
 
             # Copy the css and statics files next to the report
             for f in glob(stylesheets):
-                copy(f, self.prefix)
-            copytree(os.path.dirname(statics), os.path.join(self.prefix,'statics'), dirs_exist_ok=True)
+                copy(f, path)
+
+            copytree(os.path.dirname(statics), os.path.join(path,'statics'), dirs_exist_ok=True)
 
         else:
 
+            path = output.joinpath("delta.zip")
+
             # Open data stream with context manager
-            with zipfile.ZipFile(f"{self.prefix}.zip", mode='w') as zip:
-                zip.writestr(output, html)
+            with zipfile.ZipFile(path, mode='w') as zip:
+                zip.writestr("delta.html", html)
                 for stylesheet in glob(stylesheets):
                     zip.write(stylesheet, arcname=os.path.relpath(path=stylesheet, start=ressources))
                 for static in glob(statics):
                     zip.write(static, arcname=os.path.relpath(path=static, start=ressources))
 
     def __str__(self):
+        
+        pass
+
+    def __repr__(self):
         
         pass
