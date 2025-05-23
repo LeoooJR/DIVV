@@ -375,7 +375,7 @@
                   </div>
                   {% for index, series in view['variants'].iterrows() %}
                     {% if series['Variant.L']|is_nan or series['Variant.R']|is_nan %}
-                      <div data-component="file-content-left" status="mismatch" class="min-h-[24px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] w-max min-w-full bg-[rgba(255,_0,_0,_0.2)]" id="{{ series['Chromosome']|upper() }} {{ series['Type']|upper() }} {{ series['Filter.L']|upper() }}">
+                      <div data-component="file-content-left" status="mismatch" class="min-h-[24px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] w-max min-w-full bg-[rgba(255,_0,_0,_0.2)]" id="{{ series['Chromosome']|upper() }} {{ series['Type']|upper() }} {{ series['Filter.L']|upper() }}" chrom="{{ series['Chromosome']|upper() }}" type="{{ series['Type']|upper() }}" filter="{{ series['Filter.L']|upper() }}">
                         <div class="text-[#888] mr-[10px] select-none min-w-[30px] text-right">{{ loop.index }}</div>
                         {% if not series['Variant.L']|is_nan %}
                           <span data-component="column-diff" class="w-max min-w-full bg-[rgba(255,_0,_0,_0.2)] table-cell px-[8px] py-[2px] whitespace-nowrap">
@@ -384,7 +384,7 @@
                         {% endif %}
                       </div>
                     {% else %}
-                      <div data-component="file-content-left" status="match" class="min-h-[24px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] w-max min-w-full bg-[rgba(0,_255,_0,_0.2)]" id="{{ series['Chromosome']|upper() }} {{ series['Type']|upper() }} {{ series['Filter.L']|upper() }}">
+                      <div data-component="file-content-left" status="match" class="min-h-[24px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] w-max min-w-full bg-[rgba(0,_255,_0,_0.2)]" id="{{ series['Chromosome']|upper() }} {{ series['Type']|upper() }} {{ series['Filter.L']|upper() }}" chrom="{{ series['Chromosome']|upper() }}" type="{{ series['Type']|upper() }}" filter="{{ series['Filter.L']|upper() }}">
                         <div class="text-[#888] mr-[10px] select-none min-w-[30px] text-right">{{ loop.index }}</div>
                         <span data-component="column-match" class="w-max min-w-full bg-[rgba(0,_255,_0,_0.2)] table-cell px-[8px] py-[2px] whitespace-nowrap">
                           {{ series['Variant.L'] }}
@@ -416,7 +416,7 @@
                   </div>
                   {% for index, series in view['variants'].iterrows() %}
                     {% if series['Variant.L']|is_nan or series['Variant.R']|is_nan %}
-                      <div data-component="file-content-right" statys="mismatch" class="min-h-[24px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] w-max min-w-full bg-[rgba(255,_0,_0,_0.2)]" id="{{ series['Chromosome']|upper() }} {{ series['Type']|upper() }} {{ series['Filter.R']|upper() }}">
+                      <div data-component="file-content-right" status="mismatch" class="min-h-[24px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] w-max min-w-full bg-[rgba(255,_0,_0,_0.2)]" id="{{ series['Chromosome']|upper() }} {{ series['Type']|upper() }} {{ series['Filter.R']|upper() }}" chrom="{{ series['Chromosome']|upper() }}" type="{{ series['Type']|upper() }}" filter="{{ series['Filter.R']|upper() }}">
                         <div class="text-[#888] mr-[10px] select-none min-w-[30px] text-right">{{ loop.index }}</div>
                         {% if not series['Variant.R']|is_nan %}
                           <span data-component="column-diff" class="w-max min-w-full bg-[rgba(255,_0,_0,_0.2)] table-cell px-[8px] py-[2px] whitespace-nowrap">
@@ -425,7 +425,7 @@
                         {% endif %}
                       </div>
                     {% else %}
-                      <div data-component="file-content-right" status="match" class="min-h-[24px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] w-max min-w-full bg-[rgba(0,_255,_0,_0.2)]" id="{{ series['Chromosome']|upper() }} {{ series['Type']|upper() }} {{ series['Filter.R']|upper() }}">
+                      <div data-component="file-content-right" status="match" class="min-h-[24px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] w-max min-w-full bg-[rgba(0,_255,_0,_0.2)]" id="{{ series['Chromosome']|upper() }} {{ series['Type']|upper() }} {{ series['Filter.R']|upper() }}" chrom="{{ series['Chromosome']|upper() }}" type="{{ series['Type']|upper() }}" filter="{{ series['Filter.R']|upper() }}">
                         <div class="text-[#888] mr-[10px] select-none min-w-[30px] text-right">{{ loop.index }}</div>
                         <span data-component="column-match" class="w-max min-w-full bg-[rgba(0,_255,_0,_0.2)] table-cell px-[8px] py-[2px] whitespace-nowrap">
                           {{ series['Variant.R'] }}
@@ -534,8 +534,31 @@
                         </g>
                       </svg>
                       <div data-component="variant-card-datas" class="flex flex-col justify-center">
-                        <p class="text-[1.875rem] font-semibold leading-none">NA | NA</p>
-                        <div class="w-[250px] h-[30px] rounded-full bg-[#E5E7EB]" id="stats-bar-snp">
+                        <ul class="list-none" id="file-legend-snp">
+                          <li class="inline">
+                            <a class="inline-flex flex-nowrap items-center text-sm mr-[3px]">
+                              <svg class="inline-block mr-[0.5rem]" fill="currentColor" height="16" width="16" viewBox="0 0 16 16">
+                                <path fill="#2C7A7B" d="M8 4a4 4 0 1 1 0 8 4 4 0 0 1 0-8Z"></path>
+                              </svg>
+                              <span class="font-semibold mr-[0.25rem]">
+                                {{ vcfs.repository[0].informations().basename }}
+                              </span>
+                              <span data-component="file-legend-value-left">NA</span>
+                            </a>
+                          </li>
+                          <li class="inline">
+                            <a class="inline-flex flex-nowrap items-center text-sm mr-[3px]">
+                              <svg class="inline-block mr-[0.5rem]" fill="currentColor" height="16" width="16" viewBox="0 0 16 16">
+                                <path fill="#822E4A" d="M8 4a4 4 0 1 1 0 8 4 4 0 0 1 0-8Z"></path>
+                              </svg>
+                              <span class="font-semibold mr-[0.25rem]">
+                                {{ vcfs.repository[1].informations().basename }}
+                              </span>
+                              <span data-component="file-legend-value-right">NA</span>
+                            </a>
+                          </li>
+                        </ul>
+                        <div class="w-full h-[30px] rounded-full bg-[#E5E7EB]" id="stats-bar-snp">
                           <div class="h-full bg-[#2C7A7B] opacity-75 float-left rounded-tl-full rounded-bl-full">
                           </div>
                           <div class="h-full bg-[#822E4A] opacity-75 float-left rounded-tr-full rounded-br-full">
@@ -564,8 +587,31 @@
                         </g>
                       </svg>
                       <div data-component="variant-card-datas" class="flex flex-col justify-center">
-                        <p class="text-[1.875rem] font-semibold leading-none">NA | NA</p>
-                        <div class="w-[250px] h-[30px] rounded-full bg-[#E5E7EB]" id="stats-bar-mnp">
+                        <ul class="list-none" id="file-legend-mnp">
+                          <li class="inline">
+                            <a class="inline-flex flex-nowrap items-center text-sm mr-[3px]">
+                              <svg class="inline-block mr-[0.5rem]" fill="currentColor" height="16" width="16" viewBox="0 0 16 16">
+                                <path fill="#2C7A7B" d="M8 4a4 4 0 1 1 0 8 4 4 0 0 1 0-8Z"></path>
+                              </svg>
+                              <span class="font-semibold mr-[0.25rem]">
+                                {{ vcfs.repository[0].informations().basename }}
+                              </span>
+                              <span data-component="file-legend-value-left">NA</span>
+                            </a>
+                          </li>
+                          <li class="inline">
+                            <a class="inline-flex flex-nowrap items-center text-sm mr-[3px]">
+                              <svg class="inline-block mr-[0.5rem]" fill="currentColor" height="16" width="16" viewBox="0 0 16 16">
+                                <path fill="#822E4A" d="M8 4a4 4 0 1 1 0 8 4 4 0 0 1 0-8Z"></path>
+                              </svg>
+                              <span class="font-semibold mr-[0.25rem]">
+                                {{ vcfs.repository[1].informations().basename }}
+                              </span>
+                              <span data-component="file-legend-value-right">NA</span>
+                            </a>
+                          </li>
+                        </ul>
+                        <div class="w-full h-[30px] rounded-full bg-[#E5E7EB]" id="stats-bar-mnp">
                           <div class="h-full bg-[#2C7A7B] opacity-75 float-left rounded-tl-full rounded-bl-full">
                           </div>
                           <div class="h-full bg-[#822E4A] opacity-75 float-left rounded-tr-full rounded-br-full">
@@ -597,8 +643,31 @@
                         </g>
                       </svg>
                       <div data-component="variant-card-datas" class="flex flex-col justify-center">
-                        <p class="text-[1.875rem] font-semibold leading-none">NA | NA</p>
-                        <div class="w-[250px] h-[30px] rounded-full bg-[#E5E7EB]" id="stats-bar-sv">
+                        <ul class="list-none" id="file-legend-sv">
+                          <li class="inline">
+                            <a class="inline-flex flex-nowrap items-center text-sm mr-[3px]">
+                              <svg class="inline-block mr-[0.5rem]" fill="currentColor" height="16" width="16" viewBox="0 0 16 16">
+                                <path fill="#2C7A7B" d="M8 4a4 4 0 1 1 0 8 4 4 0 0 1 0-8Z"></path>
+                              </svg>
+                              <span class="font-semibold mr-[0.25rem]">
+                                {{ vcfs.repository[0].informations().basename }}
+                              </span>
+                              <span data-component="file-legend-value-left">NA</span>
+                            </a>
+                          </li>
+                          <li class="inline">
+                            <a class="inline-flex flex-nowrap items-center text-sm mr-[3px]">
+                              <svg class="inline-block mr-[0.5rem]" fill="currentColor" height="16" width="16" viewBox="0 0 16 16">
+                                <path fill="#822E4A" d="M8 4a4 4 0 1 1 0 8 4 4 0 0 1 0-8Z"></path>
+                              </svg>
+                              <span class="font-semibold mr-[0.25rem]">
+                                {{ vcfs.repository[1].informations().basename }}
+                              </span>
+                              <span data-component="file-legend-value-right">NA</span>
+                            </a>
+                          </li>
+                        </ul>
+                        <div class="w-full h-[30px] rounded-full bg-[#E5E7EB]" id="stats-bar-sv">
                           <div class="h-full bg-[#2C7A7B] opacity-75 float-left rounded-tl-full rounded-bl-full">
                           </div>
                           <div class="h-full bg-[#822E4A] opacity-75 float-left rounded-tr-full rounded-br-full">
@@ -636,8 +705,31 @@
                         </g>
                       </svg>
                       <div data-component="variant-card-datas" class="flex flex-col justify-center">
-                        <p class="text-[1.875rem] font-semibold leading-none">NA | NA</p>
-                        <div class="w-[250px] h-[30px] rounded-full bg-[#E5E7EB]" id="stats-bar-indel">
+                        <ul class="list-none" id="file-legend-indel">
+                          <li class="inline">
+                            <a class="inline-flex flex-nowrap items-center text-sm mr-[3px]">
+                              <svg class="inline-block mr-[0.5rem]" fill="currentColor" height="16" width="16" viewBox="0 0 16 16">
+                                <path fill="#2C7A7B" d="M8 4a4 4 0 1 1 0 8 4 4 0 0 1 0-8Z"></path>
+                              </svg>
+                              <span class="font-semibold mr-[0.25rem]">
+                                {{ vcfs.repository[0].informations().basename }}
+                              </span>
+                              <span data-component="file-legend-value-left">NA</span>
+                            </a>
+                          </li>
+                          <li class="inline">
+                            <a class="inline-flex flex-nowrap items-center text-sm mr-[3px]">
+                              <svg class="inline-block mr-[0.5rem]" fill="currentColor" height="16" width="16" viewBox="0 0 16 16">
+                                <path fill="#822E4A" d="M8 4a4 4 0 1 1 0 8 4 4 0 0 1 0-8Z"></path>
+                              </svg>
+                              <span class="font-semibold mr-[0.25rem]">
+                                {{ vcfs.repository[1].informations().basename }}
+                              </span>
+                              <span data-component="file-legend-value-right">NA</span>
+                            </a>
+                          </li>
+                        </ul>
+                        <div class="w-full h-[30px] rounded-full bg-[#E5E7EB]" id="stats-bar-indel">
                           <div class="h-full bg-[#2C7A7B] opacity-75 float-left rounded-tl-full rounded-bl-full">
                           </div>
                           <div class="h-full bg-[#822E4A] opacity-75 float-left rounded-tr-full rounded-br-full">
@@ -689,8 +781,31 @@
                         </g>
                       </svg>
                       <div data-component="variant-card-datas" class="flex flex-col justify-center">
-                        <p class="text-[1.875rem] font-semibold leading-none">NA | NA</p>
-                        <div class="w-[250px] h-[30px] rounded-full bg-[#E5E7EB]" id="stats-bar-inv">
+                        <ul class="list-none" id="file-legend-inversion">
+                          <li class="inline">
+                            <a class="inline-flex flex-nowrap items-center text-sm mr-[3px]">
+                              <svg class="inline-block mr-[0.5rem]" fill="currentColor" height="16" width="16" viewBox="0 0 16 16">
+                                <path fill="#2C7A7B" d="M8 4a4 4 0 1 1 0 8 4 4 0 0 1 0-8Z"></path>
+                              </svg>
+                              <span class="font-semibold mr-[0.25rem]">
+                                {{ vcfs.repository[0].informations().basename }}
+                              </span>
+                              <span data-component="file-legend-value-left">NA</span>
+                            </a>
+                          </li>
+                          <li class="inline">
+                            <a class="inline-flex flex-nowrap items-center text-sm mr-[3px]">
+                              <svg class="inline-block mr-[0.5rem]" fill="currentColor" height="16" width="16" viewBox="0 0 16 16">
+                                <path fill="#822E4A" d="M8 4a4 4 0 1 1 0 8 4 4 0 0 1 0-8Z"></path>
+                              </svg>
+                              <span class="font-semibold mr-[0.25rem]">
+                                {{ vcfs.repository[1].informations().basename }}
+                              </span>
+                              <span data-component="file-legend-value-right">NA</span>
+                            </a>
+                          </li>
+                        </ul>
+                        <div class="w-full h-[30px] rounded-full bg-[#E5E7EB]" id="stats-bar-inv">
                           <div class="h-full bg-[#2C7A7B] opacity-75 float-left rounded-tl-full rounded-bl-full">
                           </div>
                           <div class="h-full bg-[#822E4A] opacity-75 float-left rounded-tr-full rounded-br-full">
@@ -739,8 +854,31 @@
                         </g>
                       </svg>
                       <div data-component="variant-card-datas" class="flex flex-col justify-center">
-                        <p class="text-[1.875rem] font-semibold leading-none">NA | NA</p>
-                        <div class="w-[250px] h-[30px] rounded-full bg-[#E5E7EB]" id="stats-bar-comp">
+                        <ul class="list-none" id="file-legend-cv">
+                          <li class="inline">
+                            <a class="inline-flex flex-nowrap items-center text-sm mr-[3px]">
+                              <svg class="inline-block mr-[0.5rem]" fill="currentColor" height="16" width="16" viewBox="0 0 16 16">
+                                <path fill="#2C7A7B" d="M8 4a4 4 0 1 1 0 8 4 4 0 0 1 0-8Z"></path>
+                              </svg>
+                              <span class="font-semibold mr-[0.25rem]">
+                                {{ vcfs.repository[0].informations().basename }}
+                              </span>
+                              <span data-component="file-legend-value-left">NA</span>
+                            </a>
+                          </li>
+                          <li class="inline">
+                            <a class="inline-flex flex-nowrap items-center text-sm mr-[3px]">
+                              <svg class="inline-block mr-[0.5rem]" fill="currentColor" height="16" width="16" viewBox="0 0 16 16">
+                                <path fill="#822E4A" d="M8 4a4 4 0 1 1 0 8 4 4 0 0 1 0-8Z"></path>
+                              </svg>
+                              <span class="font-semibold mr-[0.25rem]">
+                                {{ vcfs.repository[1].informations().basename }}
+                              </span>
+                              <span data-component="file-legend-value-right">NA</span>
+                            </a>
+                          </li>
+                        </ul>
+                        <div class="w-full h-[30px] rounded-full bg-[#E5E7EB]" id="stats-bar-comp">
                           <div class="h-full bg-[#2C7A7B] opacity-75 float-left rounded-tl-full rounded-bl-full">
                           </div>
                           <div class="h-full bg-[#822E4A] opacity-75 float-left rounded-tr-full rounded-br-full">
@@ -1195,7 +1333,8 @@
 
         statsByVariantType.forEach((composition) => {
 
-          let value = composition.firstElementChild;
+          let valueLeftFile = composition.firstElementChild.querySelector('[data-component="file-legend-value-left"]');
+          let valueRightFile = composition.firstElementChild.querySelector('[data-component="file-legend-value-right"]');
 
           let bar = composition.children[1];
 
@@ -1203,7 +1342,8 @@
             
           if (bar.id == "stats-bar-snp"){
 
-            value.textContent = `${countSNP[0]} | ${countSNP[1]}`
+            valueLeftFile.textContent = `${countSNP[0]}`;
+            valueRightFile.textContent = `${countSNP[1]}`;
 
             let sumSNP = (countSNP.reduce((accumulator, currentValue) => accumulator + currentValue, 0))
             let pourcentageLeft = sumSNP ? ((countSNP[0] / sumSNP) * 100) : 0;
@@ -1229,7 +1369,8 @@
           }
           else if (bar.id == "stats-bar-indel"){
 
-            value.textContent = `${countINDEL[0]} | ${countINDEL[1]}`;
+            valueLeftFile.textContent = `${countINDEL[0]}`;
+            valueRightFile.textContent = `${countINDEL[1]}`;
 
             let sumINDEL = (countINDEL.reduce((accumulator, currentValue) => accumulator + currentValue, 0));
             let pourcentageLeft = sumINDEL ? ((countINDEL[0] / sumINDEL) * 100) : 0;
@@ -1255,7 +1396,8 @@
           }
           else if (bar.id == "stats-bar-sv"){
 
-            value.textContent = `${countSV[0]} | ${countSV[1]}`;
+            valueLeftFile.textContent = `${countSV[0]}`;
+            valueRightFile.textContent = `${countSV[1]}`;
 
             let sumSV = (countSV.reduce((accumulator, currentValue) => accumulator + currentValue, 0));
             let pourcentageLeft = sumSV ? ((countSV[0] / sumSV) * 100) : 0;
