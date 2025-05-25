@@ -5,7 +5,7 @@ import errors
 import filetype
 from glob import glob
 import gzip
-from hashlib import sha256
+from hashlib import sha256, md5
 from itertools import pairwise
 from jinja2 import Environment, FileSystemLoader
 from loguru import logger
@@ -31,6 +31,8 @@ class GenomicFile():
 
         # Path to the file
         self.path: pathlib.Path = pathlib.Path(path)
+
+        self._hash = None
 
     def is_empty(self) -> bool:
         """Check if file is empty"""
@@ -63,12 +65,40 @@ class GenomicFile():
         return repr(self.path)
     
     def __hash__(self):
+
+        if self._hash is None:
+
+            megabyte: int = 1_048_576
+
+            buffer: int = 10 * megabyte
+
+            if self.path.exists():
+
+                hash_md5: object  = md5()
+
+                with open(self.path, "rb") as f:
+
+                    for chunk in iter(lambda: f.read(buffer), b""):
+
+                        hash_md5.update(chunk)
+
+                self._hash = hash_md5.hexdigest()
+            
+            else:
+
+                self._hash = None
+
+        return self._hash
         
-        return hash(self.path)
-    
     def __eq__(self, value):
-        
-        return self.path == value.path
+
+        if isinstance(value, GenomicFile):
+
+            if self.__hash__():
+            
+                return self.__hash__() == hash(value)
+
+        return False
 
 class VCF(GenomicFile):
 
