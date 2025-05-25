@@ -367,31 +367,33 @@
                   </div>
                 </div>
                 <div class="absolute mt-[30px] top-[37px] bottom-[0] left-[0] right-[0] overflow-y-scroll overflow-x-auto bg-white" id="content1">
-                  <div id="file-header-left" class="min-h-[24px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] w-max min-w-full bg-[rgba(255,_255,_255,_0.2)]">
-                    <div class="text-[#888] mr-[10px] select-none min-w-[30px] text-right">0</div>
-                      <span data-component="column-header" class="w-max min-w-full bg-[rgba(255,_255,_255,_0.2)] table-cell px-[8px] py-[2px] whitespace-nowrap">
-                        {{ view['headers'][vcfs.repository[0]] }}
-                      </span>
-                  </div>
-                  {% for index, series in view['variants'].iterrows() %}
-                    {% if series['Variant.L']|is_nan or series['Variant.R']|is_nan %}
-                      <div data-component="file-content-left" status="mismatch" class="min-h-[24px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] w-max min-w-full bg-[rgba(255,_0,_0,_0.2)]" id="{{ series['Chromosome']|upper() }} {{ series['Type']|upper() }} {{ series['Filter.L']|upper() }}" chrom="{{ series['Chromosome']|upper() }}" type="{{ series['Type']|upper() }}" filter="{{ series['Filter.L']|upper() }}">
-                        <div class="text-[#888] mr-[10px] select-none min-w-[30px] text-right">{{ loop.index }}</div>
-                        {% if not series['Variant.L']|is_nan %}
-                          <span data-component="column-diff" class="w-max min-w-full bg-[rgba(255,_0,_0,_0.2)] table-cell px-[8px] py-[2px] whitespace-nowrap">
+                  <div class="w-fit">
+                    <div id="file-header-left" class="min-h-[24px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] w-fit bg-[rgba(255,_255,_255,_0.2)]">
+                      <div class="text-[#888] mr-[10px] select-none min-w-[30px] text-right">0</div>
+                        <span data-component="column-header" class="w-fit bg-[rgba(255,_255,_255,_0.2)] table-cell px-[8px] py-[2px] whitespace-nowrap">
+                          {{ view['headers'][vcfs.repository[0]] }}
+                        </span>
+                    </div>
+                    {% for index, series in view['variants'].iterrows() %}
+                      {% if series['Variant.L']|is_nan or series['Variant.R']|is_nan %}
+                        <div data-component="file-content-left" status="mismatch" class="min-h-[24px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] w-fit bg-[rgba(255,_0,_0,_0.2)]" id="{{ series['Chromosome']|upper() }} {{ series['Type']|upper() }} {{ series['Filter.L']|upper() }}" chrom="{{ series['Chromosome']|upper() }}" type="{{ series['Type']|upper() }}" filter="{{ series['Filter.L']|upper() }}">
+                          <div class="text-[#888] mr-[10px] select-none min-w-[30px] text-right">{{ loop.index }}</div>
+                          {% if not series['Variant.L']|is_nan %}
+                            <span data-component="column-diff" class="w-fit bg-[rgba(255,_0,_0,_0.2)] table-cell px-[8px] py-[2px] whitespace-nowrap">
+                              {{ series['Variant.L'] }}
+                            </span>
+                          {% endif %}
+                        </div>
+                      {% else %}
+                        <div data-component="file-content-left" status="match" class="min-h-[24px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] w-fit bg-[rgba(0,_255,_0,_0.2)]" id="{{ series['Chromosome']|upper() }} {{ series['Type']|upper() }} {{ series['Filter.L']|upper() }}" chrom="{{ series['Chromosome']|upper() }}" type="{{ series['Type']|upper() }}" filter="{{ series['Filter.L']|upper() }}">
+                          <div class="text-[#888] mr-[10px] select-none min-w-[30px] text-right">{{ loop.index }}</div>
+                          <span data-component="column-match" class="w-fit bg-[rgba(0,_255,_0,_0.2)] table-cell px-[8px] py-[2px] whitespace-nowrap">
                             {{ series['Variant.L'] }}
                           </span>
-                        {% endif %}
-                      </div>
-                    {% else %}
-                      <div data-component="file-content-left" status="match" class="min-h-[24px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] w-max min-w-full bg-[rgba(0,_255,_0,_0.2)]" id="{{ series['Chromosome']|upper() }} {{ series['Type']|upper() }} {{ series['Filter.L']|upper() }}" chrom="{{ series['Chromosome']|upper() }}" type="{{ series['Type']|upper() }}" filter="{{ series['Filter.L']|upper() }}">
-                        <div class="text-[#888] mr-[10px] select-none min-w-[30px] text-right">{{ loop.index }}</div>
-                        <span data-component="column-match" class="w-max min-w-full bg-[rgba(0,_255,_0,_0.2)] table-cell px-[8px] py-[2px] whitespace-nowrap">
-                          {{ series['Variant.L'] }}
-                        </span>
-                      </div>
-                    {% endif %}    
-                  {% endfor %}
+                        </div>
+                      {% endif %}    
+                    {% endfor %}
+                  </div>
                 </div>
               </div>
               <div class="flex-[1] overflow-hidden relative border-[#ccc]">
@@ -408,38 +410,40 @@
                   </div> 
                 </div>
                 <div class="absolute mt-[30px] top-[37px] bottom-[0] left-[0] right-[0] overflow-y-scroll overflow-x-auto bg-white" id="content2">
-                  <div id="file-header-right" class="min-h-[24px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] w-max min-w-full bg-[rgba(255,_255,_255,_0.2)]">
-                    <div class="text-[#888] mr-[10px] select-none min-w-[30px] text-right">0</div>
-                      <span data-component="column-header" class="w-max min-w-full bg-[rgba(255,_255,_255,_0.2)] table-cell px-[8px] py-[2px] whitespace-nowrap">
-                        {{ view['headers'][vcfs.repository[1]] }}
-                      </span>
-                  </div>
-                  {% for index, series in view['variants'].iterrows() %}
-                    {% if series['Variant.L']|is_nan or series['Variant.R']|is_nan %}
-                      <div data-component="file-content-right" status="mismatch" class="min-h-[24px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] w-max min-w-full bg-[rgba(255,_0,_0,_0.2)]" id="{{ series['Chromosome']|upper() }} {{ series['Type']|upper() }} {{ series['Filter.R']|upper() }}" chrom="{{ series['Chromosome']|upper() }}" type="{{ series['Type']|upper() }}" filter="{{ series['Filter.R']|upper() }}">
-                        <div class="text-[#888] mr-[10px] select-none min-w-[30px] text-right">{{ loop.index }}</div>
-                        {% if not series['Variant.R']|is_nan %}
-                          <span data-component="column-diff" class="w-max min-w-full bg-[rgba(255,_0,_0,_0.2)] table-cell px-[8px] py-[2px] whitespace-nowrap">
+                  <div class="w-fit">
+                    <div id="file-header-right" class="min-h-[24px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] w-fit bg-[rgba(255,_255,_255,_0.2)]">
+                      <div class="text-[#888] mr-[10px] select-none min-w-[30px] text-right">0</div>
+                        <span data-component="column-header" class="w-fit bg-[rgba(255,_255,_255,_0.2)] table-cell px-[8px] py-[2px] whitespace-nowrap">
+                          {{ view['headers'][vcfs.repository[1]] }}
+                        </span>
+                    </div>
+                    {% for index, series in view['variants'].iterrows() %}
+                      {% if series['Variant.L']|is_nan or series['Variant.R']|is_nan %}
+                        <div data-component="file-content-right" status="mismatch" class="min-h-[24px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] w-fit bg-[rgba(255,_0,_0,_0.2)]" id="{{ series['Chromosome']|upper() }} {{ series['Type']|upper() }} {{ series['Filter.R']|upper() }}" chrom="{{ series['Chromosome']|upper() }}" type="{{ series['Type']|upper() }}" filter="{{ series['Filter.R']|upper() }}">
+                          <div class="text-[#888] mr-[10px] select-none min-w-[30px] text-right">{{ loop.index }}</div>
+                          {% if not series['Variant.R']|is_nan %}
+                            <span data-component="column-diff" class="w-fit bg-[rgba(255,_0,_0,_0.2)] table-cell px-[8px] py-[2px] whitespace-nowrap">
+                              {{ series['Variant.R'] }}
+                            </span>
+                          {% endif %}
+                        </div>
+                      {% else %}
+                        <div data-component="file-content-right" status="match" class="min-h-[24px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] w-fit bg-[rgba(0,_255,_0,_0.2)]" id="{{ series['Chromosome']|upper() }} {{ series['Type']|upper() }} {{ series['Filter.R']|upper() }}" chrom="{{ series['Chromosome']|upper() }}" type="{{ series['Type']|upper() }}" filter="{{ series['Filter.R']|upper() }}">
+                          <div class="text-[#888] mr-[10px] select-none min-w-[30px] text-right">{{ loop.index }}</div>
+                          <span data-component="column-match" class="w-fit bg-[rgba(0,_255,_0,_0.2)] table-cell px-[8px] py-[2px] whitespace-nowrap">
                             {{ series['Variant.R'] }}
                           </span>
-                        {% endif %}
-                      </div>
-                    {% else %}
-                      <div data-component="file-content-right" status="match" class="min-h-[24px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] w-max min-w-full bg-[rgba(0,_255,_0,_0.2)]" id="{{ series['Chromosome']|upper() }} {{ series['Type']|upper() }} {{ series['Filter.R']|upper() }}" chrom="{{ series['Chromosome']|upper() }}" type="{{ series['Type']|upper() }}" filter="{{ series['Filter.R']|upper() }}">
-                        <div class="text-[#888] mr-[10px] select-none min-w-[30px] text-right">{{ loop.index }}</div>
-                        <span data-component="column-match" class="w-max min-w-full bg-[rgba(0,_255,_0,_0.2)] table-cell px-[8px] py-[2px] whitespace-nowrap">
-                          {{ series['Variant.R'] }}
-                        </span>
-                      </div>
-                    {% endif %}
-                  {% endfor %}
+                        </div>
+                      {% endif %}
+                    {% endfor %}
+                  </div>
                 </div>
               </div>
             </div>
             
             <div class="summary-container" id="stats">
 
-              <section class="p-6 bg-[#f3f4f6] text-[#1f2937]">
+              <section class="p-3 bg-[#f3f4f6] text-[#1f2937]">
 
                 <div class="stats-general">
                   <div class="w-full max-w-[1200px] mx-[auto] my-[0] grid grid-cols-[1fr_1fr_1fr] gap-[1.0rem]">
