@@ -1,3 +1,5 @@
+from console import stdout_console
+import contextlib
 import errors
 import files
 from itertools import repeat
@@ -6,8 +8,9 @@ from memory_profiler import profile
 import os
 from pathlib import Path
 import processes
+from rich.table import Table
+from rich.errors import NotRenderableError
 from sys import argv
-from tabulate import tabulate
 
 
 def delta(params: object) -> int:
@@ -160,7 +163,18 @@ def delta(params: object) -> int:
 
     # Print the results to the CLI
     else:
-        print(f"{vcfs.repository[0]}: [{comparaisons[(vcfs.repository[0],vcfs.repository[1])]['unique'][vcfs.repository[0]]} unique]────[{comparaisons[(vcfs.repository[0],vcfs.repository[1])]['common']} common]────[{comparaisons[(vcfs.repository[0],vcfs.repository[1])]['unique'][vcfs.repository[1]]} unique] :{vcfs.repository[1]}")
-        print(f"Jaccard index: {comparaisons[(vcfs.repository[0],vcfs.repository[1])]['jaccard']}")
+        stdout_console.rule("[bold sky_blue3] Results")
+        stdout_console.print(f":vs: Comparaison: {vcfs.repository[0]} [{comparaisons[(vcfs.repository[0],vcfs.repository[1])]['unique'][vcfs.repository[0]]} unique]────[{comparaisons[(vcfs.repository[0],vcfs.repository[1])]['common']} common]────[{comparaisons[(vcfs.repository[0],vcfs.repository[1])]['unique'][vcfs.repository[1]]} unique] {vcfs.repository[1]}", style="result")
+        stdout_console.print(f":heavy_large_circle: Jaccard index: {comparaisons[(vcfs.repository[0],vcfs.repository[1])]['jaccard']}", style="result")
         if params.benchmark:
-            print(tabulate(comparaisons[(vcfs.repository[0],vcfs.repository[1])]["benchmark"],headers='keys',tablefmt='grid',numalign='center', stralign='center'))
+            stdout_console.rule("[bold sky_blue3] Benchmark")
+            stdout_console.print(f":bookmark: Reference: {vcfs.repository[0]}", style="info")
+            stdout_console.print(f":dart: Query: {vcfs.repository[1]}", style="info")            
+            table = Table(title="Benchmark table", style="bold")
+            df = comparaisons[(vcfs.repository[0],vcfs.repository[1])]["benchmark"].astype(str)
+            for col in df.columns:
+                table.add_column(col, justify="center", vertical="middle")
+            for row in df.values:
+                with contextlib.suppress(NotRenderableError):
+                    table.add_row(*row)
+            stdout_console.print(table)
