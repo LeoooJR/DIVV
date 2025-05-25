@@ -10,6 +10,7 @@ from pathlib import Path
 import processes
 from rich.table import Table
 from rich.errors import NotRenderableError
+from rich.panel import Panel
 from sys import argv
 
 
@@ -54,6 +55,10 @@ def delta(params: object) -> int:
     logger.debug(f"Serialize output: {params.serialize}")
 
     logger.debug(f"Output a report: {params.report}")
+
+    if params.report and params.archive:
+
+        logger.debug(f"Generated report will be archived as ZIP file.")
 
     filters: dict[str:bool] = {"SNP": params.exclude_snps,
                                "TRANSITION": params.exclude_trans,
@@ -152,14 +157,20 @@ def delta(params: object) -> int:
 
                     tags[i] = params.tags[i].split(',')
 
-        # Create a report with the results
-        files.Report(
-            vcfs=vcfs,
-            tags=tags,
-            cmd=" ".join(argv),
-            view=comparaisons[(vcfs.repository[0],vcfs.repository[1])],
-            table=comparaisons[(vcfs.repository[0],vcfs.repository[1])]["benchmark"] if params.benchmark else None,
-        ).create(output=params.output)
+        try:
+            # Create a report with the results
+            files.Report(
+                vcfs=vcfs,
+                tags=tags,
+                cmd=" ".join(argv),
+                view=comparaisons[(vcfs.repository[0],vcfs.repository[1])],
+                table=comparaisons[(vcfs.repository[0],vcfs.repository[1])]["benchmark"] if params.benchmark else None,
+                archive=params.archive
+            ).create(output=params.output)
+
+            stdout_console.print(Panel.fit(f"Report successfully generated at '{params.output}'.", title="Success", highlight=True), style="result")
+        except errors.ReportError as e:
+            raise SystemExit(e)
 
     # Print the results to the CLI
     else:

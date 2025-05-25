@@ -19,6 +19,7 @@ import stat
 import subprocess
 import utils
 import variants
+import webbrowser
 import zipfile
 import _pickle as cPickle
 
@@ -1030,15 +1031,13 @@ class Report:
         vcfs: The list of VCF files
         prefix: The prefix of the report
         cmd: The command used to generate the report
-        infos: The information about the VCF files
         view: The view object as a DataFrame
-        plots: The plots
         table: The benchmark table (truth metrics) object as a DataFrame
     """
     # Make use of __slots__ to avoid the creation of __dict__ and __weakref__ for each instance, reducing the memory footprint
-    __slots__ = ('vcfs', 'tags', 'cmd', 'view', 'table', 'out')
+    __slots__ = ('vcfs', 'tags', 'cmd', 'view', 'table', 'archive')
 
-    def __init__(self, vcfs: VCFRepository, tags: list[str], cmd: str, view: dict, table: DataFrame = None, out: str = "archive"):
+    def __init__(self, vcfs: VCFRepository, tags: list[str], cmd: str, view: dict, table: DataFrame = None, archive: bool = False):
 
         # The list of VCF files
         self.vcfs = vcfs
@@ -1059,7 +1058,7 @@ class Report:
         self.table = table
 
         # How to save the outputs
-        self.out = out
+        self.archive = archive
 
     def create(self, output: pathlib.Path = pathlib.Path.cwd()):
 
@@ -1088,26 +1087,7 @@ class Report:
         # Render the template
         html = template.render(vcfs=self.vcfs, tags=self.tags, cmd=self.cmd, view=self.view, table=self.table)
 
-        if self.out == "dir":
-
-            path = output.joinpath("delta")
-
-            # Open data stream
-            try:
-                os.mkdir(path)
-            except (PermissionError):
-                raise errors.ReportError("Report cannot be created.")
-
-            with open(path.joinpath("delta.html"),'w') as f:
-                f.writelines(html)
-
-            # Copy the css and statics files next to the report
-            for f in glob(stylesheets):
-                copy(f, path)
-
-            copytree(os.path.dirname(statics), os.path.join(path,'statics'), dirs_exist_ok=True)
-
-        else:
+        if self.archive:
 
             path = output.joinpath("delta.zip")
 
@@ -1118,6 +1098,30 @@ class Report:
                     zip.write(stylesheet, arcname=os.path.relpath(path=stylesheet, start=ressources))
                 for static in glob(statics):
                     zip.write(static, arcname=os.path.relpath(path=static, start=ressources))
+
+        else:
+
+            path = output.joinpath("delta")
+
+            # Open data stream
+            try:
+                path.mkdir(exist_ok=True)
+            except (PermissionError, FileNotFoundError, FileExistsError) as e:
+                raise errors.ReportError(f"Report cannot be created: {e}")
+
+            with open(path.joinpath("delta.html"),'w') as f:
+                f.writelines(html)
+
+            # Copy the css and statics files next to the report
+            for f in glob(stylesheets):
+                copy(f, path)
+
+            copytree(os.path.dirname(statics), os.path.join(path,'statics'), dirs_exist_ok=True)
+
+            if os.path.exists(path.joinpath("delta.html")):
+                webbrowser.open(str(path.joinpath("delta.html")))
+            else:
+                raise errors.ReportError("Report not found on filesystem.")
 
     def __str__(self):
         

@@ -58,7 +58,7 @@ class Program:
             type=str,
             choices=["json", "pickle", "vcf", "vcf.gz"],
             required=False,
-            help="Should the result be seralized [.json, .pickle, .vcf[.gz]]",
+            help="Should the result be seralized [.json, .pickle, .vcf[.gz]]?",
         )
         self.parser.add_argument(
             "-p",
@@ -168,8 +168,16 @@ class Program:
             "--report",
             dest="report",
             action="store_true",
-            help="Should a HTML report be generated.",
+            help="Should a HTML report be generated?",
             default=False,
+        )
+        self.parser.add_argument(
+            "-a",
+            "--archive",
+            dest="archive",
+            action="store_true",
+            help="Should the report be archived?",
+            default=False
         )
         self.parser.add_argument(
             "-t",
@@ -184,7 +192,7 @@ class Program:
             "--verbosity",
             dest="verbosity",
             action="store_true",
-            help="Should logs be printed to the shell.",
+            help="Should logs be printed to the shell?",
             default=False,
         )
 
