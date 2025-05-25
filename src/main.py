@@ -13,7 +13,7 @@ def main():
 
     except SystemExit as e:
 
-        stderr_console.print(Panel.fit(e, box=box.ROUNDED, title="Execution error", subtitle="System exit as 1", highlight=True), style="error")
+        stderr_console.print(Panel.fit(str(e), box=box.ROUNDED, title="Execution error", subtitle="System exit as 1", highlight=True), style="error")
         exit(1)
 
 if __name__ == "__main__":
