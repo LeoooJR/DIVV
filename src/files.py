@@ -11,7 +11,7 @@ from jinja2 import Environment, FileSystemLoader
 from loguru import logger
 import numpy as np
 import os
-from pandas import isna, concat, Index, DataFrame, notna
+from pandas import isna, concat, Index, DataFrame, Series, notna
 import pathlib
 from plots import PlotLibrary
 from shutil import copy, copytree
@@ -180,6 +180,10 @@ class VCF(GenomicFile):
         self.SAMPLES = values
 
         self.update_header(samples=values)
+
+    def is_reference(self):
+
+        return self.reference
 
     def verify(self):
 
@@ -843,7 +847,11 @@ class VCFRepository():
 
     def populate(self, vcfs: list[str], index: list[str], reference: bool = False, filters: dict = None):
 
-        assert len(vcfs) == len(index), "VFC(s) and Index(s) collections must be the same size" 
+        assert len(vcfs) == len(index), "VFC(s) and Index(s) collections must be the same size"
+
+        self.REF = 0 if reference else None
+
+        self.QUERY = 1 if reference else None
 
         self.repository: list[VCF] = [VCF(path=vcf, reference=(reference and not i), index=index[i], filters=filters, lazy=False) for i, vcf in enumerate(vcfs)]
 
@@ -852,6 +860,24 @@ class VCFRepository():
         assert len(vcfs) == len(index), "VFC(s) and Index(s) collections must be the same size"
 
         self.repository.extend([VCF(path=vcf, index=index[i], lazy=False) for i, vcf in enumerate(vcfs)])
+
+    def get_reference(self) -> VCF | None:
+
+        try:
+            vcf = self.repository[self.REF]
+        except TypeError:
+            vcf = None
+
+        return vcf
+
+    def get_query(self) -> VCF | None:
+
+        try:
+            vcf = self.repository[self.QUERY]
+        except TypeError:
+            vcf = None
+
+        return vcf
 
     def compare(self):
 
@@ -979,7 +1005,7 @@ class VCFRepository():
                 {
                     "Hash": "string[pyarrow]",
                     "Chromosome": "category",
-                    "Position": "int64",
+                    "Position": "uint64",
                     "Type": "category",
                     "Filter.L": "category",
                     "Filter.R": "category",
@@ -1009,17 +1035,72 @@ class VCFRepository():
             results[pair]["plots"].venn((results[pair]["unique"][pair[0]], results[pair]["unique"][pair[1]], results[pair]["common"]), [pair[0].basename(), pair[1].basename()])
 
             # Should a benchmark be computed ?
-            if pair[0].reference:
+            if pair[0].is_reference():
 
                 logger.debug(f"Computing benchmark metrics from {pair[0]}.")
 
-                results[pair]["benchmark"] = utils.evaluate(df)
+                # Create a mask of variants that passed the filter in one or both of the truth and query sets
+                pass_mask = (df["Filter.L"] == "PASS") | (df["Filter.R"] == "PASS")
+
+                series = []
+                
+                # Compute the performance metrics for SNPs and INDELs
+                for v in ['snp','indel']:
+
+                    # Create a mask of variants that are of the specified type
+                    type_mask = df["Type"] == v
+
+                    # Filter the DataFrame based on the variant type and the filter mask
+                    filtered_df = df[type_mask & pass_mask]
+
+                    # If FILTER.L and FILTER.R are equal, the variant is a true positive
+                    is_match = filtered_df["Filter.L"] == filtered_df["Filter.R"]
+                    # If FILTER.L is PASS and FILTER.R is either missing or FAIL, the variant is a false negative
+                    is_truth_only = (filtered_df["Filter.L"] == "PASS") & ((isna(filtered_df["Filter.R"])) | (filtered_df["Filter.R"] == "FAIL"))
+                    # If FILTER.R is PASS and FILTER.L is either missing or FAIL, the variant is a false positive
+                    is_query_only = ((isna(filtered_df["Filter.L"])) | (filtered_df["Filter.R"] == "FAIL")) & (filtered_df["Filter.R"] == "PASS")
+
+                    # Create a Series of the performance metrics
+                    summary = Series([v, 
+                                    'PASS', 
+                                    (notna(filtered_df["Filter.L"])).sum(), 
+                                    is_match.sum(), 
+                                    is_truth_only.sum(), 
+                                    (notna(filtered_df["Filter.R"])).sum(), 
+                                    is_query_only.sum()], 
+                                    index=["TYPE","FILTER","TRUTH.TOTAL","TRUTH.TP","TRUTH.FN","QUERY.TOTAL","QUERY.FP"])
+                    
+                    # Compute the recall, precision, and F1 score
+                    try:
+                        summary["RECALL"] = summary["TRUTH.TP"] / (summary["TRUTH.TP"] + summary["TRUTH.FN"])
+                    except ZeroDivisionError:
+                        summary["RECALL"] = 0.00
+
+                    try:
+                        summary["PRECISION"] = summary["TRUTH.TP"] / (summary["TRUTH.TP"] + summary["QUERY.FP"])
+                    except ZeroDivisionError:
+                        summary["PRECISION"] = 0.00
+                        
+                    try:
+                        summary["F1"] = 2 * (summary["PRECISION"] * summary["RECALL"]) / (summary["PRECISION"] + summary["RECALL"])
+                    except ZeroDivisionError:
+                        summary["F1"] = 0.00
+
+                    series.append(summary)
+
+                # Return the performance metrics as a DataFrame, column types are specified for better memory management
+                results[pair]["benchmark"] = DataFrame(series).astype({"TYPE": "category", 
+                                                                        "FILTER": "category", 
+                                                                        "TRUTH.TOTAL": "uint32", 
+                                                                        "TRUTH.TP": "uint32", 
+                                                                        "TRUTH.FN": "uint32", 
+                                                                        "QUERY.TOTAL": "uint32", 
+                                                                        "QUERY.FP": "uint32",
+                                                                        "RECALL": "float64",
+                                                                        "PRECISION": "float64",
+                                                                        "F1": "float64"})
 
         return results
-    
-    def evaluate(self):
-
-        pass
 
     def __len__(self):
 

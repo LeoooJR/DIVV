@@ -94,7 +94,7 @@ def delta(params: object) -> int:
 
     manager: processes.TasksManager = processes.TasksManager(vcfs, params.process)
 
-    manager.scheduling(tasks=[vcfs.repository[0].variants.chromosomes, vcfs.repository[1].variants.chromosomes])
+    manager.scheduling(tasks=[vcf.variants.chromosomes for vcf in vcfs.repository])
 
     try:
         

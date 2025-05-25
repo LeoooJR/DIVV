@@ -8,7 +8,7 @@ import numpy as np
 import os
 import subprocess
 from pathlib import Path
-from pandas import Series, DataFrame, notna, isna
+from pandas import DataFrame, notna
 import warnings
 import _pickle as cPickle
 
@@ -150,74 +150,6 @@ def convert(a: object) -> object:
 # ===========================================================================================
 # Variants
 # ===========================================================================================
-
-def evaluate(df: DataFrame) -> DataFrame:
-    """ Evaluate the performance of the variant caller based on the truth set """
-
-    assert "Filter.L" in df.columns, "Missing truth filter column"
-    assert "Filter.R" in df.columns, "Missing query filter column"
-    assert "Type" in df.columns, "Missing variant type column"
-
-    # Create a mask of variants that passed the filter in one or both of the truth and query sets
-    pass_mask = (df["Filter.L"] == "PASS") | (df["Filter.R"] == "PASS")
-
-    series = []
-    
-    # Compute the performance metrics for SNPs and INDELs
-    for v in ['snp','indel']:
-
-        # Create a mask of variants that are of the specified type
-        type_mask = df["Type"] == v
-
-        # Filter the DataFrame based on the variant type and the filter mask
-        filtered_df = df[type_mask & pass_mask]
-
-        # If FILTER.L and FILTER.R are equal, the variant is a true positive
-        is_match = filtered_df["Filter.L"] == filtered_df["Filter.R"]
-        # If FILTER.L is PASS and FILTER.R is either missing or FAIL, the variant is a false negative
-        is_truth_only = (filtered_df["Filter.L"] == "PASS") & ((isna(filtered_df["Filter.R"])) | (filtered_df["Filter.R"] == "FAIL"))
-        # If FILTER.R is PASS and FILTER.L is either missing or FAIL, the variant is a false positive
-        is_query_only = ((isna(filtered_df["Filter.L"])) | (filtered_df["Filter.R"] == "FAIL")) & (filtered_df["Filter.R"] == "PASS")
-
-        # Create a Series of the performance metrics
-        summary = Series([v, 
-                          'PASS', 
-                          (notna(filtered_df["Filter.L"])).sum(), 
-                          is_match.sum(), 
-                          is_truth_only.sum(), 
-                          (notna(filtered_df["Filter.R"])).sum(), 
-                          is_query_only.sum()], 
-                          index=["TYPE","FILTER","TRUTH.TOTAL","TRUTH.TP","TRUTH.FN","QUERY.TOTAL","QUERY.FP"])
-        
-        # Compute the recall, precision, and F1 score
-        try:
-            summary["RECALL"] = summary["TRUTH.TP"] / (summary["TRUTH.TP"] + summary["TRUTH.FN"])
-        except ZeroDivisionError:
-            summary["RECALL"] = 0.00
-
-        try:
-            summary["PRECISION"] = summary["TRUTH.TP"] / (summary["TRUTH.TP"] + summary["QUERY.FP"])
-        except ZeroDivisionError:
-            summary["PRECISION"] = 0.00
-            
-        try:
-            summary["F1"] = 2 * (summary["PRECISION"] * summary["RECALL"]) / (summary["PRECISION"] + summary["RECALL"])
-        except ZeroDivisionError:
-            summary["F1"] = 0.00
-
-        series.append(summary)
-
-    # Return the performance metrics as a DataFrame, column types are specified for better memory management
-    return DataFrame(series).astype({"TYPE": "category", 
-                                    "FILTER": "category", 
-                                    "TRUTH.TOTAL": "int64", 
-                                    "TRUTH.TP": "int64", 
-                                    "TRUTH.FN": "int64", 
-                                    "QUERY.TOTAL": "int64", 
-                                    "QUERY.FP": "int64",
-                                    "RECALL": "float64",
-                                    "PRECISION": "float64",
-                                    "F1": "float64"})
 
 def hamming_distance(a: np.ndarray, b: np.ndarray) -> float:
     """ Calculate the Hamming distance """
