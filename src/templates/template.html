@@ -6,6 +6,7 @@
   <title>VCF comparison report</title>
   <script src="https://cdn.plot.ly/plotly-3.0.0.min.js" charset="utf-8"></script>
   <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <script src="https://cdn.jsdelivr.net/npm/alasql@4"></script>
 </head>
 
 <body onload="filter()">
@@ -217,16 +218,16 @@
 
     <div class="flex flex-row w-full">
 
-        <div class="flex flex-row items-stretch w-1/2 bg-[white]">
+        <div class="flex flex-row w-[50%] bg-[white] content-center">
 
-            <div class="flex flex-row ml-[50px] w-1/2">
+            <div class="flex flex-row w-fit m-[3%]">
 
-                <img src="statics/chromosome.png" alt="chromosomes-icon" class="w-[45px] m-[10px] pt-[5px]">
+                <img src="statics/chromosome.png" alt="chromosomes-icon" class="w-[45px] mr-[10%]">
 
-                <div class="search">
+                <div class="content-center h-[100%] w-fit mr-[40px]">
 
-                  <div class="max-w-[400px] min-w-[300px] m-[10px] h-[45px] border-[1px] border-[solid] border-[#3d444d] rounded-xl px-[15px] py-[5px] bg-[#0d1117] [box-shadow:0_0_20px_rgba(0,_0,_0,_0.5)] [transition:150ms_cubic-bezier(0.4,0,0.2,1)]
- align-middle w-full m-[5px] hover:border-[#999999]">
+                  <div class="h-[45px] border-[1px] border-[solid] border-[#3d444d] rounded-xl px-[15px] py-[5px] bg-[#0d1117] [box-shadow:0_0_20px_rgba(0,_0,_0,_0.5)] [transition:150ms_cubic-bezier(0.4,0,0.2,1)]
+ align-middle w-full hover:border-[#999999]">
 
                     <div class="relative w-full h-full -left-[5px] border-[0] flex items-center">
 
@@ -253,10 +254,10 @@
 
             </div>
 
-            <div class="flex flex-row items-stretch w-1/2">
-              <img src="statics/puzzle.png" alt="puzzle-icon" class="w-[45px] m-[10px] pt-[5px]">
-              <div class="mt-[5px] w-full">
-                <select id="query-status" class="px-[15px] py-[10px] rounded-[5px] border-[none] min-w-[200px] text-[14px] m-[10px] content-center font-[Ubuntu] bg-[#0d1117] text-[white] focus-within-[white] cursor-pointer">
+            <div class="flex flex-row w-fit m-[3%]">
+              <img src="statics/puzzle.png" alt="puzzle-icon" class="w-[45px] mr-[10%]">
+              <div class="content-center h-[100%] mr-[40px]">
+                <select id="query-status" class="px-[2%] py-[5%] rounded-[5px] border-[none] min-w-[200px] text-[14px] content-center font-[Ubuntu] bg-[#0d1117] text-[white] focus-within-[white] cursor-pointer">
                     <option selected disabled>Select a status...</option>
                     <option>ALL</option>
                     <option>MATCH</option>
@@ -267,20 +268,20 @@
 
         </div>
 
-        <div class="flex flex-row items-stretch w-1/2 bg-[#111111]">
-            <div class="flex flex-row mr-auto ml-auto">
-                <img src="statics/filter.png" alt="filter-icon" class="w-[45px] m-[10px] pt-[5px]">
-                <div class="mr-[50px] mt-[5px] w-full">
-                    <select id="query-filter" class="px-[15px] py-[10px] rounded-[5px] border-[none] min-w-[200px] text-[14px] m-[10px] content-center font-[Ubuntu] bg-[#eef0f1] text-[black] focus-within-[white] cursor-pointer">
+        <div class="flex flex-row bg-[#111111] w-[50%] content-center">
+            <div class="flex flex-row w-[100%]">
+                <img src="statics/filter.png" alt="filter-icon" class="w-[45px] m-[3%]">
+                <div class="mr-[40px] w-full content-center h-[100%]">
+                    <select id="query-filter" class="px-[2%] py-[5%] rounded-[5px] border-[none] min-w-[200px] text-[14px] content-center font-[Ubuntu] bg-[#eef0f1] text-[black] focus-within-[white] cursor-pointer">
                         <option selected disabled>Select a filter...</option>
                         <option>ALL</option>
                         <option>PASS</option>
                         <option>FAIL</option>
                     </select>
                 </div>
-                <img src="statics/dna.png" alt="dna-icon" class="w-[45px] m-[10px] pt-[5px]">
-                <div class="mr-[50px] mt-[5px] w-full">
-                    <select id="query-variant" class="px-[15px] py-[10px] rounded-[5px] border-[none] min-w-[200px] text-[14px] m-[10px] content-center font-[Ubuntu] bg-[#eef0f1] text-[black] focus-within-[white] cursor-pointer">
+                <img src="statics/dna.png" alt="dna-icon" class="w-[45px] m-[3%]">
+                <div class="mr-[40px] w-full content-center h-[100%]">
+                    <select id="query-variant" class="px-[2%] py-[5%] rounded-[5px] border-[none] min-w-[200px] text-[14px] content-center font-[Ubuntu] bg-[#eef0f1] text-[black] focus-within-[white] cursor-pointer">
                         <option selected disabled>Select a variant...</option>
                         <option>ALL</option>
                         <option>SNP</option>
@@ -288,8 +289,8 @@
                         <option>OTHER</option>
                     </select>
                 </div>
-                <img src="statics/terminal.png" alt="terminal-icon" class="w-[45px] m-[10px] cursor-pointer" id="terminal-icon">
-                <button id="reset-button" class="bg-[rgba(79,_70,_229,_0.9)] border-[none] rounded-[6px] px-[20px] m-[15px] cursor-pointer text-[14px] text-white rounded-[16px] font-[Ubuntu] font-bold hover:bg-[rgba(67,_56,_202,_0.9)]" onclick="resetFilters()">Reset</button>
+                <img src="statics/terminal.png" alt="terminal-icon" class="w-[45px] mt-[3%] mb-[3%] cursor-pointer" id="terminal-icon">
+                <button id="reset-button" class="bg-[rgba(79,_70,_229,_0.9)] border-[none] rounded-[6px] px-[20px] m-[3%] cursor-pointer text-[14px] text-white rounded-[16px] font-[Ubuntu] font-bold hover:bg-[rgba(67,_56,_202,_0.9)]" onclick="resetFilters()">Reset</button>
             </div>
         </div>
     </div>
@@ -318,11 +319,14 @@
           <div class="flex items-center">
             <div class="w-full">
               <input
+                id="terminal-input"
                 type="text"
-                class="bg-transparent border-[none] text-[#006adc] [font-family:inherit] text-[14px] outline-[none] w-full placeholder-[rgba(255,_255,_255,_0.5)]"
+                class="bg-transparent border-[none] text-[white] [font-family:inherit] text-[14px] outline-[none] w-full placeholder-[rgba(255,_255,_255,_0.5)]"
                 placeholder="Enter query..."
               />
               <span class="w-[8px] h-[15px] bg-[#ffffff] inline-block animate-[blink_1s_step-end_infinite] ml-[2px]"></span>
+              <p id="stdout" class="hidden text-[white]"></p>
+              <p id="stderr" class="hidden text-[red]"></p>
             </div>
           </div>
         </div>
@@ -376,7 +380,7 @@
                     </div>
                     {% for index, series in view['variants'].iterrows() %}
                       {% if series['Variant.L']|is_nan or series['Variant.R']|is_nan %}
-                        <div data-component="file-content-left" status="mismatch" class="min-h-[24px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] w-fit bg-[rgba(255,_0,_0,_0.2)]" id="{{ series['Chromosome']|upper() }} {{ series['Type']|upper() }} {{ series['Filter.L']|upper() }}" chrom="{{ series['Chromosome']|upper() }}" type="{{ series['Type']|upper() }}" filter="{{ series['Filter.L']|upper() }}">
+                        <div data-component="file-content-left" status="mismatch" row="{{ loop.index0 }}" class="min-h-[24px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] w-fit bg-[rgba(255,_0,_0,_0.2)]" id="{{ series['Chromosome']|upper() }} {{ series['Type']|upper() }} {{ series['Filter.L']|upper() }}" chrom="{{ series['Chromosome']|upper() }}" type="{{ series['Type']|upper() }}" filter="{{ series['Filter.L']|upper() }}">
                           <div class="text-[#888] mr-[10px] select-none min-w-[30px] text-right">{{ loop.index }}</div>
                           {% if not series['Variant.L']|is_nan %}
                             <span data-component="column-diff" class="w-fit bg-[rgba(255,_0,_0,_0.2)] table-cell px-[8px] py-[2px] whitespace-nowrap">
@@ -385,7 +389,7 @@
                           {% endif %}
                         </div>
                       {% else %}
-                        <div data-component="file-content-left" status="match" class="min-h-[24px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] w-fit bg-[rgba(0,_255,_0,_0.2)]" id="{{ series['Chromosome']|upper() }} {{ series['Type']|upper() }} {{ series['Filter.L']|upper() }}" chrom="{{ series['Chromosome']|upper() }}" type="{{ series['Type']|upper() }}" filter="{{ series['Filter.L']|upper() }}">
+                        <div data-component="file-content-left" status="match" row="{{ loop.index0 }}" class="min-h-[24px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] w-fit bg-[rgba(0,_255,_0,_0.2)]" id="{{ series['Chromosome']|upper() }} {{ series['Type']|upper() }} {{ series['Filter.L']|upper() }}" chrom="{{ series['Chromosome']|upper() }}" type="{{ series['Type']|upper() }}" filter="{{ series['Filter.L']|upper() }}">
                           <div class="text-[#888] mr-[10px] select-none min-w-[30px] text-right">{{ loop.index }}</div>
                           <span data-component="column-match" class="w-fit bg-[rgba(0,_255,_0,_0.2)] table-cell px-[8px] py-[2px] whitespace-nowrap">
                             {{ series['Variant.L'] }}
@@ -419,7 +423,7 @@
                     </div>
                     {% for index, series in view['variants'].iterrows() %}
                       {% if series['Variant.L']|is_nan or series['Variant.R']|is_nan %}
-                        <div data-component="file-content-right" status="mismatch" class="min-h-[24px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] w-fit bg-[rgba(255,_0,_0,_0.2)]" id="{{ series['Chromosome']|upper() }} {{ series['Type']|upper() }} {{ series['Filter.R']|upper() }}" chrom="{{ series['Chromosome']|upper() }}" type="{{ series['Type']|upper() }}" filter="{{ series['Filter.R']|upper() }}">
+                        <div data-component="file-content-right" row="{{ loop.index0 }}" status="mismatch" class="min-h-[24px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] w-fit bg-[rgba(255,_0,_0,_0.2)]" id="{{ series['Chromosome']|upper() }} {{ series['Type']|upper() }} {{ series['Filter.R']|upper() }}" chrom="{{ series['Chromosome']|upper() }}" type="{{ series['Type']|upper() }}" filter="{{ series['Filter.R']|upper() }}">
                           <div class="text-[#888] mr-[10px] select-none min-w-[30px] text-right">{{ loop.index }}</div>
                           {% if not series['Variant.R']|is_nan %}
                             <span data-component="column-diff" class="w-fit bg-[rgba(255,_0,_0,_0.2)] table-cell px-[8px] py-[2px] whitespace-nowrap">
@@ -428,7 +432,7 @@
                           {% endif %}
                         </div>
                       {% else %}
-                        <div data-component="file-content-right" status="match" class="min-h-[24px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] w-fit bg-[rgba(0,_255,_0,_0.2)]" id="{{ series['Chromosome']|upper() }} {{ series['Type']|upper() }} {{ series['Filter.R']|upper() }}" chrom="{{ series['Chromosome']|upper() }}" type="{{ series['Type']|upper() }}" filter="{{ series['Filter.R']|upper() }}">
+                        <div data-component="file-content-right" status="match" row="{{ loop.index0 }}" class="min-h-[24px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] w-fit bg-[rgba(0,_255,_0,_0.2)]" id="{{ series['Chromosome']|upper() }} {{ series['Type']|upper() }} {{ series['Filter.R']|upper() }}" chrom="{{ series['Chromosome']|upper() }}" type="{{ series['Type']|upper() }}" filter="{{ series['Filter.R']|upper() }}">
                           <div class="text-[#888] mr-[10px] select-none min-w-[30px] text-right">{{ loop.index }}</div>
                           <span data-component="column-match" class="w-fit bg-[rgba(0,_255,_0,_0.2)] table-cell px-[8px] py-[2px] whitespace-nowrap">
                             {{ series['Variant.R'] }}
@@ -544,10 +548,10 @@
                               <svg class="inline-block mr-[0.5rem]" fill="currentColor" height="16" width="16" viewBox="0 0 16 16">
                                 <path fill="#2C7A7B" d="M8 4a4 4 0 1 1 0 8 4 4 0 0 1 0-8Z"></path>
                               </svg>
-                              <span class="font-semibold mr-[0.25rem]">
+                              <span class="mr-[0.25rem]">
                                 {{ vcfs.repository[0].informations().basename }}
                               </span>
-                              <span data-component="file-legend-value-left">NA</span>
+                              <span data-component="file-legend-value-left" class="font-semibold">NA</span>
                             </a>
                           </li>
                           <li class="inline">
@@ -555,14 +559,14 @@
                               <svg class="inline-block mr-[0.5rem]" fill="currentColor" height="16" width="16" viewBox="0 0 16 16">
                                 <path fill="#822E4A" d="M8 4a4 4 0 1 1 0 8 4 4 0 0 1 0-8Z"></path>
                               </svg>
-                              <span class="font-semibold mr-[0.25rem]">
+                              <span class="mr-[0.25rem]">
                                 {{ vcfs.repository[1].informations().basename }}
                               </span>
-                              <span data-component="file-legend-value-right">NA</span>
+                              <span data-component="file-legend-value-right" class="font-semibold">NA</span>
                             </a>
                           </li>
                         </ul>
-                        <div class="w-full h-[30px] rounded-full bg-[#E5E7EB]" id="stats-bar-snp">
+                        <div class="w-full h-[25px] rounded-full bg-[#E5E7EB]" id="stats-bar-snp">
                           <div class="h-full bg-[#2C7A7B] opacity-75 float-left rounded-tl-full rounded-bl-full">
                           </div>
                           <div class="h-full bg-[#822E4A] opacity-75 float-left rounded-tr-full rounded-br-full">
@@ -597,10 +601,10 @@
                               <svg class="inline-block mr-[0.5rem]" fill="currentColor" height="16" width="16" viewBox="0 0 16 16">
                                 <path fill="#2C7A7B" d="M8 4a4 4 0 1 1 0 8 4 4 0 0 1 0-8Z"></path>
                               </svg>
-                              <span class="font-semibold mr-[0.25rem]">
+                              <span class="mr-[0.25rem]">
                                 {{ vcfs.repository[0].informations().basename }}
                               </span>
-                              <span data-component="file-legend-value-left">NA</span>
+                              <span data-component="file-legend-value-left" class="font-semibold">NA</span>
                             </a>
                           </li>
                           <li class="inline">
@@ -608,14 +612,14 @@
                               <svg class="inline-block mr-[0.5rem]" fill="currentColor" height="16" width="16" viewBox="0 0 16 16">
                                 <path fill="#822E4A" d="M8 4a4 4 0 1 1 0 8 4 4 0 0 1 0-8Z"></path>
                               </svg>
-                              <span class="font-semibold mr-[0.25rem]">
+                              <span class="mr-[0.25rem]">
                                 {{ vcfs.repository[1].informations().basename }}
                               </span>
-                              <span data-component="file-legend-value-right">NA</span>
+                              <span data-component="file-legend-value-right" class="font-semibold">NA</span>
                             </a>
                           </li>
                         </ul>
-                        <div class="w-full h-[30px] rounded-full bg-[#E5E7EB]" id="stats-bar-mnp">
+                        <div class="w-full h-[25px] rounded-full bg-[#E5E7EB]" id="stats-bar-mnp">
                           <div class="h-full bg-[#2C7A7B] opacity-75 float-left rounded-tl-full rounded-bl-full">
                           </div>
                           <div class="h-full bg-[#822E4A] opacity-75 float-left rounded-tr-full rounded-br-full">
@@ -653,10 +657,10 @@
                               <svg class="inline-block mr-[0.5rem]" fill="currentColor" height="16" width="16" viewBox="0 0 16 16">
                                 <path fill="#2C7A7B" d="M8 4a4 4 0 1 1 0 8 4 4 0 0 1 0-8Z"></path>
                               </svg>
-                              <span class="font-semibold mr-[0.25rem]">
+                              <span class="mr-[0.25rem]">
                                 {{ vcfs.repository[0].informations().basename }}
                               </span>
-                              <span data-component="file-legend-value-left">NA</span>
+                              <span data-component="file-legend-value-left" class="font-semibold">NA</span>
                             </a>
                           </li>
                           <li class="inline">
@@ -664,14 +668,14 @@
                               <svg class="inline-block mr-[0.5rem]" fill="currentColor" height="16" width="16" viewBox="0 0 16 16">
                                 <path fill="#822E4A" d="M8 4a4 4 0 1 1 0 8 4 4 0 0 1 0-8Z"></path>
                               </svg>
-                              <span class="font-semibold mr-[0.25rem]">
+                              <span class="mr-[0.25rem]">
                                 {{ vcfs.repository[1].informations().basename }}
                               </span>
-                              <span data-component="file-legend-value-right">NA</span>
+                              <span data-component="file-legend-value-right" class="font-semibold">NA</span>
                             </a>
                           </li>
                         </ul>
-                        <div class="w-full h-[30px] rounded-full bg-[#E5E7EB]" id="stats-bar-sv">
+                        <div class="w-full h-[25px] rounded-full bg-[#E5E7EB]" id="stats-bar-sv">
                           <div class="h-full bg-[#2C7A7B] opacity-75 float-left rounded-tl-full rounded-bl-full">
                           </div>
                           <div class="h-full bg-[#822E4A] opacity-75 float-left rounded-tr-full rounded-br-full">
@@ -715,10 +719,10 @@
                               <svg class="inline-block mr-[0.5rem]" fill="currentColor" height="16" width="16" viewBox="0 0 16 16">
                                 <path fill="#2C7A7B" d="M8 4a4 4 0 1 1 0 8 4 4 0 0 1 0-8Z"></path>
                               </svg>
-                              <span class="font-semibold mr-[0.25rem]">
+                              <span class="mr-[0.25rem]">
                                 {{ vcfs.repository[0].informations().basename }}
                               </span>
-                              <span data-component="file-legend-value-left">NA</span>
+                              <span data-component="file-legend-value-left" class="font-semibold">NA</span>
                             </a>
                           </li>
                           <li class="inline">
@@ -726,14 +730,14 @@
                               <svg class="inline-block mr-[0.5rem]" fill="currentColor" height="16" width="16" viewBox="0 0 16 16">
                                 <path fill="#822E4A" d="M8 4a4 4 0 1 1 0 8 4 4 0 0 1 0-8Z"></path>
                               </svg>
-                              <span class="font-semibold mr-[0.25rem]">
+                              <span class="mr-[0.25rem]">
                                 {{ vcfs.repository[1].informations().basename }}
                               </span>
-                              <span data-component="file-legend-value-right">NA</span>
+                              <span data-component="file-legend-value-right" class="font-semibold">NA</span>
                             </a>
                           </li>
                         </ul>
-                        <div class="w-full h-[30px] rounded-full bg-[#E5E7EB]" id="stats-bar-indel">
+                        <div class="w-full h-[25px] rounded-full bg-[#E5E7EB]" id="stats-bar-indel">
                           <div class="h-full bg-[#2C7A7B] opacity-75 float-left rounded-tl-full rounded-bl-full">
                           </div>
                           <div class="h-full bg-[#822E4A] opacity-75 float-left rounded-tr-full rounded-br-full">
@@ -791,10 +795,10 @@
                               <svg class="inline-block mr-[0.5rem]" fill="currentColor" height="16" width="16" viewBox="0 0 16 16">
                                 <path fill="#2C7A7B" d="M8 4a4 4 0 1 1 0 8 4 4 0 0 1 0-8Z"></path>
                               </svg>
-                              <span class="font-semibold mr-[0.25rem]">
+                              <span class="mr-[0.25rem]">
                                 {{ vcfs.repository[0].informations().basename }}
                               </span>
-                              <span data-component="file-legend-value-left">NA</span>
+                              <span data-component="file-legend-value-left" class="font-semibold">NA</span>
                             </a>
                           </li>
                           <li class="inline">
@@ -802,14 +806,14 @@
                               <svg class="inline-block mr-[0.5rem]" fill="currentColor" height="16" width="16" viewBox="0 0 16 16">
                                 <path fill="#822E4A" d="M8 4a4 4 0 1 1 0 8 4 4 0 0 1 0-8Z"></path>
                               </svg>
-                              <span class="font-semibold mr-[0.25rem]">
+                              <span class="mr-[0.25rem]">
                                 {{ vcfs.repository[1].informations().basename }}
                               </span>
-                              <span data-component="file-legend-value-right">NA</span>
+                              <span data-component="file-legend-value-right" class="font-semibold">NA</span>
                             </a>
                           </li>
                         </ul>
-                        <div class="w-full h-[30px] rounded-full bg-[#E5E7EB]" id="stats-bar-inv">
+                        <div class="w-full h-[25px] rounded-full bg-[#E5E7EB]" id="stats-bar-inv">
                           <div class="h-full bg-[#2C7A7B] opacity-75 float-left rounded-tl-full rounded-bl-full">
                           </div>
                           <div class="h-full bg-[#822E4A] opacity-75 float-left rounded-tr-full rounded-br-full">
@@ -864,10 +868,10 @@
                               <svg class="inline-block mr-[0.5rem]" fill="currentColor" height="16" width="16" viewBox="0 0 16 16">
                                 <path fill="#2C7A7B" d="M8 4a4 4 0 1 1 0 8 4 4 0 0 1 0-8Z"></path>
                               </svg>
-                              <span class="font-semibold mr-[0.25rem]">
+                              <span class="mr-[0.25rem]">
                                 {{ vcfs.repository[0].informations().basename }}
                               </span>
-                              <span data-component="file-legend-value-left">NA</span>
+                              <span data-component="file-legend-value-left" class="font-semibold">NA</span>
                             </a>
                           </li>
                           <li class="inline">
@@ -875,14 +879,14 @@
                               <svg class="inline-block mr-[0.5rem]" fill="currentColor" height="16" width="16" viewBox="0 0 16 16">
                                 <path fill="#822E4A" d="M8 4a4 4 0 1 1 0 8 4 4 0 0 1 0-8Z"></path>
                               </svg>
-                              <span class="font-semibold mr-[0.25rem]">
+                              <span class="mr-[0.25rem]">
                                 {{ vcfs.repository[1].informations().basename }}
                               </span>
-                              <span data-component="file-legend-value-right">NA</span>
+                              <span data-component="file-legend-value-right" class="font-semibold">NA</span>
                             </a>
                           </li>
                         </ul>
-                        <div class="w-full h-[30px] rounded-full bg-[#E5E7EB]" id="stats-bar-comp">
+                        <div class="w-full h-[25px] rounded-full bg-[#E5E7EB]" id="stats-bar-comp">
                           <div class="h-full bg-[#2C7A7B] opacity-75 float-left rounded-tl-full rounded-bl-full">
                           </div>
                           <div class="h-full bg-[#822E4A] opacity-75 float-left rounded-tr-full rounded-br-full">
@@ -1219,6 +1223,7 @@
           document.getElementById("query-status").addEventListener("change", filter);
           document.getElementById("query-filter").addEventListener("change", filter);
           document.getElementById("query-variant").addEventListener("change", filter);
+          document.getElementById("terminal-input").addEventListener("keypress", runQuery);
       });
       function filter() {
 
@@ -1426,6 +1431,49 @@
             progresses[1].style.width = pourcentageRight + "%";
           }
         })
+      }
+      function runQuery() {
+        if (event.key === "Enter") {
+          const stderr = document.getElementById('stderr')
+          stderr.classList.replace("flex", "hidden")
+          stderr.textContent = "";
+          resetFilters();
+          const variantsDivsLeft = document.querySelectorAll('[data-component="file-content-left"]');
+          const variantsDivsRight = document.querySelectorAll('[data-component="file-content-right"]');
+          variantsDivsLeft.forEach((divLeft, index) => {
+            divLeft.classList.replace('flex', 'hidden');
+            variantsDivsRight[index].classList.replace('flex', 'hidden');
+          })
+          const variantsLeft = collectVariants(variantsDivsLeft);
+          const variantsRight = collectVariants(variantsDivsRight);
+          const suffix = document.getElementById('terminal-input').value;
+          const filterKeywords = ["CHROM", "POS", "ID", "REF", "ALT", "QUAL", "FILTER", "INFO", "FORMAT"];
+          const queryKeywords = ["=", "AND", "OR"];
+          const prefix = "SELECT * from ? WHERE";
+          try {
+            const query = `${prefix} ${suffix}`
+            const resultsLeft = alasql(query, [variantsLeft]);
+            const resultsRight = alasql(query, [variantsRight]);
+            const union = new Set([...resultsLeft.map(result => result.element), ...resultsRight.map(result => result.element)]);
+            union.forEach(element => {
+              element = parseInt(element);
+              variantsDivsLeft[element].classList.replace("hidden", "flex");
+              variantsDivsRight[element].classList.replace("hidden", "flex");
+            });
+          } catch(e) {
+            stderr.classList.replace("hidden", "flex")
+            stderr.textContent = e.message;
+          }
+        }
+      }
+      function collectVariants(collectionDivs) {
+        const variants = Array.from(collectionDivs).map((div, index) => ({
+            CHROM: div.getAttribute('chrom'),
+            TYPE: div.getAttribute('type'),
+            FILTER: div.getAttribute('filter'),
+            element: div.getAttribute('row')
+        }));
+        return variants;
       }
       function resetFilters() {
           document.getElementById("query-chromosome").value = "";
