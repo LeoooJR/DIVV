@@ -82,11 +82,11 @@ class GenomicFile():
 
                         hash_md5.update(chunk)
 
-                self._hash = hash_md5.hexdigest()
-            
+                self._hash = int(hash_md5.hexdigest(), 16)
+
             else:
 
-                self._hash = None
+                raise errors.FileError(f"File {self.path} cannot be hashed.")
 
         return self._hash
         
