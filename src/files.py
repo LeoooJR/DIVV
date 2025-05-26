@@ -1178,7 +1178,10 @@ class Report:
             return isna(value)
         
         # Path to look for the template
-        ressources = os.path.join(os.path.dirname(os.path.abspath(__file__)),'templates')
+        ressources = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
+
+        # Path to look for the assets
+        assets = os.path.join(ressources, "assets")
 
         # Path to look for the CSS stylesheets
         stylesheets = os.path.join(ressources, "*.css")
@@ -1209,6 +1212,10 @@ class Report:
                     zip.write(stylesheet, arcname=os.path.relpath(path=stylesheet, start=ressources))
                 for static in glob(statics):
                     zip.write(static, arcname=os.path.relpath(path=static, start=ressources))
+                for root, dirs, files in os.walk(assets):
+                    for file in files:
+                        file_path = os.path.join(root, file)
+                        zip.write(file_path, arcname=os.path.relpath(path=file_path, start=ressources))
 
         else:
 
@@ -1223,9 +1230,11 @@ class Report:
             with open(path.joinpath("delta.html"),'w') as f:
                 f.writelines(html)
 
-            # Copy the css and statics files next to the report
+            # Copy the assets and statics files next to the report
             for f in glob(stylesheets):
                 copy(f, path)
+
+            copytree(assets, os.path.join(path, "assets"), dirs_exist_ok=True)
 
             copytree(os.path.dirname(statics), os.path.join(path,'statics'), dirs_exist_ok=True)
 
