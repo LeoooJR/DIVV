@@ -202,97 +202,92 @@
 
     <div class="flex flex-row w-full">
 
-        <div class="flex flex-row w-[50%] bg-[#EEF0F1]">
-            <div class="block mr-auto ml-auto">
-                <img src="statics/search.png" alt="search-icon" class="w-[45px] h-[45px] m-[5px] pt-[5px]">
+        <div class="flex flex-row w-[50%] bg-[#EEF0F1] justify-center">
+            <div class="block">
+                <img src="statics/search.png" alt="search-icon" class="w-[45px] h-[45px] m-1">
             </div>
         </div>
 
-        <div class="flex flex-row w-[50%] bg-[#333333]">
-            <div class="block mr-auto ml-auto">
-                <img src="statics/filters.png" alt="parameters-icon" class="w-[45px] h-[45px] m-[5px] pt-[5px]">
+        <div class="flex flex-row w-[50%] bg-[#333333] justify-center">
+            <div class="block">
+                <img src="statics/filters.png" alt="parameters-icon" class="w-[45px] h-[45px] m-1">
             </div>
         </div>
 
     </div>
 
-    <div class="flex flex-row w-full">
+    <div class="flex flex-row w-full max-w-[100%] box-border">
 
-        <div class="flex flex-row w-[50%] bg-[white] content-center">
+      <div class="flex flex-row w-[50%] bg-[white] justify-center max-w-[50%]">
 
-            <div class="flex flex-row w-fit m-[3%]">
+        <div class="flex flex-row items-center m-[2%] w-fit gap-[10px]">
 
-                <img src="statics/chromosome.png" alt="chromosomes-icon" class="w-[45px] mr-[10%]">
+            <img src="statics/chromosome.png" alt="chromosomes-icon" class="w-[45px] h-[45px]">
 
-                <div class="content-center h-[100%] w-fit mr-[40px]">
+              <div class="h-[45px] border-[1px] border-[solid] border-[#3d444d] rounded-xl px-[15px] py-[5px] bg-[#0d1117] [box-shadow:0_0_20px_rgba(0,_0,_0,_0.5)] [transition:150ms_cubic-bezier(0.4,0,0.2,1)] flex items-center hover:border-[#999999]">
 
-                  <div class="h-[45px] border-[1px] border-[solid] border-[#3d444d] rounded-xl px-[15px] py-[5px] bg-[#0d1117] [box-shadow:0_0_20px_rgba(0,_0,_0,_0.5)] [transition:150ms_cubic-bezier(0.4,0,0.2,1)]
- align-middle w-full hover:border-[#999999]">
+                <div class="relative w-full h-full flex items-center">
 
-                    <div class="relative w-full h-full -left-[5px] border-[0] flex items-center">
+                  <input id="query-chromosome" placeholder="Search chromosome" class="h-full border-[0] border-transparent text-[1rem] pr-0 text-[#cccccc] bg-[#0d1117] border-r-[2px_solid_#3d444d] outline-[none] placeholder:text-white focus:text-[transparent] focus:placeholder:text-[transparent]" type="text">
 
-                      <input id="query-chromosome" placeholder="Search chromosome" class="w-[calc(100% - 29px)] h-full border-[0] border-transparent text-[1rem] pr-0 text-[#cccccc] bg-[#0d1117] border-r-[2px_solid_#3d444d] outline-[none] placeholder:text-white focus:text-[transparent] focus:placeholder:text-[transparent]" type="text">
+                  <div class="absolute right-0 top-1/2 transform -translate-y-1/2 w-[52px] h-[35px] bg-transparent rounded-r-xl [transition:150ms_cubic-bezier(0.4,0,0.2,1)] flex items-center justify-center hover:bg-[#3d444d]">
 
-                      <div class="w-[52px] h-[35px] absolute -top-[6px] -right-[21px] bg-transparent rounded-br-[var(--border-radius)] rounded-tr-[var(--border-radius)] [transition:var(--transition-cubic-bezier)] flex items-center mt-[5px] hover:bg-[#3d444d]">
-
-                        <button class="w-[52px] h-[35px] -top-[6px] -right-[21px] bg-transparent border-[none] cursor-pointer rounded-br-[var(--border-radius)] rounded-tr-[var(--border-radius)] [transition:var(--transition-cubic-bezier)] opacity-[.4] flex items-center justify-center hover:opacity-[.8]">
-                          <i class="w-[21px] h-[21px] absolute top-[7px] right-[15px] flex items-center justify-center">
-                            <svg xmlns="://www.w3.org/2000/svg" version="1.1" viewBox="0 0 512 512">
-                              <path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z" fill="#fff">
-                              </path>
-                            </svg>
-                          </i>
-                        </button>
-
-                      </div>
-
-                    </div>
+                    <button class="w-full h-full bg-transparent border-[none] cursor-pointer rounded-r-xl [transition:150ms_cubic-bezier(0.4,0,0.2,1)] opacity-[.4] flex items-center justify-center hover:opacity-[.8]">
+                      <i class="w-[21px] h-[21px] absolute top-[7px] right-[15px] flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 512 512">
+                          <path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z" fill="#fff">
+                          </path>
+                        </svg>
+                      </i>
+                    </button>
 
                   </div>
 
                 </div>
 
-            </div>
-
-            <div class="flex flex-row w-fit m-[3%]">
-              <img src="statics/puzzle.png" alt="puzzle-icon" class="w-[45px] mr-[10%]">
-              <div class="content-center h-[100%] mr-[40px]">
-                <select id="query-status" class="px-[2%] py-[5%] rounded-[5px] border-[none] min-w-[200px] text-[14px] content-center font-[Ubuntu] bg-[#0d1117] text-[white] focus-within-[white] cursor-pointer">
-                    <option selected disabled>Select a status...</option>
-                    <option>ALL</option>
-                    <option>MATCH</option>
-                    <option>MISMATCH</option>
-                </select>
               </div>
-            </div>
 
         </div>
 
-        <div class="flex flex-row bg-[#111111] w-[50%] content-center">
-            <div class="flex flex-row w-[100%]">
-                <img src="statics/filter.png" alt="filter-icon" class="w-[45px] m-[3%]">
-                <div class="mr-[40px] w-full content-center h-[100%]">
-                    <select id="query-filter" class="px-[2%] py-[5%] rounded-[5px] border-[none] min-w-[200px] text-[14px] content-center font-[Ubuntu] bg-[#eef0f1] text-[black] focus-within-[white] cursor-pointer">
-                        <option selected disabled>Select a filter...</option>
-                        <option>ALL</option>
-                        <option>PASS</option>
-                        <option>FAIL</option>
-                    </select>
-                </div>
-                <img src="statics/dna.png" alt="dna-icon" class="w-[45px] m-[3%]">
-                <div class="mr-[40px] w-full content-center h-[100%]">
-                    <select id="query-variant" class="px-[2%] py-[5%] rounded-[5px] border-[none] min-w-[200px] text-[14px] content-center font-[Ubuntu] bg-[#eef0f1] text-[black] focus-within-[white] cursor-pointer">
-                        <option selected disabled>Select a variant...</option>
-                        <option>ALL</option>
-                        <option>SNP</option>
-                        <option>INDEL</option>
-                        <option>OTHER</option>
-                    </select>
-                </div>
-                <img src="statics/terminal.png" alt="terminal-icon" class="w-[45px] mt-[3%] mb-[3%] cursor-pointer" id="terminal-icon">
-                <button id="reset-button" class="bg-[rgba(79,_70,_229,_0.9)] border-[none] rounded-[6px] px-[20px] m-[3%] cursor-pointer text-[14px] text-white rounded-[16px] font-[Ubuntu] font-bold hover:bg-[rgba(67,_56,_202,_0.9)]" onclick="resetFilters()">Reset</button>
-            </div>
+        <div class="flex flex-row w-fit m-[2%] gap-[10px] items-center">
+          <img src="statics/puzzle.png" alt="puzzle-icon" class="w-[45px] h-[45px]">
+          <div class="w-fit mr-[5%]">
+            <select id="query-status" class="px-[2%] py-[5%] rounded-[5px] border-[none] min-w-[200px] text-[14px] font-[Ubuntu] bg-[#0d1117] text-[white] focus-within-[white] cursor-pointer">
+                <option selected disabled>Select a status...</option>
+                <option>ALL</option>
+                <option>MATCH</option>
+                <option>MISMATCH</option>
+            </select>
+          </div>
         </div>
+
+      </div>
+
+      <div class="flex flex-row bg-[#111111] w-[50%]">
+        <div class="flex flex-row w-full m-[2%] gap-[10px] items-center justify-center">
+            <img src="statics/filter.png" alt="filter-icon" class="w-[45px] h-[45px]">
+            <div class="w-fit mr-[5%]">
+                <select id="query-filter" class="px-[2%] py-[5%] rounded-[5px] border-[none] min-w-[200px] text-[14px] font-[Ubuntu] bg-[#eef0f1] text-[black] focus-within-[white] cursor-pointer">
+                    <option selected disabled>Select a filter...</option>
+                    <option>ALL</option>
+                    <option>PASS</option>
+                    <option>FAIL</option>
+                </select>
+            </div>
+            <img src="statics/dna.png" alt="dna-icon" class="w-[45px] h-[45px]">
+            <div class="w-fit mr-[5%]">
+                <select id="query-variant" class="px-[2%] py-[5%] rounded-[5px] border-[none] min-w-[200px] text-[14px] font-[Ubuntu] bg-[#eef0f1] text-[black] focus-within-[white] cursor-pointer">
+                    <option selected disabled>Select a variant...</option>
+                    <option>ALL</option>
+                    <option>SNP</option>
+                    <option>INDEL</option>
+                    <option>OTHER</option>
+                </select>
+            </div>
+            <img src="statics/terminal.png" alt="terminal-icon" class="w-[45px] h-[45px] cursor-pointer" id="terminal-icon">
+            <button id="reset-button" class="bg-[rgba(79,_70,_229,_0.9)] border-[none] rounded-[6px] px-[20px] py-[10px] m-[3%] cursor-pointer text-[14px] text-white rounded-[16px] font-[Ubuntu] font-bold hover:bg-[rgba(67,_56,_202,_0.9)]" onclick="resetFilters()">Reset</button>
+        </div>
+      </div>
     </div>
 
     <div class="bg-[linear-gradient(to_right,_#eef0f1_50%,_#333333_50%)] w-full block pt-[2px] pb-[2px]">
@@ -317,16 +312,19 @@
         </div>
         <div class="bg-[#202425] text-[#ffffff] p-[15px] font-['Courier_New',_Courier,_monospace] h-full">
           <div class="flex items-center">
-            <div class="w-full">
-              <input
-                id="terminal-input"
-                type="text"
-                class="bg-transparent border-[none] text-[white] [font-family:inherit] text-[14px] outline-[none] w-full placeholder-[rgba(255,_255,_255,_0.5)]"
-                placeholder="Enter query..."
-              />
-              <span class="w-[8px] h-[15px] bg-[#ffffff] inline-block animate-[blink_1s_step-end_infinite] ml-[2px]"></span>
-              <p id="stdout" class="hidden text-[white]"></p>
-              <p id="stderr" class="hidden text-[red]"></p>
+            <div class="w-full flex flex-col gap-2">
+              <div class="w-full flex flex-row gap-2">
+                <p class="whitespace-nowrap">SELECT * FROM VCFS WHERE</p>
+                <input
+                  id="terminal-input"
+                  type="text"
+                  class="bg-transparent border-[none] text-[white] [font-family:inherit] outline-[none] w-full placeholder-[rgba(255,_255,_255,_0.5)]"
+                  placeholder="Enter condition(s)..."
+                />
+                <span class="w-[8px] h-[1.5] bg-[#ffffff] inline-block animate-[blink_1s_step-end_infinite] ml-[2px]"></span>
+              </div>
+              <p id="stdout" class="hidden text-[black] border-2 border-solid border-green-200 rounded-lg p-1 bg-green-200"></p>
+              <p id="stderr" class="hidden text-[black] border-2 border-solid border-red-200 rounded-lg p-1 bg-red-200"></p>
             </div>
           </div>
         </div>
@@ -358,7 +356,7 @@
     
             <div class="flex h-[700px] bg-[white]">
               <div class="flex-[1] overflow-hidden relative border-r-[2px_solid_#888]">
-                <div class="pt-[15px] text-center border-b-[2px_solid_#ccc] font-[Ubuntu] font-bold bg-[#EEF0F1]">2124FH000284F_S45_DV.vcf
+                <div class="pt-4 text-center border-b-[2px_solid_#ccc] font-[Ubuntu] font-bold bg-[#EEF0F1]">{{ vcfs.repository[0].informations().basename|default(vcfs.repository[0]) }}
                   <div class="flex flex-row">
                     <p class="text-[15px] mb-0 ml-[5px] font-normal" id="filterSummaryL">Showing all variants</p>
                     {% if tags[0] %}
@@ -401,7 +399,7 @@
                 </div>
               </div>
               <div class="flex-[1] overflow-hidden relative border-[#ccc]">
-                <div class="pt-[15px] text-center border-b-[2px_solid_#ccc] font-[Ubuntu] font-bold bg-[#333333] text-white">{{ vcfs.repository[1].informations().basename|default(vcfs.repository[1]) }} 
+                <div class="pt-4 text-center border-b-[2px_solid_#ccc] font-[Ubuntu] font-bold bg-[#333333] text-white">{{ vcfs.repository[1].informations().basename|default(vcfs.repository[1]) }} 
                   <div class="flex flex-row">
                     <p class="text-[15px] mb-0 ml-[5px] font-normal" id="filterSummaryR">Showing all variants</p>
                     {% if tags[1] %}
@@ -447,14 +445,14 @@
             
             <div class="summary-container" id="stats">
 
-              <section class="p-3 bg-[#f3f4f6] text-[#1f2937]">
+              <section class="p-3 bg-[#f3f4f6]">
 
                 <div class="stats-general">
                   <div class="w-full max-w-[1200px] mx-[auto] my-[0] grid grid-cols-[1fr_1fr_1fr] gap-[1.0rem]">
                     
-                    <div class="flex p-4 rounded-lg bg-[#fafafa] text-[#1f2937] gap-4">
-                      <div class="flex justify-center items-center p-2 rounded-lg bg-[#29903b]">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="currentColor" class="h-9 w-9 text-[#f3f4f6]">
+                    <div class="flex p-4 rounded-lg bg-[#fafafa] gap-4">
+                      <div class="flex justify-center items-center p-2 rounded-lg bg-green-400">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="white" class="h-9 w-9">
                           <rect x="96" y="176" width="320" height="48" rx="8" ry="8"/>
                           <rect x="96" y="288" width="320" height="48" rx="8" ry="8"/>
                         </svg>
@@ -463,7 +461,7 @@
                         <p class="text-[1.875rem] font-semibold leading-none">{{ view["common"] }}</p>
                         <p class="capitalize font-[Ubuntu]">Matching lines</p>
                       </div>
-                      <div class="relative group flex items-start ml-[100px] w-5 h-5">
+                      <div class="relative group flex items-start ml-[40%] w-5 h-5">
                         <svg class="" xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" height="24" fill="none">
                           <path fill="#509AF8" d="m12 1.5c-5.79844 0-10.5 4.70156-10.5 10.5 0 5.7984 4.70156 10.5 10.5 10.5 5.7984 0 10.5-4.7016 10.5-10.5 0-5.79844-4.7016-10.5-10.5-10.5zm.75 15.5625c0 .1031-.0844.1875-.1875.1875h-1.125c-.1031 0-.1875-.0844-.1875-.1875v-6.375c0-.1031.0844-.1875.1875-.1875h1.125c.1031 0 .1875.0844.1875.1875zm-.75-8.0625c-.2944-.00601-.5747-.12718-.7808-.3375-.206-.21032-.3215-.49305-.3215-.7875s.1155-.57718.3215-.7875c.2061-.21032.4864-.33149.7808-.3375.2944.00601.5747.12718.7808.3375.206.21032.3215.49305.3215.7875s-.1155.57718-.3215.7875c-.2061.21032-.4864.33149-.7808.3375z">
                           </path>
@@ -474,19 +472,19 @@
                       </div>
                     </div>
                     
-                    <div class="flex p-4 rounded-lg bg-[#fafafa] text-[#1f2937] gap-4">
-                      <div class="flex justify-center items-center p-2 rounded-lg bg-[red]">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="currentColor" class="h-9 w-9 text-[#f3f4f6]">
+                    <div class="flex p-4 rounded-lg bg-[#fafafa] gap-4">
+                      <div class="flex justify-center items-center p-2 rounded-lg bg-red-400">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="white" class="h-9 w-9">
                           <rect x="96" y="176" width="320" height="48" rx="8" ry="8"/>
                           <rect x="96" y="288" width="320" height="48" rx="8" ry="8"/>
-                          <line x1="120" y1="400" x2="392" y2="112" stroke="currentColor" stroke-width="48" stroke-linecap="round"/>
+                          <line x1="120" y1="400" x2="392" y2="112" stroke="white" stroke-width="48" stroke-linecap="round"/>
                         </svg>
                       </div>
                       <div data-component="general-card-datas" class="flex flex-col justify-center">
                         <p class="text-[1.875rem] font-semibold leading-none">{{ view["unique"].values() | sum }}</p>
                         <p class="capitalize font-[Ubuntu]">Different lines</p>
                       </div>
-                      <div class="relative group flex items-start ml-[100px] w-5 h-5">
+                      <div class="relative group flex items-start ml-[40%] w-5 h-5">
                         <svg class="" xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" height="24" fill="none">
                           <path fill="#509AF8" d="m12 1.5c-5.79844 0-10.5 4.70156-10.5 10.5 0 5.7984 4.70156 10.5 10.5 10.5 5.7984 0 10.5-4.7016 10.5-10.5 0-5.79844-4.7016-10.5-10.5-10.5zm.75 15.5625c0 .1031-.0844.1875-.1875.1875h-1.125c-.1031 0-.1875-.0844-.1875-.1875v-6.375c0-.1031.0844-.1875.1875-.1875h1.125c.1031 0 .1875.0844.1875.1875zm-.75-8.0625c-.2944-.00601-.5747-.12718-.7808-.3375-.206-.21032-.3215-.49305-.3215-.7875s.1155-.57718.3215-.7875c.2061-.21032.4864-.33149.7808-.3375.2944.00601.5747.12718.7808.3375.206.21032.3215.49305.3215.7875s-.1155.57718-.3215.7875c-.2061.21032-.4864.33149-.7808.3375z">
                           </path>
@@ -497,20 +495,20 @@
                       </div>
                     </div>
                     
-                    <div class="flex p-4 rounded-lg bg-[#fafafa] text-[#1f2937] gap-4">
-                      <div class="flex justify-center items-center p-2 rounded-lg bg-[#7c3aed]">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="currentColor" class="h-9 w-9 text-[#f3f4f6]">
-                          <circle cx="200" cy="256" r="120" fill="none" stroke="currentColor" stroke-width="24" opacity="0.8"/>
-                          <circle cx="312" cy="256" r="120" fill="none" stroke="currentColor" stroke-width="24" opacity="0.8"/>
-                          <path d="M256,184 a72,72 0 0,1 0,144 a72,72 0 0,1 0,-144" fill="currentColor" opacity="0.6"/>
-                          <text x="256" y="256" font-size="40" text-anchor="middle" dominant-baseline="middle" fill="currentColor">J</text>
+                    <div class="flex p-4 rounded-lg bg-[#fafafa] gap-4">
+                      <div class="flex justify-center items-center p-2 rounded-lg bg-purple-400">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="white" class="h-9 w-9">
+                          <circle cx="200" cy="256" r="120" fill="none" stroke="white" stroke-width="24" opacity="0.8"/>
+                          <circle cx="312" cy="256" r="120" fill="none" stroke="white" stroke-width="24" opacity="0.8"/>
+                          <path d="M256,184 a72,72 0 0,1 0,144 a72,72 0 0,1 0,-144" fill="white" opacity="0.6"/>
+                          <text x="256" y="256" font-size="40" text-anchor="middle" dominant-baseline="middle" fill="white">J</text>
                         </svg>
                       </div>
                       <div data-component="general-card-datas" class="flex flex-col justify-center">
                         <p class="text-[1.875rem] font-semibold leading-none">{{ view["jaccard"] }}</p>
                         <p class="capitalize font-[Ubuntu]">Jaccard index</p>
                       </div>
-                      <div class="relative group flex items-start ml-[100px] w-5 h-5">
+                      <div class="relative group flex items-start ml-[40%] w-5 h-5">
                         <svg class="" xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" height="24" fill="none">
                           <path fill="#509AF8" d="m12 1.5c-5.79844 0-10.5 4.70156-10.5 10.5 0 5.7984 4.70156 10.5 10.5 10.5 5.7984 0 10.5-4.7016 10.5-10.5 0-5.79844-4.7016-10.5-10.5-10.5zm.75 15.5625c0 .1031-.0844.1875-.1875.1875h-1.125c-.1031 0-.1875-.0844-.1875-.1875v-6.375c0-.1031.0844-.1875.1875-.1875h1.125c.1031 0 .1875.0844.1875.1875zm-.75-8.0625c-.2944-.00601-.5747-.12718-.7808-.3375-.206-.21032-.3215-.49305-.3215-.7875s.1155-.57718.3215-.7875c.2061-.21032.4864-.33149.7808-.3375.2944.00601.5747.12718.7808.3375.206.21032.3215.49305.3215.7875s-.1155.57718-.3215.7875c-.2061.21032-.4864.33149-.7808.3375z">
                           </path>
@@ -524,7 +522,7 @@
                 </div> 
                 <div class="flex flex-row bg-[#f3f4f6] mt-[10px]">
                   <div class="w-full ml-[10px] grid grid-cols-[1fr_1fr_1fr] grid-rows-[1fr_1fr] gap-[1.0rem]">
-                    <div class="flex p-4 rounded-lg bg-[#fafafa] text-[#1f2937] gap-4">
+                    <div class="flex p-4 rounded-lg bg-[#fafafa] gap-4">
                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 250" width="125" height="150">
                         <g transform="translate(100, 100)">
                         <!-- SNP (Single Nucleotide Polymorphism) Icon -->
@@ -572,11 +570,11 @@
                           <div class="h-full bg-[#822E4A] opacity-75 float-left rounded-tr-full rounded-br-full">
                           </div>
                         </div>
-                        <img src="statics/versus.png" alt="versus-icon" class="w-[39px] h-[39px] self-center align-middle">
+                        <img src="statics/versus.png" alt="versus-icon" class="w-[39px] h-[39px] self-center">
                       </div>
                     </div>
 
-                    <div class="flex p-4 rounded-lg bg-[#fafafa] text-[#1f2937] gap-4">
+                    <div class="flex p-4 rounded-lg bg-[#fafafa] gap-4">
                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 250" width="125" height="150">
                         <g transform="translate(100, 100)">
                           <circle cx="0" cy="0" r="70" fill="#f8f9fa" stroke="#6c757d" stroke-width="3"/>
@@ -625,11 +623,11 @@
                           <div class="h-full bg-[#822E4A] opacity-75 float-left rounded-tr-full rounded-br-full">
                           </div>
                         </div>
-                        <img src="statics/versus.png" alt="versus-icon" class="w-[39px] h-[39px] self-center align-middle">
+                        <img src="statics/versus.png" alt="versus-icon" class="w-[39px] h-[39px] self-center">
                       </div>
                     </div>
 
-                    <div class="flex p-4 rounded-lg bg-[#fafafa] text-[#1f2937] gap-4">
+                    <div class="flex p-4 rounded-lg bg-[#fafafa] gap-4">
                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 250" width="125" height="150">
                         <g transform="translate(100, 100)">
                           <circle cx="0" cy="0" r="70" fill="#f8f9fa" stroke="#6c757d" stroke-width="3"/>
@@ -681,12 +679,12 @@
                           <div class="h-full bg-[#822E4A] opacity-75 float-left rounded-tr-full rounded-br-full">
                           </div>
                         </div>
-                        <img src="statics/versus.png" alt="versus-icon" class="w-[39px] h-[39px] self-center align-middle">
+                        <img src="statics/versus.png" alt="versus-icon" class="w-[39px] h-[39px] self-center">
                       </div>
                     </div>
 
 
-                    <div class="flex p-4 rounded-lg bg-[#fafafa] text-[#1f2937] gap-4">
+                    <div class="flex p-4 rounded-lg bg-[#fafafa] gap-4">
                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 250" width="125" height="150">
                         <g transform="translate(100, 100)">
                           <circle cx="0" cy="0" r="70" fill="#f8f9fa" stroke="#6c757d" stroke-width="3"/>
@@ -743,12 +741,12 @@
                           <div class="h-full bg-[#822E4A] opacity-75 float-left rounded-tr-full rounded-br-full">
                           </div>
                         </div>
-                        <img src="statics/versus.png" alt="versus-icon" class="w-[39px] h-[39px] self-center align-middle">
+                        <img src="statics/versus.png" alt="versus-icon" class="w-[39px] h-[39px] self-center">
                       </div>
                     </div>
 
 
-                    <div class="flex p-4 rounded-lg bg-[#fafafa] text-[#1f2937] gap-4">
+                    <div class="flex p-4 rounded-lg bg-[#fafafa] gap-4">
                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 250" width="125" height="150">
                         <g transform="translate(100, 100)">
                           <circle cx="0" cy="0" r="70" fill="#f8f9fa" stroke="#6c757d" stroke-width="3"/>
@@ -819,12 +817,12 @@
                           <div class="h-full bg-[#822E4A] opacity-75 float-left rounded-tr-full rounded-br-full">
                           </div>
                         </div>
-                        <img src="statics/versus.png" alt="versus-icon" class="w-[39px] h-[39px] self-center align-middle">
+                        <img src="statics/versus.png" alt="versus-icon" class="w-[39px] h-[39px] self-center">
                       </div>
                     </div>
                     
 
-                    <div class="flex p-4 rounded-lg bg-[#fafafa] text-[#1f2937] gap-4">
+                    <div class="flex p-4 rounded-lg bg-[#fafafa] gap-4">
                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 250" width="125" height="150">
                         <g transform="translate(100, 100)">
                           <circle cx="0" cy="0" r="70" fill="#f8f9fa" stroke="#6c757d" stroke-width="3"/>
@@ -892,7 +890,7 @@
                           <div class="h-full bg-[#822E4A] opacity-75 float-left rounded-tr-full rounded-br-full">
                           </div>
                         </div>
-                        <img src="statics/versus.png" alt="versus-icon" class="w-[39px] h-[39px] self-center align-middle">
+                        <img src="statics/versus.png" alt="versus-icon" class="w-[39px] h-[39px] self-center">
                       </div>
                     </div>
 
@@ -1437,6 +1435,9 @@
           const stderr = document.getElementById('stderr')
           stderr.classList.replace("flex", "hidden")
           stderr.textContent = "";
+          const stdout = document.getElementById("stdout");
+          stdout.classList.replace("flex", "hidden");
+          stdout.textContent = "";
           resetFilters();
           const variantsDivsLeft = document.querySelectorAll('[data-component="file-content-left"]');
           const variantsDivsRight = document.querySelectorAll('[data-component="file-content-right"]');
@@ -1450,8 +1451,8 @@
           const filterKeywords = ["CHROM", "POS", "ID", "REF", "ALT", "QUAL", "FILTER", "INFO", "FORMAT"];
           const queryKeywords = ["=", "AND", "OR"];
           const prefix = "SELECT * from ? WHERE";
+          const query = `${prefix} ${suffix}`
           try {
-            const query = `${prefix} ${suffix}`
             const resultsLeft = alasql(query, [variantsLeft]);
             const resultsRight = alasql(query, [variantsRight]);
             const union = new Set([...resultsLeft.map(result => result.element), ...resultsRight.map(result => result.element)]);
@@ -1460,8 +1461,10 @@
               variantsDivsLeft[element].classList.replace("hidden", "flex");
               variantsDivsRight[element].classList.replace("hidden", "flex");
             });
+            stdout.classList.replace("hidden", "flex");
+            stdout.textContent = `js:(vcc)> SELECT * FROM VCFS WHERE ${suffix}`;
           } catch(e) {
-            stderr.classList.replace("hidden", "flex")
+            stderr.classList.replace("hidden", "flex");
             stderr.textContent = e.message;
           }
         }
