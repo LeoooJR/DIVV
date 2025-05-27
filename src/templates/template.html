@@ -11,18 +11,18 @@
 
 <body onload="filter()">
 
-    <div class="flex flex-row w-full">
+    <div class="flex flex-row w-full items-stretch">
 
-        <div class="flex flex-row items-stretch w-1/2 bg-[white]">
-            <img src="statics/vcf-left.png" alt="vcf-icon-white" class="h-auto w-[70px] pl-[10px] pt-[5px] pb-[5px]">
-            <h2 class="mt-[20px] mb-[10px] h-[36px] font-[Ubuntu] font-bold italic text-center text-2xl items-center w-full text-[#111111]">
+        <div class="flex flex-row w-1/2 flex-1 bg-[white] h-auto">
+            <img src="statics/vcf-left.png" alt="vcf-icon-white" class="self-center h-[70px] w-[70px] pl-[10px] pt-[5px] pb-[5px]">
+            <h2 class="mt-[20px] mb-[10px] min-h-[36px] font-[Ubuntu] font-bold italic text-center text-2xl items-center w-full text-[#111111] whitespace-normal">
               {{ vcfs.repository[0].informations().basename|default(vcfs.repository[0]) }}
             </h2>
         </div>
 
-        <div class="flex flex-row items-stretch w-1/2 bg-[#111111]">
-            <img src="statics/vcf-right.png" alt="vcf-icon-black" class="h-auto w-[70px] pl-[10px] pt-[5px] pb-[5px]">
-            <h2 class="mt-[20px] mb-[10px] h-[36px] font-[Ubuntu] font-bold italic text-center text-2xl items-center w-full text-[white]">
+        <div class="flex flex-row w-1/2 flex-1 bg-[#111111] h-auto">
+            <img src="statics/vcf-right.png" alt="vcf-icon-black" class="self-center h-[70px] w-[70px] pl-[10px] pt-[5px] pb-[5px]">
+            <h2 class="mt-[20px] mb-[10px] min-h-[36px] font-[Ubuntu] font-bold italic text-center text-2xl items-center w-full text-[white] whitespace-normal">
               {{ vcfs.repository[1].informations().basename|default(vcfs.repository[1]) }}
             </h2>
         </div>
@@ -31,11 +31,11 @@
 
     <div class="flex flex-row w-full">
 
-        <div class="flex flex-row w-[50%] bg-[#EEF0F1]">
+        <div class="flex flex-row w-1/2 bg-[#EEF0F1]">
 
-            <img src="statics/info-left.png" class="w-[39px] h-[39px] ml-[10px] mt-[5px] mb-[5px] self-center align-middle mr-[5px]", id="info-left-icon">
+            <img src="statics/info-left.png" class="w-10 h-10 md:w-[39px] md:h-[39px] ml-[10px] mt-[5px] mb-[5px] self-center align-middle mr-[5px]", id="info-left-icon">
 
-            <div class="flex flex-row justify-center items-center flex-wrap w-full pt-[5px]">
+            <div class="flex flex-row justify-center items-center flex-wrap w-full pt-[5px] overflow-x-auto">
 
               <div class="flex flex-row border-[solid] border-transparent rounded-[2em] m-[2px] h-[90%] bg-[#111d2f] items-center">
                 <img src="statics/folder.png" class="w-[20px] pl-[5px] pt-[5px] pb-[5px] self-center align-middle">
@@ -62,7 +62,7 @@
 
             <div class="relative mr-[10px] mt-[10px]">
 
-              <img src="statics/down-arrow-left.png" class="w-[39px] h-[39px] ml-[10px] mt-[5px] mb-[5px] self-center align-middle mr-[5px] cursor-pointer" id="dropdown-icon-left">
+              <img src="statics/down-arrow-left.png" class="w-10 h-10 md:w-[39px] md:h-[39px] ml-[10px] mt-[5px] mb-[5px] self-center align-middle mr-[5px] cursor-pointer" id="dropdown-icon-left">
 
               <div data-component="notification-metadata" class="absolute -top-1 -right-1 w-4 h-4">
                 <div id="ping-metadata-left" class="w-full h-full bg-red-400 rounded-full animate-ping"></div>
@@ -72,11 +72,11 @@
 
         </div>
 
-        <div class="flex flex-row w-[50%] bg-[#333333]">
+        <div class="flex flex-row w-1/2 bg-[#333333]">
 
-            <img src="statics/info-right.png" class="w-[39px] h-[39px] ml-[10px] mt-[5px] mb-[5px] self-center align-middle mr-[5px]", id="info-right-icon">
+            <img src="statics/info-right.png" class="w-10 h-10 md:w-[39px] md:h-[39px] ml-[10px] mt-[5px] mb-[5px] self-center align-middle mr-[5px]", id="info-right-icon">
 
-            <div class="flex flex-row justify-center items-center flex-wrap w-full pt-[5px]">
+            <div class="flex flex-row justify-center items-center flex-wrap w-full pt-[5px] overflow-x-auto">
 
               <div class="flex flex-row border-[solid] border-transparent rounded-[2em] m-[2px] h-[90%] bg-[#111d2f] items-center">
                 <img src="statics/folder.png" class="w-[20px] pl-[5px] pt-[5px] pb-[5px] self-center align-middle">
@@ -103,7 +103,7 @@
 
             <div class="relative mr-[10px] mt-[10px]">
 
-              <img src="statics/down-arrow-right.png" class="w-[39px] h-[39px] ml-[10px] mt-[5px] mb-[5px] self-center align-middle mr-[5px] cursor-pointer" id="dropdown-icon-right">
+              <img src="statics/down-arrow-right.png" class="w-10 h-10 md:w-[39px] md:h-[39px] ml-[10px] mt-[5px] mb-[5px] self-center align-middle mr-[5px] cursor-pointer" id="dropdown-icon-right">
 
               <div data-component="notification-metadata" class="absolute -top-1 -right-1 w-4 h-4">
                 <div id="ping-metadata-right" class="w-full h-full bg-red-400 rounded-full animate-ping"></div>
@@ -228,7 +228,7 @@
 
                 <div class="relative w-full h-full flex items-center">
 
-                  <input id="query-chromosome" placeholder="Search chromosome" class="h-full border-[0] border-transparent text-[1rem] pr-0 text-[#cccccc] bg-[#0d1117] border-r-[2px_solid_#3d444d] outline-[none] placeholder:text-white focus:text-[transparent] focus:placeholder:text-[transparent]" type="text">
+                  <input id="query-chromosome" placeholder="Search chromosome" class="h-full border-[0] border-transparent text-[1rem] pr-0 text-[#cccccc] bg-[#0d1117] border-r-[2px_solid_#3d444d] outline-[none] placeholder:text-white focus:text-[white] focus:placeholder:text-[white]" type="text">
 
                   <div class="absolute right-0 top-1/2 transform -translate-y-1/2 w-[52px] h-[35px] bg-transparent rounded-r-xl [transition:150ms_cubic-bezier(0.4,0,0.2,1)] flex items-center justify-center hover:bg-[#3d444d]">
 
@@ -376,21 +376,21 @@
                           {{ view['headers'][vcfs.repository[0]] }}
                         </span>
                     </div>
-                    {% for index, series in view['variants'].iterrows() %}
-                      {% if series['Variant.L']|is_nan or series['Variant.R']|is_nan %}
+                    {% for index, series in view['variants'].iterrows() -%}
+                      {% if series['Variant.L']|is_nan or series['Variant.R']|is_nan -%}
                         <div data-component="file-content-left" status="mismatch" row="{{ loop.index0 }}" class="min-h-[24px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] w-fit bg-[rgba(255,_0,_0,_0.2)]" id="{{ series['Chromosome']|upper() }} {{ series['Type']|upper() }} {{ series['Filter.L']|upper() }}" chrom="{{ series['Chromosome']|upper() }}" type="{{ series['Type']|upper() }}" filter="{{ series['Filter.L']|upper() }}">
                           <div class="text-[#888] mr-[10px] select-none min-w-[30px] text-right">{{ loop.index }}</div>
                           {% if not series['Variant.L']|is_nan %}
                             <span data-component="column-diff" class="w-fit bg-[rgba(255,_0,_0,_0.2)] table-cell px-[8px] py-[2px] whitespace-nowrap">
-                              {{ series['Variant.L'] }}
+                              {{ series['Variant.L'] -}}
                             </span>
                           {% endif %}
                         </div>
-                      {% else %}
+                      {% else -%}
                         <div data-component="file-content-left" status="match" row="{{ loop.index0 }}" class="min-h-[24px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] w-fit bg-[rgba(0,_255,_0,_0.2)]" id="{{ series['Chromosome']|upper() }} {{ series['Type']|upper() }} {{ series['Filter.L']|upper() }}" chrom="{{ series['Chromosome']|upper() }}" type="{{ series['Type']|upper() }}" filter="{{ series['Filter.L']|upper() }}">
                           <div class="text-[#888] mr-[10px] select-none min-w-[30px] text-right">{{ loop.index }}</div>
                           <span data-component="column-match" class="w-fit bg-[rgba(0,_255,_0,_0.2)] table-cell px-[8px] py-[2px] whitespace-nowrap">
-                            {{ series['Variant.L'] }}
+                            {{ series['Variant.L'] -}}
                           </span>
                         </div>
                       {% endif %}    
@@ -419,21 +419,21 @@
                           {{ view['headers'][vcfs.repository[1]] }}
                         </span>
                     </div>
-                    {% for index, series in view['variants'].iterrows() %}
-                      {% if series['Variant.L']|is_nan or series['Variant.R']|is_nan %}
+                    {% for index, series in view['variants'].iterrows() -%}
+                      {% if series['Variant.L']|is_nan or series['Variant.R']|is_nan -%}
                         <div data-component="file-content-right" row="{{ loop.index0 }}" status="mismatch" class="min-h-[24px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] w-fit bg-[rgba(255,_0,_0,_0.2)]" id="{{ series['Chromosome']|upper() }} {{ series['Type']|upper() }} {{ series['Filter.R']|upper() }}" chrom="{{ series['Chromosome']|upper() }}" type="{{ series['Type']|upper() }}" filter="{{ series['Filter.R']|upper() }}">
                           <div class="text-[#888] mr-[10px] select-none min-w-[30px] text-right">{{ loop.index }}</div>
                           {% if not series['Variant.R']|is_nan %}
                             <span data-component="column-diff" class="w-fit bg-[rgba(255,_0,_0,_0.2)] table-cell px-[8px] py-[2px] whitespace-nowrap">
-                              {{ series['Variant.R'] }}
+                              {{ series['Variant.R'] -}}
                             </span>
                           {% endif %}
                         </div>
-                      {% else %}
+                      {% else -%}
                         <div data-component="file-content-right" status="match" row="{{ loop.index0 }}" class="min-h-[24px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] w-fit bg-[rgba(0,_255,_0,_0.2)]" id="{{ series['Chromosome']|upper() }} {{ series['Type']|upper() }} {{ series['Filter.R']|upper() }}" chrom="{{ series['Chromosome']|upper() }}" type="{{ series['Type']|upper() }}" filter="{{ series['Filter.R']|upper() }}">
                           <div class="text-[#888] mr-[10px] select-none min-w-[30px] text-right">{{ loop.index }}</div>
                           <span data-component="column-match" class="w-fit bg-[rgba(0,_255,_0,_0.2)] table-cell px-[8px] py-[2px] whitespace-nowrap">
-                            {{ series['Variant.R'] }}
+                            {{ series['Variant.R'] -}}
                           </span>
                         </div>
                       {% endif %}
@@ -447,10 +447,10 @@
 
               <section class="p-3 bg-[#f3f4f6]">
 
-                <div class="stats-general">
-                  <div class="w-full max-w-[1200px] mx-[auto] my-[0] grid grid-cols-[1fr_1fr_1fr] gap-[1.0rem]">
+                <div class="w-full flex justify-center items-center">
+                  <div class="w-[50%] max-w-[1200px] mx-[auto] my-[0] grid grid-cols-[1fr] sm:grid-cols-[1fr_1fr] lg:grid-cols-[1fr_1fr_1fr] place-items-center gap-1">
                     
-                    <div class="flex p-4 rounded-lg bg-[#fafafa] gap-4">
+                    <div class="w-fit flex p-4 rounded-lg bg-[#fafafa] gap-4">
                       <div class="flex justify-center items-center p-2 rounded-lg bg-green-400">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="white" class="h-9 w-9">
                           <rect x="96" y="176" width="320" height="48" rx="8" ry="8"/>
@@ -461,7 +461,7 @@
                         <p class="text-[1.875rem] font-semibold leading-none">{{ view["common"] }}</p>
                         <p class="capitalize font-[Ubuntu]">Matching lines</p>
                       </div>
-                      <div class="relative group flex items-start ml-[40%] w-5 h-5">
+                      <div class="left-full group flex w-5 h-5">
                         <svg class="" xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" height="24" fill="none">
                           <path fill="#509AF8" d="m12 1.5c-5.79844 0-10.5 4.70156-10.5 10.5 0 5.7984 4.70156 10.5 10.5 10.5 5.7984 0 10.5-4.7016 10.5-10.5 0-5.79844-4.7016-10.5-10.5-10.5zm.75 15.5625c0 .1031-.0844.1875-.1875.1875h-1.125c-.1031 0-.1875-.0844-.1875-.1875v-6.375c0-.1031.0844-.1875.1875-.1875h1.125c.1031 0 .1875.0844.1875.1875zm-.75-8.0625c-.2944-.00601-.5747-.12718-.7808-.3375-.206-.21032-.3215-.49305-.3215-.7875s.1155-.57718.3215-.7875c.2061-.21032.4864-.33149.7808-.3375.2944.00601.5747.12718.7808.3375.206.21032.3215.49305.3215.7875s-.1155.57718-.3215.7875c-.2061.21032-.4864.33149-.7808.3375z">
                           </path>
@@ -472,7 +472,7 @@
                       </div>
                     </div>
                     
-                    <div class="flex p-4 rounded-lg bg-[#fafafa] gap-4">
+                    <div class="w-fit flex p-4 rounded-lg bg-[#fafafa] gap-4">
                       <div class="flex justify-center items-center p-2 rounded-lg bg-red-400">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="white" class="h-9 w-9">
                           <rect x="96" y="176" width="320" height="48" rx="8" ry="8"/>
@@ -484,7 +484,7 @@
                         <p class="text-[1.875rem] font-semibold leading-none">{{ view["unique"].values() | sum }}</p>
                         <p class="capitalize font-[Ubuntu]">Different lines</p>
                       </div>
-                      <div class="relative group flex items-start ml-[40%] w-5 h-5">
+                      <div class="left-full group flex w-5 h-5">
                         <svg class="" xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" height="24" fill="none">
                           <path fill="#509AF8" d="m12 1.5c-5.79844 0-10.5 4.70156-10.5 10.5 0 5.7984 4.70156 10.5 10.5 10.5 5.7984 0 10.5-4.7016 10.5-10.5 0-5.79844-4.7016-10.5-10.5-10.5zm.75 15.5625c0 .1031-.0844.1875-.1875.1875h-1.125c-.1031 0-.1875-.0844-.1875-.1875v-6.375c0-.1031.0844-.1875.1875-.1875h1.125c.1031 0 .1875.0844.1875.1875zm-.75-8.0625c-.2944-.00601-.5747-.12718-.7808-.3375-.206-.21032-.3215-.49305-.3215-.7875s.1155-.57718.3215-.7875c.2061-.21032.4864-.33149.7808-.3375.2944.00601.5747.12718.7808.3375.206.21032.3215.49305.3215.7875s-.1155.57718-.3215.7875c-.2061.21032-.4864.33149-.7808.3375z">
                           </path>
@@ -495,7 +495,7 @@
                       </div>
                     </div>
                     
-                    <div class="flex p-4 rounded-lg bg-[#fafafa] gap-4">
+                    <div class="w-fit flex p-4 rounded-lg bg-[#fafafa] gap-4">
                       <div class="flex justify-center items-center p-2 rounded-lg bg-purple-400">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="white" class="h-9 w-9">
                           <circle cx="200" cy="256" r="120" fill="none" stroke="white" stroke-width="24" opacity="0.8"/>
@@ -508,7 +508,7 @@
                         <p class="text-[1.875rem] font-semibold leading-none">{{ view["jaccard"] }}</p>
                         <p class="capitalize font-[Ubuntu]">Jaccard index</p>
                       </div>
-                      <div class="relative group flex items-start ml-[40%] w-5 h-5">
+                      <div class="left-full group flex w-5 h-5">
                         <svg class="" xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" height="24" fill="none">
                           <path fill="#509AF8" d="m12 1.5c-5.79844 0-10.5 4.70156-10.5 10.5 0 5.7984 4.70156 10.5 10.5 10.5 5.7984 0 10.5-4.7016 10.5-10.5 0-5.79844-4.7016-10.5-10.5-10.5zm.75 15.5625c0 .1031-.0844.1875-.1875.1875h-1.125c-.1031 0-.1875-.0844-.1875-.1875v-6.375c0-.1031.0844-.1875.1875-.1875h1.125c.1031 0 .1875.0844.1875.1875zm-.75-8.0625c-.2944-.00601-.5747-.12718-.7808-.3375-.206-.21032-.3215-.49305-.3215-.7875s.1155-.57718.3215-.7875c.2061-.21032.4864-.33149.7808-.3375.2944.00601.5747.12718.7808.3375.206.21032.3215.49305.3215.7875s-.1155.57718-.3215.7875c-.2061.21032-.4864.33149-.7808.3375z">
                           </path>
@@ -521,7 +521,7 @@
                   </div>
                 </div> 
                 <div class="flex flex-row bg-[#f3f4f6] mt-[10px]">
-                  <div class="w-full ml-[10px] grid grid-cols-[1fr_1fr_1fr] grid-rows-[1fr_1fr] gap-[1.0rem]">
+                  <div class="w-full ml-[10px] grid grid-cols-[1fr] lg:grid-cols-[1fr_1fr] 2xl:grid-cols-[1fr_1fr_1fr] gap-[1.0rem]">
                     <div class="flex p-4 rounded-lg bg-[#fafafa] gap-4">
                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 250" width="125" height="150">
                         <g transform="translate(100, 100)">
@@ -910,28 +910,28 @@
         </div>
 
         {% if table is not none %}
-          <button class="relative px-[24px] py-[12px] ml-[5%] text-[0.875rem] font-semibold text-[white] bg-[#509AF8] rounded-xl overflow-hidden [transition:all_0.3s_ease] outline-[none] border-[none] cursor-pointer hover:bg-[#2F8CF5] group">
-            <div class="absolute bg-[linear-gradient(to_right,_rgba(80,_154,_248,_0.2),_rgba(80,_154,_248,_0.2))] filter blur-[20px] opacity-0 [transition:opacity_0.3s_ease] z-0 group-hover:opacity-75"></div>
-            <span class="relative flex items-center gap-2">
-              <svg
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                fill="none"
-                class="w-4 h-4"
-              >
-                <path
-                  d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                  stroke-width="2"
-                  stroke-linejoin="round"
-                  stroke-linecap="round"
-                ></path>
-              </svg>
-              Hover for Info
-            </span>
-            <p class="hidden group-hover:block group-hover:left-[0] group-hover:top-[0]">Benchmarking is carried out on exact equality in terms of chromosome, position, reference and alternative allele.</p>
-          </button>
-          <div style="display: flex; width: 100%; justify-content: center; align-items: center; background: white;">
-            <table class="w-[90%] [box-shadow:0_4px_6px_-1px_rgba(0,_0,_0,_0.1),_0_2px_4px_-1px_rgba(0,_0,_0,_0.06)] font-[Ubuntu] text-[#6B7280]">
+          <div style="display: flex; flex-direction: column; width: 100%; background: #f3f4f6;">
+            <button class="relative w-[10%] px-[24px] py-[12px] ml-[5%] text-[0.875rem] font-semibold text-[white] bg-[#509AF8] rounded-xl overflow-hidden [transition:all_0.3s_ease] outline-[none] border-[none] cursor-pointer hover:bg-[#2F8CF5] group">
+              <div class="absolute bg-[linear-gradient(to_right,_rgba(80,_154,_248,_0.2),_rgba(80,_154,_248,_0.2))] filter blur-[20px] opacity-0 [transition:opacity_0.3s_ease] z-0 group-hover:opacity-75"></div>
+              <span class="relative flex items-center gap-2">
+                <svg
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  fill="none"
+                  class="w-4 h-4"
+                >
+                  <path
+                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                    stroke-width="2"
+                    stroke-linejoin="round"
+                    stroke-linecap="round"
+                  ></path>
+                </svg>
+                Hover for Info
+              </span>
+              <p class="hidden group-hover:block group-hover:left-[0] group-hover:top-[0]">Benchmarking is carried out on exact equality in terms of chromosome, position, reference and alternative allele.</p>
+            </button>
+            <table class="w-[90%] self-center [box-shadow:0_4px_6px_-1px_rgba(0,_0,_0,_0.1),_0_2px_4px_-1px_rgba(0,_0,_0,_0.06)] font-[Ubuntu] text-[#6B7280]">
               <tbody>
                 <tr class="flex flex-row w-full border-b border-gray-200 bg-[#E5E7EB] h-[50px] items-center">
                   <th class="flex flex-row w-full">TYPE</th>
@@ -1017,14 +1017,14 @@
                     </div>
                   </th>
                 </tr>
-                {% for row, metrics in table.iterrows() %}
+                {% for row, metrics in table.iterrows() -%}
                   <tr class="flex flex-row w-full border-b border-gray-200 bg-white odd:bg-gray-100 h-[50px] items-center">
-                    {% for index, metric in metrics.items() %}
-                      {% if metric is float() %}
+                    {% for index, metric in metrics.items() -%}
+                      {% if metric is float() -%}
                         <td class="flex flex-row w-full mt-[5px] mb-[5px] items-center">{{ metric|round(2, 'common') }}</td>
-                      {% elif metric is string() %}
+                      {% elif metric is string() -%}
                         <td class="flex flex-row w-full mt-[5px] mb-[5px] items-center">{{ metric|upper() }}</td>
-                      {% else %}
+                      {% else -%}
                         <td class="flex flex-row w-full mt-[5px] mb-[5px] items-center">{{ metric }}</td>
                       {% endif %}  
                     {% endfor %}
@@ -1439,8 +1439,10 @@
           stdout.classList.replace("flex", "hidden");
           stdout.textContent = "";
           resetFilters();
-          const variantsDivsLeft = document.querySelectorAll('[data-component="file-content-left"]');
-          const variantsDivsRight = document.querySelectorAll('[data-component="file-content-right"]');
+          const leftContent = document.getElementById("content1");
+          const rightContent = document.getElementById("content2");
+          const variantsDivsLeft = leftContent.querySelectorAll('[data-component="file-content-left"]');
+          const variantsDivsRight = rightContent.querySelectorAll('[data-component="file-content-right"]');
           variantsDivsLeft.forEach((divLeft, index) => {
             divLeft.classList.replace('flex', 'hidden');
             variantsDivsRight[index].classList.replace('flex', 'hidden');
@@ -1452,15 +1454,72 @@
           const queryKeywords = ["=", "AND", "OR"];
           const prefix = "SELECT * from ? WHERE";
           const query = `${prefix} ${suffix}`
+          const statsByVariantType = document.querySelectorAll('[data-component="variant-card-datas"]');
+          const totalLineLeft = leftContent.querySelectorAll('span:not([data-component="column-header"])').length;
+          const totalLineRight = rightContent.querySelectorAll('span:not([data-component="column-header"])').length;
+          let countVisibleLeft = 0;
+          let countVisibleRight = 0;
+          let countMatchLine = 0;
+          let countMismatchLine = 0;
+          let countSNP = [0, 0];
+          let countINDEL = [0, 0];
+          let countSV = [0, 0];
           try {
             const resultsLeft = alasql(query, [variantsLeft]);
             const resultsRight = alasql(query, [variantsRight]);
             const union = new Set([...resultsLeft.map(result => result.element), ...resultsRight.map(result => result.element)]);
             union.forEach(element => {
               element = parseInt(element);
-              variantsDivsLeft[element].classList.replace("hidden", "flex");
-              variantsDivsRight[element].classList.replace("hidden", "flex");
+              const divLeft = variantsDivsLeft[element];
+              let variantType = divLeft.getAttribute("type").toUpperCase();
+              let status = divLeft.getAttribute("status");
+              if (status === "match") {
+                ++countMatchLine;
+              }
+              else {
+                ++countMismatchLine;
+              }
+              if (divLeft.querySelector('span')) {
+                ++countVisibleLeft
+                if (variantType === "SNP") {
+                  ++countSNP[0];
+                }
+                else if (variantType === "INDEL") {
+                  ++countINDEL[0];
+                }
+                else if (variantType === "SV") {
+                  ++countSV[0];
+                }
+              }
+              const divRight = variantsDivsRight[element];
+              variantType = divRight.getAttribute('type').toUpperCase();
+              if (divRight.querySelector('span')) {
+                ++countVisibleRight
+                if (variantType === "SNP") {
+                  ++countSNP[1];
+                }
+                else if (variantType === "INDEL") {
+                  ++countINDEL[1];
+                }
+                else if (variantType === "SV") {
+                  ++countSV[1];
+                }
+              }
+              divLeft.classList.replace("hidden", "flex");
+              divRight.classList.replace("hidden", "flex");
             });
+            document.getElementById("filterSummaryL").innerText = `Showing ${countVisibleLeft} variants out of ${totalLineLeft}`;
+            document.getElementById("filterSummaryR").innerText = `Showing ${countVisibleRight} variants out of ${totalLineRight}`;
+            if (countVisibleLeft+countVisibleRight == 0) {
+              document.querySelectorAll('[data-component="error-popup"]').forEach(error => error.classList.replace('hidden', 'flex'));
+            }
+            else {
+              document.querySelectorAll('[data-component="error-popup"]').forEach(error => error.classList.replace('flex', 'hidden'));
+            }
+            const statsGeneral = document.querySelectorAll('[data-component="general-card-datas"]');
+            statsGeneral[0].children[0].textContent = countMatchLine;
+            statsGeneral[1].children[0].textContent = countMismatchLine;
+            statsGeneral[2].children[0].textContent = (countMatchLine / (countVisibleLeft + countVisibleRight - countMatchLine)).toPrecision(3);
             stdout.classList.replace("hidden", "flex");
             stdout.textContent = `js:(vcc)> SELECT * FROM VCFS WHERE ${suffix}`;
           } catch(e) {
