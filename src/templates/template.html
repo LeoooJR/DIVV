@@ -218,22 +218,22 @@
 
     <div class="flex flex-row w-full max-w-[100%] box-border">
 
-      <div class="flex flex-row w-[50%] bg-[white] justify-center max-w-[50%]">
+      <div class="flex flex-row w-[50%] bg-[white] justify-center max-w-[50%] overflow-hidden">
 
-        <div class="flex flex-row items-center m-[2%] w-fit gap-[10px]">
+        <div class="flex flex-row items-center justify-center m-[2%] w-full gap-[10px] min-w-0 flex-wrap">
 
-            <img src="statics/chromosome.png" alt="chromosomes-icon" class="w-[45px] h-[45px]">
+              <img src="statics/chromosome.png" alt="chromosomes-icon" class="w-[45px] h-[45px]">
 
-              <div class="h-[45px] border-[1px] border-[solid] border-[#3d444d] rounded-xl px-[15px] py-[5px] bg-[#0d1117] [box-shadow:0_0_20px_rgba(0,_0,_0,_0.5)] [transition:150ms_cubic-bezier(0.4,0,0.2,1)] flex items-center hover:border-[#999999]">
+              <div class="h-[45px] border-[1px] border-[solid] border-[#3d444d] rounded-xl px-[15px] py-[5px] bg-[#0d1117] [box-shadow:0_0_20px_rgba(0,_0,_0,_0.5)] [transition:150ms_cubic-bezier(0.4,0,0.2,1)] flex flew-row items-center hover:border-[#999999] min-w-[180px] flex-shrink">
 
-                <div class="relative w-full h-full flex items-center">
+                <div class="relative w-full h-full flex items-center min-w-0">
 
-                  <input id="query-chromosome" placeholder="Search chromosome" class="h-full border-[0] border-transparent text-[1rem] pr-0 text-[#cccccc] bg-[#0d1117] border-r-[2px_solid_#3d444d] outline-[none] placeholder:text-white focus:text-[white] focus:placeholder:text-[white]" type="text">
+                  <input id="query-chromosome" placeholder="Search chromosome" class="h-full border-[0] border-transparent text-[1rem] pr-[60px] text-[#cccccc] bg-[#0d1117] border-r-[2px_solid_#3d444d] outline-[none] placeholder:text-white focus:text-[white] focus:placeholder:text-[white] min-w-0 flex-shrink w-full" type="text">
 
-                  <div class="absolute right-0 top-1/2 transform -translate-y-1/2 w-[52px] h-[35px] bg-transparent rounded-r-xl [transition:150ms_cubic-bezier(0.4,0,0.2,1)] flex items-center justify-center hover:bg-[#3d444d]">
+                  <div class="absolute right-0 top-1/2 transform -translate-y-1/2 w-[52px] h-[35px] bg-transparent rounded-r-xl [transition:150ms_cubic-bezier(0.4,0,0.2,1)] flex items-center justify-center hover:bg-[#3d444d] flex-shrink-0">
 
                     <button class="w-full h-full bg-transparent border-[none] cursor-pointer rounded-r-xl [transition:150ms_cubic-bezier(0.4,0,0.2,1)] opacity-[.4] flex items-center justify-center hover:opacity-[.8]">
-                      <i class="w-[21px] h-[21px] absolute top-[7px] right-[15px] flex items-center justify-center">
+                      <i class="w-[21px] h-[21px] flex items-center justify-center">
                         <svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 512 512">
                           <path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z" fill="#fff">
                           </path>
@@ -247,36 +247,35 @@
 
               </div>
 
-        </div>
+            
+            <div class="w-fit min-w-0 flex-shrink flex flew-row gap-2">
+              <img src="statics/puzzle.png" alt="puzzle-icon" class="w-[45px] h-[45px]">
+              <select id="query-status" class="px-[10px] py-[10px] rounded-[5px] border-[none] min-w-[150px] max-w-full text-[14px] font-[Ubuntu] bg-[#0d1117] text-[white] focus-within-[white] cursor-pointer">
+                  <option selected disabled>Select a status...</option>
+                  <option>ALL</option>
+                  <option>MATCH</option>
+                  <option>MISMATCH</option>
+              </select>
+            </div>
 
-        <div class="flex flex-row w-fit m-[2%] gap-[10px] items-center">
-          <img src="statics/puzzle.png" alt="puzzle-icon" class="w-[45px] h-[45px]">
-          <div class="w-fit mr-[5%]">
-            <select id="query-status" class="px-[2%] py-[5%] rounded-[5px] border-[none] min-w-[200px] text-[14px] font-[Ubuntu] bg-[#0d1117] text-[white] focus-within-[white] cursor-pointer">
-                <option selected disabled>Select a status...</option>
-                <option>ALL</option>
-                <option>MATCH</option>
-                <option>MISMATCH</option>
-            </select>
-          </div>
         </div>
 
       </div>
 
-      <div class="flex flex-row bg-[#111111] w-[50%]">
-        <div class="flex flex-row w-full m-[2%] gap-[10px] items-center justify-center">
-            <img src="statics/filter.png" alt="filter-icon" class="w-[45px] h-[45px]">
-            <div class="w-fit mr-[5%]">
-                <select id="query-filter" class="px-[2%] py-[5%] rounded-[5px] border-[none] min-w-[200px] text-[14px] font-[Ubuntu] bg-[#eef0f1] text-[black] focus-within-[white] cursor-pointer">
+      <div class="flex flex-row bg-[#111111] w-[50%] overflow-hidden">
+        <div class="flex flex-row w-full m-[2%] gap-[10px] items-center justify-center flex-wrap min-w-0">
+            <div class="w-fit mr-[5%] min-w-0 flex-shrink flex flex-row gap-2">
+              <img src="statics/filter.png" alt="filter-icon" class="w-[45px] h-[45px]">
+                <select id="query-filter" class="px-[10px] py-[10px] rounded-[5px] border-[none] min-w-[150px] max-w-full text-[14px] font-[Ubuntu] bg-[#eef0f1] text-[black] focus-within-[white] cursor-pointer">
                     <option selected disabled>Select a filter...</option>
                     <option>ALL</option>
                     <option>PASS</option>
                     <option>FAIL</option>
                 </select>
             </div>
-            <img src="statics/dna.png" alt="dna-icon" class="w-[45px] h-[45px]">
-            <div class="w-fit mr-[5%]">
-                <select id="query-variant" class="px-[2%] py-[5%] rounded-[5px] border-[none] min-w-[200px] text-[14px] font-[Ubuntu] bg-[#eef0f1] text-[black] focus-within-[white] cursor-pointer">
+            <div class="w-fit mr-[5%] min-w-0 flex-shrink flex flex-row gap-2">
+              <img src="statics/dna.png" alt="dna-icon" class="w-[45px] h-[45px]">
+                <select id="query-variant" class="px-[10px] py-[10px] rounded-[5px] border-[none] min-w-[150px] max-w-full text-[14px] font-[Ubuntu] bg-[#eef0f1] text-[black] focus-within-[white] cursor-pointer">
                     <option selected disabled>Select a variant...</option>
                     <option>ALL</option>
                     <option>SNP</option>
@@ -284,8 +283,8 @@
                     <option>OTHER</option>
                 </select>
             </div>
-            <img src="statics/terminal.png" alt="terminal-icon" class="w-[45px] h-[45px] cursor-pointer" id="terminal-icon">
-            <button id="reset-button" class="bg-[rgba(79,_70,_229,_0.9)] border-[none] rounded-[6px] px-[20px] py-[10px] m-[3%] cursor-pointer text-[14px] text-white rounded-[16px] font-[Ubuntu] font-bold hover:bg-[rgba(67,_56,_202,_0.9)]" onclick="resetFilters()">Reset</button>
+            <img src="statics/terminal.png" alt="terminal-icon" class="w-[45px] h-[45px] cursor-pointer flex-shrink-0" id="terminal-icon">
+            <button id="reset-button" class="bg-[rgba(79,_70,_229,_0.9)] border-[none] rounded-[6px] px-[20px] py-[10px] m-[3%] cursor-pointer text-[14px] text-white rounded-[16px] font-[Ubuntu] font-bold hover:bg-[rgba(67,_56,_202,_0.9)] flex-shrink-0 whitespace-nowrap" onclick="resetFilters()">Reset</button>
         </div>
       </div>
     </div>
