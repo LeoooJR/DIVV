@@ -21,3 +21,7 @@ class ProcessError(RuntimeError):
 class ReportError(FileError):
 
     pass
+
+class VariantError(Exception):
+
+    pass

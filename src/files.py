@@ -18,7 +18,7 @@ from shutil import copy, copytree
 import stat
 import subprocess
 import utils
-import variants
+from variants import VariantRepository
 import webbrowser
 import zipfile
 import _pickle as cPickle
@@ -140,7 +140,7 @@ class VCF(GenomicFile):
 
         self.SAMPLES = None
 
-        self.variants: variants.VariantRepository = variants.VariantRepository(filters)
+        self.variants: VariantRepository = VariantRepository(filters)
 
         if self.archive and index:
 
@@ -637,10 +637,11 @@ class VCFProcessor:
                         )
                         for s in task[0].samples
                     }
+                    
                     # Should variant be filtered ?
                     if task[0].variants.filters:
 
-                        exclude: bool = utils.exclude(v, task[0].variants.filters)
+                        exclude: bool = VariantRepository.exclude(v, task[0].variants.filters)
                     # Should the variant be excluded ?
                     if exclude:
 
@@ -707,7 +708,7 @@ class VCFProcessor:
                                         stats["hom"] += sum(
                                             list(
                                                 map(
-                                                    lambda sample: utils.is_homozygous(
+                                                    lambda sample: VariantRepository.is_homozygous(
                                                         GT=samples_values[sample][
                                                             task[0].format["genotype"][0]
                                                         ]
@@ -720,7 +721,7 @@ class VCFProcessor:
                                         stats["het"] += sum(
                                             list(
                                                 map(
-                                                    lambda sample: utils.is_heterozygous(
+                                                    lambda sample: VariantRepository.is_heterozygous(
                                                         GT=samples_values[sample][
                                                             task[0].format["genotype"][0]
                                                         ]
@@ -1048,7 +1049,7 @@ class VCFRepository():
                 ascending=True,
                 inplace=True,
                 kind="mergesort",
-                key=lambda serie: serie.astype(str).map(variants.VariantRepository.chromosome_sort_key) if serie.name == "Chromosome" else serie
+                key=lambda serie: serie.astype(str).map(VariantRepository.chromosome_sort_key) if serie.name == "Chromosome" else serie
             )
 
             results[pair]["variants"] = df

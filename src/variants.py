@@ -1,8 +1,9 @@
+import errors
 import numpy
 from pandas import Series, DataFrame, concat
 from plots import PlotLibrary
 from sortedcontainers import SortedSet
-import utils
+from utils import suppress_warnings 
 
 class VariantRepository():
 
@@ -11,19 +12,15 @@ class VariantRepository():
         if filters and any(filters):
 
             # Filters to apply during the parsing
-            self.FILTERS: dict = (
-                                    {
-                                        "exclude": {
-                                            "exclude_snps": filters.get("SNP", False),
-                                            "exclude_indels": filters.get("INDELS", False),
-                                            "exclude_vars": filters.get("VARS", False),
-                                            "exclude_mnps": filters.get("MNP", False),
-                                            "exclude_transitions": filters.get("TRANSITION", False),
-                                            "exclude_svs": filters.get("SV", False),
-                                            "pass_only": filters.get("PASS_ONLY", False),
-                                        },
-                                    }
-                                )
+            self.FILTERS: dict = {
+                                    "exclude_snps": filters.get("SNP", False),
+                                    "exclude_indels": filters.get("INDELS", False),
+                                    "exclude_vars": filters.get("VARS", False),
+                                    "exclude_mnps": filters.get("MNP", False),
+                                    "exclude_transitions": filters.get("TRANSITION", False),
+                                    "exclude_svs": filters.get("SV", False),
+                                    "pass_only": filters.get("PASS_ONLY", False),
+                                }
         else: 
 
             self.FILTERS: dict = None
@@ -76,19 +73,68 @@ class VariantRepository():
 
         if any(value):
 
-            self.FILTERS: dict = (
-                                    {
-                                        "exclude": {
-                                            "exclude_snps": value.get("SNP", False),
-                                            "exclude_indels": value.get("INDELS", False),
-                                            "exclude_vars": value.get("VARS", False),
-                                            "exclude_mnps": value.get("MNP", False),
-                                            "exclude_transitions": value.get("TRANSITION", False),
-                                            "exclude_svs": value.get("SV", False),
-                                            "pass_only": value.get("PASS_ONLY", False),
-                                        },
-                                    }
-                                )
+            self.FILTERS: dict = {
+                                    "exclude_snps": value.get("SNP", False),
+                                    "exclude_indels": value.get("INDELS", False),
+                                    "exclude_vars": value.get("VARS", False),
+                                    "exclude_mnps": value.get("MNP", False),
+                                    "exclude_transitions": value.get("TRANSITION", False),
+                                    "exclude_svs": value.get("SV", False),
+                                    "pass_only": value.get("PASS_ONLY", False),
+                                }
+    
+    @staticmethod
+    def exclude(v: object, filters: dict = None) -> bool:
+        """ Check if variant should be excluded from analysis """
+        return (
+                v.is_indel and filters["exclude_indels"]
+            ) or (
+                v.is_snp and filters["exclude_snps"]
+            ) or (
+                v.is_mnp and filters["exclude_mnps"]
+            ) or (
+                v.is_sv and filters["exclude_svs"]
+            ) or (
+                v.is_transition and filters["exclude_transitions"]
+            ) or (
+                (v.FILTER != None) and filters["pass_only"]
+            ) if filters else False
+    
+    @staticmethod
+    def is_homozygous(GT: str):
+        """ Check if variant is homozygous """
+        if isinstance(GT, str):
+            if GT:
+                if '/' in GT:
+                    alleles = GT.split('/')
+                elif '|' in GT:
+                    alleles = GT.split('|')
+                else:
+                    return False
+            
+                return alleles[0] == alleles[1]
+            
+            return False
+        else:
+            raise errors.VariantError(f"The genotype must be a string instance. The provided genotype is an {type(GT)}")
+
+    @staticmethod
+    def is_heterozygous(GT: str):
+        """ Check if variant is heterozygous """
+        if isinstance(GT, str):
+            if GT:
+                if '/' in GT:
+                    alleles = GT.split('/')
+                elif '|' in GT:
+                    alleles = GT.split('|')
+                else:
+                    return False
+                
+                return alleles[0] != alleles[1]
+            
+            return False
+        else:
+            raise errors.VariantError(f"The genotype must be a string instance. The provided genotype is an {type(GT)}")
             
     def update_repository(self, chromosome: str, variants: DataFrame = None, filtered: dict = None, profile: dict = None):
 
@@ -153,7 +199,7 @@ class VariantRepository():
 
         if self.profile[chromosome]["depth"].size:
 
-            with utils.suppress_warnings():       
+            with suppress_warnings():       
                 data = DataFrame(list(map(lambda k: Series([k, numpy.mean(self.profile[k]["depth"])], index=["Chromosome", "Depth"]), chromosomes)))
             
             self.plots.barplot(data, "Chromosome", "Depth", color="Chromosome", title="Mean depth by chromosome", prefix="DepthByChromosomeBarPlot")

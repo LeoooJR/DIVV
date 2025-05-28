@@ -158,40 +158,6 @@ def hamming_distance(a: np.ndarray, b: np.ndarray) -> float:
     except ZeroDivisionError:
         return None
 
-def is_homozygous(GT: str):
-    """ Check if variant is homozygous """
-    if '/' in GT:
-        alleles = GT.split('/')
-    elif '|' in GT:
-        alleles = GT.split('|')
-    
-    return alleles[0] == alleles[1]
-
-def is_heterozygous(GT: str):
-    """ Check if variant is heterozygous """
-    if '/' in GT:
-        alleles = GT.split('/')
-    elif '|' in GT:
-        alleles = GT.split('|')
-    
-    return alleles[0] != alleles[1]
-
-def exclude(v: object, filters: dict = None) -> bool:
-    """ Check if variant should be excluded from analysis """
-    return (
-            v.is_indel and filters["exclude"]["exclude_indels"]
-        ) or (
-            v.is_snp and filters["exclude"]["exclude_snps"]
-        ) or (
-            v.is_mnp and filters["exclude"]["exclude_mnps"]
-        ) or (
-            v.is_sv and filters["exclude"]["exclude_svs"]
-        ) or (
-            v.is_transition and filters["exclude"]["exclude_transitions"]
-        ) or (
-            (v.FILTER != None) and filters["exclude"]["pass_only"]
-        ) if filters else False
-
 def format_to_values(format: str, values: str|list[str]) -> dict:
     """ map FORMAT string to respective SAMPLE values """
 
