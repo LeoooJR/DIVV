@@ -364,27 +364,27 @@
                   </div>
                 </div>
                 <div class="absolute mt-[30px] top-[37px] bottom-[0] left-[0] right-[0] overflow-y-scroll overflow-x-auto bg-white" id="content1">
-                  <div class="w-fit">
-                    <div id="file-header-left" class="min-h-[24px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] w-fit bg-[rgba(255,_255,_255,_0.2)]">
+                  <div class="">
+                    <div id="file-header-left" class="w-fit h-[32px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] bg-[rgba(255,_255,_255,_0.2)]">
                       <div class="text-[#888] mr-[10px] select-none min-w-[30px] text-right">0</div>
-                        <span data-component="column-header" class="text-black w-fit bg-[rgba(255,_255,_255,_0.2)] table-cell px-[8px] py-[2px] whitespace-nowrap">
+                        <span data-component="column-header" class="text-black bg-[rgba(255,_255,_255,_0.2)] table-cell px-[8px] py-[2px] whitespace-nowrap">
                           {{ view['headers'][vcfs.repository[0]] }}
                         </span>
                     </div>
                     {% for index, series in view['variants'].iterrows() -%}
                       {% if series['Variant.L']|is_nan or series['Variant.R']|is_nan -%}
-                        <div data-component="file-content-left" status="mismatch" row="{{ loop.index0 }}" class="min-h-[24px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] w-fit bg-[rgba(255,_0,_0,_0.2)]" id="{{ series['Chromosome']|upper() }} {{ series['Type']|upper() }} {{ series['Filter.L']|upper() }}" chrom="{{ series['Chromosome']|upper() }}" type="{{ series['Type']|upper() }}" filter="{{ series['Filter.L']|upper() }}">
+                        <div data-component="file-content-left" status="mismatch" row="{{ loop.index0 }}" class="w-fit h-[32px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] bg-[rgba(255,_0,_0,_0.2)]" id="{{ series['Chromosome']|upper() }} {{ series['Type']|upper() }} {{ series['Filter.L']|upper() }}" chrom="{{ series['Chromosome']|upper() }}" type="{{ series['Type']|upper() }}" filter="{{ series['Filter.L']|upper() }}">
                           <div class="text-[#888] mr-[10px] select-none min-w-[30px] text-right">{{ loop.index }}</div>
                           {% if not series['Variant.L']|is_nan %}
-                            <span data-component="column-diff" class="text-black w-fit bg-[rgba(255,_0,_0,_0.2)] table-cell px-[8px] py-[2px] whitespace-nowrap">
+                            <span data-component="column-diff" class="text-black bg-[rgba(255,_0,_0,_0.2)] table-cell px-[8px] py-[2px] whitespace-nowrap">
                               {{ series['Variant.L'] -}}
                             </span>
                           {% endif %}
                         </div>
                       {% else -%}
-                        <div data-component="file-content-left" status="match" row="{{ loop.index0 }}" class="min-h-[24px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] w-fit bg-[rgba(0,_255,_0,_0.2)]" id="{{ series['Chromosome']|upper() }} {{ series['Type']|upper() }} {{ series['Filter.L']|upper() }}" chrom="{{ series['Chromosome']|upper() }}" type="{{ series['Type']|upper() }}" filter="{{ series['Filter.L']|upper() }}">
+                        <div data-component="file-content-left" status="match" row="{{ loop.index0 }}" class="w-fit h-[32px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] bg-[rgba(0,_255,_0,_0.2)]" id="{{ series['Chromosome']|upper() }} {{ series['Type']|upper() }} {{ series['Filter.L']|upper() }}" chrom="{{ series['Chromosome']|upper() }}" type="{{ series['Type']|upper() }}" filter="{{ series['Filter.L']|upper() }}">
                           <div class="text-[#888] mr-[10px] select-none min-w-[30px] text-right">{{ loop.index }}</div>
-                          <span data-component="column-match" class="text-black w-fit bg-[rgba(0,_255,_0,_0.2)] table-cell px-[8px] py-[2px] whitespace-nowrap">
+                          <span data-component="column-match" class="text-black bg-[rgba(0,_255,_0,_0.2)] table-cell px-[8px] py-[2px] whitespace-nowrap">
                             {{ series['Variant.L'] -}}
                           </span>
                         </div>
@@ -407,27 +407,27 @@
                   </div> 
                 </div>
                 <div class="absolute mt-[30px] top-[37px] bottom-[0] left-[0] right-[0] overflow-y-scroll overflow-x-auto bg-white" id="content2">
-                  <div class="w-fit">
-                    <div id="file-header-right" class="min-h-[24px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] w-fit bg-[rgba(255,_255,_255,_0.2)]">
+                  <div class="">
+                    <div id="file-header-right" class="w-fit h-[32px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] bg-[rgba(255,_255,_255,_0.2)]">
                       <div class="text-[#888] mr-[10px] select-none min-w-[30px] text-right">0</div>
-                        <span data-component="column-header" class="text-black w-fit bg-[rgba(255,_255,_255,_0.2)] table-cell px-[8px] py-[2px] whitespace-nowrap">
+                        <span data-component="column-header" class="text-black bg-[rgba(255,_255,_255,_0.2)] table-cell px-[8px] py-[2px] whitespace-nowrap">
                           {{ view['headers'][vcfs.repository[1]] }}
                         </span>
                     </div>
                     {% for index, series in view['variants'].iterrows() -%}
                       {% if series['Variant.L']|is_nan or series['Variant.R']|is_nan -%}
-                        <div data-component="file-content-right" row="{{ loop.index0 }}" status="mismatch" class="min-h-[24px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] w-fit bg-[rgba(255,_0,_0,_0.2)]" id="{{ series['Chromosome']|upper() }} {{ series['Type']|upper() }} {{ series['Filter.R']|upper() }}" chrom="{{ series['Chromosome']|upper() }}" type="{{ series['Type']|upper() }}" filter="{{ series['Filter.R']|upper() }}">
+                        <div data-component="file-content-right" row="{{ loop.index0 }}" status="mismatch" class="w-fit h-[32px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] bg-[rgba(255,_0,_0,_0.2)]" id="{{ series['Chromosome']|upper() }} {{ series['Type']|upper() }} {{ series['Filter.R']|upper() }}" chrom="{{ series['Chromosome']|upper() }}" type="{{ series['Type']|upper() }}" filter="{{ series['Filter.R']|upper() }}">
                           <div class="text-[#888] mr-[10px] select-none min-w-[30px] text-right">{{ loop.index }}</div>
                           {% if not series['Variant.R']|is_nan %}
-                            <span data-component="column-diff" class="text-black w-fit bg-[rgba(255,_0,_0,_0.2)] table-cell px-[8px] py-[2px] whitespace-nowrap">
+                            <span data-component="column-diff" class="text-black bg-[rgba(255,_0,_0,_0.2)] table-cell px-[8px] py-[2px] whitespace-nowrap">
                               {{ series['Variant.R'] -}}
                             </span>
                           {% endif %}
                         </div>
                       {% else -%}
-                        <div data-component="file-content-right" status="match" row="{{ loop.index0 }}" class="min-h-[24px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] w-fit bg-[rgba(0,_255,_0,_0.2)]" id="{{ series['Chromosome']|upper() }} {{ series['Type']|upper() }} {{ series['Filter.R']|upper() }}" chrom="{{ series['Chromosome']|upper() }}" type="{{ series['Type']|upper() }}" filter="{{ series['Filter.R']|upper() }}">
+                        <div data-component="file-content-right" status="match" row="{{ loop.index0 }}" class="w-fit h-[32px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] bg-[rgba(0,_255,_0,_0.2)]" id="{{ series['Chromosome']|upper() }} {{ series['Type']|upper() }} {{ series['Filter.R']|upper() }}" chrom="{{ series['Chromosome']|upper() }}" type="{{ series['Type']|upper() }}" filter="{{ series['Filter.R']|upper() }}">
                           <div class="text-[#888] mr-[10px] select-none min-w-[30px] text-right">{{ loop.index }}</div>
-                          <span data-component="column-match" class="text-black w-fit bg-[rgba(0,_255,_0,_0.2)] table-cell px-[8px] py-[2px] whitespace-nowrap">
+                          <span data-component="column-match" class="text-black bg-[rgba(0,_255,_0,_0.2)] table-cell px-[8px] py-[2px] whitespace-nowrap">
                             {{ series['Variant.R'] -}}
                           </span>
                         </div>
@@ -457,11 +457,11 @@
                         <p class="text-black capitalize font-[Ubuntu]">Matching lines</p>
                       </div>
                       <div class="relative group flex w-5 h-5">
-                        <svg class="" xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" height="24" fill="none">
+                        <svg class="relative z-0" xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" height="24" fill="none">
                           <path fill="#509AF8" d="m12 1.5c-5.79844 0-10.5 4.70156-10.5 10.5 0 5.7984 4.70156 10.5 10.5 10.5 5.7984 0 10.5-4.7016 10.5-10.5 0-5.79844-4.7016-10.5-10.5-10.5zm.75 15.5625c0 .1031-.0844.1875-.1875.1875h-1.125c-.1031 0-.1875-.0844-.1875-.1875v-6.375c0-.1031.0844-.1875.1875-.1875h1.125c.1031 0 .1875.0844.1875.1875zm-.75-8.0625c-.2944-.00601-.5747-.12718-.7808-.3375-.206-.21032-.3215-.49305-.3215-.7875s.1155-.57718.3215-.7875c.2061-.21032.4864-.33149.7808-.3375.2944.00601.5747.12718.7808.3375.206.21032.3215.49305.3215.7875s-.1155.57718-.3215.7875c-.2061.21032-.4864.33149-.7808.3375z">
                           </path>
                         </svg>
-                        <div class="absolute left-full ml-2 w-[300px] hidden group-hover:block">
+                        <div class="absolute left-full ml-2 w-[300px] hidden group-hover:block z-10">
                           <p class="bg-[white] text-black border-solid border-[rgb(204,_204,_204)] rounded-2xl border pt-[0.01em] pr-[16px] pb-[0.01em] pl-[16px]"><strong>Matching</strong> criteria is based on: <strong>chromosome - position - reference allele - alternative allele</strong></p>
                         </div>
                       </div>
@@ -480,11 +480,11 @@
                         <p class="text-black capitalize font-[Ubuntu]">Different lines</p>
                       </div>
                       <div class="relative group flex w-5 h-5">
-                        <svg class="" xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" height="24" fill="none">
+                        <svg class="relative z-0" xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" height="24" fill="none">
                           <path fill="#509AF8" d="m12 1.5c-5.79844 0-10.5 4.70156-10.5 10.5 0 5.7984 4.70156 10.5 10.5 10.5 5.7984 0 10.5-4.7016 10.5-10.5 0-5.79844-4.7016-10.5-10.5-10.5zm.75 15.5625c0 .1031-.0844.1875-.1875.1875h-1.125c-.1031 0-.1875-.0844-.1875-.1875v-6.375c0-.1031.0844-.1875.1875-.1875h1.125c.1031 0 .1875.0844.1875.1875zm-.75-8.0625c-.2944-.00601-.5747-.12718-.7808-.3375-.206-.21032-.3215-.49305-.3215-.7875s.1155-.57718.3215-.7875c.2061-.21032.4864-.33149.7808-.3375.2944.00601.5747.12718.7808.3375.206.21032.3215.49305.3215.7875s-.1155.57718-.3215.7875c-.2061.21032-.4864.33149-.7808.3375z">
                           </path>
                         </svg>
-                        <div class="absolute left-full ml-2 w-[300px] hidden group-hover:block">
+                        <div class="absolute left-full ml-2 w-[300px] hidden group-hover:block z-10">
                           <p class="text-black bg-[white] border-solid border-[rgb(204,_204,_204)] rounded-2xl border pt-[0.01em] pr-[16px] pb-[0.01em] pl-[16px]"><strong>Matching</strong> criteria is based on: <strong>chromosome - position - reference allele - alternative allele</strong></p>
                         </div>
                       </div>
@@ -504,11 +504,11 @@
                         <p class="text-black capitalize font-[Ubuntu]">Jaccard index</p>
                       </div>
                       <div class="relative group flex w-5 h-5">
-                        <svg class="" xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" height="24" fill="none">
+                        <svg class="relative z-0" xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" height="24" fill="none">
                           <path fill="#509AF8" d="m12 1.5c-5.79844 0-10.5 4.70156-10.5 10.5 0 5.7984 4.70156 10.5 10.5 10.5 5.7984 0 10.5-4.7016 10.5-10.5 0-5.79844-4.7016-10.5-10.5-10.5zm.75 15.5625c0 .1031-.0844.1875-.1875.1875h-1.125c-.1031 0-.1875-.0844-.1875-.1875v-6.375c0-.1031.0844-.1875.1875-.1875h1.125c.1031 0 .1875.0844.1875.1875zm-.75-8.0625c-.2944-.00601-.5747-.12718-.7808-.3375-.206-.21032-.3215-.49305-.3215-.7875s.1155-.57718.3215-.7875c.2061-.21032.4864-.33149.7808-.3375.2944.00601.5747.12718.7808.3375.206.21032.3215.49305.3215.7875s-.1155.57718-.3215.7875c-.2061.21032-.4864.33149-.7808.3375z">
                           </path>
                         </svg>
-                        <div class="absolute left-full ml-2 w-[300px] hidden group-hover:block">
+                        <div class="absolute left-full ml-2 w-[300px] hidden group-hover:block z-10">
                           <p class="text-black bg-[white] border-solid border-[rgb(204,_204,_204)] rounded-2xl border pt-[0.01em] pr-[16px] pb-[0.01em] pl-[16px]"><strong>Jaccard Index</strong> calculated as: <strong>common variant / total unique variants</strong></p>
                         </div>
                       </div>
