@@ -1,4 +1,5 @@
 import copy as cp
+import datetime
 import json
 import cyvcf2
 import errors
@@ -22,6 +23,7 @@ from variants import VariantRepository
 import webbrowser
 import zipfile
 import _pickle as cPickle
+from __init__ import __version__
 
 class GenomicFile():
 
@@ -1232,7 +1234,7 @@ class Report:
         template = env.get_template("template.html")
 
         # Render the template
-        html = template.render(vcfs=self.vcfs, tags=self.tags, cmd=self.cmd, view=self.view, table=self.table)
+        html = template.render(vcfs=self.vcfs, tags=self.tags, cmd=self.cmd, view=self.view, table=self.table, date=datetime.datetime.now().strftime("%Y-%m-%d, %X"), version=__version__)
 
         if self.archive:
 
