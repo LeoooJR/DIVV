@@ -10,7 +10,7 @@
   <script src="assets/js/alasql-4.6.5.js"></script>
 </head>
 
-<body onload="filter()">
+<body onload="filter(); highlightCommand();">
 
     <div class="flex flex-row w-full items-stretch">
 
@@ -38,23 +38,23 @@
 
             <div class="flex flex-row justify-center items-center flex-wrap w-full pt-[5px] overflow-x-auto">
 
-              <div class="flex flex-row border-[solid] border-transparent rounded-[2em] m-[2px] h-[90%] bg-[#111d2f] items-center">
+              <div class="flex flex-row border-[solid] border-transparent rounded-[2em] m-[2px] h-[90%] bg-[#D7F1FD] items-center [box-shadow:0px_0px_5px_-3px_#111]">
                 <img src="statics/folder.png" class="w-[20px] pl-[5px] pt-[5px] pb-[5px] self-center align-middle">
-                <p class="items-center text-[15px] pl-[5px] pr-[5px] font-bold text-center leading-[22px] overflow-scroll font-[Ubuntu] text-[white]">
+                <p class="items-center text-[15px] pl-[5px] pr-[5px] font-bold text-center leading-[22px] overflow-scroll font-[Ubuntu] text-[#0C2A75]">
                     {{ vcfs.repository[0].informations().path|default(vcfs.repository[0]) }}
                 </p>
               </div>
 
-              <div class="flex flex-row border-[solid] border-transparent rounded-[2em] m-[2px] h-[90%] bg-[#111d2f] items-center">
+              <div class="flex flex-row border-[solid] border-transparent rounded-[2em] m-[2px] h-[90%] bg-[#D7F1FD] items-center [box-shadow:0px_0px_5px_-3px_#111]">
                 <img src="statics/database.png" class="w-[20px] pl-[5px] pt-[5px] pb-[5px] self-center align-middle">
-                <p class="items-center text-[15px] pl-[5px] pr-[5px] font-bold text-center leading-[22px] overflow-scroll font-[Ubuntu] text-[white]">
+                <p class="items-center text-[15px] pl-[5px] pr-[5px] font-bold text-center leading-[22px] overflow-scroll font-[Ubuntu] text-[#0C2A75]">
                     {{ vcfs.repository[0].informations().size|default('NA') }} Mo
                 </p>
               </div>
 
-              <div class="flex flex-row border-[solid] border-transparent rounded-[2em] m-[2px] h-[90%] bg-[#111d2f] items-center">
+              <div class="flex flex-row border-[solid] border-transparent rounded-[2em] m-[2px] h-[90%] bg-[#D7F1FD] items-center [box-shadow:0px_0px_5px_-3px_#111]">
                 <img src="statics/file.png" class="w-[20px] pl-[5px] pt-[5px] pb-[5px] self-center align-middle">
-                <p class="items-center text-[15px] pl-[5px] pr-[5px] font-bold text-center leading-[22px] overflow-scroll font-[Ubuntu] text-[white]">
+                <p class="items-center text-[15px] pl-[5px] pr-[5px] font-bold text-center leading-[22px] overflow-scroll font-[Ubuntu] text-[#0C2A75]">
                     {{ vcfs.repository[0].informations().mtime|default('NA') }}
                 </p>
               </div>
@@ -79,23 +79,23 @@
 
             <div class="flex flex-row justify-center items-center flex-wrap w-full pt-[5px] overflow-x-auto">
 
-              <div class="flex flex-row border-[solid] border-transparent rounded-[2em] m-[2px] h-[90%] bg-[#111d2f] items-center">
+              <div class="flex flex-row border-[solid] border-transparent rounded-[2em] m-[2px] h-[90%] bg-[#D7F1FD] items-center [box-shadow:0px_0px_5px_-3px_#111]">
                 <img src="statics/folder.png" class="w-[20px] pl-[5px] pt-[5px] pb-[5px] self-center align-middle">
-                <p class="items-center text-[15px] pl-[5px] pr-[5px] font-bold text-center leading-[22px] overflow-scroll font-[Ubuntu] text-[white]">
+                <p class="items-center text-[15px] pl-[5px] pr-[5px] font-bold text-center leading-[22px] overflow-scroll font-[Ubuntu] text-[#0C2A75]">
                     {{ vcfs.repository[1].informations().path|default(vcfs.repository[1]) }}
                 </p>
               </div>
 
-              <div class="flex flex-row border-[solid] border-transparent rounded-[2em] m-[2px] h-[90%] bg-[#111d2f] items-center">
+              <div class="flex flex-row border-[solid] border-transparent rounded-[2em] m-[2px] h-[90%] bg-[#D7F1FD] items-center [box-shadow:0px_0px_5px_-3px_#111]">
                 <img src="statics/database.png" class="w-[20px] pl-[5px] pt-[5px] pb-[5px] self-center align-middle">
-                <p class="items-center text-[15px] pl-[5px] pr-[5px] font-bold text-center leading-[22px] overflow-scroll font-[Ubuntu] text-[white]">
+                <p class="items-center text-[15px] pl-[5px] pr-[5px] font-bold text-center leading-[22px] overflow-scroll font-[Ubuntu] text-[#0C2A75]">
                     {{ vcfs.repository[1].informations().size|default('NA') }} Mo
                 </p>
               </div>
 
-              <div class="flex flex-row border-[solid] border-transparent rounded-[2em] m-[2px] h-[90%] bg-[#111d2f] items-center">
+              <div class="flex flex-row border-[solid] border-transparent rounded-[2em] m-[2px] h-[90%] bg-[#D7F1FD] items-center [box-shadow:0px_0px_5px_-3px_#111]">
                 <img src="statics/file.png" class="w-[20px] pl-[5px] pt-[5px] pb-[5px] self-center align-middle">
-                <p class="items-center text-[15px] pl-[5px] pr-[5px] font-bold text-center leading-[22px] overflow-scroll font-[Ubuntu] text-[white]">
+                <p class="items-center text-[15px] pl-[5px] pr-[5px] font-bold text-center leading-[22px] overflow-scroll font-[Ubuntu] text-[#0C2A75]">
                     {{ vcfs.repository[1].informations().mtime|default('NA') }}
                 </p>
               </div>
@@ -143,7 +143,7 @@
         </div>
       {% endif %}
 
-      <div id="command" class="mockup-code w-[90%] ml-[5%] mr-[5%] hidden">
+      <div id="command" class="mockup-code !bg-[#202425] w-[90%] ml-[5%] mr-[5%] hidden">
         <pre data-prefix="$"><code>{{ cmd }}</code></pre>
         <pre data-prefix=">" class="text-success"><code>Done!</code></pre>
       </div>
@@ -462,7 +462,7 @@
                           </path>
                         </svg>
                         <div class="absolute left-full ml-2 w-[300px] hidden group-hover:block z-10">
-                          <p class="text-info-content bg-info rounded-2xl pt-[0.1em] pr-[16px] pb-[0.1em] pl-[16px]"><strong>Matching</strong> criteria is based on: <strong>chromosome - position - reference allele - alternative allele</strong></p>
+                          <p class="text-info-content !bg-[#D7F1FD] rounded-2xl pt-[0.1em] pr-[16px] pb-[0.1em] pl-[16px]"><strong>Matching</strong> criteria is based on: <strong>chromosome - position - reference allele - alternative allele</strong></p>
                         </div>
                       </div>
                     </div>
@@ -485,7 +485,7 @@
                           </path>
                         </svg>
                         <div class="absolute left-full ml-2 w-[300px] hidden group-hover:block z-10">
-                          <p class="text-info-content bg-info rounded-2xl pt-[0.1em] pr-[16px] pb-[0.1em] pl-[16px]"><strong>Missmatch</strong> criteria is based on: <strong>chromosome - position - reference allele - alternative allele</strong></p>
+                          <p class="text-info-content !bg-[#D7F1FD] rounded-2xl pt-[0.1em] pr-[16px] pb-[0.1em] pl-[16px]"><strong>Mismatch</strong> criteria is based on: <strong>chromosome - position - reference allele - alternative allele</strong></p>
                         </div>
                       </div>
                     </div>
@@ -509,7 +509,7 @@
                           </path>
                         </svg>
                         <div class="absolute left-full ml-2 w-[300px] hidden group-hover:block z-10">
-                          <p class="text-info-content bg-info rounded-2xl pt-[0.1em] pr-[16px] pb-[0.1em] pl-[16px]"><strong>Jaccard Index</strong> calculated as: <strong>common variant / total unique variants</strong></p>
+                          <p class="text-info-content !bg-[#D7F1FD] rounded-2xl pt-[0.1em] pr-[16px] pb-[0.1em] pl-[16px]"><strong>Jaccard Index</strong> calculated as: <strong>common variant / total unique variants</strong></p>
                         </div>
                       </div>
                     </div>
@@ -907,7 +907,7 @@
         {% if table is not none %}
           <div style="display: flex; flex-direction: column; width: 100%; background: #f3f4f6;">
             <div class="tooltip tooltip-info w-fit ml-[5%]" data-tip="Benchmarking is carried out on exact equality in terms of chromosome, position, reference and alternative allele.">
-              <button class="btn btn-info">
+              <button class="btn btn-info !bg-[#D7F1FD] !border-[#D7F1FD] !outline-[#D7F1FD] !shadow-none">
                 <svg
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -1469,6 +1469,7 @@
 
         if (event.key === "Enter") {
 
+          const start = performance.now();
           const stderr = document.getElementById('stderr')
           stderr.classList.replace("flex", "hidden")
           stderr.textContent = "";
@@ -1486,8 +1487,8 @@
           })
           const suffix = document.getElementById('terminal-input').value;
           const filterCommonKeywords = ["CHROM", "POS", "ID", "REF", "ALT", "QUAL", "TYPE", "FILTER", "INFO", "FORMAT", "ROW"];
-          const filterLeftKeywords = ["GT","VAR","BKG","TRC","RRC","ARC","BRC","ARR","BRR","BRE","SBP","SBM","LOW"];
-          const filterRightKeywords = ["GT","VAR","BKG","TRC","RRC","ARC","BRC","ARR","BRR","BRE","SBP","SBM","LOW"];
+          const filterLeftKeywords = [{%- if vcfs.repository[0].variants.format -%}{% for key in vcfs.repository[0].variants.format -%}"{{ key }}"{% if not loop.last %}, {% endif %}{% endfor %}{%- endif -%}];
+          const filterRightKeywords = [{%- if vcfs.repository[1].variants.format -%}{% for key in vcfs.repository[1].variants.format -%}"{{ key }}"{% if not loop.last %}, {% endif %}{% endfor %}{%- endif -%}];
           const queryKeywords = ["=", "AND", "OR"];
           const variantsLeft = collectVariants(variantsDivsLeft, filterCommonKeywords.concat(filterLeftKeywords));
           const variantsRight = collectVariants(variantsDivsRight, filterCommonKeywords.concat(filterRightKeywords));
@@ -1570,7 +1571,8 @@
             statsGeneral[1].children[0].textContent = countMismatchLine;
             statsGeneral[2].children[0].textContent = (countMatchLine / (countVisibleLeft + countVisibleRight - countMatchLine)).toPrecision(3);
             stdout.classList.replace("hidden", "flex");
-            stdout.textContent = `js:(vcc)> SELECT * FROM VCFS WHERE ${suffix}`;
+            const end = performance.now();
+            stdout.textContent = `js:(vcc)> SELECT * FROM VCFS WHERE ${suffix} (${end - start} ms)`;
           } catch(e) {
             stderr.classList.replace("hidden", "flex");
             stderr.textContent = e.message;
@@ -1707,6 +1709,33 @@
           }
         }
       }
+
+      function highlightCommand() {
+        const tag = document.getElementById("command").querySelectorAll('code')[0];
+        const command = tag.textContent;
+        tag.innerText = ''
+        console.log(command);
+        const tokens = command.split(' ');
+        tokens.forEach((token, index) => {
+          const element = document.createElement('code');
+          if (index === 0) {
+            element.style.color = "#50fa7b";
+          }
+          else {
+            if (token.includes('/')) {
+              element.style.color = "#8be9fd";
+            }
+            else {
+              element.style.color = "white";
+            } 
+          }
+          const text = document.createTextNode(index === 0 ? token : ` ${token}`);
+          element.appendChild(text);
+          tag.appendChild(element);
+        })
+        console.log(tag.textContent)
+      }
+
     </script>
     <script>
       // Create the loop button element
@@ -1718,7 +1747,7 @@
       loopButton.style.bottom = '20px';
       loopButton.style.right = '20px';
       loopButton.style.padding = '10px 15px';
-      loopButton.style.backgroundColor = '#7c3aed';
+      loopButton.style.backgroundColor = '#4f46e5';
       loopButton.style.color = 'white';
       loopButton.style.border = 'none';
       loopButton.style.borderRadius = '16px';
