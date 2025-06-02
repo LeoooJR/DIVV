@@ -3,9 +3,21 @@ import numpy
 from pandas import Series, DataFrame, concat
 from plots import PlotLibrary
 from sortedcontainers import SortedSet
-from utils import suppress_warnings 
+from utils import suppress_warnings, convert
 
 class VariantRepository():
+
+    INDEX = {
+                "CHROM": 0,
+                "POS": 1,
+                "ID": 2,
+                "REF": 3,
+                "ALT": 4,
+                "QUAL": 5,
+                "FILTER": 6,
+                "INFO": 7,
+                "FORMAT": 8,
+            }
 
     def __init__(self, filters: dict = None):
         
@@ -34,6 +46,8 @@ class VariantRepository():
         self._chromosomes: SortedSet = None
 
         self.seqlens: list = None
+
+        self._format = None
 
     @staticmethod
     def chromosome_sort_key(item: str):
@@ -82,6 +96,19 @@ class VariantRepository():
                                     "exclude_svs": value.get("SV", False),
                                     "pass_only": value.get("PASS_ONLY", False),
                                 }
+            
+    @property
+    def format(self):
+
+        return getattr(self, "_format", None)
+    
+    @format.setter
+    def format(self, value: str|list[str]):
+
+        if isinstance(value, str):
+            self._format = value.split(':')
+        elif isinstance(value, list):
+            self._format = value
     
     @staticmethod
     def exclude(v: object, filters: dict = None) -> bool:
@@ -135,6 +162,27 @@ class VariantRepository():
             return False
         else:
             raise errors.VariantError(f"The genotype must be a string instance. The provided genotype is an {type(GT)}")
+        
+    @staticmethod
+    def format_to_values(format: str, values: str|list[str]) -> dict:
+        """ map FORMAT string to respective SAMPLE values """
+
+        # Split the format string into a list of fields
+        format = format.split(":")
+
+        # VCF is composed of multiples samples
+        if isinstance(values,list):
+            # Split the values string into a lists of list of values,
+            # Each list of values represents a sample
+            values = list(map(lambda x: x.split(":"), values))
+            # Return a dictionary of the format and values mapped to each sample
+            return {f"sample{s}": {f: convert(v)} for s in range(len(values)) for f, v in zip(format,values[s])}
+
+        # VCF is composed of a unique sample
+        else:
+            values = values.split(":")
+
+            return {f: convert(v) for f, v in zip(format,values)}
             
     def update_repository(self, chromosome: str, variants: DataFrame = None, filtered: dict = None, profile: dict = None):
 

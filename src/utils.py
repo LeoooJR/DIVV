@@ -157,23 +157,3 @@ def hamming_distance(a: np.ndarray, b: np.ndarray) -> float:
         return 1 - ((np.sum(np.not_equal(a, b))) / (a.size + b.size))
     except ZeroDivisionError:
         return None
-
-def format_to_values(format: str, values: str|list[str]) -> dict:
-    """ map FORMAT string to respective SAMPLE values """
-
-    # Split the format string into a list of fields
-    format = format.split(":")
-
-    # VCF is composed of multiples samples
-    if isinstance(values,list):
-        # Split the values string into a lists of list of values,
-        # Each list of values represents a sample
-        values = list(map(lambda x: x.split(":"), values))
-        # Return a dictionary of the format and values mapped to each sample
-        return {f"sample{s}": {f: convert(v)} for s in range(len(values)) for f, v in zip(format,values[s])}
-
-    # VCF is composed of a unique sample
-    else:
-        values = values.split(":")
-
-        return {f: convert(v) for f, v in zip(format,values)}

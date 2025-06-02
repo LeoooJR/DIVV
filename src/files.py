@@ -126,17 +126,17 @@ class VCF(GenomicFile):
         self.stdin = None
 
         # Map the header values to there respectives indexes
-        self.HEADER = HEADER = {
-                                    "CHROM": 0,
-                                    "POS": 1,
-                                    "ID": 2,
-                                    "REF": 3,
-                                    "ALT": 4,
-                                    "QUAL": 5,
-                                    "FILTER": 6,
-                                    "INFO": 7,
-                                    "FORMAT": 8,
-                                }
+        self.HEADER = {
+                        "CHROM": 0,
+                        "POS": 1,
+                        "ID": 2,
+                        "REF": 3,
+                        "ALT": 4,
+                        "QUAL": 5,
+                        "FILTER": 6,
+                        "INFO": 7,
+                        "FORMAT": 8,
+                    }
 
         self.SAMPLES = None
 
@@ -438,6 +438,16 @@ class VCF(GenomicFile):
 
                 logger.warning(e)
 
+        if not self.variants.format:
+
+            try:
+
+                self.variants.format = str(next(self.stdin)).split()[self.HEADER["FORMAT"]]
+
+            except Exception as e:
+
+                logger.warning(e)
+
         if context:
 
             # Close the data stream
@@ -632,7 +642,7 @@ class VCFProcessor:
                         logger.debug(f"FORMAT for chromosome {task[1]}: {format}")
                     # From FORMAT get the values for each sample
                     samples_values: dict[str:dict] = {
-                        s: utils.format_to_values(
+                        s: VariantRepository.format_to_values(
                             format=format, values=parts[task[0].header[s]]
                         )
                         for s in task[0].samples
@@ -1178,6 +1188,26 @@ class Report:
         def is_nan(value):
             return isna(value)
         
+        def format_to_html(value:str):
+
+            html_tags = {}
+
+            if value != "<NA>":
+
+                variant: list[str] = value.split()
+
+                format: str = variant[VariantRepository.INDEX["FORMAT"]]
+
+                values: str = variant[VariantRepository.INDEX["FORMAT"] + 1]
+
+                html_tags: dict = VariantRepository.format_to_values(format, values)
+
+            return html_tags
+
+        def info_to_html(value:str):
+
+            pass
+        
         # Path to look for the template
         ressources = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
 
@@ -1195,6 +1225,8 @@ class Report:
 
         # Add the custom filter to the environment
         env.filters['is_nan'] = is_nan
+
+        env.filters['format_to_html'] = format_to_html
 
         # Load the template
         template = env.get_template("template.html")

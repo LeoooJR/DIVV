@@ -373,7 +373,7 @@
                     </div>
                     {% for index, series in view['variants'].iterrows() -%}
                       {% if series['Variant.L']|is_nan or series['Variant.R']|is_nan -%}
-                        <div data-component="file-content-left" status="mismatch" row="{{ loop.index0 }}" class="w-fit h-[32px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] bg-[rgba(255,_0,_0,_0.2)]" id="{{ series['Chromosome']|upper() }} {{ series['Type']|upper() }} {{ series['Filter.L']|upper() }}" chrom="{{ series['Chromosome']|upper() }}" type="{{ series['Type']|upper() }}" filter="{{ series['Filter.L']|upper() }}">
+                        <div data-component="file-content-left" status="mismatch" row="{{ loop.index0 }}" class="w-fit h-[32px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] bg-[rgba(255,_0,_0,_0.2)]" id="{{ series['Chromosome']|upper() }} {{ series['Type']|upper() }} {{ series['Filter.L']|upper() }}" chrom="{{ series['Chromosome']|upper() }}" type="{{ series['Type']|upper() }}" filter="{{ series['Filter.L']|upper() }}" position="{{ series['Position'] }}" {% for tag in ((series['Variant.L']|string)|format_to_html).items() -%} {{ tag[0] }}={{ tag[1] }} {% endfor -%}>
                           <div class="text-[#888] mr-[10px] select-none min-w-[30px] text-right">{{ loop.index }}</div>
                           {% if not series['Variant.L']|is_nan %}
                             <span data-component="column-diff" class="text-black bg-[rgba(255,_0,_0,_0.2)] table-cell px-[8px] py-[2px] whitespace-nowrap">
@@ -382,7 +382,7 @@
                           {% endif %}
                         </div>
                       {% else -%}
-                        <div data-component="file-content-left" status="match" row="{{ loop.index0 }}" class="w-fit h-[32px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] bg-[rgba(0,_255,_0,_0.2)]" id="{{ series['Chromosome']|upper() }} {{ series['Type']|upper() }} {{ series['Filter.L']|upper() }}" chrom="{{ series['Chromosome']|upper() }}" type="{{ series['Type']|upper() }}" filter="{{ series['Filter.L']|upper() }}">
+                        <div data-component="file-content-left" status="match" row="{{ loop.index0 }}" class="w-fit h-[32px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] bg-[rgba(0,_255,_0,_0.2)]" id="{{ series['Chromosome']|upper() }} {{ series['Type']|upper() }} {{ series['Filter.L']|upper() }}" chrom="{{ series['Chromosome']|upper() }}" type="{{ series['Type']|upper() }}" filter="{{ series['Filter.L']|upper() }}" pos="{{ series['Position'] }}" {% for tag in ((series['Variant.L']|string)|format_to_html).items() -%} {{ tag[0] }}={{ tag[1] }} {% endfor -%}>
                           <div class="text-[#888] mr-[10px] select-none min-w-[30px] text-right">{{ loop.index }}</div>
                           <span data-component="column-match" class="text-black bg-[rgba(0,_255,_0,_0.2)] table-cell px-[8px] py-[2px] whitespace-nowrap">
                             {{ series['Variant.L'] -}}
@@ -416,7 +416,7 @@
                     </div>
                     {% for index, series in view['variants'].iterrows() -%}
                       {% if series['Variant.L']|is_nan or series['Variant.R']|is_nan -%}
-                        <div data-component="file-content-right" row="{{ loop.index0 }}" status="mismatch" class="w-fit h-[32px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] bg-[rgba(255,_0,_0,_0.2)]" id="{{ series['Chromosome']|upper() }} {{ series['Type']|upper() }} {{ series['Filter.R']|upper() }}" chrom="{{ series['Chromosome']|upper() }}" type="{{ series['Type']|upper() }}" filter="{{ series['Filter.R']|upper() }}">
+                        <div data-component="file-content-right" row="{{ loop.index0 }}" status="mismatch" class="w-fit h-[32px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] bg-[rgba(255,_0,_0,_0.2)]" id="{{ series['Chromosome']|upper() }} {{ series['Type']|upper() }} {{ series['Filter.R']|upper() }}" chrom="{{ series['Chromosome']|upper() }}" type="{{ series['Type']|upper() }}" filter="{{ series['Filter.R']|upper() }}" position={{ series['Position'] }} {% for tag in ((series['Variant.R']|string)|format_to_html).items() -%} {{ tag[0] }}={{ tag[1] }} {% endfor -%}>
                           <div class="text-[#888] mr-[10px] select-none min-w-[30px] text-right">{{ loop.index }}</div>
                           {% if not series['Variant.R']|is_nan %}
                             <span data-component="column-diff" class="text-black bg-[rgba(255,_0,_0,_0.2)] table-cell px-[8px] py-[2px] whitespace-nowrap">
@@ -425,7 +425,7 @@
                           {% endif %}
                         </div>
                       {% else -%}
-                        <div data-component="file-content-right" status="match" row="{{ loop.index0 }}" class="w-fit h-[32px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] bg-[rgba(0,_255,_0,_0.2)]" id="{{ series['Chromosome']|upper() }} {{ series['Type']|upper() }} {{ series['Filter.R']|upper() }}" chrom="{{ series['Chromosome']|upper() }}" type="{{ series['Type']|upper() }}" filter="{{ series['Filter.R']|upper() }}">
+                        <div data-component="file-content-right" status="match" row="{{ loop.index0 }}" class="w-fit h-[32px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] bg-[rgba(0,_255,_0,_0.2)]" id="{{ series['Chromosome']|upper() }} {{ series['Type']|upper() }} {{ series['Filter.R']|upper() }}" chrom="{{ series['Chromosome']|upper() }}" type="{{ series['Type']|upper() }}" filter="{{ series['Filter.R']|upper() }}" position={{ series['Position'] }} {% for tag in ((series['Variant.R']|string)|format_to_html).items() -%} {{ tag[0] }}={{ tag[1] }} {% endfor -%}>
                           <div class="text-[#888] mr-[10px] select-none min-w-[30px] text-right">{{ loop.index }}</div>
                           <span data-component="column-match" class="text-black bg-[rgba(0,_255,_0,_0.2)] table-cell px-[8px] py-[2px] whitespace-nowrap">
                             {{ series['Variant.R'] -}}
@@ -1218,7 +1218,7 @@
       });
       function filter() {
 
-        const matchs = ["MATCH","MISMATCH"]
+        const matchs = ["MATCH", "MISMATCH"]
         const filters = ["PASS", "FAIL"]
         const variants = ["SNP", "INDEL", "OTHER"]
 
@@ -1423,8 +1423,11 @@
           }
         })
       }
+
       function runQuery() {
+
         if (event.key === "Enter") {
+
           const stderr = document.getElementById('stderr')
           stderr.classList.replace("flex", "hidden")
           stderr.textContent = "";
@@ -1440,13 +1443,16 @@
             divLeft.classList.replace('flex', 'hidden');
             variantsDivsRight[index].classList.replace('flex', 'hidden');
           })
-          const variantsLeft = collectVariants(variantsDivsLeft);
-          const variantsRight = collectVariants(variantsDivsRight);
           const suffix = document.getElementById('terminal-input').value;
-          const filterKeywords = ["CHROM", "POS", "ID", "REF", "ALT", "QUAL", "FILTER", "INFO", "FORMAT"];
+          const filterCommonKeywords = ["CHROM", "POS", "ID", "REF", "ALT", "QUAL", "TYPE", "FILTER", "INFO", "FORMAT", "ROW"];
+          const filterLeftKeywords = ["GT","VAR","BKG","TRC","RRC","ARC","BRC","ARR","BRR","BRE","SBP","SBM","LOW"];
+          const filterRightKeywords = ["GT","VAR","BKG","TRC","RRC","ARC","BRC","ARR","BRR","BRE","SBP","SBM","LOW"];
           const queryKeywords = ["=", "AND", "OR"];
-          const prefix = "SELECT * from ? WHERE";
-          const query = `${prefix} ${suffix}`
+          const variantsLeft = collectVariants(variantsDivsLeft, filterCommonKeywords.concat(filterLeftKeywords));
+          const variantsRight = collectVariants(variantsDivsRight, filterCommonKeywords.concat(filterRightKeywords));
+          const tokens = tokenizeQuery(suffix)
+          const queries = buildQueries(tokens)
+          console.log(queries);
           const statsByVariantType = document.querySelectorAll('[data-component="variant-card-datas"]');
           const totalLineLeft = leftContent.querySelectorAll('span:not([data-component="column-header"])').length;
           const totalLineRight = rightContent.querySelectorAll('span:not([data-component="column-header"])').length;
@@ -1457,23 +1463,28 @@
           let countSNP = [0, 0];
           let countINDEL = [0, 0];
           let countSV = [0, 0];
+
           try {
-            const resultsLeft = alasql(query, [variantsLeft]);
-            const resultsRight = alasql(query, [variantsRight]);
-            const union = new Set([...resultsLeft.map(result => result.element), ...resultsRight.map(result => result.element)]);
+            
+            const resultsLeft = alasql(queries["left"], [variantsLeft]);
+            const resultsRight = alasql(queries["right"], [variantsRight]);
+            const union = new Set([...resultsLeft.map(result => result.ROW), ...resultsRight.map(result => result.ROW)]);
             union.forEach(element => {
+
               element = parseInt(element);
               const divLeft = variantsDivsLeft[element];
               let variantType = divLeft.getAttribute("type").toUpperCase();
               let status = divLeft.getAttribute("status");
+              
               if (status === "match") {
                 ++countMatchLine;
               }
               else {
                 ++countMismatchLine;
               }
+
               if (divLeft.querySelector('span')) {
-                ++countVisibleLeft
+                ++countVisibleLeft;
                 if (variantType === "SNP") {
                   ++countSNP[0];
                 }
@@ -1484,10 +1495,12 @@
                   ++countSV[0];
                 }
               }
+
               const divRight = variantsDivsRight[element];
               variantType = divRight.getAttribute('type').toUpperCase();
+
               if (divRight.querySelector('span')) {
-                ++countVisibleRight
+                ++countVisibleRight;
                 if (variantType === "SNP") {
                   ++countSNP[1];
                 }
@@ -1498,8 +1511,10 @@
                   ++countSV[1];
                 }
               }
+
               divLeft.classList.replace("hidden", "flex");
               divRight.classList.replace("hidden", "flex");
+
             });
             document.getElementById("filterSummaryL").innerText = `Showing ${countVisibleLeft} variants out of ${totalLineLeft}`;
             document.getElementById("filterSummaryR").innerText = `Showing ${countVisibleRight} variants out of ${totalLineRight}`;
@@ -1521,30 +1536,105 @@
           }
         }
       }
-      function collectVariants(collectionDivs) {
-        const variants = Array.from(collectionDivs).map((div, index) => ({
-            CHROM: div.getAttribute('chrom'),
-            TYPE: div.getAttribute('type'),
-            FILTER: div.getAttribute('filter'),
-            element: div.getAttribute('row')
-        }));
+
+      function tokenizeQuery(query) {
+
+        query = query.trim().replace(/\s+/g, ' ');
+
+        const pattern = /\s+(AND|OR|NOT)\s+/gi;
+
+        const rawParts = query.split(pattern);
+
+        const result = [];
+        for (let i = 0; i < rawParts.length; i++) {
+          const clause = rawParts[i].trim();
+          let operator = null;
+
+          if (i + 1 < rawParts.length && /^(AND|OR|NOT)$/i.test(rawParts[i + 1])) {
+            operator = rawParts[i + 1].toUpperCase();
+            i += 1;
+          }
+
+          result.push([clause, operator]);
+        }
+        console.log(result)
+        return result;
+      }
+
+      function buildQueries(clauses) {
+
+        const prefix = "SELECT * from ? WHERE";
+
+        let suffixLeft = [];
+        let suffixRight = [];
+
+        clauses.forEach(([clause, operator], index) => {
+          
+          const isL = clause.trim().startsWith('L.');
+          const isR = clause.trim().startsWith('R.');
+          const isCommon = !isL && !isR;
+
+          if (isL || isCommon) {
+
+            const cleanedClause = clause.replace('L.', '');
+
+            suffixLeft.push(cleanedClause);
+
+            if (operator && (index + 1) < clauses.length && (clauses[index + 1][0].startsWith('L.') || (!clauses[index + 1][0].startsWith('R.') && !clauses[index + 1][0].startsWith('L.')))) {
+              suffixLeft.push(operator);
+            }
+
+          }
+
+          if(isR || isCommon) {
+
+            const cleanedClause = clause.replace('R.', '');
+
+            suffixRight.push(cleanedClause);
+
+            if (operator && (index + 1) < clauses.length && (clauses[index + 1][0].startsWith('R.') || (!clauses[index + 1][0].startsWith('R.') && !clauses[index + 1][0].startsWith('L.')))) {
+              suffixRight.push(operator);
+            }
+
+          }
+        })
+
+        return {"left": `${prefix} ${suffixLeft.join(' ')}`, "right": `${prefix} ${suffixRight.join(' ')}`};
+      }
+
+      function collectVariants(collectionDivs, keywords) {
+        const variants = Array.from(collectionDivs).map((div, index) => {
+          const obj = {};
+          keywords.forEach(k => {
+            let val = div.getAttribute(k);
+            obj[k] = val;
+          })
+          return obj;
+        });
+        console.log(variants)
         return variants;
       }
+
       function resetFilters() {
           document.getElementById("query-chromosome").value = "";
           document.getElementById("query-filter").value = "ALL";
           document.getElementById("query-variant").value = "ALL";
           document.getElementById("query-status").value = "ALL";
+          // document.getElementById('terminal-input').value = "";
+          // document.getElementById("stdout").classList.replace("flex", "hidden");
           document.querySelectorAll('[data-component="error-popup"]').forEach(error => error.classList.replace('flex', 'hidden'));
           filter();
       }
+
     </script>
+
     <script>
       document.addEventListener("DOMContentLoaded", function () {
         document.getElementById("dropdown-icon-left").addEventListener("click", updateDisplay)
         document.getElementById("dropdown-icon-right").addEventListener("click", updateDisplay)
         document.getElementById("terminal-icon").addEventListener("click", updateDisplay)
       });
+
       function updateDisplay() {
         if (this.id === "dropdown-icon-left" || this.id === "dropdown-icon-right") {
           let element = document.getElementById("command");
@@ -1618,7 +1708,7 @@
 
       // Function to update diff elements array
       function updateDiffElements() {
-          const file1Diffs = Array.from(document.getElementById('content1').querySelectorAll('[data-component="column-diff"]')).filter(el => el.style.display !== 'none');
+          const file1Diffs = Array.from(document.getElementById('content1').querySelectorAll('[data-component="column-diff"]')).filter(el => el.style.display !== 'hidden');
           diffElements = file1Diffs;
           console.log(`Found ${diffElements.length} differences`);
           currentDiffIndex = diffElements.length > 0 ? 0 : -1;
