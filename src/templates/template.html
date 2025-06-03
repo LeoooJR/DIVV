@@ -373,7 +373,7 @@
                     </div>
                     {% for index, series in view['variants'].iterrows() -%}
                       {% if series['Variant.L']|is_nan or series['Variant.R']|is_nan -%}
-                        <div data-component="file-content-left" status="mismatch" row="{{ loop.index0 }}" class="w-fit h-[32px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] bg-[rgba(255,_0,_0,_0.2)]" id="{{ series['Chromosome']|upper() }} {{ series['Type']|upper() }} {{ series['Filter.L']|upper() }}" chrom="{{ series['Chromosome']|upper() }}" type="{{ series['Type']|upper() }}" filter="{{ series['Filter.L']|upper() }}" position="{{ series['Position'] }}" {% for tag in ((series['Variant.L']|string)|format_to_html).items() -%} {{ tag[0] }}={{ tag[1] }} {% endfor -%}>
+                        <div data-component="file-content-left" status="mismatch" row="{{ loop.index0 }}" class="w-fit h-[32px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] bg-[rgba(255,_0,_0,_0.2)]" id="{{ series['Chromosome']|upper() }} {{ series['Type']|upper() }} {{ series['Filter.L']|upper() }}" chrom="{{ series['Chromosome']|upper() }}" type="{{ series['Type']|upper() }}" filter="{{ series['Filter.L']|upper() }}" pos="{{ series['Position'] }}" {% for tag in ((series['Variant.L']|string)|format_to_html).items() -%} {{ tag[0] }}="{{ tag[1] }}" {% endfor -%}>
                           <div class="text-[#888] mr-[10px] select-none min-w-[30px] text-right">{{ loop.index }}</div>
                           {% if not series['Variant.L']|is_nan %}
                             <span data-component="column-diff" class="text-black bg-[rgba(255,_0,_0,_0.2)] table-cell px-[8px] py-[2px] whitespace-nowrap">
@@ -382,7 +382,7 @@
                           {% endif %}
                         </div>
                       {% else -%}
-                        <div data-component="file-content-left" status="match" row="{{ loop.index0 }}" class="w-fit h-[32px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] bg-[rgba(0,_255,_0,_0.2)]" id="{{ series['Chromosome']|upper() }} {{ series['Type']|upper() }} {{ series['Filter.L']|upper() }}" chrom="{{ series['Chromosome']|upper() }}" type="{{ series['Type']|upper() }}" filter="{{ series['Filter.L']|upper() }}" pos="{{ series['Position'] }}" {% for tag in ((series['Variant.L']|string)|format_to_html).items() -%} {{ tag[0] }}={{ tag[1] }} {% endfor -%}>
+                        <div data-component="file-content-left" status="match" row="{{ loop.index0 }}" class="w-fit h-[32px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] bg-[rgba(0,_255,_0,_0.2)]" id="{{ series['Chromosome']|upper() }} {{ series['Type']|upper() }} {{ series['Filter.L']|upper() }}" chrom="{{ series['Chromosome']|upper() }}" type="{{ series['Type']|upper() }}" filter="{{ series['Filter.L']|upper() }}" pos="{{ series['Position'] }}" {% for tag in ((series['Variant.L']|string)|format_to_html).items() -%} {{ tag[0] }}="{{ tag[1] }}" {% endfor -%}>
                           <div class="text-[#888] mr-[10px] select-none min-w-[30px] text-right">{{ loop.index }}</div>
                           <span data-component="column-match" class="text-black bg-[rgba(0,_255,_0,_0.2)] table-cell px-[8px] py-[2px] whitespace-nowrap">
                             {{ series['Variant.L'] -}}
@@ -416,7 +416,7 @@
                     </div>
                     {% for index, series in view['variants'].iterrows() -%}
                       {% if series['Variant.L']|is_nan or series['Variant.R']|is_nan -%}
-                        <div data-component="file-content-right" row="{{ loop.index0 }}" status="mismatch" class="w-fit h-[32px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] bg-[rgba(255,_0,_0,_0.2)]" id="{{ series['Chromosome']|upper() }} {{ series['Type']|upper() }} {{ series['Filter.R']|upper() }}" chrom="{{ series['Chromosome']|upper() }}" type="{{ series['Type']|upper() }}" filter="{{ series['Filter.R']|upper() }}" position={{ series['Position'] }} {% for tag in ((series['Variant.R']|string)|format_to_html).items() -%} {{ tag[0] }}={{ tag[1] }} {% endfor -%}>
+                        <div data-component="file-content-right" row="{{ loop.index0 }}" status="mismatch" class="w-fit h-[32px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] bg-[rgba(255,_0,_0,_0.2)]" id="{{ series['Chromosome']|upper() }} {{ series['Type']|upper() }} {{ series['Filter.R']|upper() }}" chrom="{{ series['Chromosome']|upper() }}" type="{{ series['Type']|upper() }}" filter="{{ series['Filter.R']|upper() }}" pos={{ series['Position'] }} {% for tag in ((series['Variant.R']|string)|format_to_html).items() -%} {{ tag[0] }}="{{ tag[1] }}" {% endfor -%}>
                           <div class="text-[#888] mr-[10px] select-none min-w-[30px] text-right">{{ loop.index }}</div>
                           {% if not series['Variant.R']|is_nan %}
                             <span data-component="column-diff" class="text-black bg-[rgba(255,_0,_0,_0.2)] table-cell px-[8px] py-[2px] whitespace-nowrap">
@@ -425,7 +425,7 @@
                           {% endif %}
                         </div>
                       {% else -%}
-                        <div data-component="file-content-right" status="match" row="{{ loop.index0 }}" class="w-fit h-[32px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] bg-[rgba(0,_255,_0,_0.2)]" id="{{ series['Chromosome']|upper() }} {{ series['Type']|upper() }} {{ series['Filter.R']|upper() }}" chrom="{{ series['Chromosome']|upper() }}" type="{{ series['Type']|upper() }}" filter="{{ series['Filter.R']|upper() }}" position={{ series['Position'] }} {% for tag in ((series['Variant.R']|string)|format_to_html).items() -%} {{ tag[0] }}={{ tag[1] }} {% endfor -%}>
+                        <div data-component="file-content-right" status="match" row="{{ loop.index0 }}" class="w-fit h-[32px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] bg-[rgba(0,_255,_0,_0.2)]" id="{{ series['Chromosome']|upper() }} {{ series['Type']|upper() }} {{ series['Filter.R']|upper() }}" chrom="{{ series['Chromosome']|upper() }}" type="{{ series['Type']|upper() }}" filter="{{ series['Filter.R']|upper() }}" pos={{ series['Position'] }} {% for tag in ((series['Variant.R']|string)|format_to_html).items() -%} {{ tag[0] }}="{{ tag[1] }}" {% endfor -%}>
                           <div class="text-[#888] mr-[10px] select-none min-w-[30px] text-right">{{ loop.index }}</div>
                           <span data-component="column-match" class="text-black bg-[rgba(0,_255,_0,_0.2)] table-cell px-[8px] py-[2px] whitespace-nowrap">
                             {{ series['Variant.R'] -}}
@@ -1646,15 +1646,28 @@
       }
 
       function collectVariants(collectionDivs, keywords) {
+        const castNumberException = ["CHROM"]
         const variants = Array.from(collectionDivs).map((div, index) => {
           const obj = {};
           keywords.forEach(k => {
             let val = div.getAttribute(k);
-            obj[k] = val;
+            if (val && !castNumberException.includes(k)) {
+              let valNumberCasted = Number(val);
+              // console.log(`Value: ${val}, casted to ${valNumberCasted} for keyword ${k}`)
+              if (Number.isNaN(valNumberCasted)) {
+                obj[k] = val;
+              }
+              else {
+                obj[k] = valNumberCasted
+              }
+            }
+            else {
+              obj[k] = val
+            }
           })
           return obj;
         });
-        console.log(variants)
+        // console.log(variants)
         return variants;
       }
 
@@ -1714,7 +1727,6 @@
         const tag = document.getElementById("command").querySelectorAll('code')[0];
         const command = tag.textContent;
         tag.innerText = ''
-        console.log(command);
         const tokens = command.split(' ');
         tokens.forEach((token, index) => {
           const element = document.createElement('code');
@@ -1733,7 +1745,6 @@
           element.appendChild(text);
           tag.appendChild(element);
         })
-        console.log(tag.textContent)
       }
 
     </script>
