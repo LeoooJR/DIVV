@@ -22,7 +22,9 @@ class Plot:
 
         fig.update_layout(
             font=dict(
-                size = 15
+                size = 15,
+                family = "Ubuntu",
+                weight = 400
             ),
             title=dict(
                 x = 0.5,
@@ -159,7 +161,8 @@ class PlotLibrary:
         fig.update_yaxes(range=[ymin,ymax], showticklabels=False, ticklen=0, scaleanchor="x", scaleratio=1)
 
         fig.update_layout(
-            plot_bgcolor='white',
+            paper_bgcolor='#fafafa',
+            plot_bgcolor='#fafafa',
             margin = dict(b = 0, l = 10, pad = 0, r = 10, t = 40),
             width=800, 
             height=400,

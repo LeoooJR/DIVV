@@ -227,13 +227,13 @@ class VariantRepository():
             data.append({"Chromosome": k, "Type": "SNP", "Count": self.profile[k]["variant"]["snp"]["transition"] + self.profile[k]["variant"]["snp"]["transversion"]})
             data.append({"Chromosome": k, "Type": "SV", "Count": self.profile[k]["variant"]["sv"]})
 
-        self.plots.barplot(data, "Chromosome","Count", "Type", "Variant by chromosome", "VariantByChromosome")
+        self.plots.barplot(data, "Chromosome","Count", "Type", "Variant by Chromosome", "VariantByChromosome")
 
         data = DataFrame([{"Chromosome": k, "Genotype": genotype, "Count": self.profile[k][code]} 
                         for k in chromosomes 
                         for genotype, code in [("Homozygous", "hom"), ("Heterozygous", "het")]])
 
-        self.plots.barplot(data, "Chromosome", "Count", "Genotype", "Genotype by chromosome","GenotypeByChromosome")
+        self.plots.barplot(data, "Chromosome", "Count", "Genotype", "Genotype by Chromosome","GenotypeByChromosome")
 
         data = DataFrame([{"Chromosome": k, "SNP": snp, "Count": self.profile[k]["variant"]["snp"][snp]} for k in chromosomes for snp in ["transition","transversion"]])
 
@@ -250,14 +250,14 @@ class VariantRepository():
             with suppress_warnings():       
                 data = DataFrame(list(map(lambda k: Series([k, numpy.mean(self.profile[k]["depth"])], index=["Chromosome", "Depth"]), chromosomes)))
             
-            self.plots.barplot(data, "Chromosome", "Depth", color="Chromosome", title="Mean depth by chromosome", prefix="DepthByChromosomeBarPlot")
+            self.plots.barplot(data, "Chromosome", "Depth", color="Chromosome", title="Mean Depth by Chromosome", prefix="DepthByChromosomeBarPlot")
 
             data = list(map(lambda k: DataFrame({"Chromosome": [k] * self.profile[k]["depth"].size,
                                     "Depth": self.profile[k]["depth"].flatten()}), chromosomes))
 
             df = concat(data, ignore_index=True).astype({"Chromosome": "category", "Depth": "int"})
 
-            self.plots.boxplot(df, "Chromosome", "Depth", "Chromosome", "Depth by chromosome", "DepthByChromosomeBoxPlot")
+            self.plots.boxplot(df, "Chromosome", "Depth", "Chromosome", "Depth by Chromosome", "DepthByChromosomeBoxPlot")
 
             self.plots.histogram(df, "Depth", None, "Depth distribution", "DepthHist")
 

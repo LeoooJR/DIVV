@@ -145,7 +145,7 @@
 
       <div id="command" class="mockup-code !bg-[#202425] w-[90%] ml-[5%] mr-[5%] hidden">
         <pre data-prefix="$"><code>{{ cmd }}</code></pre>
-        <pre data-prefix=">" class="text-success"><code>Done!</code></pre>
+        <pre data-prefix=">" class="text-success !text-green-200"><code>Done!</code></pre>
       </div>
 
     </div>
@@ -894,7 +894,7 @@
 
               </section>
 
-              <div class="visible opacity-100 w-full relative flex justify-center [transition:opacity_0.3s_ease-in-out]">
+              <div class="visible opacity-100 w-full relative flex justify-center [transition:opacity_0.3s_ease-in-out] bg-[#f3f4f6]">
                 {% if view["jaccard"] < 0.9 %}
                   {{ view["plots"].as_html()[0] }}
                 {% endif %}
@@ -1486,7 +1486,7 @@
             variantsDivsRight[index].classList.replace('flex', 'hidden');
           })
           const suffix = document.getElementById('terminal-input').value;
-          const filterCommonKeywords = ["CHROM", "POS", "ID", "REF", "ALT", "QUAL", "TYPE", "FILTER", "INFO", "FORMAT", "ROW"];
+          const filterCommonKeywords = ["CHROM", "POS", "ID", "REF", "ALT", "QUAL", "TYPE", "FILTER", "INFO", "FORMAT", "ROW", "STATUS"];
           const filterLeftKeywords = [{%- if vcfs.repository[0].variants.format -%}{% for key in vcfs.repository[0].variants.format -%}"{{ key }}"{% if not loop.last %}, {% endif %}{% endfor %}{%- endif -%}];
           const filterRightKeywords = [{%- if vcfs.repository[1].variants.format -%}{% for key in vcfs.repository[1].variants.format -%}"{{ key }}"{% if not loop.last %}, {% endif %}{% endfor %}{%- endif -%}];
           const queryKeywords = ["=", "AND", "OR"];
