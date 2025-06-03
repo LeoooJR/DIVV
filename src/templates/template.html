@@ -1186,6 +1186,7 @@
               leftPlots[leftCurrentPlot].classList.replace("opacity-0", "opacity-100");
               leftPlots[leftCurrentPlot].classList.add('col-auto', 'row-auto');
               leftPlots[leftCurrentPlot].classList.add('relative');
+              Plotly.update(leftPlots[leftCurrentPlot].querySelector('.plotly-graph-div'));
               
               leftPlotIndicator.children[leftCurrentPlot].classList.replace("bg-[#ccc]", "bg-[#555]");
           });
@@ -1205,6 +1206,7 @@
               leftPlots[leftCurrentPlot].classList.replace("opacity-0", "opacity-100");
               leftPlots[leftCurrentPlot].classList.add('col-auto', 'row-auto');
               leftPlots[leftCurrentPlot].classList.add('relative');
+              Plotly.update(leftPlots[leftCurrentPlot].querySelector('.plotly-graph-div'));
               
               leftPlotIndicator.children[leftCurrentPlot].classList.replace("bg-[#ccc]", "bg-[#555]");
           });
@@ -1225,6 +1227,7 @@
               rightPlots[rightCurrentPlot].classList.replace("opacity-0", "opacity-100");
               rightPlots[rightCurrentPlot].classList.add('col-auto', 'row-auto');
               rightPlots[rightCurrentPlot].classList.add('relative');
+              Plotly.update(rightPlots[rightCurrentPlot].querySelector('.plotly-graph-div'));
               
               rightPlotIndicator.children[rightCurrentPlot].classList.replace("bg-[#ccc]", "bg-[#555]");
           });
@@ -1244,6 +1247,7 @@
               rightPlots[rightCurrentPlot].classList.replace("opacity-0", "opacity-100");
               rightPlots[rightCurrentPlot].classList.add('col-auto', 'row-auto');
               rightPlots[rightCurrentPlot].classList.add('relative');
+              Plotly.update(rightPlots[rightCurrentPlot].querySelector('.plotly-graph-div'));
               
               rightPlotIndicator.children[rightCurrentPlot].classList.replace("bg-[#ccc]", "bg-[#555]");
           });
