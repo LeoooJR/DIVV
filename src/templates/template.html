@@ -10,7 +10,7 @@
   <script src="assets/js/alasql-4.6.5.js"></script>
 </head>
 
-<body onload="filter(); highlightCommand();">
+<body onload="filter(); highlightCommand(); collectVariants();">
 
     <div class="flex flex-row w-full items-stretch">
 
@@ -1344,9 +1344,9 @@
               }
             }
 
-            console.log(`Row ${index}:`, {
-                isChromosome, isVariantType, isLineClass, isVariantFilterLeft, isVariantFilterRight, isRowVisible
-            });
+            // console.log(`Row ${index}:`, {
+            //     isChromosome, isVariantType, isLineClass, isVariantFilterLeft, isVariantFilterRight, isRowVisible
+            // });
 
             countVisibleLeft = isRowVisible && rowLeft.querySelector("span") ? ++countVisibleLeft : countVisibleLeft;
             countVisibleRight = isRowVisible && rowRight.querySelector("span") ? ++countVisibleRight : countVisibleRight;
@@ -1490,12 +1490,6 @@
             variantsDivsRight[index].classList.replace('flex', 'hidden');
           })
           const suffix = document.getElementById('terminal-input').value;
-          const filterCommonKeywords = ["CHROM", "POS", "ID", "REF", "ALT", "QUAL", "TYPE", "FILTER", "INFO", "FORMAT", "ROW", "STATUS"];
-          const filterLeftKeywords = [{%- if vcfs.repository[0].variants.format -%}{% for key in vcfs.repository[0].variants.format -%}"{{ key }}"{% if not loop.last %}, {% endif %}{% endfor %}{%- endif -%}];
-          const filterRightKeywords = [{%- if vcfs.repository[1].variants.format -%}{% for key in vcfs.repository[1].variants.format -%}"{{ key }}"{% if not loop.last %}, {% endif %}{% endfor %}{%- endif -%}];
-          const queryKeywords = ["=", "AND", "OR"];
-          const variantsLeft = collectVariants(variantsDivsLeft, filterCommonKeywords.concat(filterLeftKeywords));
-          const variantsRight = collectVariants(variantsDivsRight, filterCommonKeywords.concat(filterRightKeywords));
           const tokens = tokenizeQuery(suffix)
           const queries = buildQueries(tokens)
           console.log(queries);
@@ -1512,8 +1506,8 @@
 
           try {
             
-            const resultsLeft = alasql(queries["left"], [variantsLeft]);
-            const resultsRight = alasql(queries["right"], [variantsRight]);
+            const resultsLeft = alasql(queries["left"], [window.tables["leftTable"]]);
+            const resultsRight = alasql(queries["right"], [window.tables["rightTable"]]);
             const union = new Set([...resultsLeft.map(result => result.ROW), ...resultsRight.map(result => result.ROW)]);
             union.forEach(element => {
 
@@ -1649,30 +1643,46 @@
         return {"left": `${prefix} ${suffixLeft.join(' ')}`, "right": `${prefix} ${suffixRight.join(' ')}`};
       }
 
-      function collectVariants(collectionDivs, keywords) {
-        const castNumberException = ["CHROM"]
-        const variants = Array.from(collectionDivs).map((div, index) => {
-          const obj = {};
-          keywords.forEach(k => {
-            let val = div.getAttribute(k);
-            if (val && !castNumberException.includes(k)) {
-              let valNumberCasted = Number(val);
-              // console.log(`Value: ${val}, casted to ${valNumberCasted} for keyword ${k}`)
-              if (Number.isNaN(valNumberCasted)) {
-                obj[k] = val;
-              }
-              else {
-                obj[k] = valNumberCasted
-              }
-            }
-            else {
-              obj[k] = val
-            }
-          })
-          return obj;
-        });
-        // console.log(variants)
-        return variants;
+      function collectVariants() {
+
+        const leftContent = document.getElementById("content1");
+        const rightContent = document.getElementById("content2");
+
+        const variantsDivsLeft = leftContent.querySelectorAll('[data-component="file-content-left"]');
+        const variantsDivsRight = rightContent.querySelectorAll('[data-component="file-content-right"]');
+
+        const filterCommonKeywords = ["CHROM", "POS", "ID", "REF", "ALT", "QUAL", "TYPE", "FILTER", "INFO", "FORMAT", "ROW", "STATUS"];
+        const filterLeftKeywords = [{%- if vcfs.repository[0].variants.format -%}{% for key in vcfs.repository[0].variants.format -%}"{{ key }}"{% if not loop.last %}, {% endif %}{% endfor %}{%- endif -%}];
+        const filterRightKeywords = [{%- if vcfs.repository[1].variants.format -%}{% for key in vcfs.repository[1].variants.format -%}"{{ key }}"{% if not loop.last %}, {% endif %}{% endfor %}{%- endif -%}];
+        const queryKeywords = ["=", "AND", "OR"];
+        const castNumberException = ["CHROM"];
+ 
+        window.tables = {"leftTable": createTable(variantsDivsLeft, filterCommonKeywords.concat(filterLeftKeywords), castNumberException),
+          "rightTable": createTable(variantsDivsRight, filterCommonKeywords.concat(filterRightKeywords), castNumberException)
+        };
+      }
+
+      function createTable(collection, columns, exceptions) {
+        return Array.from(collection).map((div, index) => {
+                const obj = {};
+                columns.forEach(k => {
+                  let val = div.getAttribute(k);
+                  if (val && !exceptions.includes(k)) {
+                    let valNumberCasted = Number(val);
+                    // console.log(`Value: ${val}, casted to ${valNumberCasted} for keyword ${k}`)
+                    if (Number.isNaN(valNumberCasted)) {
+                      obj[k] = val;
+                    }
+                    else {
+                      obj[k] = valNumberCasted
+                    }
+                  }
+                  else {
+                    obj[k] = val
+                  }
+                })
+                return obj;
+              });
       }
 
       function resetFilters() {
