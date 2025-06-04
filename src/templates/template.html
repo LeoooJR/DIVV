@@ -275,8 +275,12 @@
                     <option selected disabled>Select a variant...</option>
                     <option>ALL</option>
                     <option>SNP</option>
-                    <option>INDEL</option>
-                    <option>OTHER</option>
+                    <option>MNP</option>
+                    <option>INS</option>
+                    <option>DEL</option>
+                    <option>INV</option>
+                    <option>SV</option>
+                    <option>CSV</option>
                 </select>
             </div>
             <img src="statics/terminal.png" alt="terminal-icon" class="w-[50px] h-[50px] cursor-pointer flex-shrink-0" id="terminal-icon">
@@ -373,7 +377,7 @@
                     </div>
                     {% for index, series in view['variants'].iterrows() -%}
                       {% if series['Variant.L']|is_nan or series['Variant.R']|is_nan -%}
-                        <div data-component="file-content-left" status="mismatch" row="{{ loop.index0 }}" class="w-fit h-[32px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] bg-[rgba(255,_0,_0,_0.2)]" id="{{ series['Chromosome']|upper() }} {{ series['Type']|upper() }} {{ series['Filter.L']|upper() }}" chrom="{{ series['Chromosome']|upper() }}" type="{{ series['Type']|upper() }}" filter="{{ series['Filter.L']|upper() }}" pos="{{ series['Position'] }}" {% for tag in ((series['Variant.L']|string)|format_to_html).items() -%} {{ tag[0] }}="{{ tag[1] }}" {% endfor -%}>
+                        <div data-component="file-content-left" status="mismatch" row="{{ loop.index0 }}" class="w-fit h-[32px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] bg-[rgba(255,_0,_0,_0.2)]" chrom="{{ series['Chromosome']|upper() }}" type="{{ series['Type']|upper() }}" filter="{{ series['Filter.L']|upper() }}" pos="{{ series['Position'] }}" {% for tag in ((series['Variant.L']|string)|format_to_html).items() -%} {{ tag[0] }}="{{ tag[1] }}" {% endfor -%}>
                           <div class="text-[#888] mr-[10px] select-none min-w-[30px] text-right">{{ loop.index }}</div>
                           {% if not series['Variant.L']|is_nan %}
                             <span data-component="column-diff" class="text-black bg-[rgba(255,_0,_0,_0.2)] table-cell px-[8px] py-[2px] whitespace-nowrap">
@@ -382,7 +386,7 @@
                           {% endif %}
                         </div>
                       {% else -%}
-                        <div data-component="file-content-left" status="match" row="{{ loop.index0 }}" class="w-fit h-[32px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] bg-[rgba(0,_255,_0,_0.2)]" id="{{ series['Chromosome']|upper() }} {{ series['Type']|upper() }} {{ series['Filter.L']|upper() }}" chrom="{{ series['Chromosome']|upper() }}" type="{{ series['Type']|upper() }}" filter="{{ series['Filter.L']|upper() }}" pos="{{ series['Position'] }}" {% for tag in ((series['Variant.L']|string)|format_to_html).items() -%} {{ tag[0] }}="{{ tag[1] }}" {% endfor -%}>
+                        <div data-component="file-content-left" status="match" row="{{ loop.index0 }}" class="w-fit h-[32px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] bg-[rgba(0,_255,_0,_0.2)]" chrom="{{ series['Chromosome']|upper() }}" type="{{ series['Type']|upper() }}" filter="{{ series['Filter.L']|upper() }}" pos="{{ series['Position'] }}" {% for tag in ((series['Variant.L']|string)|format_to_html).items() -%} {{ tag[0] }}="{{ tag[1] }}" {% endfor -%}>
                           <div class="text-[#888] mr-[10px] select-none min-w-[30px] text-right">{{ loop.index }}</div>
                           <span data-component="column-match" class="text-black bg-[rgba(0,_255,_0,_0.2)] table-cell px-[8px] py-[2px] whitespace-nowrap">
                             {{ series['Variant.L'] -}}
@@ -416,7 +420,7 @@
                     </div>
                     {% for index, series in view['variants'].iterrows() -%}
                       {% if series['Variant.L']|is_nan or series['Variant.R']|is_nan -%}
-                        <div data-component="file-content-right" row="{{ loop.index0 }}" status="mismatch" class="w-fit h-[32px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] bg-[rgba(255,_0,_0,_0.2)]" id="{{ series['Chromosome']|upper() }} {{ series['Type']|upper() }} {{ series['Filter.R']|upper() }}" chrom="{{ series['Chromosome']|upper() }}" type="{{ series['Type']|upper() }}" filter="{{ series['Filter.R']|upper() }}" pos={{ series['Position'] }} {% for tag in ((series['Variant.R']|string)|format_to_html).items() -%} {{ tag[0] }}="{{ tag[1] }}" {% endfor -%}>
+                        <div data-component="file-content-right" row="{{ loop.index0 }}" status="mismatch" class="w-fit h-[32px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] bg-[rgba(255,_0,_0,_0.2)]" chrom="{{ series['Chromosome']|upper() }}" type="{{ series['Type']|upper() }}" filter="{{ series['Filter.R']|upper() }}" pos={{ series['Position'] }} {% for tag in ((series['Variant.R']|string)|format_to_html).items() -%} {{ tag[0] }}="{{ tag[1] }}" {% endfor -%}>
                           <div class="text-[#888] mr-[10px] select-none min-w-[30px] text-right">{{ loop.index }}</div>
                           {% if not series['Variant.R']|is_nan %}
                             <span data-component="column-diff" class="text-black bg-[rgba(255,_0,_0,_0.2)] table-cell px-[8px] py-[2px] whitespace-nowrap">
@@ -425,7 +429,7 @@
                           {% endif %}
                         </div>
                       {% else -%}
-                        <div data-component="file-content-right" status="match" row="{{ loop.index0 }}" class="w-fit h-[32px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] bg-[rgba(0,_255,_0,_0.2)]" id="{{ series['Chromosome']|upper() }} {{ series['Type']|upper() }} {{ series['Filter.R']|upper() }}" chrom="{{ series['Chromosome']|upper() }}" type="{{ series['Type']|upper() }}" filter="{{ series['Filter.R']|upper() }}" pos={{ series['Position'] }} {% for tag in ((series['Variant.R']|string)|format_to_html).items() -%} {{ tag[0] }}="{{ tag[1] }}" {% endfor -%}>
+                        <div data-component="file-content-right" status="match" row="{{ loop.index0 }}" class="w-fit h-[32px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] bg-[rgba(0,_255,_0,_0.2)]" chrom="{{ series['Chromosome']|upper() }}" type="{{ series['Type']|upper() }}" filter="{{ series['Filter.R']|upper() }}" pos={{ series['Position'] }} {% for tag in ((series['Variant.R']|string)|format_to_html).items() -%} {{ tag[0] }}="{{ tag[1] }}" {% endfor -%}>
                           <div class="text-[#888] mr-[10px] select-none min-w-[30px] text-right">{{ loop.index }}</div>
                           <span data-component="column-match" class="text-black bg-[rgba(0,_255,_0,_0.2)] table-cell px-[8px] py-[2px] whitespace-nowrap">
                             {{ series['Variant.R'] -}}
@@ -534,7 +538,7 @@
                           <path d="M-3,50 L3,50" stroke="#EA4335" stroke-width="5" stroke-linecap="round"/>
                         </g>
                       </svg>
-                      <div data-component="variant-card-datas" class="flex flex-col justify-center">
+                      <div id="snp-card-datas" data-component="variant-card-datas" class="flex flex-col justify-center">
                         <ul class="list-none" id="file-legend-snp">
                           <li class="inline">
                             <a class="inline-flex flex-nowrap items-center text-sm mr-[3px]">
@@ -587,7 +591,7 @@
                           <path d="M-18,50 L18,50" stroke="#EA4335" stroke-width="5" stroke-linecap="round"/>
                         </g>
                       </svg>
-                      <div data-component="variant-card-datas" class="flex flex-col justify-center">
+                      <div id="mnp-card-datas" data-component="variant-card-datas" class="flex flex-col justify-center">
                         <ul class="list-none" id="file-legend-mnp">
                           <li class="inline">
                             <a class="inline-flex flex-nowrap items-center text-sm mr-[3px]">
@@ -643,7 +647,7 @@
                           </marker>
                         </g>
                       </svg>
-                      <div data-component="variant-card-datas" class="flex flex-col justify-center">
+                      <div id="sv-card-datas" data-component="variant-card-datas" class="flex flex-col justify-center">
                         <ul class="list-none" id="file-legend-sv">
                           <li class="inline">
                             <a class="inline-flex flex-nowrap items-center text-sm mr-[3px]">
@@ -705,7 +709,7 @@
                           <line x1="5" y1="25" x2="5" y2="42" stroke="#212529" stroke-width="1.5" stroke-dasharray="3,3"/>
                         </g>
                       </svg>
-                      <div data-component="variant-card-datas" class="flex flex-col justify-center">
+                      <div id="indel-card-datas" data-component="variant-card-datas" class="flex flex-col justify-center">
                         <ul class="list-none" id="file-legend-indel">
                           <li class="inline">
                             <a class="inline-flex flex-nowrap items-center text-sm mr-[3px]">
@@ -781,7 +785,7 @@
                           </marker>
                         </g>
                       </svg>
-                      <div data-component="variant-card-datas" class="flex flex-col justify-center">
+                      <div id="inv-card-datas" data-component="variant-card-datas" class="flex flex-col justify-center">
                         <ul class="list-none" id="file-legend-inversion">
                           <li class="inline">
                             <a class="inline-flex flex-nowrap items-center text-sm mr-[3px]">
@@ -854,7 +858,7 @@
                           <path d="M0,50 L-20,60 L20,60 Z" fill="#6c757d"/>
                         </g>
                       </svg>
-                      <div data-component="variant-card-datas" class="flex flex-col justify-center">
+                      <div id="csv-card-datas" data-component="variant-card-datas" class="flex flex-col justify-center">
                         <ul class="list-none" id="file-legend-cv">
                           <li class="inline">
                             <a class="inline-flex flex-nowrap items-center text-sm mr-[3px]">
@@ -1263,9 +1267,9 @@
       });
       function filter() {
 
-        const matchs = ["MATCH", "MISMATCH"]
-        const filters = ["PASS", "FAIL"]
-        const variants = ["SNP", "INDEL", "OTHER"]
+        const matchs = ["MATCH", "MISMATCH"];
+        const filters = ["PASS", "FAIL"];
+        const variants = ["SNP", "INS", "DEL", "SV", "MNP", "CSV", "INV"];
 
         let rowsLeft = document.querySelectorAll('[data-component="file-content-left"]');
         let rowsRight = document.querySelectorAll('[data-component="file-content-right"]');
@@ -1291,24 +1295,24 @@
         let countMatchLine = 0;
         let countMismatchLine = 0;
 
-        let countSNP = [0, 0]
-        let countINDEL = [0, 0]
-        let countSV = [0, 0]
+        let countSNP = [0, 0];
+        let countINDEL = [0, 0];
+        let countSV = [0, 0];
+        let countMNP = [0, 0];
+        let countINV = [0, 0];
+        let countCSV = [0, 0];
 
         rowsLeft.forEach((rowLeft, index) => {
-
-            let rowLeftInfs = rowLeft.id.split(" ");
-            if (rowLeftInfs.length < 3) return;
 
             let rowRight = rowsRight[index];
             let rowRightInfs = rowRight.id.split(" ");
               
             let isLineClass = matchQuery === "ALL" || rowLeft.getAttribute("status").toUpperCase() === matchQuery;
       
-            let isChromosome = chromosomeQuery === "" || rowLeftInfs[0] == chromosomeQuery;
-            let isVariantType = variantTypeQuery === "ALL" || rowLeftInfs[1] === variantTypeQuery;
-            let isVariantFilterLeft = variantFilterQuery === "ALL" || rowLeftInfs[2] === variantFilterQuery;
-            let isVariantFilterRight = variantFilterQuery === "ALL" || rowRightInfs[2] === variantFilterQuery;
+            let isChromosome = chromosomeQuery === "" || rowLeft.getAttribute("chrom") == chromosomeQuery;
+            let isVariantType = variantTypeQuery === "ALL" || rowLeft.getAttribute("type") === variantTypeQuery;
+            let isVariantFilterLeft = variantFilterQuery === "ALL" || rowLeft.getAttribute("filter") === variantFilterQuery;
+            let isVariantFilterRight = variantFilterQuery === "ALL" || rowRight.getAttribute("filter") === variantFilterQuery;
     
             let isRowVisible = (isChromosome && isVariantType && isLineClass && (isVariantFilterLeft || isVariantFilterRight));
 
@@ -1318,28 +1322,46 @@
             if (isRowVisible){
               let variantType;
               if (rowLeft.querySelector("span")){
-                variantType = rowLeftInfs[1].toUpperCase();
-                if (variantType == "SNP") {
+                variantType = rowLeft.getAttribute("type").toUpperCase();
+                if (variantType === "SNP") {
                   ++countSNP[0];
                 }
-                else if (variantType == "INDEL"){
+                else if (variantType === "DEL" || variantType === "INS"){
                   ++countINDEL[0];
                 }
-                else if (variantType == "SV"){
+                else if (variantType === "SV"){
                   ++countSV[0];
+                }
+                else if (variantType === "MNP"){
+                  ++countMNP[0];
+                }
+                else if (variantType === "INV"){
+                  ++countINV[0];
+                }
+                else {
+                  ++countCSV[0]
                 }
               }
 
               if (rowRight.querySelector("span")){
-                variantType = rowRightInfs[1].toUpperCase();
-                if (variantType == "SNP") {
+                variantType = rowRight.getAttribute("type").toUpperCase();
+                if (variantType === "SNP") {
                   ++countSNP[1];
                 }
-                else if (variantType == "INDEL"){
+                else if (variantType === "DEL" || variantType === "INS"){
                   ++countINDEL[1];
                 }
-                else if (variantType == "SV"){
+                else if (variantType === "SV"){
                   ++countSV[1];
+                }
+                else if (variantType === "MNP"){
+                  ++countMNP[1];
+                }
+                else if (variantType === "INV"){
+                  ++countINV[1];
+                }
+                else {
+                  ++countCSV[1]
                 }
               }
             }
@@ -1378,95 +1400,61 @@
 
         statsByVariantType.forEach((composition) => {
 
-          let valueLeftFile = composition.firstElementChild.querySelector('[data-component="file-legend-value-left"]');
-          let valueRightFile = composition.firstElementChild.querySelector('[data-component="file-legend-value-right"]');
-
-          let bar = composition.children[1];
-
-          let progresses = bar.children;
-            
-          if (bar.id == "stats-bar-snp"){
-
-            valueLeftFile.textContent = `${countSNP[0]}`;
-            valueRightFile.textContent = `${countSNP[1]}`;
-
-            let sumSNP = (countSNP.reduce((accumulator, currentValue) => accumulator + currentValue, 0))
-            let pourcentageLeft = sumSNP ? ((countSNP[0] / sumSNP) * 100) : 0;
-            let pourcentageRight = sumSNP ? ((countSNP[1] / sumSNP) * 100) : 0;
-              
-            if (pourcentageLeft == 100) {
-              progresses[0].style.borderTopRightRadius = "9999px";
-              progresses[0].style.borderBottomRightRadius = "9999px";  
-            }
-            else if (pourcentageRight == 100){
-              progresses[1].style.borderTopLeftRadius = "9999px";
-              progresses[1].style.borderBottomLeftRadius = "9999px";
-            }
-            else {
-              progresses[0].style.borderTopRightRadius = "0px";
-              progresses[0].style.borderBottomRightRadius = "0px";
-              progresses[1].style.borderTopLeftRadius = "0px";
-              progresses[1].style.borderBottomLeftRadius = "0px";
-            }
-
-            progresses[0].style.width = pourcentageLeft + "%";
-            progresses[1].style.width = pourcentageRight + "%";
+          if (composition.id === "snp-card-datas") {
+            updateVariantComposition(composition, countSNP);
           }
-          else if (bar.id == "stats-bar-indel"){
-
-            valueLeftFile.textContent = `${countINDEL[0]}`;
-            valueRightFile.textContent = `${countINDEL[1]}`;
-
-            let sumINDEL = (countINDEL.reduce((accumulator, currentValue) => accumulator + currentValue, 0));
-            let pourcentageLeft = sumINDEL ? ((countINDEL[0] / sumINDEL) * 100) : 0;
-            let pourcentageRight = sumINDEL ? ((countINDEL[1] / sumINDEL) * 100) : 0;
-              
-            if (pourcentageLeft == 100) {
-              progresses[0].style.borderTopRightRadius = "9999px";
-              progresses[0].style.borderBottomRightRadius = "9999px";  
-            }
-            else if (pourcentageRight == 100){
-              progresses[1].style.borderTopLeftRadius = "9999px";
-              progresses[1].style.borderBottomLeftRadius = "9999px";
-            }
-            else {
-              progresses[0].style.borderTopRightRadius = "0px";
-              progresses[0].style.borderBottomRightRadius = "0px";
-              progresses[1].style.borderTopLeftRadius = "0px";
-              progresses[1].style.borderBottomLeftRadius = "0px";
-            }
-
-            progresses[0].style.width = pourcentageLeft + "%";
-            progresses[1].style.width = pourcentageRight + "%";
+          else if (composition.id === "indel-card-datas") {
+            updateVariantComposition(composition, countINDEL);
           }
-          else if (bar.id == "stats-bar-sv"){
-
-            valueLeftFile.textContent = `${countSV[0]}`;
-            valueRightFile.textContent = `${countSV[1]}`;
-
-            let sumSV = (countSV.reduce((accumulator, currentValue) => accumulator + currentValue, 0));
-            let pourcentageLeft = sumSV ? ((countSV[0] / sumSV) * 100) : 0;
-            let pourcentageRight = sumSV ? ((countSV[1] / sumSV) * 100) : 0;
-            
-            if (pourcentageLeft == 100) {
-              progresses[0].style.borderTopRightRadius = "9999px";
-              progresses[0].style.borderBottomRightRadius = "9999px";  
-            }
-            else if (pourcentageRight == 100){
-              progresses[1].style.borderTopLeftRadius = "9999px";
-              progresses[1].style.borderBottomLeftRadius = "9999px";
-            }
-            else {
-              progresses[0].style.borderTopRightRadius = "0px";
-              progresses[0].style.borderBottomRightRadius = "0px";
-              progresses[1].style.borderTopLeftRadius = "0px";
-              progresses[1].style.borderBottomLeftRadius = "0px";
-            }
-
-            progresses[0].style.width = pourcentageLeft + "%";
-            progresses[1].style.width = pourcentageRight + "%";
+          else if (composition.id === "sv-card-datas") {
+            updateVariantComposition(composition, countSV);
           }
+          else if (composition.id === "mnp-card-datas") {
+            updateVariantComposition(composition, countMNP);
+          }
+          else if (composition.id === "inv-card-datas") {
+            updateVariantComposition(composition, countINV);
+          }
+          else if (composition.id === "csv-card-datas") {
+            updateVariantComposition(composition, countCSV);
+          }
+
         })
+      }
+
+      function updateVariantComposition(div, counts) {
+
+            let valueLeftFile = div.firstElementChild.querySelector('[data-component="file-legend-value-left"]');
+            let valueRightFile = div.firstElementChild.querySelector('[data-component="file-legend-value-right"]');
+
+            let bar = div.children[1];
+
+            let progresses = bar.children;
+
+            valueLeftFile.textContent = `${counts[0]}`;
+            valueRightFile.textContent = `${counts[1]}`;
+
+            let sum = (counts.reduce((accumulator, currentValue) => accumulator + currentValue, 0));
+            let pourcentageLeft = sum ? ((counts[0] / sum) * 100) : 0;
+            let pourcentageRight = sum ? ((counts[1] / sum) * 100) : 0;
+            
+            if (pourcentageLeft == 100) {
+              progresses[0].style.borderTopRightRadius = "9999px";
+              progresses[0].style.borderBottomRightRadius = "9999px";  
+            }
+            else if (pourcentageRight == 100){
+              progresses[1].style.borderTopLeftRadius = "9999px";
+              progresses[1].style.borderBottomLeftRadius = "9999px";
+            }
+            else {
+              progresses[0].style.borderTopRightRadius = "0px";
+              progresses[0].style.borderBottomRightRadius = "0px";
+              progresses[1].style.borderTopLeftRadius = "0px";
+              progresses[1].style.borderBottomLeftRadius = "0px";
+            }
+
+            progresses[0].style.width = pourcentageLeft + "%";
+            progresses[1].style.width = pourcentageRight + "%";
       }
 
       function runQuery() {
@@ -1528,7 +1516,7 @@
                 if (variantType === "SNP") {
                   ++countSNP[0];
                 }
-                else if (variantType === "INDEL") {
+                else if (variantType === "DEL" || variantType === "INS") {
                   ++countINDEL[0];
                 }
                 else if (variantType === "SV") {
@@ -1544,7 +1532,7 @@
                 if (variantType === "SNP") {
                   ++countSNP[1];
                 }
-                else if (variantType === "INDEL") {
+                else if (variantType === "DEL" || variantType === "INS") {
                   ++countINDEL[1];
                 }
                 else if (variantType === "SV") {

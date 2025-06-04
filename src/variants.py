@@ -1,4 +1,7 @@
+from collections import deque
 import errors
+from functools import lru_cache
+from loguru import logger
 import numpy
 from pandas import Series, DataFrame, concat
 from plots import PlotLibrary
@@ -7,7 +10,7 @@ from utils import suppress_warnings, convert
 
 class VariantRepository():
 
-    INDEX = {
+    INDEX: dict[str:int] = {
                 "CHROM": 0,
                 "POS": 1,
                 "ID": 2,
@@ -18,6 +21,8 @@ class VariantRepository():
                 "INFO": 7,
                 "FORMAT": 8,
             }
+    
+    VT: list[str] = ["snp", "ins", "del", "sv", "mnp", "inv", "csv"]
 
     def __init__(self, filters: dict = None):
         
@@ -164,6 +169,78 @@ class VariantRepository():
             raise errors.VariantError(f"The genotype must be a string instance. The provided genotype is an {type(GT)}")
         
     @staticmethod
+    @lru_cache(maxsize=1000) # Use Least Recently Used (LRU) cache to store results, SNP are often repeated
+    def get_variant_type(ref: str, alts: tuple[str]) -> list[str]:
+
+        vts = []
+
+        def is_snp(ref: str, alt: str) -> str:
+            """Check if the variant is a SNP (Single Nucleotide Polymorphism)."""
+
+            return "snp" if len(ref) == 1 and len(alt) == 1 else ''
+
+        def is_ins(ref: str, alt: str) -> str:
+            """Check if the variant is an INS (Insertion)."""
+            
+            return "ins" if len(ref) == 1 and len(alt) > 1 else ''
+
+        def is_del(ref: str, alt: str) -> str:
+            """Check if the variant is a DEL (Deletion)."""
+
+            return "del" if len(ref) > 1 and len(alt) == 1 else ''
+
+        def is_inv(ref: str, alt: str) -> str:
+            """Check if the variant is an INV (Inversion)."""
+            OLD_CHARS: str = "ACGTacgt"
+            REPLACE_CHARS: str = "TGCAtgca"
+            rev: str = alt.translate(str.maketrans(OLD_CHARS,REPLACE_CHARS))[::-1]
+            return "inv" if len(ref) == len(alt) and ref == rev else ''
+
+        def is_mnv(ref: str, alt: str) -> str:
+            """Check if the variant is a MNV (Multi Nucleotide Variant)."""
+
+            OLD_CHARS: str = "ACGTacgt"
+            REPLACE_CHARS: str = "TGCAtgca"
+
+            rev: str = alt.translate(str.maketrans(OLD_CHARS,REPLACE_CHARS))[::-1]
+
+            return "mnp" if len(ref) == len(alt) and ref != rev else ''
+        
+        # List of functions to check variant type
+        # Deque is used to pop functions from the left at each iteration
+        # until one of them returns a value
+        # If no function returns a value, the variant type is set to CSV (complex structural variant)
+        funcs: deque = deque([is_snp, is_ins, is_del, is_inv, is_mnv])
+        
+        for alt in alts:
+
+            # Empty string to store variant type
+            # Empty string return False
+            variant_type: str = ''
+
+            try:
+                
+                # Loop until one of the functions returns a value
+                # Empty string equivalent to False
+                while not variant_type:
+
+                    variant_type: str = funcs.popleft()(ref, alt)
+
+            # IndexError is raised when all functions have been popped from the deque
+            # and none of them returned a value
+            # In this case, the variant type is set to CSV (complex structural variant)
+            # This is a fallback to avoid infinite loop
+            except IndexError:
+
+                logger.warning(f"Could not determine variant type from {ref}:{alt}")
+
+                variant_type: str = "csv"
+            
+            vts.append(variant_type)
+
+        return vts
+        
+    @staticmethod
     def format_to_values(format: str, values: str|list[str]) -> dict:
         """ map FORMAT string to respective SAMPLE values """
 
@@ -209,7 +286,7 @@ class VariantRepository():
                                                                                                                                 "Variant": "string[pyarrow]",
                                                                                                                             }
                                                                                                                         )
-        df["Type"] = df["Type"].cat.set_categories(["snp", "indel", "sv"])
+        df["Type"] = df["Type"].cat.set_categories(VariantRepository.VT)
 
         return df
 

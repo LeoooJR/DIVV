@@ -423,12 +423,10 @@ class VCF(GenomicFile):
             except AttributeError as e:
 
                 raise errors.VCFError(e)
-            
-            if len(chromosomes):
-
-                logger.debug(f"File {self} is composed of {chromosomes} chromosomes")
 
             self.variants.chromosomes = chromosomes
+
+            logger.debug(f"File {self} is composed of {self.variants.chromosomes} chromosomes")
 
         if not self.variants.seqlens:
 
@@ -616,6 +614,8 @@ class VCFProcessor:
                         "mnp": 0,
                         "indel": {"insertion": 0, "deletion": 0},
                         "sv": 0,
+                        "inv": 0,
+                        "csv": 0,
                     },
                     "depth": [],
                     "quality": [],
@@ -642,6 +642,7 @@ class VCFProcessor:
                         format: str = parts[task[0].header["FORMAT"]]
 
                         logger.debug(f"FORMAT for chromosome {task[1]}: {format}")
+
                     # From FORMAT get the values for each sample
                     samples_values: dict[str:dict] = {
                         s: VariantRepository.format_to_values(
@@ -649,7 +650,7 @@ class VCFProcessor:
                         )
                         for s in task[0].samples
                     }
-                    
+                    vts: list = VariantRepository.get_variant_type(v.REF, tuple(v.ALT))
                     # Should variant be filtered ?
                     if task[0].variants.filters:
 
@@ -657,7 +658,7 @@ class VCFProcessor:
                     # Should the variant be excluded ?
                     if exclude:
 
-                        filtered[v.var_type] += 1
+                        filtered[vts[0]] += 1
                     # Variants pass the filters
                     else:
                         # Hash the variant to avoid duplicates and enhance lookup
@@ -671,28 +672,27 @@ class VCFProcessor:
                             variants[hash] = [
                                 (v.CHROM).removeprefix('chr'),
                                 v.POS,
-                                v.var_type,
+                                vts[0],
                                 "FAIL" if v.FILTER else "PASS",
                                 '\t'.join(parts),
                             ]
                             # Should the statistics be computed ?
                             if profile:
                                 # The variant type is common to all samples
-                                if v.var_type == "snp":
-                                    if v.is_transition:
-                                        mutation: str = "transition"
+                                # Iterare over uniq variant type
+                                for vt in set(vts):
+                                    if vt == "snp":
+                                        if v.is_transition:
+                                            mutation: str = "transition"
+                                        else:
+                                            mutation: str = "transversion"
+                                        stats["variant"][vt][mutation] += 1
+                                        stats["variant"][vt][v.REF][v.ALT[0]] += 1
+                                    elif vt in ["del", "ins"]:
+                                        mutation: str = "deletion" if vt == "del" else "insertion"
+                                        stats["variant"]["indel"][mutation] += 1
                                     else:
-                                        mutation: str = "transversion"
-                                    stats["variant"][v.var_type][mutation] += 1
-                                    stats["variant"][v.var_type][v.REF][v.ALT[0]] += 1
-                                elif v.var_type == "indel":
-                                    if v.is_deletion:
-                                        mutation: str = "deletion"
-                                    else:
-                                        mutation: str = "insertion"
-                                    stats["variant"][v.var_type][mutation] += 1
-                                else:
-                                    stats["variant"][v.var_type] += 1
+                                        stats["variant"][vt] += 1
 
                                 # Statistics unique to each samples
                                 # If previous passes have raised a warning, do not search for genotype quality score.
@@ -792,7 +792,7 @@ class VCFProcessor:
             }
         ) # Set the columns to the right type for better memory management
 
-        variants["Type"].cat.set_categories(["snp", "indel", "sv"])
+        variants["Type"].cat.set_categories(VariantRepository.VT)
 
         # Set the hash values as the index
         variants.index = Index(variants.index.values, dtype="string[pyarrow]")
@@ -1190,6 +1190,18 @@ class Report:
         def is_nan(value):
             return isna(value)
         
+        def format_variant_type(value:str):
+
+            if value in ["ins", "del"]:
+
+                vt = "indel"
+            
+            else:
+
+                vt = value
+
+            return vt
+        
         def format_to_html(value:str):
 
             html_tags = {}
@@ -1229,6 +1241,8 @@ class Report:
         env.filters['is_nan'] = is_nan
 
         env.filters['format_to_html'] = format_to_html
+
+        env.filters['format_variant_type'] = format_variant_type
 
         # Load the template
         template = env.get_template("template.html")

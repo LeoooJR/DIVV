@@ -106,3 +106,18 @@ def test_heterozygous_error():
     with pytest.raises(errors.VariantError):
 
         VariantRepository.is_heterozygous(input)
+
+@pytest.mark.parametrize("ref, alt, result", [
+    ("A", "T", "SNP"),
+    ("C", "A", "SNP"),
+    ("ATTT", "A", "DEL"),
+    ("C", "CGA", "INS"),
+    ("AT", "GA", "MNP"),
+    ("ATG", "CAT", "INV"),
+    ("ATCCC", "ATCGCA", "CSV")
+])
+
+@pytest.mark.variant
+def test_variant_type(ref, alt, result):
+
+    assert VariantRepository.get_variant_type(ref, alt) == result
