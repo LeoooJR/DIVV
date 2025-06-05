@@ -651,6 +651,11 @@ class VCFProcessor:
                         for s in task[0].samples
                     }
                     vts: list = VariantRepository.get_variant_type(v.REF, tuple(v.ALT))
+
+                    if VariantRepository.is_composed_variant(v.ALT):
+
+                        logger.warning(f"Alternative allele {v.ALT} is composed for variant record {i} at position {v.POS} in {task[0]}.")
+
                     # Should variant be filtered ?
                     if task[0].variants.filters:
 

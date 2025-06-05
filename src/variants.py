@@ -169,6 +169,11 @@ class VariantRepository():
             raise errors.VariantError(f"The genotype must be a string instance. The provided genotype is an {type(GT)}")
         
     @staticmethod
+    def is_composed_variant(alleles: list[str]) -> bool:
+        """ Check if variant is composed """
+        return len(alleles) > 1
+        
+    @staticmethod
     @lru_cache(maxsize=1000) # Use Least Recently Used (LRU) cache to store results, SNP are often repeated
     def get_variant_type(ref: str, alts: tuple[str]) -> list[str]:
 
