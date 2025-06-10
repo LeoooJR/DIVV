@@ -37,23 +37,23 @@
 
             <div class="flex justify-center items-center flex-wrap w-full pt-[5px] overflow-x-auto">
               <div class="flex rounded-[2em] m-[2px] h-[90%] bg-[#D7F1FD] items-center [box-shadow:0px_0px_5px_-3px_#111]">
-                <img src="statics/folder.png" class="w-[20px] px-[5px] py-[5px]">
+                <img src="statics/folder.png" class="w-[25px] px-[5px] py-[5px]">
                 <p class="text-[15px] px-[5px] font-bold text-center leading-[22px] font-[Ubuntu] text-[#0C2A75]">
-                    tests/data
+                  {{ vcfs.repository[0].informations().path|default(VCF.L) }}
                 </p>
               </div>
 
               <div class="flex rounded-[2em] m-[2px] h-[90%] bg-[#D7F1FD] items-center [box-shadow:0px_0px_5px_-3px_#111]">
-                <img src="statics/database.png" class="w-[20px] px-[5px] py-[5px]">
+                <img src="statics/database.png" class="w-[25px] px-[5px] py-[5px]">
                 <p class="text-[15px] px-[5px] font-bold text-center leading-[22px] font-[Ubuntu] text-[#0C2A75]">
-                    0.15 Mo
+                  {{ vcfs.repository[0].informations().size|default('NaN') }} Mo
                 </p>
               </div>
 
               <div class="flex rounded-[2em] m-[2px] h-[90%] bg-[#D7F1FD] items-center [box-shadow:0px_0px_5px_-3px_#111]">
-                <img src="statics/file.png" class="w-[20px] px-[5px] py-[5px]">
+                <img src="statics/file.png" class="w-[25px] px-[5px] py-[5px]">
                 <p class="text-[15px] px-[5px] font-bold text-center leading-[22px] font-[Ubuntu] text-[#0C2A75]">
-                    2025-03-03 14:15:17.756086+00:00
+                  {{ vcfs.repository[0].informations().mtime|default('NA') }}
                 </p>
               </div>
             </div>
@@ -71,23 +71,23 @@
 
             <div class="flex justify-center items-center flex-wrap w-full pt-[5px] overflow-x-auto">
               <div class="flex rounded-[2em] m-[2px] h-[90%] bg-[#D7F1FD] items-center [box-shadow:0px_0px_5px_-3px_#111]">
-                <img src="statics/folder.png" class="w-[20px] px-[5px] py-[5px]">
+                <img src="statics/folder.png" class="w-[25px] px-[5px] py-[5px]">
                 <p class="text-[15px] px-[5px] font-bold text-center leading-[22px] font-[Ubuntu] text-[#0C2A75]">
-                    tests/data
+                  {{ vcfs.repository[1].informations().path|default(VCF.R) }}
                 </p>
               </div>
 
               <div class="flex rounded-[2em] m-[2px] h-[90%] bg-[#D7F1FD] items-center [box-shadow:0px_0px_5px_-3px_#111]">
-                <img src="statics/database.png" class="w-[20px] px-[5px] py-[5px]">
+                <img src="statics/database.png" class="w-[25px] px-[5px] py-[5px]">
                 <p class="text-[15px] px-[5px] font-bold text-center leading-[22px] font-[Ubuntu] text-[#0C2A75]">
-                    0.15 Mo
+                  {{ vcfs.repository[1].informations().size|default('NaN') }} Mo
                 </p>
               </div>
 
               <div class="flex rounded-[2em] m-[2px] h-[90%] bg-[#D7F1FD] items-center [box-shadow:0px_0px_5px_-3px_#111]">
-                <img src="statics/file.png" class="w-[20px] px-[5px] py-[5px]">
+                <img src="statics/file.png" class="w-[25px] px-[5px] py-[5px]">
                 <p class="text-[15px] px-[5px] font-bold text-center leading-[22px] font-[Ubuntu] text-[#0C2A75]">
-                    2025-03-03 14:15:17.757086+00:00
+                  {{ vcfs.repository[1].informations().mtime|default('NA') }}
                 </p>
               </div>
             </div>
@@ -1387,26 +1387,26 @@
 
         statsByVariantType.forEach((composition) => {
 
-          if (composition.id === "snp-card-datas") {
-            updateVariantComposition(composition, countSNP);
+            if (composition.id === "snp-card-datas") {
+              updateVariantComposition(composition, countSNP);
+            }
+            else if (composition.id === "indel-card-datas") {
+              updateVariantComposition(composition, countINDEL);
+            }
+            else if (composition.id === "sv-card-datas") {
+              updateVariantComposition(composition, countSV);
+            }
+            else if (composition.id === "mnp-card-datas") {
+              updateVariantComposition(composition, countMNP);
+            }
+            else if (composition.id === "inv-card-datas") {
+              updateVariantComposition(composition, countINV);
+            }
+            else if (composition.id === "csv-card-datas") {
+              updateVariantComposition(composition, countCSV);
+            }
           }
-          else if (composition.id === "indel-card-datas") {
-            updateVariantComposition(composition, countINDEL);
-          }
-          else if (composition.id === "sv-card-datas") {
-            updateVariantComposition(composition, countSV);
-          }
-          else if (composition.id === "mnp-card-datas") {
-            updateVariantComposition(composition, countMNP);
-          }
-          else if (composition.id === "inv-card-datas") {
-            updateVariantComposition(composition, countINV);
-          }
-          else if (composition.id === "csv-card-datas") {
-            updateVariantComposition(composition, countCSV);
-          }
-
-        })
+        )
       }
 
       function updateVariantComposition(div, counts) {
@@ -1472,13 +1472,18 @@
           const statsByVariantType = document.querySelectorAll('[data-component="variant-card-datas"]');
           const totalLineLeft = leftContent.querySelectorAll('span:not([data-component="column-header"])').length;
           const totalLineRight = rightContent.querySelectorAll('span:not([data-component="column-header"])').length;
+
           let countVisibleLeft = 0;
           let countVisibleRight = 0;
           let countMatchLine = 0;
           let countMismatchLine = 0;
+
           let countSNP = [0, 0];
           let countINDEL = [0, 0];
           let countSV = [0, 0];
+          let countMNP = [0, 0];
+          let countINV = [0, 0];
+          let countCSV = [0, 0];
 
           try {
             
@@ -1504,11 +1509,20 @@
                 if (variantType === "SNP") {
                   ++countSNP[0];
                 }
-                else if (variantType === "DEL" || variantType === "INS") {
+                else if (variantType === "DEL" || variantType === "INS"){
                   ++countINDEL[0];
                 }
-                else if (variantType === "SV") {
+                else if (variantType === "SV"){
                   ++countSV[0];
+                }
+                else if (variantType === "MNP"){
+                  ++countMNP[0];
+                }
+                else if (variantType === "INV"){
+                  ++countINV[0];
+                }
+                else {
+                  ++countCSV[0]
                 }
               }
 
@@ -1520,11 +1534,20 @@
                 if (variantType === "SNP") {
                   ++countSNP[1];
                 }
-                else if (variantType === "DEL" || variantType === "INS") {
+                else if (variantType === "DEL" || variantType === "INS"){
                   ++countINDEL[1];
                 }
-                else if (variantType === "SV") {
+                else if (variantType === "SV"){
                   ++countSV[1];
+                }
+                else if (variantType === "MNP"){
+                  ++countMNP[1];
+                }
+                else if (variantType === "INV"){
+                  ++countINV[1];
+                }
+                else {
+                  ++countCSV[1]
                 }
               }
 
@@ -1540,10 +1563,37 @@
             else {
               document.querySelectorAll('[data-component="error-popup"]').forEach(error => error.classList.replace('flex', 'hidden'));
             }
+
             const statsGeneral = document.querySelectorAll('[data-component="general-card-datas"]');
             statsGeneral[0].children[0].textContent = countMatchLine;
             statsGeneral[1].children[0].textContent = countMismatchLine;
             statsGeneral[2].children[0].textContent = (countMatchLine / (countVisibleLeft + countVisibleRight - countMatchLine)).toPrecision(3);
+
+            const statsByVariantType = document.querySelectorAll('[data-component="variant-card-datas"]')
+
+            statsByVariantType.forEach((composition) => {
+
+                if (composition.id === "snp-card-datas") {
+                  updateVariantComposition(composition, countSNP);
+                }
+                else if (composition.id === "indel-card-datas") {
+                  updateVariantComposition(composition, countINDEL);
+                }
+                else if (composition.id === "sv-card-datas") {
+                  updateVariantComposition(composition, countSV);
+                }
+                else if (composition.id === "mnp-card-datas") {
+                  updateVariantComposition(composition, countMNP);
+                }
+                else if (composition.id === "inv-card-datas") {
+                  updateVariantComposition(composition, countINV);
+                }
+                else if (composition.id === "csv-card-datas") {
+                  updateVariantComposition(composition, countCSV);
+                }
+              }
+            )
+
             stdout.classList.replace("hidden", "flex");
             const end = performance.now();
             stdout.textContent = `js:(vcc)> SELECT * FROM VCFS WHERE ${suffix} (${end - start} ms)`;
