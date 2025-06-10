@@ -17,14 +17,14 @@
         <div class="flex w-1/2 bg-[white]">
             <img src="statics/vcf-left.png" alt="vcf-icon-white" class="h-[70px] w-[70px] pl-[10px] py-[5px]">
             <h2 class="mt-[20px] mb-[10px] font-[Ubuntu] font-bold italic text-center text-2xl w-full text-[#111111]">
-              16NG001474-F_S14_debug_python_V3.1.vcf
+              {{ vcfs.repository[0].informations().basename|default("VCF.L") }}
             </h2>
         </div>
 
         <div class="flex w-1/2 bg-[#111111]">
             <img src="statics/vcf-right.png" alt="vcf-icon-black" class="h-[70px] w-[70px] pl-[10px] py-[5px]">
             <h2 class="mt-[20px] mb-[10px] font-[Ubuntu] font-bold italic text-center text-2xl w-full text-[white]">
-              16NG001474-F_S14_final.vcf
+              {{ vcfs.repository[1].informations().basename|default("VCF.R") }}
             </h2>
         </div>
 
@@ -33,13 +33,13 @@
     <div class="flex w-full">
 
         <div class="flex w-1/2 bg-[#EEF0F1]">
-            <img src="statics/info-left.png" class="w-10 h-10 md:w-[39px] md:h-[39px] ml-[10px] my-[5px] mr-[5px]" id="info-left-icon">
+            <img src="statics/info-left.png" class="w-10 h-10 md:w-[39px] md:h-[39px] ml-[10px] my-[5px] mr-[5px] self-center" id="info-left-icon">
 
             <div class="flex justify-center items-center flex-wrap w-full pt-[5px] overflow-x-auto">
               <div class="flex rounded-[2em] m-[2px] h-[90%] bg-[#D7F1FD] items-center [box-shadow:0px_0px_5px_-3px_#111]">
                 <img src="statics/folder.png" class="w-[25px] px-[5px] py-[5px]">
                 <p class="text-[15px] px-[5px] font-bold text-center leading-[22px] font-[Ubuntu] text-[#0C2A75]">
-                  {{ vcfs.repository[0].informations().path|default(VCF.L) }}
+                  {{ vcfs.repository[0].informations().path|default("Na") }}
                 </p>
               </div>
 
@@ -58,22 +58,22 @@
               </div>
             </div>
 
-            <div class="relative mr-[10px] mt-[10px]">
-              <img src="statics/down-arrow-left.png" class="w-10 h-10 md:w-[39px] md:h-[39px] ml-[10px] my-[5px] mr-[5px] cursor-pointer" id="dropdown-icon-left">
-              <div data-component="notification-metadata" class="absolute -top-1 -right-1 w-4 h-4">
+            <div class="flex relative justify-center items-center">
+              <img src="statics/down-arrow-left.png" class="w-10 h-10 md:w-[39px] md:h-[39px] mx-[10px] cursor-pointer" id="dropdown-icon-left">
+              <div data-component="notification-metadata" class="absolute top-0 right-1 w-3 h-3">
                 <div id="ping-metadata-left" class="w-full h-full bg-red-400 rounded-full animate-ping"></div>
               </div>
             </div>
         </div>
 
         <div class="flex w-1/2 bg-[#333333]">
-            <img src="statics/info-right.png" class="w-10 h-10 md:w-[39px] md:h-[39px] ml-[10px] my-[5px] mr-[5px]" id="info-right-icon">
+            <img src="statics/info-right.png" class="w-10 h-10 md:w-[39px] md:h-[39px] ml-[10px] my-[5px] mr-[5px] self-center" id="info-right-icon">
 
             <div class="flex justify-center items-center flex-wrap w-full pt-[5px] overflow-x-auto">
               <div class="flex rounded-[2em] m-[2px] h-[90%] bg-[#D7F1FD] items-center [box-shadow:0px_0px_5px_-3px_#111]">
                 <img src="statics/folder.png" class="w-[25px] px-[5px] py-[5px]">
                 <p class="text-[15px] px-[5px] font-bold text-center leading-[22px] font-[Ubuntu] text-[#0C2A75]">
-                  {{ vcfs.repository[1].informations().path|default(VCF.R) }}
+                  {{ vcfs.repository[1].informations().path|default("Na") }}
                 </p>
               </div>
 
@@ -92,9 +92,9 @@
               </div>
             </div>
 
-            <div class="relative mr-[10px] mt-[10px]">
-              <img src="statics/down-arrow-right.png" class="w-10 h-10 md:w-[39px] md:h-[39px] ml-[10px] my-[5px] mr-[5px] cursor-pointer" id="dropdown-icon-right">
-              <div data-component="notification-metadata" class="absolute -top-1 -right-1 w-4 h-4">
+            <div class="flex relative justify-center items-center">
+              <img src="statics/down-arrow-right.png" class="w-10 h-10 md:w-[39px] md:h-[39px] mx-[10px] cursor-pointer" id="dropdown-icon-right">
+              <div data-component="notification-metadata" class="absolute top-0 right-1 w-3 h-3">
                 <div id="ping-metadata-right" class="w-full h-full bg-red-400 rounded-full animate-ping"></div>
               </div>
             </div>
@@ -344,7 +344,7 @@
               <div class="flex-[1] overflow-hidden relative border-r-[2px_solid_#888]">
                 <div class="pt-4 text-center text-black border-b-[2px_solid_#ccc] font-[Ubuntu] font-bold bg-[#EEF0F1]">{{ vcfs.repository[0].informations().basename|default(vcfs.repository[0]) }}
                   <div class="flex flex-row">
-                    <p class="text-[15px] text-black mb-0 ml-[5px] font-normal" id="filterSummaryL">Showing all variants</p>
+                    <p class="text-[15px] text-black mb-0 ml-[5px] font-normal" id="filterSummaryL">All variants are shown</p>
                     {% if tags[0] %}
                       <div class="flex flex-row w-1/2 justify-center gap-1">
                         {% for tag in tags[0] %}
@@ -387,7 +387,7 @@
               <div class="flex-[1] overflow-hidden relative border-[#ccc]">
                 <div class="pt-4 text-center border-b-[2px_solid_#ccc] font-[Ubuntu] font-bold bg-[#333333] text-white">{{ vcfs.repository[1].informations().basename|default(vcfs.repository[1]) }} 
                   <div class="flex flex-row">
-                    <p class="text-[15px] mb-0 ml-[5px] font-normal" id="filterSummaryR">Showing all variants</p>
+                    <p class="text-[15px] mb-0 ml-[5px] font-normal" id="filterSummaryR">All variants are shown</p>
                     {% if tags[1] %}
                       <div class="flex flex-row w-1/2 justify-center gap-1">
                         {% for tag in tags[1] %}
@@ -1370,8 +1370,8 @@
             }
         });
           
-        document.getElementById("filterSummaryL").innerText = `Showing ${countVisibleLeft} variants out of ${totalLineLeft}`;
-        document.getElementById("filterSummaryR").innerText = `Showing ${countVisibleRight} variants out of ${totalLineRight}`;
+        document.getElementById("filterSummaryL").innerText = `${countVisibleLeft} variants found out of ${totalLineLeft}`;
+        document.getElementById("filterSummaryR").innerText = `${countVisibleRight} variants found out of ${totalLineRight}`;
 
         if (countVisibleLeft+countVisibleRight == 0) {
           document.querySelectorAll('[data-component="error-popup"]').forEach(error => error.classList.replace('hidden', 'flex'));
@@ -1555,8 +1555,8 @@
               divRight.classList.replace("hidden", "flex");
 
             });
-            document.getElementById("filterSummaryL").innerText = `Showing ${countVisibleLeft} variants out of ${totalLineLeft}`;
-            document.getElementById("filterSummaryR").innerText = `Showing ${countVisibleRight} variants out of ${totalLineRight}`;
+            document.getElementById("filterSummaryL").innerText = `${countVisibleLeft} variants found out of ${totalLineLeft}`;
+            document.getElementById("filterSummaryR").innerText = `${countVisibleRight} variants found out of ${totalLineRight}`;
             if (countVisibleLeft+countVisibleRight == 0) {
               document.querySelectorAll('[data-component="error-popup"]').forEach(error => error.classList.replace('hidden', 'flex'));
             }
