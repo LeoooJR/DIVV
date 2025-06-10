@@ -12,104 +12,91 @@
 
 <body onload="filter(); highlightCommand(); collectVariants();">
 
-    <div class="flex flex-row w-full items-stretch">
+    <div class="flex w-full">
 
-        <div class="flex flex-row w-1/2 flex-1 bg-[white] h-auto">
-            <img src="statics/vcf-left.png" alt="vcf-icon-white" class="self-center h-[70px] w-[70px] pl-[10px] pt-[5px] pb-[5px]">
-            <h2 class="mt-[20px] mb-[10px] min-h-[36px] font-[Ubuntu] font-bold italic text-center text-2xl items-center w-full text-[#111111] whitespace-normal">
-              {{ vcfs.repository[0].informations().basename|default(vcfs.repository[0]) }}
+        <div class="flex w-1/2 bg-[white]">
+            <img src="statics/vcf-left.png" alt="vcf-icon-white" class="h-[70px] w-[70px] pl-[10px] py-[5px]">
+            <h2 class="mt-[20px] mb-[10px] font-[Ubuntu] font-bold italic text-center text-2xl w-full text-[#111111]">
+              16NG001474-F_S14_debug_python_V3.1.vcf
             </h2>
         </div>
 
-        <div class="flex flex-row w-1/2 flex-1 bg-[#111111] h-auto">
-            <img src="statics/vcf-right.png" alt="vcf-icon-black" class="self-center h-[70px] w-[70px] pl-[10px] pt-[5px] pb-[5px]">
-            <h2 class="mt-[20px] mb-[10px] min-h-[36px] font-[Ubuntu] font-bold italic text-center text-2xl items-center w-full text-[white] whitespace-normal">
-              {{ vcfs.repository[1].informations().basename|default(vcfs.repository[1]) }}
+        <div class="flex w-1/2 bg-[#111111]">
+            <img src="statics/vcf-right.png" alt="vcf-icon-black" class="h-[70px] w-[70px] pl-[10px] py-[5px]">
+            <h2 class="mt-[20px] mb-[10px] font-[Ubuntu] font-bold italic text-center text-2xl w-full text-[white]">
+              16NG001474-F_S14_final.vcf
             </h2>
         </div>
 
     </div>
 
-    <div class="flex flex-row w-full">
+    <div class="flex w-full">
 
-        <div class="flex flex-row w-1/2 bg-[#EEF0F1]">
+        <div class="flex w-1/2 bg-[#EEF0F1]">
+            <img src="statics/info-left.png" class="w-10 h-10 md:w-[39px] md:h-[39px] ml-[10px] my-[5px] mr-[5px]" id="info-left-icon">
 
-            <img src="statics/info-left.png" class="w-10 h-10 md:w-[39px] md:h-[39px] ml-[10px] mt-[5px] mb-[5px] self-center align-middle mr-[5px]", id="info-left-icon">
-
-            <div class="flex flex-row justify-center items-center flex-wrap w-full pt-[5px] overflow-x-auto">
-
-              <div class="flex flex-row border-[solid] border-transparent rounded-[2em] m-[2px] h-[90%] bg-[#D7F1FD] items-center [box-shadow:0px_0px_5px_-3px_#111]">
-                <img src="statics/folder.png" class="w-[20px] pl-[5px] pt-[5px] pb-[5px] self-center align-middle">
-                <p class="items-center text-[15px] pl-[5px] pr-[5px] font-bold text-center leading-[22px] overflow-scroll font-[Ubuntu] text-[#0C2A75]">
-                    {{ vcfs.repository[0].informations().path|default(vcfs.repository[0]) }}
+            <div class="flex justify-center items-center flex-wrap w-full pt-[5px] overflow-x-auto">
+              <div class="flex rounded-[2em] m-[2px] h-[90%] bg-[#D7F1FD] items-center [box-shadow:0px_0px_5px_-3px_#111]">
+                <img src="statics/folder.png" class="w-[20px] px-[5px] py-[5px]">
+                <p class="text-[15px] px-[5px] font-bold text-center leading-[22px] font-[Ubuntu] text-[#0C2A75]">
+                    tests/data
                 </p>
               </div>
 
-              <div class="flex flex-row border-[solid] border-transparent rounded-[2em] m-[2px] h-[90%] bg-[#D7F1FD] items-center [box-shadow:0px_0px_5px_-3px_#111]">
-                <img src="statics/database.png" class="w-[20px] pl-[5px] pt-[5px] pb-[5px] self-center align-middle">
-                <p class="items-center text-[15px] pl-[5px] pr-[5px] font-bold text-center leading-[22px] overflow-scroll font-[Ubuntu] text-[#0C2A75]">
-                    {{ vcfs.repository[0].informations().size|default('NA') }} Mo
+              <div class="flex rounded-[2em] m-[2px] h-[90%] bg-[#D7F1FD] items-center [box-shadow:0px_0px_5px_-3px_#111]">
+                <img src="statics/database.png" class="w-[20px] px-[5px] py-[5px]">
+                <p class="text-[15px] px-[5px] font-bold text-center leading-[22px] font-[Ubuntu] text-[#0C2A75]">
+                    0.15 Mo
                 </p>
               </div>
 
-              <div class="flex flex-row border-[solid] border-transparent rounded-[2em] m-[2px] h-[90%] bg-[#D7F1FD] items-center [box-shadow:0px_0px_5px_-3px_#111]">
-                <img src="statics/file.png" class="w-[20px] pl-[5px] pt-[5px] pb-[5px] self-center align-middle">
-                <p class="items-center text-[15px] pl-[5px] pr-[5px] font-bold text-center leading-[22px] overflow-scroll font-[Ubuntu] text-[#0C2A75]">
-                    {{ vcfs.repository[0].informations().mtime|default('NA') }}
+              <div class="flex rounded-[2em] m-[2px] h-[90%] bg-[#D7F1FD] items-center [box-shadow:0px_0px_5px_-3px_#111]">
+                <img src="statics/file.png" class="w-[20px] px-[5px] py-[5px]">
+                <p class="text-[15px] px-[5px] font-bold text-center leading-[22px] font-[Ubuntu] text-[#0C2A75]">
+                    2025-03-03 14:15:17.756086+00:00
                 </p>
               </div>
-
             </div>
 
             <div class="relative mr-[10px] mt-[10px]">
-
-              <img src="statics/down-arrow-left.png" class="w-10 h-10 md:w-[39px] md:h-[39px] ml-[10px] mt-[5px] mb-[5px] self-center align-middle mr-[5px] cursor-pointer" id="dropdown-icon-left">
-
+              <img src="statics/down-arrow-left.png" class="w-10 h-10 md:w-[39px] md:h-[39px] ml-[10px] my-[5px] mr-[5px] cursor-pointer" id="dropdown-icon-left">
               <div data-component="notification-metadata" class="absolute -top-1 -right-1 w-4 h-4">
                 <div id="ping-metadata-left" class="w-full h-full bg-red-400 rounded-full animate-ping"></div>
               </div>
-
             </div>
-
         </div>
 
-        <div class="flex flex-row w-1/2 bg-[#333333]">
+        <div class="flex w-1/2 bg-[#333333]">
+            <img src="statics/info-right.png" class="w-10 h-10 md:w-[39px] md:h-[39px] ml-[10px] my-[5px] mr-[5px]" id="info-right-icon">
 
-            <img src="statics/info-right.png" class="w-10 h-10 md:w-[39px] md:h-[39px] ml-[10px] mt-[5px] mb-[5px] self-center align-middle mr-[5px]", id="info-right-icon">
-
-            <div class="flex flex-row justify-center items-center flex-wrap w-full pt-[5px] overflow-x-auto">
-
-              <div class="flex flex-row border-[solid] border-transparent rounded-[2em] m-[2px] h-[90%] bg-[#D7F1FD] items-center [box-shadow:0px_0px_5px_-3px_#111]">
-                <img src="statics/folder.png" class="w-[20px] pl-[5px] pt-[5px] pb-[5px] self-center align-middle">
-                <p class="items-center text-[15px] pl-[5px] pr-[5px] font-bold text-center leading-[22px] overflow-scroll font-[Ubuntu] text-[#0C2A75]">
-                    {{ vcfs.repository[1].informations().path|default(vcfs.repository[1]) }}
+            <div class="flex justify-center items-center flex-wrap w-full pt-[5px] overflow-x-auto">
+              <div class="flex rounded-[2em] m-[2px] h-[90%] bg-[#D7F1FD] items-center [box-shadow:0px_0px_5px_-3px_#111]">
+                <img src="statics/folder.png" class="w-[20px] px-[5px] py-[5px]">
+                <p class="text-[15px] px-[5px] font-bold text-center leading-[22px] font-[Ubuntu] text-[#0C2A75]">
+                    tests/data
                 </p>
               </div>
 
-              <div class="flex flex-row border-[solid] border-transparent rounded-[2em] m-[2px] h-[90%] bg-[#D7F1FD] items-center [box-shadow:0px_0px_5px_-3px_#111]">
-                <img src="statics/database.png" class="w-[20px] pl-[5px] pt-[5px] pb-[5px] self-center align-middle">
-                <p class="items-center text-[15px] pl-[5px] pr-[5px] font-bold text-center leading-[22px] overflow-scroll font-[Ubuntu] text-[#0C2A75]">
-                    {{ vcfs.repository[1].informations().size|default('NA') }} Mo
+              <div class="flex rounded-[2em] m-[2px] h-[90%] bg-[#D7F1FD] items-center [box-shadow:0px_0px_5px_-3px_#111]">
+                <img src="statics/database.png" class="w-[20px] px-[5px] py-[5px]">
+                <p class="text-[15px] px-[5px] font-bold text-center leading-[22px] font-[Ubuntu] text-[#0C2A75]">
+                    0.15 Mo
                 </p>
               </div>
 
-              <div class="flex flex-row border-[solid] border-transparent rounded-[2em] m-[2px] h-[90%] bg-[#D7F1FD] items-center [box-shadow:0px_0px_5px_-3px_#111]">
-                <img src="statics/file.png" class="w-[20px] pl-[5px] pt-[5px] pb-[5px] self-center align-middle">
-                <p class="items-center text-[15px] pl-[5px] pr-[5px] font-bold text-center leading-[22px] overflow-scroll font-[Ubuntu] text-[#0C2A75]">
-                    {{ vcfs.repository[1].informations().mtime|default('NA') }}
+              <div class="flex rounded-[2em] m-[2px] h-[90%] bg-[#D7F1FD] items-center [box-shadow:0px_0px_5px_-3px_#111]">
+                <img src="statics/file.png" class="w-[20px] px-[5px] py-[5px]">
+                <p class="text-[15px] px-[5px] font-bold text-center leading-[22px] font-[Ubuntu] text-[#0C2A75]">
+                    2025-03-03 14:15:17.757086+00:00
                 </p>
               </div>
-
             </div>
 
             <div class="relative mr-[10px] mt-[10px]">
-
-              <img src="statics/down-arrow-right.png" class="w-10 h-10 md:w-[39px] md:h-[39px] ml-[10px] mt-[5px] mb-[5px] self-center align-middle mr-[5px] cursor-pointer" id="dropdown-icon-right">
-
+              <img src="statics/down-arrow-right.png" class="w-10 h-10 md:w-[39px] md:h-[39px] ml-[10px] my-[5px] mr-[5px] cursor-pointer" id="dropdown-icon-right">
               <div data-component="notification-metadata" class="absolute -top-1 -right-1 w-4 h-4">
                 <div id="ping-metadata-right" class="w-full h-full bg-red-400 rounded-full animate-ping"></div>
               </div>
-
             </div>
         </div>
     </div>
@@ -1457,6 +1444,7 @@
             progresses[1].style.width = pourcentageRight + "%";
       }
 
+      // Run the query
       function runQuery() {
 
         if (event.key === "Enter") {
@@ -1566,6 +1554,7 @@
         }
       }
 
+      // Tokenize the query
       function tokenizeQuery(query) {
 
         query = query.trim().replace(/\s+/g, ' ');
@@ -1590,6 +1579,7 @@
         return result;
       }
 
+      // Build the queries for the left and right files
       function buildQueries(clauses) {
 
         const prefix = "SELECT * from ? WHERE";
@@ -1631,6 +1621,7 @@
         return {"left": `${prefix} ${suffixLeft.join(' ')}`, "right": `${prefix} ${suffixRight.join(' ')}`};
       }
 
+      // Collect the variants datas to create the tables
       function collectVariants() {
 
         const leftContent = document.getElementById("content1");
@@ -1644,12 +1635,14 @@
         const filterRightKeywords = [{%- if vcfs.repository[1].variants.format -%}{% for key in vcfs.repository[1].variants.format -%}"{{ key }}"{% if not loop.last %}, {% endif %}{% endfor %}{%- endif -%}];
         const queryKeywords = ["=", "AND", "OR"];
         const castNumberException = ["CHROM"];
- 
+        
+        // Table are global variables to be used in the queries
         window.tables = {"leftTable": createTable(variantsDivsLeft, filterCommonKeywords.concat(filterLeftKeywords), castNumberException),
           "rightTable": createTable(variantsDivsRight, filterCommonKeywords.concat(filterRightKeywords), castNumberException)
         };
       }
 
+      // Create the static tables for queries
       function createTable(collection, columns, exceptions) {
         return Array.from(collection).map((div, index) => {
                 const obj = {};
@@ -1673,13 +1666,12 @@
               });
       }
 
+      // Reset the filters
       function resetFilters() {
           document.getElementById("query-chromosome").value = "";
           document.getElementById("query-filter").value = "ALL";
           document.getElementById("query-variant").value = "ALL";
           document.getElementById("query-status").value = "ALL";
-          // document.getElementById('terminal-input').value = "";
-          // document.getElementById("stdout").classList.replace("flex", "hidden");
           document.querySelectorAll('[data-component="error-popup"]').forEach(error => error.classList.replace('flex', 'hidden'));
           filter();
       }
@@ -1692,6 +1684,7 @@
         document.getElementById("dropdown-icon-right").addEventListener("click", updateDisplay)
         document.getElementById("terminal-icon").addEventListener("click", updateDisplay)
       });
+
 
       function updateDisplay() {
         if (this.id === "dropdown-icon-left" || this.id === "dropdown-icon-right") {
@@ -1725,6 +1718,7 @@
         }
       }
 
+      // Highlight the command in the terminal
       function highlightCommand() {
         const tag = document.getElementById("command").querySelectorAll('code')[0];
         const command = tag.textContent;
@@ -1755,32 +1749,45 @@
       const loopButton = document.createElement('button');
       loopButton.className = 'loop-button';
       loopButton.textContent = 'Loop Differences';
-      loopButton.title = 'Auto-scroll through differences';
-      loopButton.style.position = 'fixed';
-      loopButton.style.bottom = '20px';
-      loopButton.style.right = '20px';
-      loopButton.style.padding = '10px 15px';
-      loopButton.style.backgroundColor = '#4f46e5';
-      loopButton.style.color = 'white';
-      loopButton.style.border = 'none';
-      loopButton.style.borderRadius = '16px';
-      loopButton.style.cursor = 'pointer';
-      loopButton.style.fontFamily = 'Ubuntu';
-      loopButton.style.fontWeight = 'bold';
-      loopButton.style.boxShadow = '0 2px 5px rgba(0,0,0,0.2)';
-      loopButton.style.zIndex = '999';
+      loopButton.title = 'Auto-scroll through differences (Press L)';
+      Object.assign(loopButton.style, {
+        position: 'fixed',
+        bottom: '20px',
+        right: '20px',
+        padding: '10px 15px',
+        backgroundColor: '#4f46e5',
+        color: 'white',
+        border: 'none',
+        borderRadius: '16px',
+        cursor: 'pointer',
+        fontFamily: 'Ubuntu',
+        fontWeight: 'bold',
+        boxShadow: '0 2px 5px rgba(0,0,0,0.2)',
+        zIndex: '999',
+        transition: 'all 0.3s ease',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '8px'
+      });
 
       // Add indicator for active/inactive state
       const loopStatusIndicator = document.createElement('span');
-      loopStatusIndicator.style.display = 'inline-block';
-      loopStatusIndicator.style.width = '10px';
-      loopStatusIndicator.style.height = '10px';
-      loopStatusIndicator.style.backgroundColor = '#ddd';
-      loopStatusIndicator.style.borderRadius = '50%';
-      loopStatusIndicator.style.marginRight = '8px';
+      Object.assign(loopStatusIndicator.style, {
+        display: 'inline-block',
+        width: '10px',
+        height: '10px',
+        backgroundColor: '#ddd',
+        borderRadius: '50%',
+        transition: 'background-color 0.3s ease'
+      });
       loopButton.prepend(loopStatusIndicator);
 
-      // Append button to body
+      // Add pause/resume icon
+      const loopIcon = document.createElement('span');
+      loopIcon.innerHTML = '▶';
+      loopIcon.style.transition = 'transform 0.3s ease';
+      loopButton.appendChild(loopIcon);
+
       document.body.appendChild(loopButton);
 
       // Variables for looping functionality
@@ -1788,171 +1795,208 @@
       let loopInterval = null;
       let currentDiffIndex = -1;
       let diffElements = [];
+      let scrollTimeout = null;
+      let isScrolling = false;
 
       // Function to update diff elements array
       function updateDiffElements() {
-          const file1Diffs = Array.from(document.getElementById('content1').querySelectorAll('[data-component="column-diff"]')).filter(el => el.style.display !== 'hidden');
-          diffElements = file1Diffs;
-          console.log(`Found ${diffElements.length} differences`);
-          currentDiffIndex = diffElements.length > 0 ? 0 : -1;
+        const file1Diffs = Array.from(document.getElementById('content1').querySelectorAll('[data-component="column-diff"]'))
+          .filter(el => el.style.display !== 'hidden');
+        diffElements = file1Diffs;
+        currentDiffIndex = diffElements.length > 0 ? 0 : -1;
+        updateMetrics();
       }
 
       // Function to scroll to specific diff
       function scrollToDiff(index) {
-          if (index >= 0 && index < diffElements.length) {
-              const diffElement = diffElements[index];
-              
-              // Scroll both panels to the same position
-              const file1Content = document.getElementById('content1');
-              const file2Content = document.getElementById('content2');
-              
-              // Calculate scroll position (center the diff in the viewport)
-              const elementTop = diffElement.offsetTop;
-              const containerHeight = file1Content.clientHeight;
-              const scrollPosition = elementTop - (containerHeight / 2) + (diffElement.clientHeight / 2);
-              
-              // Smooth scroll to the element
-              file1Content.scrollTo({ top: scrollPosition, behavior: 'smooth' });
-              file2Content.scrollTo({ top: scrollPosition, behavior: 'smooth' });
-              
-              // Highlight current difference with a temporary effect
-              diffElement.style.transition = 'background-color 0.5s ease';
-              const originalColor = diffElement.style.backgroundColor;
-              diffElement.style.backgroundColor = 'rgba(255, 165, 0, 0.5)'; // Highlight color
-              
-              // Reset highlight after a delay
-              setTimeout(() => {
-                  diffElement.style.backgroundColor = originalColor;
-              }, 800);
-          }
+        if (index < 0 || index >= diffElements.length || isScrolling) return;
+        
+        isScrolling = true;
+        const diffElement = diffElements[index];
+        const file1Content = document.getElementById('content1');
+        const file2Content = document.getElementById('content2');
+        
+        // Calculate optimal scroll position
+        const elementTop = diffElement.offsetTop;
+        const containerHeight = file1Content.clientHeight;
+        const scrollPosition = Math.max(0, elementTop - (containerHeight / 2) + (diffElement.clientHeight / 2));
+        
+        // Smooth scroll with easing
+        const scrollOptions = {
+          top: scrollPosition,
+          behavior: 'smooth'
+        };
+        
+        file1Content.scrollTo(scrollOptions);
+        file2Content.scrollTo(scrollOptions);
+        
+        // Enhanced highlight effect
+        diffElement.style.transition = 'all 0.5s ease';
+        const originalStyles = {
+          backgroundColor: diffElement.style.backgroundColor,
+          transform: diffElement.style.transform,
+          boxShadow: diffElement.style.boxShadow
+        };
+        
+        Object.assign(diffElement.style, {
+          backgroundColor: 'rgba(255, 165, 0, 0.5)',
+          transform: 'scale(1.02)',
+          boxShadow: '0 0 10px rgba(255, 165, 0, 0.3)'
+        });
+        
+        // Clear any existing timeout
+        if (scrollTimeout) clearTimeout(scrollTimeout);
+        
+        // Reset styles after animation
+        scrollTimeout = setTimeout(() => {
+          Object.assign(diffElement.style, originalStyles);
+          isScrolling = false;
+        }, 1000);
+        
+        updateMetrics();
       }
 
       // Toggle loop functionality
       function toggleLoop() {
-          loopActive = !loopActive;
+        loopActive = !loopActive;
+        
+        if (loopActive) {
+          loopStatusIndicator.style.backgroundColor = '#ff5722';
+          loopIcon.style.transform = 'rotate(180deg)';
+          loopIcon.textContent = '⏸';
           
-          if (loopActive) {
-              // Update indicator to show active state
-              loopStatusIndicator.style.backgroundColor = '#ff5722';
-              
-              // Initialize diff elements and index
-              updateDiffElements();
-              
-              if (diffElements.length > 0) {
-                  // Start looping through differences
-                  loopInterval = setInterval(() => {
-                      scrollToDiff(currentDiffIndex);
-                      currentDiffIndex = (currentDiffIndex + 1) % diffElements.length;
-                  }, 2000); // Adjust timing as needed
-                  
-                  // Scroll to first difference immediately
-                  scrollToDiff(currentDiffIndex);
-              } else {
-                  // No differences found
-                  alert('No differences found to loop through');
-                  loopActive = false;
-                  loopStatusIndicator.style.backgroundColor = '#ddd';
+          updateDiffElements();
+          
+          if (diffElements.length > 0) {
+            const SCROLL_INTERVAL = 3000; // Increased interval for better readability
+            const SCROLL_DURATION = 1000; // Duration of scroll animation
+            
+            loopInterval = setInterval(() => {
+              if (!isScrolling) {
+                currentDiffIndex = (currentDiffIndex + 1) % diffElements.length;
+                scrollToDiff(currentDiffIndex);
               }
+            }, SCROLL_INTERVAL);
+            
+            scrollToDiff(currentDiffIndex);
           } else {
-              // Stop looping
-              clearInterval(loopInterval);
-              loopStatusIndicator.style.backgroundColor = '#ddd';
+            showNotification('No differences found to loop through');
+            stopLoop();
           }
+        } else {
+          stopLoop();
+        }
       }
 
-      // Add click event to toggle button
-      loopButton.addEventListener('click', toggleLoop);
+      function stopLoop() {
+        loopActive = false;
+        clearInterval(loopInterval);
+        loopStatusIndicator.style.backgroundColor = '#ddd';
+        loopIcon.style.transform = 'rotate(0deg)';
+        loopIcon.textContent = '▶';
+        updateMetrics();
+      }
 
-      // Update diff elements when filters change
-      document.addEventListener('DOMContentLoaded', function() {
-          const filterElements = [
-              document.getElementById("query-chromosome"),
-              ...document.getElementById("query-status"),
-              ...document.getElementById("query-filter"),
-              ...document.getElementById("query-variant"),
-          ];
-          
-          filterElements.forEach(element => {
-              if (element) {
-                  element.addEventListener("change", function() {
-                      // If loop is active, restart it to account for new filter
-                      if (loopActive) {
-                          clearInterval(loopInterval);
-                          updateDiffElements();
-                          
-                          if (diffElements.length > 0) {
-                              loopInterval = setInterval(() => {
-                                  scrollToDiff(currentDiffIndex);
-                                  currentDiffIndex = (currentDiffIndex + 1) % diffElements.length;
-                              }, 2000);
-                              
-                              scrollToDiff(currentDiffIndex);
-                          } else {
-                              alert('No differences found with current filters');
-                              loopActive = false;
-                              loopStatusIndicator.style.backgroundColor = '#ddd';
-                              toggleLoop(); // Turn off the loop
-                          }
-                      }
-                  });
-              }
-          });
-          
-          // Also update when reset button is clicked
-          const resetButton = document.getElementById("reset-button");
-          if (resetButton) {
-              resetButton.addEventListener("click", function() {
-                  setTimeout(updateDiffElements, 100); // Small delay to ensure filters are reset
-              });
-          }
-      });
+      // Improved notification system
+      function showNotification(message) {
+        const notification = document.createElement('div');
+        Object.assign(notification.style, {
+          position: 'fixed',
+          top: '20px',
+          right: '20px',
+          padding: '10px 20px',
+          backgroundColor: 'rgba(0, 0, 0, 0.8)',
+          color: 'white',
+          borderRadius: '5px',
+          fontFamily: 'Ubuntu',
+          zIndex: '1000',
+          transition: 'opacity 0.3s ease'
+        });
+        notification.textContent = message;
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+          notification.style.opacity = '0';
+          setTimeout(() => notification.remove(), 300);
+        }, 2000);
+      }
 
-      // Add keyboard shortcut for toggling loop (press 'L')
-      document.addEventListener('keydown', function(event) {
-          if (event.key.toLowerCase() === 'l') {
-              toggleLoop();
-          }
-      });
-
-      // Add metrics counter to show progress
+      // Enhanced metrics display
       const metricsContainer = document.createElement('div');
-      metricsContainer.className = 'loop-metrics';
-      metricsContainer.style.position = 'fixed';
-      metricsContainer.style.bottom = '70px';
-      metricsContainer.style.right = '20px';
-      metricsContainer.style.padding = '5px 10px';
-      metricsContainer.style.backgroundColor = 'rgba(0,0,0,0.7)';
-      metricsContainer.style.color = 'white';
-      metricsContainer.style.borderRadius = '5px';
-      metricsContainer.style.fontFamily = 'Ubuntu';
-      metricsContainer.style.fontSize = '12px';
-      metricsContainer.style.display = 'none';
-      metricsContainer.style.zIndex = '998';
+      Object.assign(metricsContainer.style, {
+        position: 'fixed',
+        bottom: '70px',
+        right: '20px',
+        padding: '8px 15px',
+        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+        color: 'white',
+        borderRadius: '8px',
+        fontFamily: 'Ubuntu',
+        fontSize: '14px',
+        display: 'none',
+        zIndex: '998',
+        transition: 'opacity 0.3s ease'
+      });
       document.body.appendChild(metricsContainer);
 
-      // Show metrics when loop is active
       function updateMetrics() {
-          if (loopActive) {
-              metricsContainer.style.display = 'block';
-              metricsContainer.textContent = `Showing difference ${currentDiffIndex + 1} of ${diffElements.length}`;
-          } else {
-              metricsContainer.style.display = 'none';
-          }
+        if (loopActive && diffElements.length > 0) {
+          metricsContainer.style.display = 'block';
+          metricsContainer.textContent = `Difference ${currentDiffIndex + 1} of ${diffElements.length}`;
+        } else {
+          metricsContainer.style.display = 'none';
+        }
       }
 
-      // Update the toggle function to call updateMetrics
-      const originalToggleLoop = toggleLoop;
-      toggleLoop = function() {
-          originalToggleLoop();
-          updateMetrics();
-      };
+      // Event listeners
+      loopButton.addEventListener('click', toggleLoop);
+      
+      document.addEventListener('keydown', function(event) {
+        if (event.key.toLowerCase() === 'l') {
+          toggleLoop();
+        } else if (event.key === 'Escape' && loopActive) {
+          stopLoop();
+        }
+      });
 
-      // Update metrics when scrolling to a diff
-      const originalScrollToDiff = scrollToDiff;
-      scrollToDiff = function(index) {
-          originalScrollToDiff(index);
-          updateMetrics();
-      };
+      // Filter change handling with debouncing
+      let filterTimeout;
+      function handleFilterChange() {
+        clearTimeout(filterTimeout);
+        filterTimeout = setTimeout(() => {
+          if (loopActive) {
+            stopLoop();
+            updateDiffElements();
+            if (diffElements.length > 0) {
+              toggleLoop();
+            } else {
+              showNotification('No differences found with current filters');
+            }
+          }
+        }, 300);
+      }
+
+      document.addEventListener('DOMContentLoaded', function() {
+        const filterElements = [
+          document.getElementById("query-chromosome"),
+          ...document.getElementById("query-status"),
+          ...document.getElementById("query-filter"),
+          ...document.getElementById("query-variant"),
+        ];
+        
+        filterElements.forEach(element => {
+          if (element) {
+            element.addEventListener("change", handleFilterChange);
+          }
+        });
+        
+        const resetButton = document.getElementById("reset-button");
+        if (resetButton) {
+          resetButton.addEventListener("click", () => {
+            setTimeout(updateDiffElements, 100);
+          });
+        }
+      });
     </script>
 </body>
 </html>
