@@ -13,6 +13,7 @@
 
 <body onload="filter(); highlightCommand(); collectVariants();">
 
+    <!-- Header -->
     <div class="flex w-full">
 
         <div class="flex w-1/2 bg-[white]">
@@ -31,8 +32,10 @@
 
     </div>
 
+    <!-- File information -->
     <div class="flex w-full">
 
+        <!-- Left file information -->
         <div class="flex w-1/2 bg-[white]">
             <img src="statics/info-left.png" class="w-10 h-10 md:w-[39px] md:h-[39px] ml-[10px] my-[5px] mr-[5px] self-center" id="info-left-icon">
 
@@ -67,6 +70,7 @@
             </div>
         </div>
 
+        <!-- Right file information -->
         <div class="flex w-1/2 bg-[#111111]">
             <img src="statics/info-right.png" class="w-10 h-10 md:w-[39px] md:h-[39px] ml-[10px] my-[5px] mr-[5px] self-center" id="info-right-icon">
 
@@ -102,12 +106,14 @@
         </div>
     </div>
 
+    <!-- Extra information -->
     <div class="bg-[linear-gradient(to_right,_white_50%,_#111111_50%)] w-full block pt-[2px] pb-[2px]">
 
+      <!-- Reference and query information -->
       {% if table is not none %}
         <div class="flex flex-row w-full">
           <div class="flex w-1/2 justify-center">
-            <div data-component="info-popup" class="font-[system-ui,_-apple-system,_BlinkMacSystemFont,_'Segoe_UI',_Roboto,_Oxygen,_Ubuntu,_Cantarell,_'Open_Sans',_'Helvetica_Neue',_sans-serif] w-[320px] p-[12px] mb-[5px] hidden flex-row items-center bg-[#D7F1FD] rounded-[8px] [box-shadow:0px_0px_5px_-3px_#111]">
+            <div data-component="info-popup" class="font-[system-ui,_-apple-system,_BlinkMacSystemFont,_'Segoe_UI',_Roboto,_Oxygen,_Ubuntu,_Cantarell,_'Open_Sans',_'Helvetica_Neue',_sans-serif] w-[320px] p-[12px] mb-[5px] hidden flex-row items-center bg-[#D7F1FD] rounded-[8px]">
               <div class="w-[20px] h-[20px] -translate-y-[2px] mr-[8px]">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" height="24" fill="none">
                   <path fill="#509AF8" d="m12 1.5c-5.79844 0-10.5 4.70156-10.5 10.5 0 5.7984 4.70156 10.5 10.5 10.5 5.7984 0 10.5-4.7016 10.5-10.5 0-5.79844-4.7016-10.5-10.5-10.5zm.75 15.5625c0 .1031-.0844.1875-.1875.1875h-1.125c-.1031 0-.1875-.0844-.1875-.1875v-6.375c0-.1031.0844-.1875.1875-.1875h1.125c.1031 0 .1875.0844.1875.1875zm-.75-8.0625c-.2944-.00601-.5747-.12718-.7808-.3375-.206-.21032-.3215-.49305-.3215-.7875s.1155-.57718.3215-.7875c.2061-.21032.4864-.33149.7808-.3375.2944.00601.5747.12718.7808.3375.206.21032.3215.49305.3215.7875s-.1155.57718-.3215.7875c-.2061.21032-.4864.33149-.7808.3375z">
@@ -118,7 +124,7 @@
             </div>
           </div>
           <div class="flex w-1/2 justify-center">
-            <div data-component="info-popup" class="font-[system-ui,_-apple-system,_BlinkMacSystemFont,_'Segoe_UI',_Roboto,_Oxygen,_Ubuntu,_Cantarell,_'Open_Sans',_'Helvetica_Neue',_sans-serif] w-[320px] p-[12px] mb-[5px] hidden flex-row items-center bg-[#D7F1FD] rounded-[8px] [box-shadow:0px_0px_5px_-3px_#111]">
+            <div data-component="info-popup" class="font-[system-ui,_-apple-system,_BlinkMacSystemFont,_'Segoe_UI',_Roboto,_Oxygen,_Ubuntu,_Cantarell,_'Open_Sans',_'Helvetica_Neue',_sans-serif] w-[320px] p-[12px] mb-[5px] hidden flex-row items-center bg-[#D7F1FD] rounded-[8px]">
               <div class="w-[20px] h-[20px] -translate-y-[2px] mr-[8px]">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" height="24" fill="none">
                   <path fill="#509AF8" d="m12 1.5c-5.79844 0-10.5 4.70156-10.5 10.5 0 5.7984 4.70156 10.5 10.5 10.5 5.7984 0 10.5-4.7016 10.5-10.5 0-5.79844-4.7016-10.5-10.5-10.5zm.75 15.5625c0 .1031-.0844.1875-.1875.1875h-1.125c-.1031 0-.1875-.0844-.1875-.1875v-6.375c0-.1031.0844-.1875.1875-.1875h1.125c.1031 0 .1875.0844.1875.1875zm-.75-8.0625c-.2944-.00601-.5747-.12718-.7808-.3375-.206-.21032-.3215-.49305-.3215-.7875s.1155-.57718.3215-.7875c.2061-.21032.4864-.33149.7808-.3375.2944.00601.5747.12718.7808.3375.206.21032.3215.49305.3215.7875s-.1155.57718-.3215.7875c-.2061.21032-.4864.33149-.7808.3375z">
@@ -131,6 +137,7 @@
         </div>
       {% endif %}
 
+      <!-- Command information -->
       <div id="command" class="mockup-code !bg-[#202425] w-[90%] ml-[5%] mr-[5%] hidden">
         <pre data-prefix="$"><code>{{ cmd }}</code></pre>
         <pre data-prefix=">" class="text-success !text-green-200"><code>Done!</code></pre>
@@ -138,8 +145,10 @@
 
     </div>
 
+    <!-- Plots -->
     <section class="flex flex-row w-full m-0 p-0">
 
+        <!-- Left plots -->
         <div class="grid grid-cols-[1fr] grid-rows-[1fr] [direction:ltr] gap-[8px] flex-wrap w-[50%] bg-[white]">
             {% for plot in vcfs.repository[0].variants.plots.as_html() %}
               {% if loop.index == 1 %}
@@ -161,6 +170,7 @@
             </div>
         </div>
 
+        <!-- Right plots -->
         <div class="grid grid-cols-[1fr] grid-rows-[1fr] [direction:ltr] gap-[8px] flex-wrap w-[50%] bg-[#111111]">
             {% for plot in vcfs.repository[1].variants.plots.as_html() %}
               {% if loop.index == 1 %}
@@ -184,6 +194,7 @@
 
     </section>
 
+    <!-- Search and filters -->
     <div class="flex flex-row w-full">
 
         <div class="flex flex-row w-[50%] bg-[white] justify-center">
@@ -200,12 +211,14 @@
 
     </div>
 
+    <!-- Filters -->
     <div class="flex flex-row w-full max-w-[100%] box-border">
 
       <div class="flex flex-row w-[50%] bg-[white] justify-center max-w-[50%] overflow-hidden">
 
         <div class="flex flex-row items-center justify-center m-[1%] w-full gap-[10px] min-w-0 flex-wrap">
 
+              <!-- Chromosome search -->
               <img src="statics/chromosome.png" alt="chromosomes-icon" class="w-[50px] h-[50px]">
 
               <div class="h-[45px] mr-[5%] border-[1px] border-[solid] border-[#3d444d] rounded-xl px-[15px] py-[5px] bg-[#0d1117] [transition:150ms_cubic-bezier(0.4,0,0.2,1)] flex flew-row items-center hover:border-[#999999] min-w-[180px] flex-shrink">
@@ -231,7 +244,7 @@
 
               </div>
 
-            
+            <!-- Status filter -->
             <div class="w-fit min-w-0 flex-shrink flex flew-row gap-2 items-center">
               <img src="statics/puzzle.png" alt="puzzle-icon" class="w-[50px] h-[50px]">
               <div class="relative w-fit">
@@ -251,6 +264,8 @@
 
       <div class="flex flex-row bg-[#111111] w-[50%] overflow-hidden">
         <div class="flex flex-row w-full m-[1%] gap-[10px] items-center justify-center flex-wrap min-w-0">
+
+            <!-- Variant filter filter -->
             <div class="w-fit mr-[5%] min-w-0 flex-shrink flex flex-row gap-2 items-center">
               <img src="statics/filter.png" alt="filter-icon" class="w-[50px] h-[50px]">
               <div class="relative w-fit">
@@ -263,6 +278,8 @@
                 </select>
               </div>
             </div>
+
+            <!-- Variant type filter -->
             <div class="w-fit mr-[5%] min-w-0 flex-shrink flex flex-row gap-2 items-center">
               <img src="statics/dna.png" alt="dna-icon" class="w-[50px] h-[50px]">
               <div class="relative w-fit">
@@ -280,12 +297,17 @@
                 </select>
               </div>
             </div>
+
+            <!-- Terminal icon -->
             <img src="statics/terminal.png" alt="terminal-icon" class="w-[50px] h-[50px] cursor-pointer flex-shrink-0" id="terminal-icon">
+
+            <!-- Reset button -->
             <button id="reset-button" class="bg-[rgba(79,_70,_229,_0.9)] border-[none] rounded-[6px] px-[20px] py-[10px] mx-[3%] cursor-pointer text-[14px] text-white rounded-[16px] font-[Ubuntu] font-bold hover:bg-[rgba(67,_56,_202,_0.9)] flex-shrink-0 whitespace-nowrap" onclick="resetFilters()">Reset</button>
         </div>
       </div>
     </div>
 
+    <!-- Terminal -->
     <div class="bg-[linear-gradient(to_right,_white_50%,_#111111_50%)] w-full block pt-[2px] pb-[2px]">
       <div id="terminal" class="bg-[rgba(217,_217,_217,_0.18)] backdrop-filter backdrop-blur rounded-[12px] [box-shadow:0_4px_6px_rgba(0,_0,_0,_0.1)] overflow-hidden w-[90%] ml-[5%] mr-[5%] h-[250px] hidden">
         <div class="bg-[#202425] px-[15px] py-[10px] flex items-center">
@@ -327,6 +349,7 @@
       </div>
     </div>
 
+    <!-- Error popups -->
     <div class="flex flex-row w-full bg-[linear-gradient(to_right,_white_50%,_#111111_50%)]">
       <div class="flex w-1/2 justify-center">
         <div data-component="error-popup" class="font-[system-ui,_-apple-system,_BlinkMacSystemFont,_'Segoe_UI',_Roboto,_Oxygen,_Ubuntu,_Cantarell,_'Open_Sans',_'Helvetica_Neue',_sans-serif] w-[320px] p-[12px] hidden flex-row items-center bg-[#EF665B] rounded-[8px] [box-shadow:0px_0px_5px_-3px_#111]">
@@ -347,14 +370,36 @@
       </div>
     </div>
 
+    <!-- File tab -->
     <div class="Container">
         <div class="flex flex-col max-w-full" id="fileTab">
     
             <div class="flex h-[700px] bg-[white]">
+              <!-- Left Panel -->
               <div class="flex-[1] overflow-hidden relative border-r-[2px_solid_#888]">
-                <div class="pt-4 text-center text-black border-b-[2px_solid_#ccc] font-[Ubuntu] font-bold bg-[#EEF0F1]">{{ vcfs.repository[0].informations().basename|default(vcfs.repository[0]) }}
-                  <div class="flex flex-row">
-                    <p class="text-[15px] text-black mb-0 ml-[5px] font-normal" id="filterSummaryL">All variants are shown</p>
+                <!-- File Header -->
+                <div class="pt-4 text-center text-black border-b-[2px_solid_#ccc] font-[Ubuntu] font-bold bg-[#EEF0F1] flex flex-col">
+                  <div class="flex items-center justify-between px-4">
+                    <div class="flex items-center gap-2">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                      </svg>
+                      <span>{{ vcfs.repository[0].informations().basename|default(vcfs.repository[0]) }}</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <button class="p-1 hover:bg-gray-200 rounded">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                  <!-- Filter summary and tags -->
+                  <div class="flex flex-row mt-2">
+                    <!-- Filter summary -->
+                    <p class="text-[15px] text-black mb-0 px-4 font-normal" id="filterSummaryL">All variants are shown</p>
+
+                    <!-- Tags -->
                     {% if tags[0] %}
                       <div class="flex flex-row w-1/2 justify-center gap-1">
                         {% for tag in tags[0] %}
@@ -364,40 +409,73 @@
                     {% endif %}  
                   </div>
                 </div>
+
+                <!-- File Content -->
                 <div class="absolute mt-[30px] top-[37px] bottom-[0] left-[0] right-[0] overflow-y-scroll overflow-x-auto bg-white" id="content1">
-                  <div class="">
-                    <div id="file-header-left" class="w-fit h-[32px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] bg-[rgba(255,_255,_255,_0.2)]">
-                      <div class="text-[#888] mr-[10px] select-none min-w-[30px] text-right">0</div>
+                  <div class="relative">
+                    <!-- Line Numbers Column -->
+                    <div class="absolute left-0 top-0 bottom-0 w-[40px] bg-[#f6f8fa] border-r border-gray-200"></div>
+                    
+                    <!-- Content -->
+                    <div class="pl-[40px]">
+                      <div id="file-header-left" class="w-fit h-[32px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] bg-[rgba(255,_255,_255,_0.2)]">
+                        <div class="text-[#888] mr-[10px] select-none min-w-[30px] text-right">0</div>
                         <span data-component="column-header" class="text-black bg-[rgba(255,_255,_255,_0.2)] table-cell px-[8px] py-[2px] whitespace-nowrap">
                           {{ view['headers'][vcfs.repository[0]] }}
                         </span>
-                    </div>
-                    {% for index, series in view['variants'].iterrows() -%}
-                      {% if series['Variant.L']|is_nan or series['Variant.R']|is_nan -%}
-                        <div data-component="file-content-left" status="mismatch" row="{{ loop.index0 }}" class="w-fit h-[32px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] bg-[rgba(255,_0,_0,_0.2)]" chrom="{{ series['Chromosome']|upper() }}" type="{{ series['Type']|upper() }}" filter="{{ series['Filter.L']|upper() }}" pos="{{ series['Position'] }}" {% for tag in ((series['Variant.L']|string)|format_to_html).items() -%} {{ tag[0] }}="{{ tag[1] }}" {% endfor -%}>
-                          <div class="text-[#888] mr-[10px] select-none min-w-[30px] text-right">{{ loop.index }}</div>
-                          {% if not series['Variant.L']|is_nan %}
-                            <span data-component="column-diff" class="text-black bg-[rgba(255,_0,_0,_0.2)] table-cell px-[8px] py-[2px] whitespace-nowrap">
+                      </div>
+                      <!-- Variants -->
+                      {% for index, series in view['variants'].iterrows() -%}
+                        {% if series['Variant.L']|is_nan or series['Variant.R']|is_nan -%}
+                          <!-- Mismatch -->
+                          <div data-component="file-content-left" status="mismatch" row="{{ loop.index0 }}" class="w-fit h-[32px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] bg-[rgba(255,_0,_0,_0.2)] hover:bg-[rgba(255,_0,_0,_0.3)] transition-colors" chrom="{{ series['Chromosome']|upper() }}" type="{{ series['Type']|upper() }}" filter="{{ series['Filter.L']|upper() }}" pos="{{ series['Position'] }}" {% for tag in ((series['Variant.L']|string)|format_to_html).items() -%} {{ tag[0] }}="{{ tag[1] }}" {% endfor -%}>
+                            <div class="text-[#888] mr-[10px] select-none min-w-[30px] text-right">{{ loop.index }}</div>
+                            {% if not series['Variant.L']|is_nan %}
+                              <span data-component="column-diff" class="text-black bg-[rgba(255,_0,_0,_0.2)] table-cell px-[8px] py-[2px] whitespace-nowrap">
+                                {{ series['Variant.L'] -}}
+                              </span>
+                            {% endif %}
+                          </div>
+                        {% else -%}
+                          <!-- Match -->
+                          <div data-component="file-content-left" status="match" row="{{ loop.index0 }}" class="w-fit h-[32px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] bg-[rgba(0,_255,_0,_0.2)] hover:bg-[rgba(0,_255,_0,_0.3)] transition-colors" chrom="{{ series['Chromosome']|upper() }}" type="{{ series['Type']|upper() }}" filter="{{ series['Filter.L']|upper() }}" pos="{{ series['Position'] }}" {% for tag in ((series['Variant.L']|string)|format_to_html).items() -%} {{ tag[0] }}="{{ tag[1] }}" {% endfor -%}>
+                            <div class="text-[#888] mr-[10px] select-none min-w-[30px] text-right">{{ loop.index }}</div>
+                            <span data-component="column-match" class="text-black bg-[rgba(0,_255,_0,_0.2)] table-cell px-[8px] py-[2px] whitespace-nowrap">
                               {{ series['Variant.L'] -}}
                             </span>
-                          {% endif %}
-                        </div>
-                      {% else -%}
-                        <div data-component="file-content-left" status="match" row="{{ loop.index0 }}" class="w-fit h-[32px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] bg-[rgba(0,_255,_0,_0.2)]" chrom="{{ series['Chromosome']|upper() }}" type="{{ series['Type']|upper() }}" filter="{{ series['Filter.L']|upper() }}" pos="{{ series['Position'] }}" {% for tag in ((series['Variant.L']|string)|format_to_html).items() -%} {{ tag[0] }}="{{ tag[1] }}" {% endfor -%}>
-                          <div class="text-[#888] mr-[10px] select-none min-w-[30px] text-right">{{ loop.index }}</div>
-                          <span data-component="column-match" class="text-black bg-[rgba(0,_255,_0,_0.2)] table-cell px-[8px] py-[2px] whitespace-nowrap">
-                            {{ series['Variant.L'] -}}
-                          </span>
-                        </div>
-                      {% endif %}    
-                    {% endfor %}
+                          </div>
+                        {% endif %}    
+                      {% endfor %}
+                    </div>
                   </div>
                 </div>
               </div>
+
+              <!-- Right Panel -->
               <div class="flex-[1] overflow-hidden relative border-[#ccc]">
-                <div class="pt-4 text-center border-b-[2px_solid_#ccc] font-[Ubuntu] font-bold bg-[#333333] text-white">{{ vcfs.repository[1].informations().basename|default(vcfs.repository[1]) }} 
-                  <div class="flex flex-row">
-                    <p class="text-[15px] mb-0 ml-[5px] font-normal" id="filterSummaryR">All variants are shown</p>
+                <!-- File Header -->
+                <div class="pt-4 text-center border-b-[2px_solid_#ccc] font-[Ubuntu] font-bold bg-[#333333] text-white flex flex-col">
+                  <div class="flex items-center justify-between px-4">
+                    <div class="flex items-center gap-2">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                      </svg>
+                      <span>{{ vcfs.repository[1].informations().basename|default(vcfs.repository[1]) }}</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <button class="p-1 hover:bg-gray-700 rounded">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                  <!-- Filter summary and tags -->
+                  <div class="flex flex-row mt-2">
+                    <!-- Filter summary -->
+                    <p class="text-[15px] mb-0 px-4 font-normal" id="filterSummaryR">All variants are shown</p>
+
+                    <!-- Tags -->
                     {% if tags[1] %}
                       <div class="flex flex-row w-1/2 justify-center gap-1">
                         {% for tag in tags[1] %}
@@ -407,45 +485,59 @@
                     {% endif %}  
                   </div> 
                 </div>
+
+                <!-- File Content -->
                 <div class="absolute mt-[30px] top-[37px] bottom-[0] left-[0] right-[0] overflow-y-scroll overflow-x-auto bg-white" id="content2">
-                  <div class="">
-                    <div id="file-header-right" class="w-fit h-[32px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] bg-[rgba(255,_255,_255,_0.2)]">
-                      <div class="text-[#888] mr-[10px] select-none min-w-[30px] text-right">0</div>
+                  <div class="relative">
+                    <!-- Line Numbers Column -->
+                    <div class="absolute left-0 top-0 bottom-0 w-[40px] bg-[#f6f8fa] border-r border-gray-200"></div>
+                    
+                    <!-- Content -->
+                    <div class="pl-[40px]">
+                      <div id="file-header-right" class="w-fit h-[32px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] bg-[rgba(255,_255,_255,_0.2)]">
+                        <div class="text-[#888] mr-[10px] select-none min-w-[30px] text-right">0</div>
                         <span data-component="column-header" class="text-black bg-[rgba(255,_255,_255,_0.2)] table-cell px-[8px] py-[2px] whitespace-nowrap">
                           {{ view['headers'][vcfs.repository[1]] }}
                         </span>
-                    </div>
-                    {% for index, series in view['variants'].iterrows() -%}
-                      {% if series['Variant.L']|is_nan or series['Variant.R']|is_nan -%}
-                        <div data-component="file-content-right" row="{{ loop.index0 }}" status="mismatch" class="w-fit h-[32px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] bg-[rgba(255,_0,_0,_0.2)]" chrom="{{ series['Chromosome']|upper() }}" type="{{ series['Type']|upper() }}" filter="{{ series['Filter.R']|upper() }}" pos={{ series['Position'] }} {% for tag in ((series['Variant.R']|string)|format_to_html).items() -%} {{ tag[0] }}="{{ tag[1] }}" {% endfor -%}>
-                          <div class="text-[#888] mr-[10px] select-none min-w-[30px] text-right">{{ loop.index }}</div>
-                          {% if not series['Variant.R']|is_nan %}
-                            <span data-component="column-diff" class="text-black bg-[rgba(255,_0,_0,_0.2)] table-cell px-[8px] py-[2px] whitespace-nowrap">
+                      </div>
+                      <!-- Variants -->
+                      {% for index, series in view['variants'].iterrows() -%}
+                        {% if series['Variant.L']|is_nan or series['Variant.R']|is_nan -%}
+                          <!-- Mismatch -->
+                          <div data-component="file-content-right" row="{{ loop.index0 }}" status="mismatch" class="w-fit h-[32px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] bg-[rgba(255,_0,_0,_0.2)]" chrom="{{ series['Chromosome']|upper() }}" type="{{ series['Type']|upper() }}" filter="{{ series['Filter.R']|upper() }}" pos={{ series['Position'] }} {% for tag in ((series['Variant.R']|string)|format_to_html).items() -%} {{ tag[0] }}="{{ tag[1] }}" {% endfor -%}>
+                            <div class="text-[#888] mr-[10px] select-none min-w-[30px] text-right">{{ loop.index }}</div>
+                            {% if not series['Variant.R']|is_nan %}
+                              <span data-component="column-diff" class="text-black bg-[rgba(255,_0,_0,_0.2)] table-cell px-[8px] py-[2px] whitespace-nowrap">
+                                {{ series['Variant.R'] -}}
+                              </span>
+                            {% endif %}
+                          </div>
+                        {% else -%}
+                          <!-- Match -->
+                          <div data-component="file-content-right" status="match" row="{{ loop.index0 }}" class="w-fit h-[32px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] bg-[rgba(0,_255,_0,_0.2)]" chrom="{{ series['Chromosome']|upper() }}" type="{{ series['Type']|upper() }}" filter="{{ series['Filter.R']|upper() }}" pos={{ series['Position'] }} {% for tag in ((series['Variant.R']|string)|format_to_html).items() -%} {{ tag[0] }}="{{ tag[1] }}" {% endfor -%}>
+                            <div class="text-[#888] mr-[10px] select-none min-w-[30px] text-right">{{ loop.index }}</div>
+                            <span data-component="column-match" class="text-black bg-[rgba(0,_255,_0,_0.2)] table-cell px-[8px] py-[2px] whitespace-nowrap">
                               {{ series['Variant.R'] -}}
                             </span>
-                          {% endif %}
-                        </div>
-                      {% else -%}
-                        <div data-component="file-content-right" status="match" row="{{ loop.index0 }}" class="w-fit h-[32px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] bg-[rgba(0,_255,_0,_0.2)]" chrom="{{ series['Chromosome']|upper() }}" type="{{ series['Type']|upper() }}" filter="{{ series['Filter.R']|upper() }}" pos={{ series['Position'] }} {% for tag in ((series['Variant.R']|string)|format_to_html).items() -%} {{ tag[0] }}="{{ tag[1] }}" {% endfor -%}>
-                          <div class="text-[#888] mr-[10px] select-none min-w-[30px] text-right">{{ loop.index }}</div>
-                          <span data-component="column-match" class="text-black bg-[rgba(0,_255,_0,_0.2)] table-cell px-[8px] py-[2px] whitespace-nowrap">
-                            {{ series['Variant.R'] -}}
-                          </span>
-                        </div>
-                      {% endif %}
-                    {% endfor %}
+                          </div>
+                        {% endif %}
+                      {% endfor %}
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
             
+            <!-- Summary statistics -->
             <div class="summary-container" id="stats">
 
               <section class="p-3 bg-[#f3f4f6]">
 
+                <!-- General statistics -->
                 <div class="w-full flex justify-center items-center">
                   <div class="w-[50%] max-w-[1200px] mx-[auto] my-[0] grid grid-cols-[1fr] sm:grid-cols-[1fr_1fr] lg:grid-cols-[1fr_1fr_1fr] place-items-center gap-1">
                     
+                    <!-- Matching lines -->
                     <div class="w-fit flex p-4 rounded-lg bg-[#fafafa] gap-4">
                       <div class="flex justify-center items-center p-2 rounded-lg bg-green-400">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="white" class="h-9 w-9">
@@ -467,7 +559,8 @@
                         </div>
                       </div>
                     </div>
-                    
+
+                    <!-- Different lines -->
                     <div class="w-fit flex p-4 rounded-lg bg-[#fafafa] gap-4">
                       <div class="flex justify-center items-center p-2 rounded-lg bg-red-400">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="white" class="h-9 w-9">
@@ -490,7 +583,8 @@
                         </div>
                       </div>
                     </div>
-                    
+
+                    <!-- Jaccard index -->
                     <div class="w-fit flex p-4 rounded-lg bg-[#fafafa] gap-4">
                       <div class="flex justify-center items-center p-2 rounded-lg bg-purple-400">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="white" class="h-9 w-9">
@@ -516,8 +610,12 @@
                     </div>
                   </div>
                 </div> 
+
+                <!-- Variant statistics -->
                 <div class="flex flex-row bg-[#f3f4f6] mt-[10px]">
                   <div class="w-full ml-[10px] grid grid-cols-[1fr] lg:grid-cols-[1fr_1fr] 2xl:grid-cols-[1fr_1fr_1fr] gap-[1.0rem]">
+
+                    <!-- SNP (Single Nucleotide Polymorphism) -->
                     <div class="flex p-4 rounded-lg bg-[#fafafa] gap-4">
                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 250" width="125" height="150">
                         <g transform="translate(100, 100)">
@@ -570,6 +668,7 @@
                       </div>
                     </div>
 
+                    <!-- MNP (Multiple Nucleotide Polymorphism) -->
                     <div class="flex p-4 rounded-lg bg-[#fafafa] gap-4">
                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 250" width="125" height="150">
                         <g transform="translate(100, 100)">
@@ -623,6 +722,7 @@
                       </div>
                     </div>
 
+                    <!-- SV (Structural Variation) -->
                     <div class="flex p-4 rounded-lg bg-[#fafafa] gap-4">
                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 250" width="125" height="150">
                         <g transform="translate(100, 100)">
@@ -679,7 +779,7 @@
                       </div>
                     </div>
 
-
+                    <!-- INDEL (Insertion/Deletion) -->
                     <div class="flex p-4 rounded-lg bg-[#fafafa] gap-4">
                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 250" width="125" height="150">
                         <g transform="translate(100, 100)">
@@ -741,7 +841,7 @@
                       </div>
                     </div>
 
-
+                    <!-- INV (Inversion) -->
                     <div class="flex p-4 rounded-lg bg-[#fafafa] gap-4">
                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 250" width="125" height="150">
                         <g transform="translate(100, 100)">
@@ -818,6 +918,7 @@
                     </div>
                     
 
+                    <!-- CSV (Complex) -->
                     <div class="flex p-4 rounded-lg bg-[#fafafa] gap-4">
                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 250" width="125" height="150">
                         <g transform="translate(100, 100)">
@@ -894,6 +995,8 @@
                 </div> 
 
               </section>
+
+              <!-- Venn Diagram -->
               {% if view["jaccard"] < 0.8 %}
               <div class="visible opacity-100 w-full relative flex justify-center [transition:opacity_0.3s_ease-in-out] bg-[#f3f4f6]">
                   {{ view["plots"].as_html()[0] }}
@@ -903,6 +1006,7 @@
 
         </div>
 
+        <!-- Benchmarking Table -->
         {% if table is not none %}
           <div style="display: flex; flex-direction: column; width: 100%; background: #f3f4f6;">
             <div class="tooltip tooltip-info ![--tt-bg:#D7F1FD] w-fit ml-[5%]" data-tip="Benchmarking is carried out on exact equality in terms of chromosome, position, reference and alternative allele.">
@@ -1027,6 +1131,7 @@
           </div>  
         {% endif %}
 
+        <!-- Footer -->
         <footer class="footer footer-horizontal footer-center bg-[#f3f4f6] text-black p-5">
           <aside>
             <img src="statics/logo.png" class="w-25 h-25">
