@@ -894,13 +894,11 @@
                 </div> 
 
               </section>
-
+              {% if view["jaccard"] < 0.8 %}
               <div class="visible opacity-100 w-full relative flex justify-center [transition:opacity_0.3s_ease-in-out] bg-[#f3f4f6]">
-                {% if view["jaccard"] < 0.9 %}
                   {{ view["plots"].as_html()[0] }}
-                {% endif %}
               </div>
-
+              {% endif %}
             </div>
 
         </div>
@@ -1690,7 +1688,7 @@
           }
         })
 
-        return {"left": `${prefix} ${suffixLeft.join(' ')}`, "right": `${prefix} ${suffixRight.join(' ')}`};
+        return {"left": suffixLeft.length > 0 ? `${prefix} ${suffixLeft.join(' ')}`: "SELECT * from ?", "right": suffixRight.length > 0 ? `${prefix} ${suffixRight.join(' ')}`: "SELECT * from ?"};
       }
 
       // Collect the variants datas to create the tables
