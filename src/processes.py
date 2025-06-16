@@ -93,10 +93,10 @@ class TasksManager():
             # use a context manager to avoid memory leaks
             with concurrent.futures.ProcessPoolExecutor(
                 max_workers=self.processes
-            ) as chrom_executor:
+            ) as executor:
                 # Submit the processes
                 futures = {
-                    chrom_executor.submit(
+                    executor.submit(
                         job,
                         task,
                         *jobargs

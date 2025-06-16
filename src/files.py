@@ -594,8 +594,10 @@ class VCFProcessor:
             variants, filtered = {}, {
                 "snp": 0,
                 "mnp": 0,
-                "indel": 0,
-                "sv": 0,
+                "del": 0,
+                "ins": 0,
+                "inv": 0,
+                "csv": 0,
                 "transition": 0,
             }
             # If a report is wanted, set the statistics to 0
@@ -613,7 +615,6 @@ class VCFProcessor:
                         },
                         "mnp": 0,
                         "indel": {"insertion": 0, "deletion": 0},
-                        "sv": 0,
                         "inv": 0,
                         "csv": 0,
                     },
@@ -803,7 +804,7 @@ class VCFProcessor:
         variants.index = Index(variants.index.values, dtype="string[pyarrow]")
 
         logger.debug(
-            f"Filtered: {filtered['snp']} SNP(s), {filtered['indel']} INDEL(s), {filtered['sv']} structural variant(s) variant(s) for chromosome {task[1]} in file {task[0]}"
+            f"Filtered: {filtered} variant(s) for chromosome {task[1]} in file {task[0]}"
         )
 
         # Set the statistics computed as the right type for better memory management
