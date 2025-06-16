@@ -22,7 +22,7 @@ class VariantRepository():
                 "FORMAT": 8,
             }
     
-    VT: list[str] = ["snp", "ins", "del", "sv", "mnp", "inv", "csv"]
+    VT: list[str] = ["snp", "ins", "del", "mnp", "inv", "csv"]
 
     def __init__(self, filters: dict = None):
         
@@ -321,7 +321,7 @@ class VariantRepository():
 
             data.append({"Chromosome": k, "Type": "Indel", "Count": self.profile[k]["variant"]["indel"]["deletion"] + self.profile[k]["variant"]["indel"]["insertion"]})
             data.append({"Chromosome": k, "Type": "SNP", "Count": self.profile[k]["variant"]["snp"]["transition"] + self.profile[k]["variant"]["snp"]["transversion"]})
-            data.append({"Chromosome": k, "Type": "SV", "Count": self.profile[k]["variant"]["sv"]})
+            data.append({"Chromosome": k, "Type": "CSV", "Count": self.profile[k]["variant"]["csv"]})
 
         self.plots.barplot(data, "Chromosome","Count", "Type", "Variant by Chromosome", "VariantByChromosome")
 
