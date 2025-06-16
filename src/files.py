@@ -1,3 +1,4 @@
+from collections import Counter
 import copy as cp
 import datetime
 import json
@@ -568,7 +569,7 @@ class VCFProcessor:
     def process_chromosome(
         task,
         profile: bool = False,
-    ) -> dict:
+    ) -> tuple:
         """
         Process a chromosome from a VCF file
             chrom: containing the chromosome to process
@@ -591,7 +592,8 @@ class VCFProcessor:
             # At first, set the filters to False
             exclude: bool = False
             # Save the filtered variants number of operations
-            variants, filtered = {}, {
+            variants = {} 
+            filtered = Counter({
                 "snp": 0,
                 "mnp": 0,
                 "del": 0,
@@ -599,7 +601,7 @@ class VCFProcessor:
                 "inv": 0,
                 "csv": 0,
                 "transition": 0,
-            }
+            })
             # If a report is wanted, set the statistics to 0
             # If no report is wanted, the dictionary is not created reducing memory footprint
             if profile:
@@ -664,7 +666,7 @@ class VCFProcessor:
                     # Should the variant be excluded ?
                     if exclude:
 
-                        filtered[vts[0]] += 1
+                        filtered.update([vts[0]])
                     # Variants pass the filters
                     else:
                         # Hash the variant to avoid duplicates and enhance lookup

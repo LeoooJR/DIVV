@@ -174,6 +174,10 @@ def delta(params: object) -> int:
 
     # Print the results to the CLI
     else:
+        if vcfs.repository[0].variants.is_filtered() or vcfs.repository[1].variants.is_filtered():
+            stdout_console.rule("[bold sky_blue3] Filters")
+            stdout_console.print(f":magnifying_glass_tilted_right: {vcfs.repository[0]}({vcfs.repository[0].variants.filtered.total()}) {dict(vcfs.repository[0].variants.filtered)}", style="info")
+            stdout_console.print(f":magnifying_glass_tilted_right: {vcfs.repository[1]}({vcfs.repository[1].variants.filtered.total()}) {dict(vcfs.repository[1].variants.filtered)}", style="info")
         stdout_console.rule("[bold sky_blue3] Results")
         stdout_console.print(f":vs: Comparaison: {vcfs.repository[0]} [{comparaisons[(vcfs.repository[0],vcfs.repository[1])]['unique'][vcfs.repository[0]]} unique]────[{comparaisons[(vcfs.repository[0],vcfs.repository[1])]['common']} common]────[{comparaisons[(vcfs.repository[0],vcfs.repository[1])]['unique'][vcfs.repository[1]]} unique] {vcfs.repository[1]}", style="result")
         stdout_console.print(f":heavy_large_circle: Jaccard index: {comparaisons[(vcfs.repository[0],vcfs.repository[1])]['jaccard']}", style="result")

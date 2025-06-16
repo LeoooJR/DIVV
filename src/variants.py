@@ -1,4 +1,4 @@
-from collections import deque
+from collections import deque, Counter
 import errors
 from functools import lru_cache
 from loguru import logger
@@ -29,7 +29,7 @@ class VariantRepository():
         if filters and any(filters):
 
             # Filters to apply during the parsing
-            self.FILTERS: dict = {
+            self.FILTERS: dict[str:bool] = {
                                     "exclude_snps": filters.get("SNP", False),
                                     "exclude_indels": filters.get("INDELS", False),
                                     "exclude_vars": filters.get("VARS", False),
@@ -46,7 +46,7 @@ class VariantRepository():
 
         self.profile: dict = {}
 
-        self.filtered: dict = {}
+        self._filtered: dict[str:Counter] = {}
 
         self._chromosomes: SortedSet = None
 
@@ -101,6 +101,20 @@ class VariantRepository():
                                     "exclude_svs": value.get("SV", False),
                                     "pass_only": value.get("PASS_ONLY", False),
                                 }
+            
+    def is_filtered(self) -> bool:
+
+        return any([self.FILTERS[filter] for filter in self.FILTERS])
+
+    @property    
+    def filtered(self):
+
+        return sum((self._filtered[chrom] for chrom in self.chromosomes if chrom in self._filtered), Counter())
+    
+    @property
+    def filtered_by_chromosome(self):
+
+        return getattr(self, "_filtered", None)
             
     @property
     def format(self):
@@ -274,7 +288,7 @@ class VariantRepository():
 
         if filtered:
 
-            self.filtered[chromosome] =  filtered
+            self._filtered[chromosome] = filtered
 
         if profile:
 
