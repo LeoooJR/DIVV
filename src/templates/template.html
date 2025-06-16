@@ -33,25 +33,25 @@
 
     <div class="flex w-full">
 
-        <div class="flex w-1/2 bg-[#EEF0F1]">
+        <div class="flex w-1/2 bg-[white]">
             <img src="statics/info-left.png" class="w-10 h-10 md:w-[39px] md:h-[39px] ml-[10px] my-[5px] mr-[5px] self-center" id="info-left-icon">
 
             <div class="flex justify-center items-center flex-wrap w-full pt-[5px] overflow-x-auto">
-              <div class="flex rounded-[2em] m-[2px] h-[90%] bg-[#D7F1FD] items-center [box-shadow:0px_0px_5px_-3px_#111]">
+              <div class="flex rounded-[2em] m-[2px] h-[90%] bg-[#D7F1FD] items-center">
                 <img src="statics/folder.png" class="w-[25px] px-[5px] py-[5px]">
                 <p class="text-[15px] px-[5px] font-bold text-center leading-[22px] font-[Ubuntu] text-[#0C2A75]">
                   {{ vcfs.repository[0].informations().path|default("Na") }}
                 </p>
               </div>
 
-              <div class="flex rounded-[2em] m-[2px] h-[90%] bg-[#D7F1FD] items-center [box-shadow:0px_0px_5px_-3px_#111]">
+              <div class="flex rounded-[2em] m-[2px] h-[90%] bg-[#D7F1FD] items-center">
                 <img src="statics/database.png" class="w-[25px] px-[5px] py-[5px]">
                 <p class="text-[15px] px-[5px] font-bold text-center leading-[22px] font-[Ubuntu] text-[#0C2A75]">
                   {{ vcfs.repository[0].informations().size|default('NaN') }} Mo
                 </p>
               </div>
 
-              <div class="flex rounded-[2em] m-[2px] h-[90%] bg-[#D7F1FD] items-center [box-shadow:0px_0px_5px_-3px_#111]">
+              <div class="flex rounded-[2em] m-[2px] h-[90%] bg-[#D7F1FD] items-center">
                 <img src="statics/file.png" class="w-[25px] px-[5px] py-[5px]">
                 <p class="text-[15px] px-[5px] font-bold text-center leading-[22px] font-[Ubuntu] text-[#0C2A75]">
                   {{ vcfs.repository[0].informations().mtime|default('NA') }}
@@ -67,25 +67,25 @@
             </div>
         </div>
 
-        <div class="flex w-1/2 bg-[#333333]">
+        <div class="flex w-1/2 bg-[#111111]">
             <img src="statics/info-right.png" class="w-10 h-10 md:w-[39px] md:h-[39px] ml-[10px] my-[5px] mr-[5px] self-center" id="info-right-icon">
 
             <div class="flex justify-center items-center flex-wrap w-full pt-[5px] overflow-x-auto">
-              <div class="flex rounded-[2em] m-[2px] h-[90%] bg-[#D7F1FD] items-center [box-shadow:0px_0px_5px_-3px_#111]">
+              <div class="flex rounded-[2em] m-[2px] h-[90%] bg-[#D7F1FD] items-center">
                 <img src="statics/folder.png" class="w-[25px] px-[5px] py-[5px]">
                 <p class="text-[15px] px-[5px] font-bold text-center leading-[22px] font-[Ubuntu] text-[#0C2A75]">
                   {{ vcfs.repository[1].informations().path|default("Na") }}
                 </p>
               </div>
 
-              <div class="flex rounded-[2em] m-[2px] h-[90%] bg-[#D7F1FD] items-center [box-shadow:0px_0px_5px_-3px_#111]">
+              <div class="flex rounded-[2em] m-[2px] h-[90%] bg-[#D7F1FD] items-center">
                 <img src="statics/database.png" class="w-[25px] px-[5px] py-[5px]">
                 <p class="text-[15px] px-[5px] font-bold text-center leading-[22px] font-[Ubuntu] text-[#0C2A75]">
                   {{ vcfs.repository[1].informations().size|default('NaN') }} Mo
                 </p>
               </div>
 
-              <div class="flex rounded-[2em] m-[2px] h-[90%] bg-[#D7F1FD] items-center [box-shadow:0px_0px_5px_-3px_#111]">
+              <div class="flex rounded-[2em] m-[2px] h-[90%] bg-[#D7F1FD] items-center">
                 <img src="statics/file.png" class="w-[25px] px-[5px] py-[5px]">
                 <p class="text-[15px] px-[5px] font-bold text-center leading-[22px] font-[Ubuntu] text-[#0C2A75]">
                   {{ vcfs.repository[1].informations().mtime|default('NA') }}
@@ -102,10 +102,10 @@
         </div>
     </div>
 
-    <div class="bg-[linear-gradient(to_right,_#eef0f1_50%,_#333333_50%)] w-full block pt-[2px] pb-[2px]">
+    <div class="bg-[linear-gradient(to_right,_white_50%,_#111111_50%)] w-full block pt-[2px] pb-[2px]">
 
       {% if table is not none %}
-        <div class="flex flex-row w-full bg-[linear-gradient(to_right,_#eef0f1_50%,_#333333_50%)]">
+        <div class="flex flex-row w-full">
           <div class="flex w-1/2 justify-center">
             <div data-component="info-popup" class="font-[system-ui,_-apple-system,_BlinkMacSystemFont,_'Segoe_UI',_Roboto,_Oxygen,_Ubuntu,_Cantarell,_'Open_Sans',_'Helvetica_Neue',_sans-serif] w-[320px] p-[12px] mb-[5px] hidden flex-row items-center bg-[#D7F1FD] rounded-[8px] [box-shadow:0px_0px_5px_-3px_#111]">
               <div class="w-[20px] h-[20px] -translate-y-[2px] mr-[8px]">
@@ -186,15 +186,15 @@
 
     <div class="flex flex-row w-full">
 
-        <div class="flex flex-row w-[50%] bg-[#EEF0F1] justify-center">
+        <div class="flex flex-row w-[50%] bg-[white] justify-center">
             <div class="block">
-                <img src="statics/search.png" alt="search-icon" class="w-[45px] h-[45px] m-1">
+                <img src="statics/search.png" alt="search-icon" class="w-10 h-10 md:w-[39px] md:h-[39px] ml-[10px] my-[5px] mr-[5px] self-center">
             </div>
         </div>
 
-        <div class="flex flex-row w-[50%] bg-[#333333] justify-center">
+        <div class="flex flex-row w-[50%] bg-[#111111] justify-center">
             <div class="block">
-                <img src="statics/filters.png" alt="parameters-icon" class="w-[45px] h-[45px] m-1">
+                <img src="statics/filters.png" alt="parameters-icon" class="w-10 h-10 md:w-[39px] md:h-[39px] ml-[10px] my-[5px] mr-[5px] self-center">
             </div>
         </div>
 
@@ -208,7 +208,7 @@
 
               <img src="statics/chromosome.png" alt="chromosomes-icon" class="w-[50px] h-[50px]">
 
-              <div class="h-[45px] mr-[5%] border-[1px] border-[solid] border-[#3d444d] rounded-xl px-[15px] py-[5px] bg-[#0d1117] [box-shadow:0_0_20px_rgba(0,_0,_0,_0.5)] [transition:150ms_cubic-bezier(0.4,0,0.2,1)] flex flew-row items-center hover:border-[#999999] min-w-[180px] flex-shrink">
+              <div class="h-[45px] mr-[5%] border-[1px] border-[solid] border-[#3d444d] rounded-xl px-[15px] py-[5px] bg-[#0d1117] [transition:150ms_cubic-bezier(0.4,0,0.2,1)] flex flew-row items-center hover:border-[#999999] min-w-[180px] flex-shrink">
 
                 <div class="relative w-full h-full flex items-center min-w-0">
 
