@@ -40,20 +40,21 @@
             <img src="statics/info-left.png" class="w-10 h-10 md:w-[39px] md:h-[39px] ml-[10px] my-[5px] mr-[5px] self-center" id="info-left-icon">
 
             <div class="flex justify-center items-center flex-wrap w-full pt-[5px] overflow-x-auto">
+              <!-- Path -->
               <div class="flex rounded-[2em] m-[2px] h-[90%] bg-[#D7F1FD] items-center">
                 <img src="statics/folder.png" class="w-[25px] px-[5px] py-[5px]">
                 <p class="text-[15px] px-[5px] font-bold text-center leading-[22px] font-[Ubuntu] text-[#0C2A75]">
                   {{ vcfs.repository[0].informations().path|default("Na") }}
                 </p>
               </div>
-
+              <!-- Size -->
               <div class="flex rounded-[2em] m-[2px] h-[90%] bg-[#D7F1FD] items-center">
                 <img src="statics/database.png" class="w-[25px] px-[5px] py-[5px]">
                 <p class="text-[15px] px-[5px] font-bold text-center leading-[22px] font-[Ubuntu] text-[#0C2A75]">
                   {{ vcfs.repository[0].informations().size|default('NaN') }} Mo
                 </p>
               </div>
-
+              <!-- Modification time -->
               <div class="flex rounded-[2em] m-[2px] h-[90%] bg-[#D7F1FD] items-center">
                 <img src="statics/file.png" class="w-[25px] px-[5px] py-[5px]">
                 <p class="text-[15px] px-[5px] font-bold text-center leading-[22px] font-[Ubuntu] text-[#0C2A75]">
@@ -75,20 +76,21 @@
             <img src="statics/info-right.png" class="w-10 h-10 md:w-[39px] md:h-[39px] ml-[10px] my-[5px] mr-[5px] self-center" id="info-right-icon">
 
             <div class="flex justify-center items-center flex-wrap w-full pt-[5px] overflow-x-auto">
+              <!-- Path -->
               <div class="flex rounded-[2em] m-[2px] h-[90%] bg-[#D7F1FD] items-center">
                 <img src="statics/folder.png" class="w-[25px] px-[5px] py-[5px]">
                 <p class="text-[15px] px-[5px] font-bold text-center leading-[22px] font-[Ubuntu] text-[#0C2A75]">
                   {{ vcfs.repository[1].informations().path|default("Na") }}
                 </p>
               </div>
-
+              <!-- Size -->
               <div class="flex rounded-[2em] m-[2px] h-[90%] bg-[#D7F1FD] items-center">
                 <img src="statics/database.png" class="w-[25px] px-[5px] py-[5px]">
                 <p class="text-[15px] px-[5px] font-bold text-center leading-[22px] font-[Ubuntu] text-[#0C2A75]">
                   {{ vcfs.repository[1].informations().size|default('NaN') }} Mo
                 </p>
               </div>
-
+              <!-- Modification time -->
               <div class="flex rounded-[2em] m-[2px] h-[90%] bg-[#D7F1FD] items-center">
                 <img src="statics/file.png" class="w-[25px] px-[5px] py-[5px]">
                 <p class="text-[15px] px-[5px] font-bold text-center leading-[22px] font-[Ubuntu] text-[#0C2A75]">
@@ -145,6 +147,72 @@
 
     </div>
 
+    <script type="text/javascript">
+      document.addEventListener("DOMContentLoaded", function () {
+        document.getElementById("dropdown-icon-left").addEventListener("click", updateDisplay)
+        document.getElementById("dropdown-icon-right").addEventListener("click", updateDisplay)
+        document.getElementById("terminal-icon").addEventListener("click", updateDisplay)
+      });
+
+
+      function updateDisplay() {
+        if (this.id === "dropdown-icon-left" || this.id === "dropdown-icon-right") {
+          let element = document.getElementById("command");
+          if (element.classList.contains('hidden')) {
+            element.classList.replace('hidden', 'block');
+            document.querySelectorAll('[data-component="notification-metadata"]').forEach((notification) => notification.classList.add('hidden'))
+          }
+          else {
+            element.classList.replace('block', 'hidden');
+            document.querySelectorAll('[data-component="notification-metadata"]').forEach((notification) => notification.classList.remove('hidden'))
+          }
+          elements = document.querySelectorAll('[data-component="info-popup"]');
+          elements.forEach(popup => {
+            if (popup.classList.contains('hidden')) {
+              popup.classList.replace('hidden', 'flex');
+            }
+            else {
+              popup.classList.replace('flex', 'hidden');
+            }
+          });
+        }
+        else if (this.id === "terminal-icon") {
+          let element = document.getElementById("terminal");
+          if (element.classList.contains('hidden')) {
+            element.classList.replace('hidden', 'block')
+          }
+          else {
+            element.classList.replace('block', 'hidden')
+          }
+        }
+      }
+
+      // Highlight the command in the terminal
+      function highlightCommand() {
+        const tag = document.getElementById("command").querySelectorAll('code')[0];
+        const command = tag.textContent;
+        tag.innerText = ''
+        const tokens = command.split(' ');
+        tokens.forEach((token, index) => {
+          const element = document.createElement('code');
+          if (index === 0) {
+            element.style.color = "#50fa7b";
+          }
+          else {
+            if (token.includes('/')) {
+              element.style.color = "#8be9fd";
+            }
+            else {
+              element.style.color = "white";
+            } 
+          }
+          const text = document.createTextNode(index === 0 ? token : ` ${token}`);
+          element.appendChild(text);
+          tag.appendChild(element);
+        })
+      }
+    </script>
+
     <!-- Plots -->
     <section class="flex flex-row w-full m-0 p-0">
 
@@ -193,6 +261,161 @@
         </div>
 
     </section>
+
+    <!-- Plots navigation -->
+    <script type="text/javascript">
+      document.addEventListener('DOMContentLoaded', function() {
+          // Left side plot navigation
+          const leftPlots = document.querySelectorAll('[data-component="plot-left"]');
+          const leftPrevArrow = document.getElementById('leftPrevArrow');
+          const leftNextArrow = document.getElementById('leftNextArrow');
+          const leftPlotIndicator = document.getElementById('leftPlotIndicator');
+          let leftCurrentPlot = 0;
+          
+          // Right side plot navigation
+          const rightPlots = document.querySelectorAll('[data-component="plot-right"]');
+          const rightPrevArrow = document.getElementById('rightPrevArrow');
+          const rightNextArrow = document.getElementById('rightNextArrow');
+          const rightPlotIndicator = document.getElementById('rightPlotIndicator');
+          let rightCurrentPlot = 0;
+          
+          // Hide arrows if only one plot
+          if (leftPlots.length <= 1) {
+              leftPrevArrow.classList.replace('flex', 'hidden')
+              leftNextArrow.classList.replace('flex', 'hidden')
+          }
+          
+          if (rightPlots.length <= 1) {
+              rightPrevArrow.classList.replace('flex', 'hidden')
+              rightNextArrow.classList.replace('flex', 'hidden')
+          }
+          
+          // Create dot indicators for left plots
+          for (let i = 0; i < leftPlots.length; i++) {
+              const dot = document.createElement('div');
+              dot.className = i === 0 ? 'w-[10px] h-[10px] rounded-[50%] bg-[#555]' : 'w-[10px] h-[10px] rounded-[50%] bg-[#ccc]';
+              leftPlotIndicator.appendChild(dot);
+          }
+          
+          // Create dot indicators for right plots
+          for (let i = 0; i < rightPlots.length; i++) {
+              const dot = document.createElement('div');
+              dot.className = i === 0 ? 'w-[10px] h-[10px] rounded-[50%] bg-[#555]' : 'w-[10px] h-[10px] rounded-[50%] bg-[#ccc]';
+              rightPlotIndicator.appendChild(dot);
+          }
+          
+          // Ensure inactive plots are fully hidden
+          leftPlots.forEach((plot, index) => {
+              if (index !== leftCurrentPlot) {
+                  plot.classList.remove('hidden', 'block', 'flex', 'grid', 'inline', 'inline-block');
+                  plot.classList.add('hidden');
+                  plot.classList.replace("visible", "invisible");
+                  plot.classList.remove('col-auto', 'row-auto'); // Remove from grid layout
+              } else {
+                  plot.classList.remove('hidden');
+                  plot.classList.add('block');
+                  plot.classList.replace("invisible", "visible");
+                  plot.classList.add('col-auto', 'row-auto'); // Add to grid layout
+              }
+          });
+          
+          rightPlots.forEach((plot, index) => {
+              if (index !== rightCurrentPlot) {
+                  plot.classList.remove('hidden', 'block', 'flex', 'grid', 'inline', 'inline-block');
+                  plot.classList.add('hidden');
+                  plot.classList.replace("visible", "invisible");
+                  plot.classList.remove('col-auto', 'row-auto'); // Remove from grid layout
+              } else {
+                  plot.classList.remove('hidden');
+                  plot.classList.add('block');
+                  plot.classList.replace("invisible", "visible");
+                  plot.classList.add('col-auto', 'row-auto'); // Add to grid layout
+              }
+          });
+          
+          // Left plot navigation
+          leftPrevArrow.addEventListener('click', () => {
+              leftPlots[leftCurrentPlot].classList.replace('block', 'hidden');
+              leftPlots[leftCurrentPlot].classList.replace("visible", "invisible");
+              leftPlots[leftCurrentPlot].classList.replace("opacity-100", "opacity-0");
+              leftPlots[leftCurrentPlot].classList.remove('col-auto', 'row-auto');
+              leftPlots[leftCurrentPlot].classList.remove('relative');
+              
+              leftPlotIndicator.children[leftCurrentPlot].classList.replace("bg-[#555]", "bg-[#ccc]");
+              leftCurrentPlot = (leftCurrentPlot - 1 + leftPlots.length) % leftPlots.length;
+              
+              leftPlots[leftCurrentPlot].classList.replace('hidden', 'block');
+              leftPlots[leftCurrentPlot].classList.replace("invisible", "visible");
+              leftPlots[leftCurrentPlot].classList.replace("opacity-0", "opacity-100");
+              leftPlots[leftCurrentPlot].classList.add('col-auto', 'row-auto');
+              leftPlots[leftCurrentPlot].classList.add('relative');
+              Plotly.update(leftPlots[leftCurrentPlot].querySelector('.plotly-graph-div'));
+              
+              leftPlotIndicator.children[leftCurrentPlot].classList.replace("bg-[#ccc]", "bg-[#555]");
+          });
+          
+          leftNextArrow.addEventListener('click', () => {
+              leftPlots[leftCurrentPlot].classList.replace('block', 'hidden');
+              leftPlots[leftCurrentPlot].classList.replace("visible", "invisible");
+              leftPlots[leftCurrentPlot].classList.replace("opacity-100", "opacity-0");
+              leftPlots[leftCurrentPlot].classList.remove('col-auto', 'row-auto');
+              leftPlots[leftCurrentPlot].classList.remove('relative');
+              
+              leftPlotIndicator.children[leftCurrentPlot].classList.replace("bg-[#555]", "bg-[#ccc]");
+              leftCurrentPlot = (leftCurrentPlot + 1) % leftPlots.length;
+              
+              leftPlots[leftCurrentPlot].classList.replace('hidden', 'block');
+              leftPlots[leftCurrentPlot].classList.replace("invisible", "visible");
+              leftPlots[leftCurrentPlot].classList.replace("opacity-0", "opacity-100");
+              leftPlots[leftCurrentPlot].classList.add('col-auto', 'row-auto');
+              leftPlots[leftCurrentPlot].classList.add('relative');
+              Plotly.update(leftPlots[leftCurrentPlot].querySelector('.plotly-graph-div'));
+              
+              leftPlotIndicator.children[leftCurrentPlot].classList.replace("bg-[#ccc]", "bg-[#555]");
+          });
+          
+          // Right plot navigation
+          rightPrevArrow.addEventListener('click', () => {
+              rightPlots[rightCurrentPlot].classList.replace('block', 'hidden');
+              rightPlots[rightCurrentPlot].classList.replace("visible", "invisible");
+              rightPlots[rightCurrentPlot].classList.replace("opacity-100", "opacity-0");
+              rightPlots[rightCurrentPlot].classList.remove('col-auto', 'row-auto');
+              rightPlots[rightCurrentPlot].classList.remove('relative');
+              
+              rightPlotIndicator.children[rightCurrentPlot].classList.replace("bg-[#555]", "bg-[#ccc]");
+              rightCurrentPlot = (rightCurrentPlot - 1 + rightPlots.length) % rightPlots.length;
+              
+              rightPlots[rightCurrentPlot].classList.replace('hidden', 'block');
+              rightPlots[rightCurrentPlot].classList.replace("invisible", "visible");
+              rightPlots[rightCurrentPlot].classList.replace("opacity-0", "opacity-100");
+              rightPlots[rightCurrentPlot].classList.add('col-auto', 'row-auto');
+              rightPlots[rightCurrentPlot].classList.add('relative');
+              Plotly.update(rightPlots[rightCurrentPlot].querySelector('.plotly-graph-div'));
+              
+              rightPlotIndicator.children[rightCurrentPlot].classList.replace("bg-[#ccc]", "bg-[#555]");
+          });
+          
+          rightNextArrow.addEventListener('click', () => {
+              rightPlots[rightCurrentPlot].classList.replace('block', 'hidden');
+              rightPlots[rightCurrentPlot].classList.replace("visible", "invisible");
+              rightPlots[rightCurrentPlot].classList.replace("opacity-100", "opacity-0");
+              rightPlots[rightCurrentPlot].classList.remove('col-auto', 'row-auto');
+              rightPlots[rightCurrentPlot].classList.remove('relative');
+              
+              rightPlotIndicator.children[rightCurrentPlot].classList.replace("bg-[#555]", "bg-[#ccc]");
+              rightCurrentPlot = (rightCurrentPlot + 1) % rightPlots.length;
+              
+              rightPlots[rightCurrentPlot].classList.replace('hidden', 'block');
+              rightPlots[rightCurrentPlot].classList.replace("invisible", "visible");
+              rightPlots[rightCurrentPlot].classList.replace("opacity-0", "opacity-100");
+              rightPlots[rightCurrentPlot].classList.add('col-auto', 'row-auto');
+              rightPlots[rightCurrentPlot].classList.add('relative');
+              Plotly.update(rightPlots[rightCurrentPlot].querySelector('.plotly-graph-div'));
+              
+              rightPlotIndicator.children[rightCurrentPlot].classList.replace("bg-[#ccc]", "bg-[#555]");
+          });
+      });
+    </script>
 
     <!-- Search and filters -->
     <div class="flex flex-row w-full">
@@ -527,6 +750,38 @@
                 </div>
               </div>
             </div>
+
+            <!-- Scrolling logic -->
+            <script type="text/javascript">
+              const content1El = document.getElementById('content1');
+              const content2El = document.getElementById('content2');
+              
+              // Sync scrolling between panels
+              content1El.addEventListener('scroll', () => {
+              content2El.scrollTop = content1El.scrollTop;
+              });
+              
+              content2El.addEventListener('scroll', () => {
+              content1El.scrollTop = content2El.scrollTop;
+              });
+
+              content1El.addEventListener('scroll', () => {
+              content2El.scrollLeft = content1El.scrollLeft;
+              });
+              
+              content2El.addEventListener('scroll', () => {
+              content1El.scrollLeft = content2El.scrollLeft;
+              });
+              
+              function interpretTabs(component) {
+              document.querySelectorAll(`[data-component="${component}"]`).forEach(element => {
+                  element.innerHTML = element.innerHTML.split("\\t").join('&nbsp;&nbsp;&nbsp;&nbsp;');
+              });
+              }
+              interpretTabs("column-header")
+              interpretTabs("column-match");
+              interpretTabs("column-diff");
+            </script>
             
             <!-- Summary statistics -->
             <div class="summary-container" id="stats">
@@ -996,6 +1251,502 @@
 
               </section>
 
+              <!-- Filtering logic -->
+              <script type="text/javascript">
+                document.addEventListener("DOMContentLoaded", function () {
+                    document.getElementById("query-chromosome").addEventListener("input", filter);
+                    document.getElementById("query-status").addEventListener("change", filter);
+                    document.getElementById("query-filter").addEventListener("change", filter);
+                    document.getElementById("query-variant").addEventListener("change", filter);
+                    document.getElementById("terminal-input").addEventListener("keypress", runQuery);
+                });
+                function filter() {
+
+                  const matchs = ["MATCH", "MISMATCH"];
+                  const filters = ["PASS", "FAIL"];
+                  const variants = ["SNP", "INS", "DEL", "MNP", "CSV", "INV"];
+
+                  let rowsLeft = document.querySelectorAll('[data-component="file-content-left"]');
+                  let rowsRight = document.querySelectorAll('[data-component="file-content-right"]');
+
+                  let totalLineLeft = document.querySelectorAll('[data-component="file-content-left"] span').length;
+                  let totalLineRight = document.querySelectorAll('[data-component="file-content-right"] span').length;
+                    
+                  let chromosomeUserInput = document.getElementById("query-chromosome");
+                  
+                  let chromosomeQuery = chromosomeUserInput ? chromosomeUserInput.value.trim().toUpperCase() : "";
+                    
+                  let filtersLeft = document.getElementById("query-status");
+                  let filtersRight = [document.getElementById("query-filter"), document.getElementById("query-variant")];
+
+                  let matchQuery = matchs.includes(filtersLeft.value.toUpperCase()) ? filtersLeft.value : "ALL";
+                  updateFilterIndicator(matchQuery, document.getElementById("status-filter-set-indicator"));
+                  let variantFilterQuery = filtersRight.length > 0 && filters.includes(filtersRight[0].value) ? filtersRight[0].value.toUpperCase() : "ALL";
+                  updateFilterIndicator(variantFilterQuery, document.getElementById("filter-filter-set-indicator"));
+                  let variantTypeQuery = filtersRight.length > 1 && variants.includes(filtersRight[1].value) ? filtersRight[1].value.toUpperCase() : "ALL";
+                  updateFilterIndicator(variantTypeQuery, document.getElementById("variant-filter-set-indicator"));
+
+                  let statsByVariantType = document.querySelectorAll('[data-component="variant-card-datas"]');
+
+                  let countVisibleLeft = 0;
+                  let countVisibleRight = 0;
+                  let countMatchLine = 0;
+                  let countMismatchLine = 0;
+
+                  let countSNP = [0, 0];
+                  let countINDEL = [0, 0];
+                  let countSV = [0, 0];
+                  let countMNP = [0, 0];
+                  let countINV = [0, 0];
+                  let countCSV = [0, 0];
+
+                  rowsLeft.forEach((rowLeft, index) => {
+
+                      let rowRight = rowsRight[index];
+                      let rowRightInfs = rowRight.id.split(" ");
+                        
+                      let isLineClass = matchQuery === "ALL" || rowLeft.getAttribute("status").toUpperCase() === matchQuery;
+                
+                      let isChromosome = chromosomeQuery === "" || rowLeft.getAttribute("chrom") == chromosomeQuery;
+                      let isVariantType = variantTypeQuery === "ALL" || rowLeft.getAttribute("type") === variantTypeQuery;
+                      let isVariantFilterLeft = variantFilterQuery === "ALL" || rowLeft.getAttribute("filter") === variantFilterQuery;
+                      let isVariantFilterRight = variantFilterQuery === "ALL" || rowRight.getAttribute("filter") === variantFilterQuery;
+              
+                      let isRowVisible = (isChromosome && isVariantType && isLineClass && (isVariantFilterLeft || isVariantFilterRight));
+
+                      countMatchLine = isRowVisible && rowLeft.getAttribute("status").toUpperCase() === "MATCH" ? ++countMatchLine : countMatchLine;
+                      countMismatchLine = isRowVisible && rowLeft.getAttribute("status").toUpperCase() === "MISMATCH" ? ++countMismatchLine : countMismatchLine;
+
+                      if (isRowVisible){
+                        let variantType;
+                        if (rowLeft.querySelector("span")){
+                          variantType = rowLeft.getAttribute("type").toUpperCase();
+                          if (variantType === "SNP") {
+                            ++countSNP[0];
+                          }
+                          else if (variantType === "DEL" || variantType === "INS"){
+                            ++countINDEL[0];
+                          }
+                          else if (variantType === "SV"){
+                            ++countSV[0];
+                          }
+                          else if (variantType === "MNP"){
+                            ++countMNP[0];
+                          }
+                          else if (variantType === "INV"){
+                            ++countINV[0];
+                          }
+                          else {
+                            ++countCSV[0]
+                          }
+                        }
+
+                        if (rowRight.querySelector("span")){
+                          variantType = rowRight.getAttribute("type").toUpperCase();
+                          if (variantType === "SNP") {
+                            ++countSNP[1];
+                          }
+                          else if (variantType === "DEL" || variantType === "INS"){
+                            ++countINDEL[1];
+                          }
+                          else if (variantType === "SV"){
+                            ++countSV[1];
+                          }
+                          else if (variantType === "MNP"){
+                            ++countMNP[1];
+                          }
+                          else if (variantType === "INV"){
+                            ++countINV[1];
+                          }
+                          else {
+                            ++countCSV[1]
+                          }
+                        }
+                      }
+
+                      // console.log(`Row ${index}:`, {
+                      //     isChromosome, isVariantType, isLineClass, isVariantFilterLeft, isVariantFilterRight, isRowVisible
+                      // });
+
+                      countVisibleLeft = isRowVisible && rowLeft.querySelector("span") ? ++countVisibleLeft : countVisibleLeft;
+                      countVisibleRight = isRowVisible && rowRight.querySelector("span") ? ++countVisibleRight : countVisibleRight;
+
+                      if (isRowVisible) {
+                        rowLeft.classList.replace("hidden", "flex");
+                        rowRight.classList.replace("hidden", "flex");
+                      }
+                      else {
+                        rowLeft.classList.replace("flex", "hidden");
+                        rowRight.classList.replace("flex", "hidden");
+                      }
+                  });
+                    
+                  document.getElementById("filterSummaryL").innerText = `${countVisibleLeft} variants found out of ${totalLineLeft}`;
+                  document.getElementById("filterSummaryR").innerText = `${countVisibleRight} variants found out of ${totalLineRight}`;
+
+                  if (countVisibleLeft+countVisibleRight == 0) {
+                    document.querySelectorAll('[data-component="error-popup"]').forEach(error => error.classList.replace('hidden', 'flex'));
+                  }
+                  else {
+                    document.querySelectorAll('[data-component="error-popup"]').forEach(error => error.classList.replace('flex', 'hidden'));
+                  }
+
+                  let statsGeneral = document.querySelectorAll('[data-component="general-card-datas"]');
+                  statsGeneral[0].children[0].textContent = countMatchLine;
+                  statsGeneral[1].children[0].textContent = countMismatchLine;
+                  statsGeneral[2].children[0].textContent = (countMatchLine / (countVisibleLeft + countVisibleRight - countMatchLine)).toPrecision(3);
+
+                  statsByVariantType.forEach((composition) => {
+
+                      if (composition.id === "snp-card-datas") {
+                        updateVariantComposition(composition, countSNP);
+                      }
+                      else if (composition.id === "indel-card-datas") {
+                        updateVariantComposition(composition, countINDEL);
+                      }
+                      else if (composition.id === "sv-card-datas") {
+                        updateVariantComposition(composition, countSV);
+                      }
+                      else if (composition.id === "mnp-card-datas") {
+                        updateVariantComposition(composition, countMNP);
+                      }
+                      else if (composition.id === "inv-card-datas") {
+                        updateVariantComposition(composition, countINV);
+                      }
+                      else if (composition.id === "csv-card-datas") {
+                        updateVariantComposition(composition, countCSV);
+                      }
+                    }
+                  )
+                }
+
+                function updateFilterIndicator(value, element) {
+                  if (value === "ALL"){
+                    element.classList.replace("flex", "hidden");
+                  }
+                  else {
+                    element.classList.replace("hidden", "flex");
+                  }
+                }
+
+                function updateVariantComposition(div, counts) {
+
+                      let valueLeftFile = div.firstElementChild.querySelector('[data-component="file-legend-value-left"]');
+                      let valueRightFile = div.firstElementChild.querySelector('[data-component="file-legend-value-right"]');
+
+                      let bar = div.children[1];
+
+                      let progresses = bar.children;
+
+                      valueLeftFile.textContent = `${counts[0]}`;
+                      valueRightFile.textContent = `${counts[1]}`;
+
+                      let sum = (counts.reduce((accumulator, currentValue) => accumulator + currentValue, 0));
+                      let pourcentageLeft = sum ? ((counts[0] / sum) * 100) : 0;
+                      let pourcentageRight = sum ? ((counts[1] / sum) * 100) : 0;
+                      
+                      if (pourcentageLeft == 100) {
+                        progresses[0].classList.replace("rounded-tr-none", "rounded-tr-full");
+                        progresses[0].classList.replace("rounded-br-none", "rounded-br-full");
+                      }
+                      else if (pourcentageRight == 100){
+                        progresses[1].classList.replace("rounded-tl-none", "rounded-tl-full");
+                        progresses[1].classList.replace("rounded-bl-none", "rounded-bl-full");
+                      }
+                      else {
+                        progresses[0].classList.replace("rounded-tr-full", "rounded-tr-none");
+                        progresses[0].classList.replace("rounded-br-full", "rounded-br-none");
+                        progresses[1].classList.replace("rounded-tl-full", "rounded-tl-none");
+                        progresses[1].classList.replace("rounded-bl-full", "rounded-bl-none");
+                      }
+
+                      progresses[0].style.width = pourcentageLeft + "%";
+                      progresses[1].style.width = pourcentageRight + "%";
+                }
+
+                // Run the query
+                function runQuery() {
+
+                  if (event.key === "Enter") {
+
+                    const start = performance.now();
+                    const stderr = document.getElementById('stderr')
+                    stderr.classList.replace("flex", "hidden")
+                    stderr.textContent = "";
+                    const stdout = document.getElementById("stdout");
+                    stdout.classList.replace("flex", "hidden");
+                    stdout.textContent = "";
+                    resetFilters();
+                    const leftContent = document.getElementById("content1");
+                    const rightContent = document.getElementById("content2");
+                    const variantsDivsLeft = leftContent.querySelectorAll('[data-component="file-content-left"]');
+                    const variantsDivsRight = rightContent.querySelectorAll('[data-component="file-content-right"]');
+                    variantsDivsLeft.forEach((divLeft, index) => {
+                      divLeft.classList.replace('flex', 'hidden');
+                      variantsDivsRight[index].classList.replace('flex', 'hidden');
+                    })
+                    const suffix = document.getElementById('terminal-input').value;
+                    const tokens = tokenizeQuery(suffix)
+                    const queries = buildQueries(tokens)
+                    console.log(queries);
+                    const statsByVariantType = document.querySelectorAll('[data-component="variant-card-datas"]');
+                    const totalLineLeft = leftContent.querySelectorAll('span:not([data-component="column-header"])').length;
+                    const totalLineRight = rightContent.querySelectorAll('span:not([data-component="column-header"])').length;
+
+                    let countVisibleLeft = 0;
+                    let countVisibleRight = 0;
+                    let countMatchLine = 0;
+                    let countMismatchLine = 0;
+
+                    let countSNP = [0, 0];
+                    let countINDEL = [0, 0];
+                    let countSV = [0, 0];
+                    let countMNP = [0, 0];
+                    let countINV = [0, 0];
+                    let countCSV = [0, 0];
+
+                    try {
+                      
+                      const resultsLeft = alasql(queries["left"], [window.tables["leftTable"]]);
+                      const resultsRight = alasql(queries["right"], [window.tables["rightTable"]]);
+                      const union = new Set([...resultsLeft.map(result => result.ROW), ...resultsRight.map(result => result.ROW)]);
+                      union.forEach(element => {
+
+                        element = parseInt(element);
+                        const divLeft = variantsDivsLeft[element];
+                        let variantType = divLeft.getAttribute("type").toUpperCase();
+                        let status = divLeft.getAttribute("status");
+                        
+                        if (status === "match") {
+                          ++countMatchLine;
+                        }
+                        else {
+                          ++countMismatchLine;
+                        }
+
+                        if (divLeft.querySelector('span')) {
+                          ++countVisibleLeft;
+                          if (variantType === "SNP") {
+                            ++countSNP[0];
+                          }
+                          else if (variantType === "DEL" || variantType === "INS"){
+                            ++countINDEL[0];
+                          }
+                          else if (variantType === "SV"){
+                            ++countSV[0];
+                          }
+                          else if (variantType === "MNP"){
+                            ++countMNP[0];
+                          }
+                          else if (variantType === "INV"){
+                            ++countINV[0];
+                          }
+                          else {
+                            ++countCSV[0]
+                          }
+                        }
+
+                        const divRight = variantsDivsRight[element];
+                        variantType = divRight.getAttribute('type').toUpperCase();
+
+                        if (divRight.querySelector('span')) {
+                          ++countVisibleRight;
+                          if (variantType === "SNP") {
+                            ++countSNP[1];
+                          }
+                          else if (variantType === "DEL" || variantType === "INS"){
+                            ++countINDEL[1];
+                          }
+                          else if (variantType === "SV"){
+                            ++countSV[1];
+                          }
+                          else if (variantType === "MNP"){
+                            ++countMNP[1];
+                          }
+                          else if (variantType === "INV"){
+                            ++countINV[1];
+                          }
+                          else {
+                            ++countCSV[1]
+                          }
+                        }
+
+                        divLeft.classList.replace("hidden", "flex");
+                        divRight.classList.replace("hidden", "flex");
+
+                      });
+                      document.getElementById("filterSummaryL").innerText = `${countVisibleLeft} variants found out of ${totalLineLeft}`;
+                      document.getElementById("filterSummaryR").innerText = `${countVisibleRight} variants found out of ${totalLineRight}`;
+                      if (countVisibleLeft+countVisibleRight == 0) {
+                        document.querySelectorAll('[data-component="error-popup"]').forEach(error => error.classList.replace('hidden', 'flex'));
+                      }
+                      else {
+                        document.querySelectorAll('[data-component="error-popup"]').forEach(error => error.classList.replace('flex', 'hidden'));
+                      }
+
+                      const statsGeneral = document.querySelectorAll('[data-component="general-card-datas"]');
+                      statsGeneral[0].children[0].textContent = countMatchLine;
+                      statsGeneral[1].children[0].textContent = countMismatchLine;
+                      statsGeneral[2].children[0].textContent = (countMatchLine / (countVisibleLeft + countVisibleRight - countMatchLine)).toPrecision(3);
+
+                      const statsByVariantType = document.querySelectorAll('[data-component="variant-card-datas"]')
+
+                      statsByVariantType.forEach((composition) => {
+
+                          if (composition.id === "snp-card-datas") {
+                            updateVariantComposition(composition, countSNP);
+                          }
+                          else if (composition.id === "indel-card-datas") {
+                            updateVariantComposition(composition, countINDEL);
+                          }
+                          else if (composition.id === "sv-card-datas") {
+                            updateVariantComposition(composition, countSV);
+                          }
+                          else if (composition.id === "mnp-card-datas") {
+                            updateVariantComposition(composition, countMNP);
+                          }
+                          else if (composition.id === "inv-card-datas") {
+                            updateVariantComposition(composition, countINV);
+                          }
+                          else if (composition.id === "csv-card-datas") {
+                            updateVariantComposition(composition, countCSV);
+                          }
+                        }
+                      )
+
+                      stdout.classList.replace("hidden", "flex");
+                      const end = performance.now();
+                      stdout.textContent = `js:(vcc)> SELECT * FROM VCFS WHERE ${suffix} (${end - start} ms)`;
+                    } catch(e) {
+                      stderr.classList.replace("hidden", "flex");
+                      stderr.textContent = e.message;
+                    }
+                  }
+                }
+
+                // Tokenize the query
+                function tokenizeQuery(query) {
+
+                  query = query.trim().replace(/\s+/g, ' ');
+
+                  const pattern = /\s+(AND|OR|NOT)\s+/gi;
+
+                  const rawParts = query.split(pattern);
+
+                  const result = [];
+                  for (let i = 0; i < rawParts.length; i++) {
+                    const clause = rawParts[i].trim();
+                    let operator = null;
+
+                    if (i + 1 < rawParts.length && /^(AND|OR|NOT)$/i.test(rawParts[i + 1])) {
+                      operator = rawParts[i + 1].toUpperCase();
+                      i += 1;
+                    }
+
+                    result.push([clause, operator]);
+                  }
+                  console.log(result)
+                  return result;
+                }
+
+                // Build the queries for the left and right files
+                function buildQueries(clauses) {
+
+                  const prefix = "SELECT * from ? WHERE";
+
+                  let suffixLeft = [];
+                  let suffixRight = [];
+
+                  clauses.forEach(([clause, operator], index) => {
+                    
+                    const isL = clause.trim().startsWith('L.');
+                    const isR = clause.trim().startsWith('R.');
+                    const isCommon = !isL && !isR;
+
+                    if (isL || isCommon) {
+
+                      const cleanedClause = clause.replace('L.', '');
+
+                      suffixLeft.push(cleanedClause);
+
+                      if (operator && (index + 1) < clauses.length && (clauses[index + 1][0].startsWith('L.') || (!clauses[index + 1][0].startsWith('R.') && !clauses[index + 1][0].startsWith('L.')))) {
+                        suffixLeft.push(operator);
+                      }
+
+                    }
+
+                    if(isR || isCommon) {
+
+                      const cleanedClause = clause.replace('R.', '');
+
+                      suffixRight.push(cleanedClause);
+
+                      if (operator && (index + 1) < clauses.length && (clauses[index + 1][0].startsWith('R.') || (!clauses[index + 1][0].startsWith('R.') && !clauses[index + 1][0].startsWith('L.')))) {
+                        suffixRight.push(operator);
+                      }
+
+                    }
+                  })
+
+                  return {"left": suffixLeft.length > 0 ? `${prefix} ${suffixLeft.join(' ')}`: "SELECT * from ?", "right": suffixRight.length > 0 ? `${prefix} ${suffixRight.join(' ')}`: "SELECT * from ?"};
+                }
+
+                // Collect the variants datas to create the tables
+                function collectVariants() {
+
+                  const leftContent = document.getElementById("content1");
+                  const rightContent = document.getElementById("content2");
+
+                  const variantsDivsLeft = leftContent.querySelectorAll('[data-component="file-content-left"]');
+                  const variantsDivsRight = rightContent.querySelectorAll('[data-component="file-content-right"]');
+
+                  const filterCommonKeywords = ["CHROM", "POS", "ID", "REF", "ALT", "QUAL", "TYPE", "FILTER", "INFO", "FORMAT", "ROW", "STATUS"];
+                  const filterLeftKeywords = [{%- if vcfs.repository[0].variants.format -%}{% for key in vcfs.repository[0].variants.format -%}"{{ key }}"{% if not loop.last %}, {% endif %}{% endfor %}{%- endif -%}];
+                  const filterRightKeywords = [{%- if vcfs.repository[1].variants.format -%}{% for key in vcfs.repository[1].variants.format -%}"{{ key }}"{% if not loop.last %}, {% endif %}{% endfor %}{%- endif -%}];
+                  const queryKeywords = ["=", "AND", "OR"];
+                  const castNumberException = ["CHROM"];
+                  
+                  // Table are global variables to be used in the queries
+                  window.tables = {"leftTable": createTable(variantsDivsLeft, filterCommonKeywords.concat(filterLeftKeywords), castNumberException),
+                    "rightTable": createTable(variantsDivsRight, filterCommonKeywords.concat(filterRightKeywords), castNumberException)
+                  };
+                }
+
+                // Create the static tables for queries
+                function createTable(collection, columns, exceptions) {
+                  return Array.from(collection).map((div, index) => {
+                          const obj = {};
+                          columns.forEach(k => {
+                            let val = div.getAttribute(k);
+                            if (val && !exceptions.includes(k)) {
+                              let valNumberCasted = Number(val);
+                              // console.log(`Value: ${val}, casted to ${valNumberCasted} for keyword ${k}`)
+                              if (Number.isNaN(valNumberCasted)) {
+                                obj[k] = val;
+                              }
+                              else {
+                                obj[k] = valNumberCasted
+                              }
+                            }
+                            else {
+                              obj[k] = val
+                            }
+                          })
+                          return obj;
+                        });
+                }
+
+                // Reset the filters
+                function resetFilters() {
+                    document.getElementById("query-chromosome").value = "";
+                    document.getElementById("query-filter").value = "ALL";
+                    document.getElementById("query-variant").value = "ALL";
+                    document.getElementById("query-status").value = "ALL";
+                    document.querySelectorAll('[data-component="error-popup"]').forEach(error => error.classList.replace('flex', 'hidden'));
+                    filter();
+                }
+              </script>
+
               <!-- Venn Diagram -->
               {% if view["jaccard"] < 0.8 %}
               <div class="visible opacity-100 w-full relative flex justify-center [transition:opacity_0.3s_ease-in-out] bg-[#f3f4f6]">
@@ -1173,751 +1924,8 @@
           </nav>
         </footer>
     </div>
-
-    <script type="text/javascript">
-        const content1El = document.getElementById('content1');
-        const content2El = document.getElementById('content2');
-        
-        // Sync scrolling between panels
-        content1El.addEventListener('scroll', () => {
-        content2El.scrollTop = content1El.scrollTop;
-        });
-        
-        content2El.addEventListener('scroll', () => {
-        content1El.scrollTop = content2El.scrollTop;
-        });
-
-        content1El.addEventListener('scroll', () => {
-        content2El.scrollLeft = content1El.scrollLeft;
-        });
-        
-        content2El.addEventListener('scroll', () => {
-        content1El.scrollLeft = content2El.scrollLeft;
-        });
-        
-        function interpretTabs(component) {
-        document.querySelectorAll(`[data-component="${component}"]`).forEach(element => {
-            element.innerHTML = element.innerHTML.split("\\t").join('&nbsp;&nbsp;&nbsp;&nbsp;');
-        });
-        }
-        interpretTabs("column-header")
-        interpretTabs("column-match");
-        interpretTabs("column-diff");
-    </script>
-    <script type="text/javascript">
-      document.addEventListener('DOMContentLoaded', function() {
-          // Left side plot navigation
-          const leftPlots = document.querySelectorAll('[data-component="plot-left"]');
-          const leftPrevArrow = document.getElementById('leftPrevArrow');
-          const leftNextArrow = document.getElementById('leftNextArrow');
-          const leftPlotIndicator = document.getElementById('leftPlotIndicator');
-          let leftCurrentPlot = 0;
-          
-          // Right side plot navigation
-          const rightPlots = document.querySelectorAll('[data-component="plot-right"]');
-          const rightPrevArrow = document.getElementById('rightPrevArrow');
-          const rightNextArrow = document.getElementById('rightNextArrow');
-          const rightPlotIndicator = document.getElementById('rightPlotIndicator');
-          let rightCurrentPlot = 0;
-          
-          // Hide arrows if only one plot
-          if (leftPlots.length <= 1) {
-              leftPrevArrow.classList.replace('flex', 'hidden')
-              leftNextArrow.classList.replace('flex', 'hidden')
-          }
-          
-          if (rightPlots.length <= 1) {
-              rightPrevArrow.classList.replace('flex', 'hidden')
-              rightNextArrow.classList.replace('flex', 'hidden')
-          }
-          
-          // Create dot indicators for left plots
-          for (let i = 0; i < leftPlots.length; i++) {
-              const dot = document.createElement('div');
-              dot.className = i === 0 ? 'w-[10px] h-[10px] rounded-[50%] bg-[#555]' : 'w-[10px] h-[10px] rounded-[50%] bg-[#ccc]';
-              leftPlotIndicator.appendChild(dot);
-          }
-          
-          // Create dot indicators for right plots
-          for (let i = 0; i < rightPlots.length; i++) {
-              const dot = document.createElement('div');
-              dot.className = i === 0 ? 'w-[10px] h-[10px] rounded-[50%] bg-[#555]' : 'w-[10px] h-[10px] rounded-[50%] bg-[#ccc]';
-              rightPlotIndicator.appendChild(dot);
-          }
-          
-          // Ensure inactive plots are fully hidden
-          leftPlots.forEach((plot, index) => {
-              if (index !== leftCurrentPlot) {
-                  plot.classList.remove('hidden', 'block', 'flex', 'grid', 'inline', 'inline-block');
-                  plot.classList.add('hidden');
-                  plot.classList.replace("visible", "invisible");
-                  plot.classList.remove('col-auto', 'row-auto'); // Remove from grid layout
-              } else {
-                  plot.classList.remove('hidden');
-                  plot.classList.add('block');
-                  plot.classList.replace("invisible", "visible");
-                  plot.classList.add('col-auto', 'row-auto'); // Add to grid layout
-              }
-          });
-          
-          rightPlots.forEach((plot, index) => {
-              if (index !== rightCurrentPlot) {
-                  plot.classList.remove('hidden', 'block', 'flex', 'grid', 'inline', 'inline-block');
-                  plot.classList.add('hidden');
-                  plot.classList.replace("visible", "invisible");
-                  plot.classList.remove('col-auto', 'row-auto'); // Remove from grid layout
-              } else {
-                  plot.classList.remove('hidden');
-                  plot.classList.add('block');
-                  plot.classList.replace("invisible", "visible");
-                  plot.classList.add('col-auto', 'row-auto'); // Add to grid layout
-              }
-          });
-          
-          // Left plot navigation
-          leftPrevArrow.addEventListener('click', () => {
-              leftPlots[leftCurrentPlot].classList.replace('block', 'hidden');
-              leftPlots[leftCurrentPlot].classList.replace("visible", "invisible");
-              leftPlots[leftCurrentPlot].classList.replace("opacity-100", "opacity-0");
-              leftPlots[leftCurrentPlot].classList.remove('col-auto', 'row-auto');
-              leftPlots[leftCurrentPlot].classList.remove('relative');
-              
-              leftPlotIndicator.children[leftCurrentPlot].classList.replace("bg-[#555]", "bg-[#ccc]");
-              leftCurrentPlot = (leftCurrentPlot - 1 + leftPlots.length) % leftPlots.length;
-              
-              leftPlots[leftCurrentPlot].classList.replace('hidden', 'block');
-              leftPlots[leftCurrentPlot].classList.replace("invisible", "visible");
-              leftPlots[leftCurrentPlot].classList.replace("opacity-0", "opacity-100");
-              leftPlots[leftCurrentPlot].classList.add('col-auto', 'row-auto');
-              leftPlots[leftCurrentPlot].classList.add('relative');
-              Plotly.update(leftPlots[leftCurrentPlot].querySelector('.plotly-graph-div'));
-              
-              leftPlotIndicator.children[leftCurrentPlot].classList.replace("bg-[#ccc]", "bg-[#555]");
-          });
-          
-          leftNextArrow.addEventListener('click', () => {
-              leftPlots[leftCurrentPlot].classList.replace('block', 'hidden');
-              leftPlots[leftCurrentPlot].classList.replace("visible", "invisible");
-              leftPlots[leftCurrentPlot].classList.replace("opacity-100", "opacity-0");
-              leftPlots[leftCurrentPlot].classList.remove('col-auto', 'row-auto');
-              leftPlots[leftCurrentPlot].classList.remove('relative');
-              
-              leftPlotIndicator.children[leftCurrentPlot].classList.replace("bg-[#555]", "bg-[#ccc]");
-              leftCurrentPlot = (leftCurrentPlot + 1) % leftPlots.length;
-              
-              leftPlots[leftCurrentPlot].classList.replace('hidden', 'block');
-              leftPlots[leftCurrentPlot].classList.replace("invisible", "visible");
-              leftPlots[leftCurrentPlot].classList.replace("opacity-0", "opacity-100");
-              leftPlots[leftCurrentPlot].classList.add('col-auto', 'row-auto');
-              leftPlots[leftCurrentPlot].classList.add('relative');
-              Plotly.update(leftPlots[leftCurrentPlot].querySelector('.plotly-graph-div'));
-              
-              leftPlotIndicator.children[leftCurrentPlot].classList.replace("bg-[#ccc]", "bg-[#555]");
-          });
-          
-          // Right plot navigation
-          rightPrevArrow.addEventListener('click', () => {
-              rightPlots[rightCurrentPlot].classList.replace('block', 'hidden');
-              rightPlots[rightCurrentPlot].classList.replace("visible", "invisible");
-              rightPlots[rightCurrentPlot].classList.replace("opacity-100", "opacity-0");
-              rightPlots[rightCurrentPlot].classList.remove('col-auto', 'row-auto');
-              rightPlots[rightCurrentPlot].classList.remove('relative');
-              
-              rightPlotIndicator.children[rightCurrentPlot].classList.replace("bg-[#555]", "bg-[#ccc]");
-              rightCurrentPlot = (rightCurrentPlot - 1 + rightPlots.length) % rightPlots.length;
-              
-              rightPlots[rightCurrentPlot].classList.replace('hidden', 'block');
-              rightPlots[rightCurrentPlot].classList.replace("invisible", "visible");
-              rightPlots[rightCurrentPlot].classList.replace("opacity-0", "opacity-100");
-              rightPlots[rightCurrentPlot].classList.add('col-auto', 'row-auto');
-              rightPlots[rightCurrentPlot].classList.add('relative');
-              Plotly.update(rightPlots[rightCurrentPlot].querySelector('.plotly-graph-div'));
-              
-              rightPlotIndicator.children[rightCurrentPlot].classList.replace("bg-[#ccc]", "bg-[#555]");
-          });
-          
-          rightNextArrow.addEventListener('click', () => {
-              rightPlots[rightCurrentPlot].classList.replace('block', 'hidden');
-              rightPlots[rightCurrentPlot].classList.replace("visible", "invisible");
-              rightPlots[rightCurrentPlot].classList.replace("opacity-100", "opacity-0");
-              rightPlots[rightCurrentPlot].classList.remove('col-auto', 'row-auto');
-              rightPlots[rightCurrentPlot].classList.remove('relative');
-              
-              rightPlotIndicator.children[rightCurrentPlot].classList.replace("bg-[#555]", "bg-[#ccc]");
-              rightCurrentPlot = (rightCurrentPlot + 1) % rightPlots.length;
-              
-              rightPlots[rightCurrentPlot].classList.replace('hidden', 'block');
-              rightPlots[rightCurrentPlot].classList.replace("invisible", "visible");
-              rightPlots[rightCurrentPlot].classList.replace("opacity-0", "opacity-100");
-              rightPlots[rightCurrentPlot].classList.add('col-auto', 'row-auto');
-              rightPlots[rightCurrentPlot].classList.add('relative');
-              Plotly.update(rightPlots[rightCurrentPlot].querySelector('.plotly-graph-div'));
-              
-              rightPlotIndicator.children[rightCurrentPlot].classList.replace("bg-[#ccc]", "bg-[#555]");
-          });
-      });
-    </script>
-    <script type="text/javascript">
-      document.addEventListener("DOMContentLoaded", function () {
-          document.getElementById("query-chromosome").addEventListener("input", filter);
-          document.getElementById("query-status").addEventListener("change", filter);
-          document.getElementById("query-filter").addEventListener("change", filter);
-          document.getElementById("query-variant").addEventListener("change", filter);
-          document.getElementById("terminal-input").addEventListener("keypress", runQuery);
-      });
-      function filter() {
-
-        const matchs = ["MATCH", "MISMATCH"];
-        const filters = ["PASS", "FAIL"];
-        const variants = ["SNP", "INS", "DEL", "SV", "MNP", "CSV", "INV"];
-
-        let rowsLeft = document.querySelectorAll('[data-component="file-content-left"]');
-        let rowsRight = document.querySelectorAll('[data-component="file-content-right"]');
-
-        let totalLineLeft = document.querySelectorAll('[data-component="file-content-left"] span').length;
-        let totalLineRight = document.querySelectorAll('[data-component="file-content-right"] span').length;
-          
-        let chromosomeUserInput = document.getElementById("query-chromosome");
-        
-        let chromosomeQuery = chromosomeUserInput ? chromosomeUserInput.value.trim().toUpperCase() : "";
-          
-        let filtersLeft = document.getElementById("query-status");
-        let filtersRight = [document.getElementById("query-filter"), document.getElementById("query-variant")];
-
-        let matchQuery = matchs.includes(filtersLeft.value.toUpperCase()) ? filtersLeft.value : "ALL";
-        updateFilterIndicator(matchQuery, document.getElementById("status-filter-set-indicator"));
-        let variantFilterQuery = filtersRight.length > 0 && filters.includes(filtersRight[0].value) ? filtersRight[0].value.toUpperCase() : "ALL";
-        updateFilterIndicator(variantFilterQuery, document.getElementById("filter-filter-set-indicator"));
-        let variantTypeQuery = filtersRight.length > 1 && variants.includes(filtersRight[1].value) ? filtersRight[1].value.toUpperCase() : "ALL";
-        updateFilterIndicator(variantTypeQuery, document.getElementById("variant-filter-set-indicator"));
-
-        let statsByVariantType = document.querySelectorAll('[data-component="variant-card-datas"]');
-
-        let countVisibleLeft = 0;
-        let countVisibleRight = 0;
-        let countMatchLine = 0;
-        let countMismatchLine = 0;
-
-        let countSNP = [0, 0];
-        let countINDEL = [0, 0];
-        let countSV = [0, 0];
-        let countMNP = [0, 0];
-        let countINV = [0, 0];
-        let countCSV = [0, 0];
-
-        rowsLeft.forEach((rowLeft, index) => {
-
-            let rowRight = rowsRight[index];
-            let rowRightInfs = rowRight.id.split(" ");
-              
-            let isLineClass = matchQuery === "ALL" || rowLeft.getAttribute("status").toUpperCase() === matchQuery;
-      
-            let isChromosome = chromosomeQuery === "" || rowLeft.getAttribute("chrom") == chromosomeQuery;
-            let isVariantType = variantTypeQuery === "ALL" || rowLeft.getAttribute("type") === variantTypeQuery;
-            let isVariantFilterLeft = variantFilterQuery === "ALL" || rowLeft.getAttribute("filter") === variantFilterQuery;
-            let isVariantFilterRight = variantFilterQuery === "ALL" || rowRight.getAttribute("filter") === variantFilterQuery;
     
-            let isRowVisible = (isChromosome && isVariantType && isLineClass && (isVariantFilterLeft || isVariantFilterRight));
-
-            countMatchLine = isRowVisible && rowLeft.getAttribute("status").toUpperCase() === "MATCH" ? ++countMatchLine : countMatchLine;
-            countMismatchLine = isRowVisible && rowLeft.getAttribute("status").toUpperCase() === "MISMATCH" ? ++countMismatchLine : countMismatchLine;
-
-            if (isRowVisible){
-              let variantType;
-              if (rowLeft.querySelector("span")){
-                variantType = rowLeft.getAttribute("type").toUpperCase();
-                if (variantType === "SNP") {
-                  ++countSNP[0];
-                }
-                else if (variantType === "DEL" || variantType === "INS"){
-                  ++countINDEL[0];
-                }
-                else if (variantType === "SV"){
-                  ++countSV[0];
-                }
-                else if (variantType === "MNP"){
-                  ++countMNP[0];
-                }
-                else if (variantType === "INV"){
-                  ++countINV[0];
-                }
-                else {
-                  ++countCSV[0]
-                }
-              }
-
-              if (rowRight.querySelector("span")){
-                variantType = rowRight.getAttribute("type").toUpperCase();
-                if (variantType === "SNP") {
-                  ++countSNP[1];
-                }
-                else if (variantType === "DEL" || variantType === "INS"){
-                  ++countINDEL[1];
-                }
-                else if (variantType === "SV"){
-                  ++countSV[1];
-                }
-                else if (variantType === "MNP"){
-                  ++countMNP[1];
-                }
-                else if (variantType === "INV"){
-                  ++countINV[1];
-                }
-                else {
-                  ++countCSV[1]
-                }
-              }
-            }
-
-            // console.log(`Row ${index}:`, {
-            //     isChromosome, isVariantType, isLineClass, isVariantFilterLeft, isVariantFilterRight, isRowVisible
-            // });
-
-            countVisibleLeft = isRowVisible && rowLeft.querySelector("span") ? ++countVisibleLeft : countVisibleLeft;
-            countVisibleRight = isRowVisible && rowRight.querySelector("span") ? ++countVisibleRight : countVisibleRight;
-
-            if (isRowVisible) {
-              rowLeft.classList.replace("hidden", "flex");
-              rowRight.classList.replace("hidden", "flex");
-            }
-            else {
-              rowLeft.classList.replace("flex", "hidden");
-              rowRight.classList.replace("flex", "hidden");
-            }
-        });
-          
-        document.getElementById("filterSummaryL").innerText = `${countVisibleLeft} variants found out of ${totalLineLeft}`;
-        document.getElementById("filterSummaryR").innerText = `${countVisibleRight} variants found out of ${totalLineRight}`;
-
-        if (countVisibleLeft+countVisibleRight == 0) {
-          document.querySelectorAll('[data-component="error-popup"]').forEach(error => error.classList.replace('hidden', 'flex'));
-        }
-        else {
-          document.querySelectorAll('[data-component="error-popup"]').forEach(error => error.classList.replace('flex', 'hidden'));
-        }
-
-        let statsGeneral = document.querySelectorAll('[data-component="general-card-datas"]');
-        statsGeneral[0].children[0].textContent = countMatchLine;
-        statsGeneral[1].children[0].textContent = countMismatchLine;
-        statsGeneral[2].children[0].textContent = (countMatchLine / (countVisibleLeft + countVisibleRight - countMatchLine)).toPrecision(3);
-
-        statsByVariantType.forEach((composition) => {
-
-            if (composition.id === "snp-card-datas") {
-              updateVariantComposition(composition, countSNP);
-            }
-            else if (composition.id === "indel-card-datas") {
-              updateVariantComposition(composition, countINDEL);
-            }
-            else if (composition.id === "sv-card-datas") {
-              updateVariantComposition(composition, countSV);
-            }
-            else if (composition.id === "mnp-card-datas") {
-              updateVariantComposition(composition, countMNP);
-            }
-            else if (composition.id === "inv-card-datas") {
-              updateVariantComposition(composition, countINV);
-            }
-            else if (composition.id === "csv-card-datas") {
-              updateVariantComposition(composition, countCSV);
-            }
-          }
-        )
-      }
-
-      function updateFilterIndicator(value, element) {
-        if (value === "ALL"){
-          element.classList.replace("flex", "hidden");
-        }
-        else {
-          element.classList.replace("hidden", "flex");
-        }
-      }
-
-      function updateVariantComposition(div, counts) {
-
-            let valueLeftFile = div.firstElementChild.querySelector('[data-component="file-legend-value-left"]');
-            let valueRightFile = div.firstElementChild.querySelector('[data-component="file-legend-value-right"]');
-
-            let bar = div.children[1];
-
-            let progresses = bar.children;
-
-            valueLeftFile.textContent = `${counts[0]}`;
-            valueRightFile.textContent = `${counts[1]}`;
-
-            let sum = (counts.reduce((accumulator, currentValue) => accumulator + currentValue, 0));
-            let pourcentageLeft = sum ? ((counts[0] / sum) * 100) : 0;
-            let pourcentageRight = sum ? ((counts[1] / sum) * 100) : 0;
-            
-            if (pourcentageLeft == 100) {
-              progresses[0].classList.replace("rounded-tr-none", "rounded-tr-full");
-              progresses[0].classList.replace("rounded-br-none", "rounded-br-full");
-            }
-            else if (pourcentageRight == 100){
-              progresses[1].classList.replace("rounded-tl-none", "rounded-tl-full");
-              progresses[1].classList.replace("rounded-bl-none", "rounded-bl-full");
-            }
-            else {
-              progresses[0].classList.replace("rounded-tr-full", "rounded-tr-none");
-              progresses[0].classList.replace("rounded-br-full", "rounded-br-none");
-              progresses[1].classList.replace("rounded-tl-full", "rounded-tl-none");
-              progresses[1].classList.replace("rounded-bl-full", "rounded-bl-none");
-            }
-
-            progresses[0].style.width = pourcentageLeft + "%";
-            progresses[1].style.width = pourcentageRight + "%";
-      }
-
-      // Run the query
-      function runQuery() {
-
-        if (event.key === "Enter") {
-
-          const start = performance.now();
-          const stderr = document.getElementById('stderr')
-          stderr.classList.replace("flex", "hidden")
-          stderr.textContent = "";
-          const stdout = document.getElementById("stdout");
-          stdout.classList.replace("flex", "hidden");
-          stdout.textContent = "";
-          resetFilters();
-          const leftContent = document.getElementById("content1");
-          const rightContent = document.getElementById("content2");
-          const variantsDivsLeft = leftContent.querySelectorAll('[data-component="file-content-left"]');
-          const variantsDivsRight = rightContent.querySelectorAll('[data-component="file-content-right"]');
-          variantsDivsLeft.forEach((divLeft, index) => {
-            divLeft.classList.replace('flex', 'hidden');
-            variantsDivsRight[index].classList.replace('flex', 'hidden');
-          })
-          const suffix = document.getElementById('terminal-input').value;
-          const tokens = tokenizeQuery(suffix)
-          const queries = buildQueries(tokens)
-          console.log(queries);
-          const statsByVariantType = document.querySelectorAll('[data-component="variant-card-datas"]');
-          const totalLineLeft = leftContent.querySelectorAll('span:not([data-component="column-header"])').length;
-          const totalLineRight = rightContent.querySelectorAll('span:not([data-component="column-header"])').length;
-
-          let countVisibleLeft = 0;
-          let countVisibleRight = 0;
-          let countMatchLine = 0;
-          let countMismatchLine = 0;
-
-          let countSNP = [0, 0];
-          let countINDEL = [0, 0];
-          let countSV = [0, 0];
-          let countMNP = [0, 0];
-          let countINV = [0, 0];
-          let countCSV = [0, 0];
-
-          try {
-            
-            const resultsLeft = alasql(queries["left"], [window.tables["leftTable"]]);
-            const resultsRight = alasql(queries["right"], [window.tables["rightTable"]]);
-            const union = new Set([...resultsLeft.map(result => result.ROW), ...resultsRight.map(result => result.ROW)]);
-            union.forEach(element => {
-
-              element = parseInt(element);
-              const divLeft = variantsDivsLeft[element];
-              let variantType = divLeft.getAttribute("type").toUpperCase();
-              let status = divLeft.getAttribute("status");
-              
-              if (status === "match") {
-                ++countMatchLine;
-              }
-              else {
-                ++countMismatchLine;
-              }
-
-              if (divLeft.querySelector('span')) {
-                ++countVisibleLeft;
-                if (variantType === "SNP") {
-                  ++countSNP[0];
-                }
-                else if (variantType === "DEL" || variantType === "INS"){
-                  ++countINDEL[0];
-                }
-                else if (variantType === "SV"){
-                  ++countSV[0];
-                }
-                else if (variantType === "MNP"){
-                  ++countMNP[0];
-                }
-                else if (variantType === "INV"){
-                  ++countINV[0];
-                }
-                else {
-                  ++countCSV[0]
-                }
-              }
-
-              const divRight = variantsDivsRight[element];
-              variantType = divRight.getAttribute('type').toUpperCase();
-
-              if (divRight.querySelector('span')) {
-                ++countVisibleRight;
-                if (variantType === "SNP") {
-                  ++countSNP[1];
-                }
-                else if (variantType === "DEL" || variantType === "INS"){
-                  ++countINDEL[1];
-                }
-                else if (variantType === "SV"){
-                  ++countSV[1];
-                }
-                else if (variantType === "MNP"){
-                  ++countMNP[1];
-                }
-                else if (variantType === "INV"){
-                  ++countINV[1];
-                }
-                else {
-                  ++countCSV[1]
-                }
-              }
-
-              divLeft.classList.replace("hidden", "flex");
-              divRight.classList.replace("hidden", "flex");
-
-            });
-            document.getElementById("filterSummaryL").innerText = `${countVisibleLeft} variants found out of ${totalLineLeft}`;
-            document.getElementById("filterSummaryR").innerText = `${countVisibleRight} variants found out of ${totalLineRight}`;
-            if (countVisibleLeft+countVisibleRight == 0) {
-              document.querySelectorAll('[data-component="error-popup"]').forEach(error => error.classList.replace('hidden', 'flex'));
-            }
-            else {
-              document.querySelectorAll('[data-component="error-popup"]').forEach(error => error.classList.replace('flex', 'hidden'));
-            }
-
-            const statsGeneral = document.querySelectorAll('[data-component="general-card-datas"]');
-            statsGeneral[0].children[0].textContent = countMatchLine;
-            statsGeneral[1].children[0].textContent = countMismatchLine;
-            statsGeneral[2].children[0].textContent = (countMatchLine / (countVisibleLeft + countVisibleRight - countMatchLine)).toPrecision(3);
-
-            const statsByVariantType = document.querySelectorAll('[data-component="variant-card-datas"]')
-
-            statsByVariantType.forEach((composition) => {
-
-                if (composition.id === "snp-card-datas") {
-                  updateVariantComposition(composition, countSNP);
-                }
-                else if (composition.id === "indel-card-datas") {
-                  updateVariantComposition(composition, countINDEL);
-                }
-                else if (composition.id === "sv-card-datas") {
-                  updateVariantComposition(composition, countSV);
-                }
-                else if (composition.id === "mnp-card-datas") {
-                  updateVariantComposition(composition, countMNP);
-                }
-                else if (composition.id === "inv-card-datas") {
-                  updateVariantComposition(composition, countINV);
-                }
-                else if (composition.id === "csv-card-datas") {
-                  updateVariantComposition(composition, countCSV);
-                }
-              }
-            )
-
-            stdout.classList.replace("hidden", "flex");
-            const end = performance.now();
-            stdout.textContent = `js:(vcc)> SELECT * FROM VCFS WHERE ${suffix} (${end - start} ms)`;
-          } catch(e) {
-            stderr.classList.replace("hidden", "flex");
-            stderr.textContent = e.message;
-          }
-        }
-      }
-
-      // Tokenize the query
-      function tokenizeQuery(query) {
-
-        query = query.trim().replace(/\s+/g, ' ');
-
-        const pattern = /\s+(AND|OR|NOT)\s+/gi;
-
-        const rawParts = query.split(pattern);
-
-        const result = [];
-        for (let i = 0; i < rawParts.length; i++) {
-          const clause = rawParts[i].trim();
-          let operator = null;
-
-          if (i + 1 < rawParts.length && /^(AND|OR|NOT)$/i.test(rawParts[i + 1])) {
-            operator = rawParts[i + 1].toUpperCase();
-            i += 1;
-          }
-
-          result.push([clause, operator]);
-        }
-        console.log(result)
-        return result;
-      }
-
-      // Build the queries for the left and right files
-      function buildQueries(clauses) {
-
-        const prefix = "SELECT * from ? WHERE";
-
-        let suffixLeft = [];
-        let suffixRight = [];
-
-        clauses.forEach(([clause, operator], index) => {
-          
-          const isL = clause.trim().startsWith('L.');
-          const isR = clause.trim().startsWith('R.');
-          const isCommon = !isL && !isR;
-
-          if (isL || isCommon) {
-
-            const cleanedClause = clause.replace('L.', '');
-
-            suffixLeft.push(cleanedClause);
-
-            if (operator && (index + 1) < clauses.length && (clauses[index + 1][0].startsWith('L.') || (!clauses[index + 1][0].startsWith('R.') && !clauses[index + 1][0].startsWith('L.')))) {
-              suffixLeft.push(operator);
-            }
-
-          }
-
-          if(isR || isCommon) {
-
-            const cleanedClause = clause.replace('R.', '');
-
-            suffixRight.push(cleanedClause);
-
-            if (operator && (index + 1) < clauses.length && (clauses[index + 1][0].startsWith('R.') || (!clauses[index + 1][0].startsWith('R.') && !clauses[index + 1][0].startsWith('L.')))) {
-              suffixRight.push(operator);
-            }
-
-          }
-        })
-
-        return {"left": suffixLeft.length > 0 ? `${prefix} ${suffixLeft.join(' ')}`: "SELECT * from ?", "right": suffixRight.length > 0 ? `${prefix} ${suffixRight.join(' ')}`: "SELECT * from ?"};
-      }
-
-      // Collect the variants datas to create the tables
-      function collectVariants() {
-
-        const leftContent = document.getElementById("content1");
-        const rightContent = document.getElementById("content2");
-
-        const variantsDivsLeft = leftContent.querySelectorAll('[data-component="file-content-left"]');
-        const variantsDivsRight = rightContent.querySelectorAll('[data-component="file-content-right"]');
-
-        const filterCommonKeywords = ["CHROM", "POS", "ID", "REF", "ALT", "QUAL", "TYPE", "FILTER", "INFO", "FORMAT", "ROW", "STATUS"];
-        const filterLeftKeywords = [{%- if vcfs.repository[0].variants.format -%}{% for key in vcfs.repository[0].variants.format -%}"{{ key }}"{% if not loop.last %}, {% endif %}{% endfor %}{%- endif -%}];
-        const filterRightKeywords = [{%- if vcfs.repository[1].variants.format -%}{% for key in vcfs.repository[1].variants.format -%}"{{ key }}"{% if not loop.last %}, {% endif %}{% endfor %}{%- endif -%}];
-        const queryKeywords = ["=", "AND", "OR"];
-        const castNumberException = ["CHROM"];
-        
-        // Table are global variables to be used in the queries
-        window.tables = {"leftTable": createTable(variantsDivsLeft, filterCommonKeywords.concat(filterLeftKeywords), castNumberException),
-          "rightTable": createTable(variantsDivsRight, filterCommonKeywords.concat(filterRightKeywords), castNumberException)
-        };
-      }
-
-      // Create the static tables for queries
-      function createTable(collection, columns, exceptions) {
-        return Array.from(collection).map((div, index) => {
-                const obj = {};
-                columns.forEach(k => {
-                  let val = div.getAttribute(k);
-                  if (val && !exceptions.includes(k)) {
-                    let valNumberCasted = Number(val);
-                    // console.log(`Value: ${val}, casted to ${valNumberCasted} for keyword ${k}`)
-                    if (Number.isNaN(valNumberCasted)) {
-                      obj[k] = val;
-                    }
-                    else {
-                      obj[k] = valNumberCasted
-                    }
-                  }
-                  else {
-                    obj[k] = val
-                  }
-                })
-                return obj;
-              });
-      }
-
-      // Reset the filters
-      function resetFilters() {
-          document.getElementById("query-chromosome").value = "";
-          document.getElementById("query-filter").value = "ALL";
-          document.getElementById("query-variant").value = "ALL";
-          document.getElementById("query-status").value = "ALL";
-          document.querySelectorAll('[data-component="error-popup"]').forEach(error => error.classList.replace('flex', 'hidden'));
-          filter();
-      }
-
-    </script>
-
-    <script type="text/javascript">
-      document.addEventListener("DOMContentLoaded", function () {
-        document.getElementById("dropdown-icon-left").addEventListener("click", updateDisplay)
-        document.getElementById("dropdown-icon-right").addEventListener("click", updateDisplay)
-        document.getElementById("terminal-icon").addEventListener("click", updateDisplay)
-      });
-
-
-      function updateDisplay() {
-        if (this.id === "dropdown-icon-left" || this.id === "dropdown-icon-right") {
-          let element = document.getElementById("command");
-          if (element.classList.contains('hidden')) {
-            element.classList.replace('hidden', 'block');
-            document.querySelectorAll('[data-component="notification-metadata"]').forEach((notification) => notification.classList.add('hidden'))
-          }
-          else {
-            element.classList.replace('block', 'hidden');
-            document.querySelectorAll('[data-component="notification-metadata"]').forEach((notification) => notification.classList.remove('hidden'))
-          }
-          elements = document.querySelectorAll('[data-component="info-popup"]');
-          elements.forEach(popup => {
-            if (popup.classList.contains('hidden')) {
-              popup.classList.replace('hidden', 'flex');
-            }
-            else {
-              popup.classList.replace('flex', 'hidden');
-            }
-          });
-        }
-        else if (this.id === "terminal-icon") {
-          let element = document.getElementById("terminal");
-          if (element.classList.contains('hidden')) {
-            element.classList.replace('hidden', 'block')
-          }
-          else {
-            element.classList.replace('block', 'hidden')
-          }
-        }
-      }
-
-      // Highlight the command in the terminal
-      function highlightCommand() {
-        const tag = document.getElementById("command").querySelectorAll('code')[0];
-        const command = tag.textContent;
-        tag.innerText = ''
-        const tokens = command.split(' ');
-        tokens.forEach((token, index) => {
-          const element = document.createElement('code');
-          if (index === 0) {
-            element.style.color = "#50fa7b";
-          }
-          else {
-            if (token.includes('/')) {
-              element.style.color = "#8be9fd";
-            }
-            else {
-              element.style.color = "white";
-            } 
-          }
-          const text = document.createTextNode(index === 0 ? token : ` ${token}`);
-          element.appendChild(text);
-          tag.appendChild(element);
-        })
-      }
-    </script>
+    <!-- Loop logic -->
     <script type="text/javascript">
       // Create the loop button element
       const loopButton = document.createElement('button');
