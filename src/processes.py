@@ -126,4 +126,4 @@ class TasksManager():
 
             for task in self.flatten():
 
-                self.results[futures[future]] = job(task, *jobargs)
+                self.results[task] = job(task, *jobargs)
