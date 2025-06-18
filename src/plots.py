@@ -1,12 +1,12 @@
 import matplotlib.pyplot as plt
 from matplotlib_venn import venn2
-from memory_profiler import profile
 import plotly.express as px
 import plotly.graph_objs as go
 import plotly.io as pio
 from pandas import DataFrame, concat
 
 class Plot:
+    """ A class representing a plot """
 
     __slots__ = ('fig')
 
@@ -14,13 +14,11 @@ class Plot:
         
         self.fig = fig
 
-    def __str__(self):
-        pass
+        self.set_layout()
 
-    @staticmethod
-    def set_layout(fig: object):
+    def set_layout(self):
 
-        fig.update_layout(
+        self.fig.update_layout(
             font=dict(
                 size = 15,
                 family = "Ubuntu",
@@ -40,6 +38,9 @@ class Plot:
             )
         )
     
+    def __str__(self):
+        pass
+    
 class PlotLibrary:
 
     __slots__ = ('file', 'plots')
@@ -50,16 +51,20 @@ class PlotLibrary:
         self.plots = []
 
     def __str__(self):
-        return f"Library with {len(self.plots)} plots for file {self.file}"
+        return f"Library with {len(self.plots)} plots about {self.file}"
 
     def save(self, plot: Plot):
+        """ Save the plot to the library """
         
         self.plots.append(plot)
 
     def as_html(self):
-         return list(map(lambda p: pio.to_html(p.fig, full_html=False, include_plotlyjs=False),self.plots))
+        """ Return the plots as HTML """
+
+        return list(map(lambda p: pio.to_html(p.fig, full_html=False, include_plotlyjs=False),self.plots))
 
     def barplot(self, data, nominal: str, y: str, color: str, title: str, prefix: str) -> Plot:
+        """ Create a bar plot """
 
         if isinstance(data, list):
             if isinstance(data[0],DataFrame):
@@ -79,11 +84,10 @@ class PlotLibrary:
 
         plot = Plot(fig=fig)
 
-        Plot.set_layout(plot.fig)
-
         self.save(plot)
 
     def histogram(self, df: DataFrame, x: str, color: str, title: str, prefix: str) -> Plot:
+        """ Create a histogram plot """
 
         df.dropna(axis=0, how='any', inplace=True)
 
@@ -93,12 +97,10 @@ class PlotLibrary:
 
         plot = Plot(fig=fig)
 
-        Plot.set_layout(plot.fig)
-
         self.save(plot)
 
     def boxplot(self, df: DataFrame, nominal: str, y: str, color: str, title: str, prefix: str) -> Plot:
-
+        """ Create a box plot """
         fig = px.box(data_frame=df,
                         x=nominal,
                         y=y,
@@ -106,24 +108,23 @@ class PlotLibrary:
                         title=title)
             
         plot = Plot(fig=fig)
-
-        Plot.set_layout(plot.fig)
         
         self.save(plot)
 
     def venn(self, sizes: tuple[int], labels: list[str] = None) -> Plot:
+        """ Create a Venn diagram """
 
-        NSETS = 2
-        NSUBSETS = 3
-        PADDING = 0.2
+        NSETS: int = 2
+        NSUBSETS: int = 3
+        PADDING: float = 0.2
         
         v = venn2(sizes, labels)
 
         plt.close()
 
-        colors: list = ['#2C7A7B', '#822E4A']
+        colors: list[str] = ['#2C7A7B', '#822E4A']
 
-        shapes: list = [go.layout.Shape(type="circle",
+        shapes: list[go.layout.Shape] = [go.layout.Shape(type="circle",
                          xref="x",
                          yref="y", 
                          x0=v.centers[i].x - v.radii[i], 
@@ -135,7 +136,7 @@ class PlotLibrary:
                          opacity=0.75, 
                          name=labels[i]) for i in range(0,NSETS)]
         
-        annotations: list = [go.layout.Annotation(xref="x",
+        annotations: list[go.layout.Annotation] = [go.layout.Annotation(xref="x",
                                                   yref="y", 
                                                   x=v.set_labels[i].get_position()[0], 
                                                   y=v.set_labels[i].get_position()[1], 
@@ -149,12 +150,12 @@ class PlotLibrary:
                                                 text=v.subset_labels[i].get_text(), 
                                                 showarrow=False) for i in range(0,NSUBSETS))
         
-        xmin = min(v.centers[i].x - v.radii[i] for i in range(0,NSETS)) - PADDING
-        xmax = max(v.centers[i].x + v.radii[i] for i in range(0,NSETS)) + PADDING
-        ymin = min(v.centers[i].y - v.radii[i] for i in range(0,NSETS)) - PADDING
-        ymax = max(v.centers[i].y + v.radii[i] for i in range(0,NSETS)) + PADDING
+        xmin: float = min(v.centers[i].x - v.radii[i] for i in range(0,NSETS)) - PADDING
+        xmax: float = max(v.centers[i].x + v.radii[i] for i in range(0,NSETS)) + PADDING
+        ymin: float = min(v.centers[i].y - v.radii[i] for i in range(0,NSETS)) - PADDING
+        ymax: float = max(v.centers[i].y + v.radii[i] for i in range(0,NSETS)) + PADDING
         
-        fig = go.Figure()
+        fig: go.Figure = go.Figure()
 
         fig.update_xaxes(range=[xmin,xmax], showticklabels=False, ticklen=0)
 
@@ -171,11 +172,14 @@ class PlotLibrary:
             title="Venn Diagram"
         )
 
-        plot = Plot(fig=fig)
-
-        Plot.set_layout(plot.fig)
+        plot: Plot = Plot(fig=fig)
 
         self.save(plot)
 
-    def dark(self):
+    def dark(self) -> None:
+        """ Set the plots to a dark theme """
         list(map(lambda plot: plot.fig.update_layout(template="plotly_dark"),self.plots))
+
+    def light(self) -> None:
+        """ Set the plots to a light theme """
+        list(map(lambda plot: plot.fig.update_layout(template="plotly_light"),self.plots))

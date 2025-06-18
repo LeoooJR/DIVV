@@ -9,6 +9,7 @@ from sortedcontainers import SortedSet
 from utils import suppress_warnings, convert
 
 class VariantRepository():
+    """ A class to store variants and perform operations on them """
 
     INDEX: dict[str:int] = {
                 "CHROM": 0,
@@ -103,6 +104,7 @@ class VariantRepository():
                                 }
             
     def is_filtered(self) -> bool:
+        """ Check if any filter is applied """
 
         return any([self.FILTERS[filter] for filter in self.FILTERS])
 
@@ -264,24 +266,24 @@ class VariantRepository():
         """ map FORMAT string to respective SAMPLE values """
 
         # Split the format string into a list of fields
-        format = format.split(":")
+        format: list[str] = format.split(":")
 
         # VCF is composed of multiples samples
         if isinstance(values,list):
             # Split the values string into a lists of list of values,
             # Each list of values represents a sample
-            values = list(map(lambda x: x.split(":"), values))
+            values: list[list[str]] = list(map(lambda x: x.split(":"), values))
             # Return a dictionary of the format and values mapped to each sample
             return {f"sample{s}": {f: convert(v)} for s in range(len(values)) for f, v in zip(format,values[s])}
 
         # VCF is composed of a unique sample
         else:
-            values = values.split(":")
+            values: list[str] = values.split(":")
 
             return {f: convert(v) for f, v in zip(format,values)}
             
     def update_repository(self, chromosome: str, variants: DataFrame = None, filtered: dict = None, profile: dict = None):
-
+        """ Update the repository with the new variants """
         if not (variants.empty):
 
             self.repository[chromosome] = variants
@@ -295,6 +297,7 @@ class VariantRepository():
             self.profile[chromosome] = profile
 
     def collapse(self) -> DataFrame:
+        """ Collapse variants into a single DataFrame """
 
         df: DataFrame = concat([self.repository[chrom] for chrom in self.chromosomes if chrom in self.repository]).astype(
                                                                                                                             {
@@ -310,12 +313,13 @@ class VariantRepository():
         return df
 
     def visualization(self):
+        """ Create plots from metrics """
 
-        self.plots = PlotLibrary()
+        self.plots: PlotLibrary = PlotLibrary()
 
-        data = []
+        data: list[dict] = []
 
-        chromosomes = self.profile.keys()
+        chromosomes: list[str] = list(self.profile.keys())
 
         for k in chromosomes:
 
@@ -325,33 +329,38 @@ class VariantRepository():
 
         self.plots.barplot(data, "Chromosome","Count", "Type", "Variant by Chromosome", "VariantByChromosome")
 
-        data = DataFrame([{"Chromosome": k, "Genotype": genotype, "Count": self.profile[k][code]} 
+        data: DataFrame = DataFrame([{"Chromosome": k, "Genotype": genotype, "Count": self.profile[k][code]} 
                         for k in chromosomes 
                         for genotype, code in [("Homozygous", "hom"), ("Heterozygous", "het")]])
 
         self.plots.barplot(data, "Chromosome", "Count", "Genotype", "Genotype by Chromosome","GenotypeByChromosome")
 
-        data = DataFrame([{"Chromosome": k, "SNP": snp, "Count": self.profile[k]["variant"]["snp"][snp]} for k in chromosomes for snp in ["transition","transversion"]])
+        data: DataFrame = DataFrame([{"Chromosome": k, "SNP": snp, "Count": self.profile[k]["variant"]["snp"][snp]} for k in chromosomes for snp in ["transition", "transversion"]])
 
-        self.plots.barplot(data, "Chromosome", "Count", "SNP", "SNP Type by Chromosome", "SNPTypeByChrom")
+        # Are there any SNPs in the VCF?
+        if data["Count"].values.any():
 
-        chromosome = list(chromosomes)[0]
+            self.plots.barplot(data, "Chromosome", "Count", "SNP", "SNP Type by Chromosome", "SNPTypeByChrom")
 
+        chromosome: str = list(chromosomes)[0]
+        
+        # Are there any GQ collected values?
         if self.profile[chromosome]["GQ"].size:
 
             pass
 
+        # Are there any depth collected values?
         if self.profile[chromosome]["depth"].size:
 
             with suppress_warnings():       
-                data = DataFrame(list(map(lambda k: Series([k, numpy.mean(self.profile[k]["depth"])], index=["Chromosome", "Depth"]), chromosomes)))
+                data: DataFrame = DataFrame(list(map(lambda k: Series([k, numpy.mean(self.profile[k]["depth"])], index=["Chromosome", "Depth"]), chromosomes)))
             
             self.plots.barplot(data, "Chromosome", "Depth", color="Chromosome", title="Mean Depth by Chromosome", prefix="DepthByChromosomeBarPlot")
 
-            data = list(map(lambda k: DataFrame({"Chromosome": [k] * self.profile[k]["depth"].size,
+            data: list[DataFrame] = list(map(lambda k: DataFrame({"Chromosome": [k] * self.profile[k]["depth"].size,
                                     "Depth": self.profile[k]["depth"].flatten()}), chromosomes))
 
-            df = concat(data, ignore_index=True).astype({"Chromosome": "category", "Depth": "int"})
+            df: DataFrame = concat(data, ignore_index=True).astype({"Chromosome": "category", "Depth": "int"})
 
             self.plots.boxplot(df, "Chromosome", "Depth", "Chromosome", "Depth by Chromosome", "DepthByChromosomeBoxPlot")
 
