@@ -2237,7 +2237,7 @@
                 Hover for Info
               </button>
             </div>
-            <table class="w-[90%] self-center [box-shadow:0_4px_6px_-1px_rgba(0,_0,_0,_0.1),_0_2px_4px_-1px_rgba(0,_0,_0,_0.06)] font-[Ubuntu] text-[#6B7280]">
+            <table id="benchmark-table" class="w-[90%] self-center [box-shadow:0_4px_6px_-1px_rgba(0,_0,_0,_0.1),_0_2px_4px_-1px_rgba(0,_0,_0,_0.06)] font-[Ubuntu] text-[#6B7280]">
               <tbody>
                 <tr class="flex flex-row w-full border-b border-gray-200 bg-[#E5E7EB] h-[50px] items-center">
                   <th class="flex flex-row w-full">TYPE</th>
@@ -2599,8 +2599,8 @@
       const metricsContainer = document.createElement('div');
       Object.assign(metricsContainer.style, {
         position: 'fixed',
-        bottom: '70px',
-        right: '20px',
+        bottom: '20px',
+        right: '230px',
         padding: '8px 15px',
         backgroundColor: 'rgba(0, 0, 0, 0.8)',
         color: 'white',
@@ -2820,7 +2820,7 @@
             title: 'Filtering Options',
             text: 'Use these filters to refine and analyze your VCF data',
             attachTo: {
-              element: '#file-panels',
+              element: '#filters',
               on: 'bottom'
             }
           },
@@ -2834,6 +2834,19 @@
             }
           }
         ];
+
+        {% if table is not none %}
+        const step = {
+          id: 'benchmark-tour',
+          title: 'Benchmarking',
+          text: 'Explore the benchmarking metrics calculated from the VCFs',
+          attachTo: {
+            element: '#benchmark-table',
+            on: 'top'
+          }
+        };
+        steps.push(step);
+        {% endif %}
 
         steps.forEach(step => {
           tour.addStep({
