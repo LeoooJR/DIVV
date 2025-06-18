@@ -2,7 +2,7 @@ class CompressionIndexError(OSError):
     
     pass
 
-class FileError(ValueError):
+class FileError(Exception):
 
     pass
 

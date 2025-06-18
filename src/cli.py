@@ -4,6 +4,7 @@ from delta import delta
 from loguru import logger
 import os
 from sys import argv
+import validation
 
 class Program:
 
@@ -68,6 +69,7 @@ class Program:
             type=int,
             required=False,
             default=0,
+            action=validation.ValidateProcessAction,
             help="Number of processes to be used in addition to the main process.",
         )
         self.parser.add_argument(
