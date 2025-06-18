@@ -1,3 +1,4 @@
+from ast import literal_eval
 import contextlib
 from cyvcf2 import VCF, Writer
 from datetime import datetime, timezone
@@ -125,7 +126,7 @@ def difference(a: set[str], b: set[str]) -> set:
     """ Return the difference of two sets """
     return a - b
 
-def jaccard_index(shared: int, total: dict) -> float:
+def jaccard_index(shared: int, total: dict) -> float|None:
     """ Calculate the Jaccard index """
     try:
         return shared / total
@@ -141,7 +142,7 @@ def convert(a: object) -> object:
     try:
         # If the variable contains a '/' or '|' character, it is a genotype information, return the variable as is
         # Else return the variable as an evaluated expression
-        return a if sum(list(map(lambda x: x in a, ('/','|')))) else eval(a)
+        return a if sum(list(map(lambda x: x in a, ('/','|')))) else literal_eval(a)
     except Exception:
         # If the variable cannot be evaluated, return the variable as is
         return a

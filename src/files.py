@@ -277,13 +277,23 @@ class VCF(GenomicFile):
                             
                     self.archive: str = self.path
                             
-                except FileNotFoundError:
+                except FileNotFoundError as e:
 
                     raise errors.VCFError(f"{self} is not a valid path")
                 
-                except IOError:
+                except IOError as e:
 
-                    raise errors.VCFError(f"An error occurred while reading {self}")
+                    raise errors.VCFError(f"An error occurred while reading {self}: {e}")
+                
+                except Exception as e:
+
+                    if isinstance(e, (FileNotFoundError, IOError)):
+
+                        raise
+
+                    else:
+
+                        raise errors.VCFError(f"An unexpected error has occurred when validating {self}: {e}")
         
         # Is not a archive
         else:
@@ -311,6 +321,16 @@ class VCF(GenomicFile):
             except IOError:
 
                 raise errors.VCFError(f"An error occurred while reading {self}")
+            
+            except Exception as e:
+
+                    if isinstance(e, (FileNotFoundError, IOError)):
+
+                        raise
+
+                    else:
+
+                        raise errors.VCFError(f"An unexpected error has occurred when validating {self}: {e}")
             
     def compressing(self, bin: str = "project"):
 
@@ -447,7 +467,9 @@ class VCF(GenomicFile):
 
             except Exception as e:
 
-                logger.warning(e)
+                logger.error(e)
+
+                raise errors.VCFError(f"Cannot extract FORMAT from {self.archive}: {e}")
 
         if context:
 
@@ -586,7 +608,7 @@ class VCFProcessor:
             task[0].open(context=False)
         except (FileNotFoundError, errors.VCFError) as e:
             logger.error(e)
-            raise errors.ProcessError()
+            raise errors.ProcessError(e)
 
         try:
             # At first, set the filters to False
@@ -1125,17 +1147,17 @@ class VCFRepository():
                     try:
                         summary["RECALL"] = summary["TRUTH.TP"] / (summary["TRUTH.TP"] + summary["TRUTH.FN"])
                     except ZeroDivisionError:
-                        summary["RECALL"] = 0.00
+                        summary["RECALL"] = None
 
                     try:
                         summary["PRECISION"] = summary["TRUTH.TP"] / (summary["TRUTH.TP"] + summary["QUERY.FP"])
                     except ZeroDivisionError:
-                        summary["PRECISION"] = 0.00
+                        summary["PRECISION"] = None
                         
                     try:
                         summary["F1"] = 2 * (summary["PRECISION"] * summary["RECALL"]) / (summary["PRECISION"] + summary["RECALL"])
                     except ZeroDivisionError:
-                        summary["F1"] = 0.00
+                        summary["F1"] = None
 
                     series.append(summary)
 
@@ -1156,7 +1178,14 @@ class VCFRepository():
     def __len__(self):
 
         return len(self.repository)
-            
+    
+    def __str__(self):
+        
+        return ",".join([str(file) for file in self.repository])
+    
+    def __repr__(self):
+        
+        return ",".join([str(file) for file in self.repository])            
 class Report:
     """
     A class to represent a report
@@ -1167,7 +1196,7 @@ class Report:
         table: The benchmark table (truth metrics) object as a DataFrame
     """
     # Make use of __slots__ to avoid the creation of __dict__ and __weakref__ for each instance, reducing the memory footprint
-    __slots__ = ('vcfs', 'tags', 'cmd', 'view', 'table', 'archive')
+    __slots__ = ('vcfs', 'tags', 'cmd', 'view', 'table', 'archive', 'date')
 
     def __init__(self, vcfs: VCFRepository, tags: list[str], cmd: str, view: dict, table: DataFrame = None, archive: bool = False):
 
@@ -1193,6 +1222,9 @@ class Report:
         self.archive = archive
 
     def create(self, output: pathlib.Path = pathlib.Path.cwd()):
+
+        # Report creation time
+        self.date = datetime.datetime.now().strftime("%Y-%m-%d, %X")
 
         # Custom filter to check if a value is NaN with Jinja2
         def is_nan(value):
@@ -1256,7 +1288,7 @@ class Report:
         template = env.get_template("template.html")
 
         # Render the template
-        html = template.render(vcfs=self.vcfs, tags=self.tags, cmd=self.cmd, view=self.view, table=self.table, date=datetime.datetime.now().strftime("%Y-%m-%d, %X"), version=__version__)
+        html = template.render(vcfs=self.vcfs, tags=self.tags, cmd=self.cmd, view=self.view, table=self.table, date=self.date, version=__version__)
 
         if self.archive:
 
@@ -1283,6 +1315,11 @@ class Report:
                 path.mkdir(exist_ok=True)
             except (PermissionError, FileNotFoundError, FileExistsError) as e:
                 raise errors.ReportError(f"Report cannot be created: {e}")
+            except Exception as e:
+                if isinstance(e,(PermissionError, FileNotFoundError, FileExistsError)):
+                    raise
+                else:
+                    raise errors.ReportError(f"An unexpected error has occurred when creating the output directory: {e}")
 
             with open(path.joinpath("delta.html"),'w') as f:
                 f.writelines(html)
@@ -1302,8 +1339,8 @@ class Report:
 
     def __str__(self):
         
-        pass
+        return f"Report for files {self.vcfs}"
 
     def __repr__(self):
         
-        pass
+        return f"Report for files {self.vcfs}"

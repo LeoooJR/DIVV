@@ -76,7 +76,7 @@ def delta(params: object) -> int:
         
     except errors.VCFError as e: # Error raised by VCF file are critical
 
-        logger.error(f"Error: {e}")
+        logger.error(e)
 
         raise SystemExit(e)
 
