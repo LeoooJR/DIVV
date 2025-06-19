@@ -2,6 +2,7 @@ from collections import Counter
 import copy as cp
 import datetime
 import enum
+from inspect import getmembers, ismethod
 import json
 import cyvcf2
 import errors
@@ -577,11 +578,11 @@ class VCFProcessor:
 
     def __init__(self):
 
-        pass
+        self.METHODS: list = [method[0] for method in getmembers(VCFProcessor, predicate=ismethod)]
 
-    def is_supported():
+    def is_supported(self, method):
 
-        pass
+        return method in self.METHODS
     
     @staticmethod
     def preprocessing(vcf: VCF, bins: str = "project"):
@@ -1148,10 +1149,13 @@ class VCFRepository():
                 series = []
                 
                 # Compute the performance metrics for SNPs and INDELs
-                for v in ['snp','indel']:
+                for v in ['snp', 'indel']:
 
                     # Create a mask of variants that are of the specified type
-                    type_mask = df["Type"] == v
+                    if v == "snp":
+                        type_mask = df["Type"] == v
+                    else:
+                        type_mask = df["Type"].isin(["ins", "del"])
 
                     # Filter the DataFrame based on the variant type and the filter mask
                     filtered_df = df[type_mask & pass_mask]
