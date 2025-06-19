@@ -1,6 +1,7 @@
 from collections import Counter
 import copy as cp
 import datetime
+import enum
 import json
 import cyvcf2
 import errors
@@ -128,18 +129,22 @@ class VCF(GenomicFile):
 
         self.stdin = None
 
-        # Map the header values to there respectives indexes
-        self.HEADER = {
-                        "CHROM": 0,
-                        "POS": 1,
-                        "ID": 2,
-                        "REF": 3,
-                        "ALT": 4,
-                        "QUAL": 5,
-                        "FILTER": 6,
-                        "INFO": 7,
-                        "FORMAT": 8,
-                    }
+        # Set the header values to there respectives indexes
+        self.header_definition = {
+                                    "CHROM": 0,
+                                    "POS": 1,
+                                    "ID": 2,
+                                    "REF": 3,
+                                    "ALT": 4,
+                                    "QUAL": 5,
+                                    "FILTER": 6,
+                                    "INFO": 7,
+                                    "FORMAT": 8,
+                                }
+                
+        self.HEADER: enum.IntEnum = enum.IntEnum(value="header",
+                                                 names=self.header_definition,
+                                                 start=0)
 
         self.SAMPLES = None
 
@@ -463,7 +468,7 @@ class VCF(GenomicFile):
 
             try:
 
-                self.variants.format = str(next(self.stdin)).split()[self.HEADER["FORMAT"]]
+                self.variants.format = str(next(self.stdin)).split()[self.HEADER.FORMAT.value]
 
             except Exception as e:
 
@@ -486,27 +491,46 @@ class VCF(GenomicFile):
 
     def update_header(self, samples: list):
 
+        last_field_index: int = max(self.header_definition[field] for field in self.header_definition)
+
+        self.header_definition.update({
+                                        s: i
+                                            for i, s in zip(
+                                                range(
+                                                    (last_field_index + 1),
+                                                    (last_field_index + 1) + len(samples),
+                                                ),
+                                                samples,
+                                            )
+                                    })
+
         # Add the samples to the header
-        self.HEADER.update(
-            {
-                s: i
-                for i, s in zip(
-                    range(
-                        (self.HEADER["FORMAT"] + 1),
-                        (self.HEADER["FORMAT"] + 1) + len(samples),
-                    ),
-                    samples,
-                )
-            }
-        )
+        self.HEADER = enum.IntEnum(value="header",
+                                   names=self.header_definition,
+                                   start=0)
 
         logger.debug(
-            f"Header for {self} has such format: {' '.join(self.HEADER.keys())}"
+            f"Header for {self} has such format: {' '.join(list(self.header_definition.keys()))}"
         )
 
     def package(self):
 
         return cp.deepcopy(self)
+    
+    # Pickling logic
+    def __getstate__(self):
+
+        state = self.__dict__.copy()
+        state['HEADER'] = None
+        return state
+    
+    # Pickling logic
+    def __setstate__(self, state):
+
+        self.__dict__.update(state)
+        self.HEADER = enum.IntEnum(value="header",
+                                   names=self.header_definition,
+                                   start=0)
 
 class VCFIndex(GenomicFile):
 
@@ -591,7 +615,7 @@ class VCFProcessor:
     def process_chromosome(
         task,
         profile: bool = False,
-    ) -> tuple:
+    ) -> tuple[dict,dict,dict]:
         """
         Process a chromosome from a VCF file
             chrom: containing the chromosome to process
@@ -611,10 +635,10 @@ class VCFProcessor:
             raise errors.ProcessError(e)
 
         try:
+            variants = {}
             # At first, set the filters to False
             exclude: bool = False
             # Save the filtered variants number of operations
-            variants = {} 
             filtered = Counter({
                 "snp": 0,
                 "mnp": 0,
@@ -632,13 +656,13 @@ class VCFProcessor:
                         "snp": {
                             "transition": 0,
                             "transversion": 0,
-                            "A": {"A": 0, "T": 0, "C": 0, "G": 0},
-                            "T": {"A": 0, "T": 0, "C": 0, "G": 0},
-                            "C": {"A": 0, "T": 0, "C": 0, "G": 0},
-                            "G": {"A": 0, "T": 0, "C": 0, "G": 0},
+                            "A": Counter({"A": 0, "T": 0, "C": 0, "G": 0}),
+                            "T": Counter({"A": 0, "T": 0, "C": 0, "G": 0}),
+                            "C": Counter({"A": 0, "T": 0, "C": 0, "G": 0}),
+                            "G": Counter({"A": 0, "T": 0, "C": 0, "G": 0}),
                         },
                         "mnp": 0,
-                        "indel": {"insertion": 0, "deletion": 0},
+                        "indel": Counter({"insertion": 0, "deletion": 0}),
                         "inv": 0,
                         "csv": 0,
                     },
@@ -660,18 +684,18 @@ class VCFProcessor:
                     # Get the values from the VCF file
                     parts: list[str] = str(v).split("\t")
                     # Set the INFO values as a single character to reduce memory footprint
-                    parts[task[0].header["INFO"]] = '.'
+                    parts[task[0].header.INFO.value] = '.'
                     # First iteration, get the FORMAT values
                     if not i:
 
-                        format: str = parts[task[0].header["FORMAT"]]
+                        format: str = parts[task[0].header.FORMAT.value]
 
                         logger.debug(f"FORMAT for chromosome {task[1]}: {format}")
 
                     # From FORMAT get the values for each sample
                     samples_values: dict[str:dict] = {
                         s: VariantRepository.format_to_values(
-                            format=format, values=parts[task[0].header[s]]
+                            format=format, values=parts[task[0].header[s].value]
                         )
                         for s in task[0].samples
                     }
@@ -717,10 +741,10 @@ class VCFProcessor:
                                         else:
                                             mutation: str = "transversion"
                                         stats["variant"][vt][mutation] += 1
-                                        stats["variant"][vt][v.REF][v.ALT[0]] += 1
+                                        stats["variant"][vt][v.REF].update([v.ALT[0]])
                                     elif vt in ["del", "ins"]:
                                         mutation: str = "deletion" if vt == "del" else "insertion"
-                                        stats["variant"]["indel"][mutation] += 1
+                                        stats["variant"]["indel"].update([mutation])
                                     else:
                                         stats["variant"][vt] += 1
 
@@ -1022,8 +1046,8 @@ class VCFRepository():
 
             logger.debug(f"Jaccard index: {results[pair]['jaccard']}")
 
-            results[pair]["headers"] = {pair[0]: "\t".join(list(pair[0].header.keys())),
-                                        pair[1]: "\t".join(list(pair[1].header.keys()))}
+            results[pair]["headers"] = {pair[0]: "\t".join([field.name for field in pair[0].header]),
+                                        pair[1]: "\t".join([field.name for field in pair[1].header])}
 
             # Rename columns to avoid conflicts, inplace for better memory management
             list(
