@@ -769,7 +769,7 @@ class VCFProcessor:
                                         )
                                     except KeyError:
                                         logger.warning(
-                                            f"Genotype quality value cannot be retrieved with key(s): {task[0].format['genotype_quality']}"
+                                            f"Genotype quality value cannot be retrieved with key(s): {task[0].format['genotype_quality']} in {task[0]}"
                                         )
                                         # Keep record of exception
                                         warnings["genotype_quality"] = True
@@ -804,7 +804,7 @@ class VCFProcessor:
                                             )
                                         )
                                     except KeyError:
-                                        logger.warning(f"Genotype type cannot be retrieved with key(s): {task[0].format['genotype']}")
+                                        logger.warning(f"Genotype type cannot be retrieved with key(s): {task[0].format['genotype']} in {task[0]}")
                                         # Keep record of exception
                                         warnings["genotype"] = True
 
@@ -821,12 +821,12 @@ class VCFProcessor:
                                                     samples_values[s][task[0].format["depth"][0]]
                                                     if task[0].format["depth"][0] in samples_values[s]
                                                     else [samples_values[s][task[0].format["depth"][1]]]
-                                                ) # Try to get the depth value from the first FORMAT value, if not found, get it from the second FORMAT value
+                                                ) # Try to get the depth value from the first FORMAT value, if not found, try to get it from the second FORMAT value
                                                 for s in task[0].samples
                                             ]
                                         )
                                     except KeyError:
-                                        logger.warning(f"Sequencing depth value cannot be retrieved with key(s): {task[0].format['depth']}")
+                                        logger.warning(f"Sequencing depth value cannot be retrieved with key(s): {task[0].format['depth']} in {task[0]}")
                                         # Keep record of exception
                                         warnings["depth"] = True
         except Exception as e:
