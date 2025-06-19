@@ -119,15 +119,15 @@ class VCF(GenomicFile):
         
         super().__init__(path)
 
-        if not lazy:
-
-            self.verify()
-
-        self.reference: bool = reference
-
         self.archive: str = None
 
         self.stdin = None
+
+        self.reference: bool = reference
+
+        if not lazy:
+
+            self.verify()
 
         # Set the header values to there respectives indexes
         self.header_definition = {
@@ -608,8 +608,14 @@ class VCFProcessor:
             except Exception as e:
 
                 raise errors.CompressionIndexError(f"Failed to index {vcf}: {e}")
-            
-        vcf.open(context=True)
+        
+        try:
+
+            vcf.open(context=True)
+
+        except OSError as e:
+
+            raise errors.VCFError(f"Cannot open {vcf}")
 
     @staticmethod
     def process_chromosome(
