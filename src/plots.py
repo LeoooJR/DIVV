@@ -135,10 +135,10 @@ class PlotLibrary:
                          line_color=colors[i], 
                          opacity=0.75, 
                          name=labels[i]) for i in range(0,NSETS)]
-        
+                
         annotations: list[go.layout.Annotation] = [go.layout.Annotation(xref="x",
                                                   yref="y", 
-                                                  x=v.set_labels[i].get_position()[0], 
+                                                  x=v.set_labels[i].get_position()[0] - v.radii[i] if not i else v.set_labels[i].get_position()[0] + v.radii[i], 
                                                   y=v.set_labels[i].get_position()[1], 
                                                   text=v.set_labels[i].get_text(), 
                                                   showarrow=False) for i in range(0,NSETS)]
