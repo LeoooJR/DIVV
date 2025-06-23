@@ -1255,7 +1255,7 @@ class Report:
         # How to save the outputs
         self.archive = archive
 
-    def create(self, output: pathlib.Path = pathlib.Path.cwd()):
+    def create(self, output: pathlib.Path = pathlib.Path.cwd()) -> pathlib.Path:
 
         # Report creation time
         self.date = datetime.datetime.now().strftime("%Y-%m-%d, %X")
@@ -1325,28 +1325,32 @@ class Report:
         html = template.render(vcfs=self.vcfs, tags=self.tags, cmd=self.cmd, view=self.view, table=self.table, date=self.date, version=__version__)
 
         if self.archive:
+            # If the output has no suffix, add a .zip suffix
+            if not output.suffix:
+                output: pathlib.Path = output.with_suffix(".zip")
 
-            path = output.joinpath("delta.zip")
-
-            # Open data stream with context manager
-            with zipfile.ZipFile(path, mode='w') as zip:
+            # Open data stream with context manager to create a ZIP file
+            with zipfile.ZipFile(output, mode='w') as zip:
                 zip.writestr("delta.html", html)
+                # Copy the stylesheets to the ZIP file
                 for stylesheet in glob(stylesheets):
                     zip.write(stylesheet, arcname=os.path.relpath(path=stylesheet, start=ressources))
+                # Copy the statics to the ZIP file
                 for static in glob(statics):
                     zip.write(static, arcname=os.path.relpath(path=static, start=ressources))
+                # Copy the assets to the ZIP file
                 for root, dirs, files in os.walk(assets):
                     for file in files:
                         file_path = os.path.join(root, file)
                         zip.write(file_path, arcname=os.path.relpath(path=file_path, start=ressources))
-
+                    
         else:
 
-            path = output.joinpath("delta")
+            output = output.joinpath("delta")
 
-            # Open data stream
+            # Create the output directory
             try:
-                path.mkdir(exist_ok=True)
+                output.mkdir(exist_ok=True)
             except (PermissionError, FileNotFoundError, FileExistsError) as e:
                 raise errors.ReportError(f"Report cannot be created: {e}")
             except Exception as e:
@@ -1355,22 +1359,26 @@ class Report:
                 else:
                     raise errors.ReportError(f"An unexpected error has occurred when creating the output directory: {e}")
 
-            with open(path.joinpath("delta.html"),'w') as f:
+            # Write the HTML report to the output directory
+            with open(output.joinpath("delta.html"),'w') as f:
                 f.writelines(html)
 
             # Copy the assets and statics files next to the report
             for f in glob(stylesheets):
-                copy(f, path)
+                copy(f, output)
+            # Copy the assets to the output directory
+            copytree(assets, os.path.join(output, "assets"), dirs_exist_ok=True)
+            # Copy the statics to the output directory
+            copytree(os.path.dirname(statics), os.path.join(output,'statics'), dirs_exist_ok=True)
 
-            copytree(assets, os.path.join(path, "assets"), dirs_exist_ok=True)
-
-            copytree(os.path.dirname(statics), os.path.join(path,'statics'), dirs_exist_ok=True)
-
-            if os.path.exists(path.joinpath("delta.html")):
-                webbrowser.open(str(path.joinpath("delta.html")))
+            # Try to open the report in the default web browser
+            if os.path.exists(output.joinpath("delta.html")):
+                webbrowser.open(str(output.joinpath("delta.html")))
             else:
                 raise errors.ReportError("Report not found on filesystem.")
-
+            
+        return output
+            
     def __str__(self):
         
         return f"Report for files {self.vcfs}"

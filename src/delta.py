@@ -4,7 +4,6 @@ import errors
 import files
 from itertools import repeat
 from loguru import logger
-from memory_profiler import profile
 import os
 from pathlib import Path
 import processes
@@ -26,22 +25,6 @@ def delta(params: object) -> int:
         params.vcfs[1], str
     ), "Input VCF should be string instance"
 
-    if not (os.path.isdir(params.output)):
-
-        logger.error(f"No such directory: '{params.output}'")
-
-        raise SystemExit(f"No such directory: '{params.output}'")
-        
-    else:
-
-        if not os.access(params.output, os.W_OK):
-
-            logger.error(f"Write permissions are not granted for the directory: {params.output}")
-
-            raise SystemExit(f"Write permissions are not granted for the directory: {params.output}")
-            
-    params.output = Path(params.output)
-
     logger.debug(f"VCFS: {params.vcfs}")
 
     logger.debug(
@@ -52,14 +35,7 @@ def delta(params: object) -> int:
 
     logger.debug(f"Indexes: {params.indexes}")
 
-    logger.debug(f"Serialize output: {params.serialize}")
-
-    logger.debug(f"Output a report: {params.report}")
-
-    if params.report and params.archive:
-
-        logger.debug(f"Generated report will be archived as ZIP file.")
-
+    # Filters used to filter the VCF files
     filters: dict[str:bool] = {"SNP": params.exclude_snps,
                                "TRANSITION": params.exclude_trans,
                                "MNP": params.exclude_mnps,
@@ -70,8 +46,76 @@ def delta(params: object) -> int:
     
     logger.debug(f"Filters used: {filters}")
 
+    # If a report is requested, check output path
+    if params.report:
+
+        logger.debug(f"Output a report: {params.report}")
+
+        # if a archive is requested, the output path must link to a file
+        if params.archive:
+
+            logger.debug(f"Generated report will be archived as ZIP file.")
+
+            # if the output path is a directory, raise an error
+            if os.path.isdir(params.output):
+
+                logger.error(f"Output path '{params.output}' is a directory, expected a file with --archive option.")
+
+                raise SystemExit(f"Output path '{params.output}' is a directory, expected a file with --archive option.")
+
+            # if the output path is a file, check the parent directory
+            else:
+
+                parent_dir = os.path.dirname(params.output)
+
+                # if there is no parent directory, it is a relative path in the current directory
+                if not parent_dir:
+
+                    parent_dir = os.getcwd()
+
+                # if the parent directory does not exist, raise an error
+                if not os.path.isdir(parent_dir):
+
+                    logger.error(f"No such parent directory: '{parent_dir}'")
+
+                    raise SystemExit(f"No such parent directory: '{parent_dir}'")
+                
+                else:
+
+                    # if the parent directory is not writable, raise an error
+                    if not os.access(parent_dir, os.W_OK):
+
+                        logger.error(f"Write permissions are not granted for the parent directory: {parent_dir}")
+
+                        raise SystemExit(f"Write permissions are not granted for the parent directory: {parent_dir}")
+        
+        # A plain directory is expected        
+        else:
+
+            # if the output path is a directory, check if it exists
+            if not (os.path.isdir(params.output)):
+
+                logger.error(f"No such output directory: '{params.output}'")
+
+                raise SystemExit(f"No such output directory: '{params.output}'")
+                
+            else:
+
+                # if the output directory is not writable, raise an error
+                if not os.access(params.output, os.W_OK):
+
+                    logger.error(f"Write permissions are not granted for the output directory: {params.output}")
+
+                    raise SystemExit(f"Write permissions are not granted for the output directory: {params.output}")
+            
+    # Convert the output path to a Path object allowing easier manipulation
+    params.output = Path(params.output)
+
+    logger.debug(f"Serialize output: {params.serialize}")
+
     try:
 
+        # Create a VCFRepository object from the input VCF files and indexes
         vcfs: files.VCFRepository = files.VCFRepository(vcfs=params.vcfs, index=params.indexes, reference=params.benchmark, filters=filters)
         
     except errors.VCFError as e: # Error raised by VCF file are critical
@@ -80,6 +124,7 @@ def delta(params: object) -> int:
 
         raise SystemExit(e)
 
+    # Preprocess the VCF files
     for vcf in vcfs.repository:
 
         try:
@@ -92,10 +137,12 @@ def delta(params: object) -> int:
 
             raise SystemExit(e)
 
+    # Create a TasksManager object to manage the tasks
     manager: processes.TasksManager = processes.TasksManager(vcfs, params.process)
 
     manager.scheduling(tasks=[vcf.variants.chromosomes for vcf in vcfs.repository])
 
+    # Commit the tasks to the TasksManager
     try:
         
         manager.commit(job=vcfs.processor.process_chromosome, jobargs=[True])
@@ -106,15 +153,17 @@ def delta(params: object) -> int:
 
         raise SystemExit(e)
     
+    # Update the VCFRepository with the results
     for vcf in vcfs.repository:
 
         for task in manager.tasks[vcf]:
     
             vcf.variants.update_repository(task[1], *manager.results[task])
 
+    # Compare the VCF files
     comparaisons: dict = vcfs.compare()
 
-    # Should the output be serialized ?
+    # If a serialization is requested, serialize the output
     if params.serialize:
 
         logger.debug(f"Serializing output as {params.serialize} to {params.output}.")
@@ -138,7 +187,7 @@ def delta(params: object) -> int:
             pass
             # files.VCFRepository.processor.serialize([None, os.getcwd()], comparaisons[(vcfs.repository[0],vcfs.repository[1])]["variants"], params.serialize)
 
-    # Should the output be reported ?
+    # If a report is requested, generate the report
     if params.report:
 
         logger.debug(f"Generating a HTML report to {params.output}.")
@@ -159,7 +208,7 @@ def delta(params: object) -> int:
 
         try:
             # Create a report with the results
-            files.Report(
+            dest: Path = files.Report(
                 vcfs=vcfs,
                 tags=tags,
                 cmd=" ".join(argv),
@@ -168,7 +217,7 @@ def delta(params: object) -> int:
                 archive=params.archive
             ).create(output=params.output)
 
-            stdout_console.print(Panel.fit(f"Report successfully generated at '{params.output}'.", title="Success", highlight=True), style="result")
+            stdout_console.print(Panel.fit(f"Report successfully generated at '{dest}'.", title="Success", highlight=True), style="result")
         except errors.ReportError as e:
             raise SystemExit(e)
 
