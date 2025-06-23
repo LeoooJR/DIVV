@@ -1435,11 +1435,11 @@
                 </div> 
 
                 <!-- Variant statistics -->
-                <div id="variant-statistics" class="flex flex-row bg-[#f3f4f6] mt-[10px]">
-                  <div class="w-full ml-[10px] grid grid-cols-[1fr] lg:grid-cols-[1fr_1fr] 2xl:grid-cols-[1fr_1fr_1fr] gap-[1.0rem]">
+                <div id="variant-statistics" class="flex flex-row bg-[#f3f4f6] mt-[10px] overflow-x-auto">
+                  <div class="w-full grid grid-cols-[1fr] lg:grid-cols-[1fr_1fr] 2xl:grid-cols-[1fr_1fr_1fr] gap-[1.0rem]">
 
                     <!-- SNP (Single Nucleotide Polymorphism) -->
-                    <div class="flex p-4 rounded-lg bg-[#fafafa] gap-4">
+                    <div class="flex p-4 rounded-lg bg-[#fafafa] gap-4 min-w-0">
                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 250" width="125" height="150">
                         <g transform="translate(100, 100)">
                         <!-- SNP (Single Nucleotide Polymorphism) Icon -->
@@ -1456,25 +1456,25 @@
                           <path d="M-3,50 L3,50" stroke="#EA4335" stroke-width="5" stroke-linecap="round"/>
                         </g>
                       </svg>
-                      <div id="snp-card-datas" data-component="variant-card-datas" class="flex flex-col justify-center">
+                      <div id="snp-card-datas" data-component="variant-card-datas" class="flex flex-col justify-center min-w-0">
                         <ul class="list-none" id="file-legend-snp">
                           <li class="inline">
-                            <a class="inline-flex flex-nowrap items-center text-sm mr-[3px]">
-                              <svg class="inline-block mr-[0.5rem]" fill="currentColor" height="16" width="16" viewBox="0 0 16 16">
+                            <a class="inline-flex flex-nowrap items-center text-sm mr-[3px] min-w-0">
+                              <svg class="inline-block mr-[0.5rem] flex-shrink-0" fill="currentColor" height="16" width="16" viewBox="0 0 16 16">
                                 <path fill="#2C7A7B" d="M8 4a4 4 0 1 1 0 8 4 4 0 0 1 0-8Z"></path>
                               </svg>
-                              <span class="text-black mr-[0.25rem]">
+                              <span class="text-black mr-[0.25rem] truncate max-w-[180px] block" title="{{ vcfs.repository[0].informations().basename }}">
                                 {{ vcfs.repository[0].informations().basename }}
                               </span>
                               <span data-component="file-legend-value-left" class="text-black font-semibold">NA</span>
                             </a>
                           </li>
                           <li class="inline">
-                            <a class="inline-flex flex-nowrap items-center text-sm mr-[3px]">
-                              <svg class="inline-block mr-[0.5rem]" fill="currentColor" height="16" width="16" viewBox="0 0 16 16">
+                            <a class="inline-flex flex-nowrap items-center text-sm mr-[3px] min-w-0">
+                              <svg class="inline-block mr-[0.5rem] flex-shrink-0" fill="currentColor" height="16" width="16" viewBox="0 0 16 16">
                                 <path fill="#822E4A" d="M8 4a4 4 0 1 1 0 8 4 4 0 0 1 0-8Z"></path>
                               </svg>
-                              <span class="text-black mr-[0.25rem]">
+                              <span class="text-black mr-[0.25rem] truncate max-w-[180px] block" title="{{ vcfs.repository[1].informations().basename }}">
                                 {{ vcfs.repository[1].informations().basename }}
                               </span>
                               <span data-component="file-legend-value-right" class="text-black font-semibold">NA</span>
@@ -1492,7 +1492,7 @@
                     </div>
 
                     <!-- MNP (Multiple Nucleotide Polymorphism) -->
-                    <div class="flex p-4 rounded-lg bg-[#fafafa] gap-4">
+                    <div class="flex p-4 rounded-lg bg-[#fafafa] gap-4 min-w-0">
                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 250" width="125" height="150">
                         <g transform="translate(100, 100)">
                           <circle cx="0" cy="0" r="70" fill="#f8f9fa" stroke="#6c757d" stroke-width="3"/>
@@ -1510,25 +1510,25 @@
                           <path d="M-18,50 L18,50" stroke="#EA4335" stroke-width="5" stroke-linecap="round"/>
                         </g>
                       </svg>
-                      <div id="mnp-card-datas" data-component="variant-card-datas" class="flex flex-col justify-center">
+                      <div id="mnp-card-datas" data-component="variant-card-datas" class="flex flex-col justify-center min-w-0">
                         <ul class="list-none" id="file-legend-mnp">
                           <li class="inline">
-                            <a class="inline-flex flex-nowrap items-center text-sm mr-[3px]">
-                              <svg class="inline-block mr-[0.5rem]" fill="currentColor" height="16" width="16" viewBox="0 0 16 16">
+                            <a class="inline-flex flex-nowrap items-center text-sm mr-[3px] min-w-0">
+                              <svg class="inline-block mr-[0.5rem] flex-shrink-0" fill="currentColor" height="16" width="16" viewBox="0 0 16 16">
                                 <path fill="#2C7A7B" d="M8 4a4 4 0 1 1 0 8 4 4 0 0 1 0-8Z"></path>
                               </svg>
-                              <span class="text-black mr-[0.25rem]">
+                              <span class="text-black mr-[0.25rem] truncate max-w-[180px] block" title="{{ vcfs.repository[0].informations().basename }}">
                                 {{ vcfs.repository[0].informations().basename }}
                               </span>
                               <span data-component="file-legend-value-left" class="text-black font-semibold">NA</span>
                             </a>
                           </li>
                           <li class="inline">
-                            <a class="inline-flex flex-nowrap items-center text-sm mr-[3px]">
-                              <svg class="inline-block mr-[0.5rem]" fill="currentColor" height="16" width="16" viewBox="0 0 16 16">
+                            <a class="inline-flex flex-nowrap items-center text-sm mr-[3px] min-w-0">
+                              <svg class="inline-block mr-[0.5rem] flex-shrink-0" fill="currentColor" height="16" width="16" viewBox="0 0 16 16">
                                 <path fill="#822E4A" d="M8 4a4 4 0 1 1 0 8 4 4 0 0 1 0-8Z"></path>
                               </svg>
-                              <span class="text-black mr-[0.25rem]">
+                              <span class="text-black mr-[0.25rem] truncate max-w-[180px] block" title="{{ vcfs.repository[1].informations().basename }}">
                                 {{ vcfs.repository[1].informations().basename }}
                               </span>
                               <span data-component="file-legend-value-right" class="text-black font-semibold">NA</span>
@@ -1546,7 +1546,7 @@
                     </div>
 
                     <!-- SV (Structural Variation) -->
-                    <div class="flex p-4 rounded-lg bg-[#fafafa] gap-4">
+                    <div class="flex p-4 rounded-lg bg-[#fafafa] gap-4 min-w-0">
                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 250" width="125" height="150">
                         <g transform="translate(100, 100)">
                           <circle cx="0" cy="0" r="70" fill="#f8f9fa" stroke="#6c757d" stroke-width="3"/>
@@ -1567,25 +1567,25 @@
                           </marker>
                         </g>
                       </svg>
-                      <div id="sv-card-datas" data-component="variant-card-datas" class="flex flex-col justify-center">
+                      <div id="sv-card-datas" data-component="variant-card-datas" class="flex flex-col justify-center min-w-0">
                         <ul class="list-none" id="file-legend-sv">
                           <li class="inline">
-                            <a class="inline-flex flex-nowrap items-center text-sm mr-[3px]">
-                              <svg class="inline-block mr-[0.5rem]" fill="currentColor" height="16" width="16" viewBox="0 0 16 16">
+                            <a class="inline-flex flex-nowrap items-center text-sm mr-[3px] min-w-0">
+                              <svg class="inline-block mr-[0.5rem] flex-shrink-0" fill="currentColor" height="16" width="16" viewBox="0 0 16 16">
                                 <path fill="#2C7A7B" d="M8 4a4 4 0 1 1 0 8 4 4 0 0 1 0-8Z"></path>
                               </svg>
-                              <span class="text-black mr-[0.25rem]">
+                              <span class="text-black mr-[0.25rem] truncate max-w-[180px] block" title="{{ vcfs.repository[0].informations().basename }}">
                                 {{ vcfs.repository[0].informations().basename }}
                               </span>
                               <span data-component="file-legend-value-left" class="text-black font-semibold">NA</span>
                             </a>
                           </li>
                           <li class="inline">
-                            <a class="inline-flex flex-nowrap items-center text-sm mr-[3px]">
-                              <svg class="inline-block mr-[0.5rem]" fill="currentColor" height="16" width="16" viewBox="0 0 16 16">
+                            <a class="inline-flex flex-nowrap items-center text-sm mr-[3px] min-w-0">
+                              <svg class="inline-block mr-[0.5rem] flex-shrink-0" fill="currentColor" height="16" width="16" viewBox="0 0 16 16">
                                 <path fill="#822E4A" d="M8 4a4 4 0 1 1 0 8 4 4 0 0 1 0-8Z"></path>
                               </svg>
-                              <span class="text-black mr-[0.25rem]">
+                              <span class="text-black mr-[0.25rem] truncate max-w-[180px] block" title="{{ vcfs.repository[1].informations().basename }}">
                                 {{ vcfs.repository[1].informations().basename }}
                               </span>
                               <span data-component="file-legend-value-right" class="text-black font-semibold">NA</span>
@@ -1603,7 +1603,7 @@
                     </div>
 
                     <!-- INDEL (Insertion/Deletion) -->
-                    <div class="flex p-4 rounded-lg bg-[#fafafa] gap-4">
+                    <div class="flex p-4 rounded-lg bg-[#fafafa] gap-4 min-w-0">
                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 250" width="125" height="150">
                         <g transform="translate(100, 100)">
                           <circle cx="0" cy="0" r="70" fill="#f8f9fa" stroke="#6c757d" stroke-width="3"/>
@@ -1629,25 +1629,25 @@
                           <line x1="5" y1="25" x2="5" y2="42" stroke="#212529" stroke-width="1.5" stroke-dasharray="3,3"/>
                         </g>
                       </svg>
-                      <div id="indel-card-datas" data-component="variant-card-datas" class="flex flex-col justify-center">
+                      <div id="indel-card-datas" data-component="variant-card-datas" class="flex flex-col justify-center min-w-0">
                         <ul class="list-none" id="file-legend-indel">
                           <li class="inline">
-                            <a class="inline-flex flex-nowrap items-center text-sm mr-[3px]">
-                              <svg class="inline-block mr-[0.5rem]" fill="currentColor" height="16" width="16" viewBox="0 0 16 16">
+                            <a class="inline-flex flex-nowrap items-center text-sm mr-[3px] min-w-0">
+                              <svg class="inline-block mr-[0.5rem] flex-shrink-0" fill="currentColor" height="16" width="16" viewBox="0 0 16 16">
                                 <path fill="#2C7A7B" d="M8 4a4 4 0 1 1 0 8 4 4 0 0 1 0-8Z"></path>
                               </svg>
-                              <span class="text-black mr-[0.25rem]">
+                              <span class="text-black mr-[0.25rem] truncate max-w-[180px] block" title="{{ vcfs.repository[0].informations().basename }}">
                                 {{ vcfs.repository[0].informations().basename }}
                               </span>
                               <span data-component="file-legend-value-left" class="text-black font-semibold">NA</span>
                             </a>
                           </li>
                           <li class="inline">
-                            <a class="inline-flex flex-nowrap items-center text-sm mr-[3px]">
-                              <svg class="inline-block mr-[0.5rem]" fill="currentColor" height="16" width="16" viewBox="0 0 16 16">
+                            <a class="inline-flex flex-nowrap items-center text-sm mr-[3px] min-w-0">
+                              <svg class="inline-block mr-[0.5rem] flex-shrink-0" fill="currentColor" height="16" width="16" viewBox="0 0 16 16">
                                 <path fill="#822E4A" d="M8 4a4 4 0 1 1 0 8 4 4 0 0 1 0-8Z"></path>
                               </svg>
-                              <span class="text-black mr-[0.25rem]">
+                              <span class="text-black mr-[0.25rem] truncate max-w-[180px] block" title="{{ vcfs.repository[1].informations().basename }}">
                                 {{ vcfs.repository[1].informations().basename }}
                               </span>
                               <span data-component="file-legend-value-right" class="text-black font-semibold">NA</span>
@@ -1665,7 +1665,7 @@
                     </div>
 
                     <!-- INV (Inversion) -->
-                    <div class="flex p-4 rounded-lg bg-[#fafafa] gap-4">
+                    <div class="flex p-4 rounded-lg bg-[#fafafa] gap-4 min-w-0">
                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 250" width="125" height="150">
                         <g transform="translate(100, 100)">
                           <circle cx="0" cy="0" r="70" fill="#f8f9fa" stroke="#6c757d" stroke-width="3"/>
@@ -1705,25 +1705,25 @@
                           </marker>
                         </g>
                       </svg>
-                      <div id="inv-card-datas" data-component="variant-card-datas" class="flex flex-col justify-center">
+                      <div id="inv-card-datas" data-component="variant-card-datas" class="flex flex-col justify-center min-w-0">
                         <ul class="list-none" id="file-legend-inversion">
                           <li class="inline">
-                            <a class="inline-flex flex-nowrap items-center text-sm mr-[3px]">
-                              <svg class="inline-block mr-[0.5rem]" fill="currentColor" height="16" width="16" viewBox="0 0 16 16">
+                            <a class="inline-flex flex-nowrap items-center text-sm mr-[3px] min-w-0">
+                              <svg class="inline-block mr-[0.5rem] flex-shrink-0" fill="currentColor" height="16" width="16" viewBox="0 0 16 16">
                                 <path fill="#2C7A7B" d="M8 4a4 4 0 1 1 0 8 4 4 0 0 1 0-8Z"></path>
                               </svg>
-                              <span class="text-black mr-[0.25rem]">
+                              <span class="text-black mr-[0.25rem] truncate max-w-[180px] block" title="{{ vcfs.repository[0].informations().basename }}">
                                 {{ vcfs.repository[0].informations().basename }}
                               </span>
                               <span data-component="file-legend-value-left" class="text-black font-semibold">NA</span>
                             </a>
                           </li>
                           <li class="inline">
-                            <a class="inline-flex flex-nowrap items-center text-sm mr-[3px]">
-                              <svg class="inline-block mr-[0.5rem]" fill="currentColor" height="16" width="16" viewBox="0 0 16 16">
+                            <a class="inline-flex flex-nowrap items-center text-sm mr-[3px] min-w-0">
+                              <svg class="inline-block mr-[0.5rem] flex-shrink-0" fill="currentColor" height="16" width="16" viewBox="0 0 16 16">
                                 <path fill="#822E4A" d="M8 4a4 4 0 1 1 0 8 4 4 0 0 1 0-8Z"></path>
                               </svg>
-                              <span class="text-black mr-[0.25rem]">
+                              <span class="text-black mr-[0.25rem] truncate max-w-[180px] block" title="{{ vcfs.repository[1].informations().basename }}">
                                 {{ vcfs.repository[1].informations().basename }}
                               </span>
                               <span data-component="file-legend-value-right" class="text-black font-semibold">NA</span>
@@ -1742,7 +1742,7 @@
                     
 
                     <!-- CSV (Complex) -->
-                    <div class="flex p-4 rounded-lg bg-[#fafafa] gap-4">
+                    <div class="flex p-4 rounded-lg bg-[#fafafa] gap-4 min-w-0">
                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 250" width="125" height="150">
                         <g transform="translate(100, 100)">
                           <circle cx="0" cy="0" r="70" fill="#f8f9fa" stroke="#6c757d" stroke-width="3"/>
@@ -1779,25 +1779,25 @@
                           <path d="M0,50 L-20,60 L20,60 Z" fill="#6c757d"/>
                         </g>
                       </svg>
-                      <div id="csv-card-datas" data-component="variant-card-datas" class="flex flex-col justify-center">
+                      <div id="csv-card-datas" data-component="variant-card-datas" class="flex flex-col justify-center min-w-0">
                         <ul class="list-none" id="file-legend-cv">
                           <li class="inline">
-                            <a class="inline-flex flex-nowrap items-center text-sm mr-[3px]">
-                              <svg class="inline-block mr-[0.5rem]" fill="currentColor" height="16" width="16" viewBox="0 0 16 16">
+                            <a class="inline-flex flex-nowrap items-center text-sm mr-[3px] min-w-0">
+                              <svg class="inline-block mr-[0.5rem] flex-shrink-0" fill="currentColor" height="16" width="16" viewBox="0 0 16 16">
                                 <path fill="#2C7A7B" d="M8 4a4 4 0 1 1 0 8 4 4 0 0 1 0-8Z"></path>
                               </svg>
-                              <span class="text-black mr-[0.25rem]">
+                              <span class="text-black mr-[0.25rem] truncate max-w-[180px] block" title="{{ vcfs.repository[0].informations().basename }}">
                                 {{ vcfs.repository[0].informations().basename }}
                               </span>
                               <span data-component="file-legend-value-left" class="text-black font-semibold">NA</span>
                             </a>
                           </li>
                           <li class="inline">
-                            <a class="inline-flex flex-nowrap items-center text-sm mr-[3px]">
-                              <svg class="inline-block mr-[0.5rem]" fill="currentColor" height="16" width="16" viewBox="0 0 16 16">
+                            <a class="inline-flex flex-nowrap items-center text-sm mr-[3px] min-w-0">
+                              <svg class="inline-block mr-[0.5rem] flex-shrink-0" fill="currentColor" height="16" width="16" viewBox="0 0 16 16">
                                 <path fill="#822E4A" d="M8 4a4 4 0 1 1 0 8 4 4 0 0 1 0-8Z"></path>
                               </svg>
-                              <span class="text-black mr-[0.25rem]">
+                              <span class="text-black mr-[0.25rem] truncate max-w-[180px] block" title="{{ vcfs.repository[1].informations().basename }}">
                                 {{ vcfs.repository[1].informations().basename }}
                               </span>
                               <span data-component="file-legend-value-right" class="text-black font-semibold">NA</span>
