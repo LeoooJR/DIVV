@@ -1,4 +1,4 @@
-from cli import Program
+from cli import EntryPoint
 from console import stderr_console
 from rich.panel import Panel
 from rich import box
@@ -9,7 +9,7 @@ def main():
 
     try:
 
-        Program().launch()
+        EntryPoint().launch()
 
     except SystemExit as e:
 

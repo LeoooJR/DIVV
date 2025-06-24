@@ -1,26 +1,26 @@
 from __init__ import __version__
 import argparse
-from delta import delta
+from supervisor import supervisor
 from loguru import logger
 import os
 from sys import argv
 import validation
 
-class Program:
+class EntryPoint:
 
-    FUNC = {"delta": delta}
+    FUNC = {"call": supervisor}
 
     def __init__(self):
 
         self.parser = argparse.ArgumentParser(
-            prog="VCFDelta",
+            prog="DIVV",
             description="Compare VCF files.",
         )
         self.parser.add_argument(
             "-v",
             "--version",
             action="version",
-            version=f"VCFDelta v{__version__}",
+            version=f"DIVV v{__version__}",
         )
         self.parser.add_argument(
             "--vcfs",
@@ -191,32 +191,33 @@ class Program:
             help="For the final report, add more information about VCFs with tags. Values must be separated by commas, e.g. [tag,tag,...]."
         )
         self.parser.add_argument(
-            "--verbosity",
-            dest="verbosity",
+            "-d",
+            "--debug",
+            dest="debug",
             action="store_true",
-            help="Should logs be printed to the shell?",
+            help="Should logs be saved?",
             default=False,
         )
 
-        self.parser.set_defaults(func=self.FUNC["delta"])
+        self.parser.set_defaults(func=self.FUNC["call"])
 
     def launch(self) -> int:
 
         cmd = self.parser.parse_args(args=argv[1:])
 
-        # Should the log be printed to CLI or saved in a file ?
-        if not cmd.verbosity:
+        logger.remove(0)
 
-            logger.remove(0)
+        # Should the log be saved in a file ?
+        if cmd.debug:
 
-            logger.add("VCFDelta.log")
+            logger.add("DIVV.log")
 
         return cmd.func(params=cmd)
 
     def __str__(self):
 
-        return "VCFDelta"
+        return "DIVV"
 
     def __repr__(self):
         
-        return "VCFDelta"
+        return "DIVV"

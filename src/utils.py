@@ -97,7 +97,7 @@ def save(obj: DataFrame, path: Path, format: str = "pickle", lookup: dict = None
 
 def file_infos(path: str) -> dict:
     """ Get file stats """
-    statinfo = os.stat(path)
+    statinfo = os.stat(path, follow_symlinks=True)
 
     return {"basename": os.path.basename(path),
             "path": os.path.dirname(path),

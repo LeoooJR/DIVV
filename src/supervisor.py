@@ -13,7 +13,7 @@ from rich.panel import Panel
 from sys import argv
 
 
-def delta(params: object) -> int:
+def supervisor(params: object) -> int:
     """ 
     Main function to compute the delta between two VCF files 
             params: Namespace containing the command line parameters parsed.
