@@ -99,8 +99,12 @@ def file_infos(path: str) -> dict:
     """ Get file stats """
     statinfo = os.stat(path, follow_symlinks=True)
 
-    return {"basename": os.path.basename(path),
-            "path": os.path.dirname(path),
+    basename: str = os.path.basename(path)
+
+    dirname: str = os.path.dirname(path)
+
+    return {"basename": basename,
+            "path": dirname if dirname else os.getcwd(),
             "size": round(statinfo.st_size / pow(1024,2),2),
             "mtime": datetime.fromtimestamp(statinfo.st_mtime, tz=timezone.utc)}
 
