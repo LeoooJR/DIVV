@@ -202,7 +202,12 @@ class EntryPoint:
         self.parser.set_defaults(func=self.FUNC["call"])
 
     def launch(self) -> int:
-
+        """Launch the program with command line arguments.
+        
+        Returns:
+            int: Exit code of the program.
+        """        
+        
         cmd = self.parser.parse_args(args=argv[1:])
 
         logger.remove(0)
@@ -215,9 +220,19 @@ class EntryPoint:
         return cmd.func(params=cmd)
 
     def __str__(self):
+        """String representation of the program.
+        
+        Returns:
+            str: The name of the program.
+        """
 
         return "DIVV"
 
     def __repr__(self):
+        """String representation of the program for debugging.
+        
+        Returns:
+            str: The name of the program.
+        """        
         
         return "DIVV"
