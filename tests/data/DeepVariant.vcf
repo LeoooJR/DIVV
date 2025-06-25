@@ -1,0 +1,30 @@
+##fileformat=VCFv4.2
+##FILTER=<ID=PASS,Description="All filters passed">
+##FILTER=<ID=RefCall,Description="Genotyping model thinks this site is reference.">
+##FILTER=<ID=LowQual,Description="Confidence in this variant being real is below calling threshold.">
+##FILTER=<ID=NoCall,Description="Site has depth=0 resulting in no call.">
+##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">
+##FORMAT=<ID=GQ,Number=1,Type=Integer,Description="Conditional genotype quality">
+##FORMAT=<ID=DP,Number=1,Type=Integer,Description="Read depth">
+##FORMAT=<ID=MIN_DP,Number=1,Type=Integer,Description="Minimum DP observed within the GVCF block.">
+##FORMAT=<ID=AD,Number=R,Type=Integer,Description="Read depth for each allele">
+##FORMAT=<ID=VAF,Number=A,Type=Float,Description="Variant allele fractions.">
+##FORMAT=<ID=PL,Number=G,Type=Integer,Description="Phred-scaled genotype likelihoods rounded to the closest integer">
+##FORMAT=<ID=MED_DP,Number=1,Type=Integer,Description="Median DP observed within the GVCF block rounded to the nearest integer.">
+##contig=<ID=chr1,length=248956422>
+##contig=<ID=chr2,length=242193529>
+##contig=<ID=chr3,length=198295559>
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	2125DI000070M_S3
+chr1	22078886	.	CT	C	24.8	PASS	.	GT:GQ:DP:AD:VAF:PL	1/1:22:165:23,118:0.715151:24,24,0
+chr1	22081706	.	A	AT	24.6	PASS	.	GT:GQ:DP:AD:VAF:PL	0/1:22:226:130,95:0.420354:24,0,24
+chr1	42929576	.	T	G	0	RefCall	.	GT:GQ:DP:AD:VAF:PL	0/0:22:56:45,11:0.196429:0,24,24
+chr1	42929580	.	T	G	0	RefCall	.	GT:GQ:DP:AD:VAF:PL	0/0:22:57:46,11:0.192982:0,24,24
+chr1	42930743	.	G	A	24.8	PASS	.	GT:GQ:DP:AD:VAF:PL	0/1:22:449:244,205:0.45657:24,0,24
+chr1	42943295	.	G	A	24.5	PASS	.	GT:GQ:DP:AD:VAF:PL	0/1:21:363:212,151:0.415978:24,0,24
+chr2	165313617	.	T	C	24.8	PASS	.	GT:GQ:DP:AD:VAF:PL	1/1:22:346:0,345:0.99711:24,24,0
+chr2	166036278	.	C	T	24.4	PASS	.	GT:GQ:DP:AD:VAF:PL	0/1:22:228:127,101:0.442982:24,0,24
+chr2	166039403	.	CTT	C	5.3	PASS	.	GT:GQ:DP:AD:VAF:PL	1/1:5:299:71,158:0.528428:3,13,0
+chr2	166041354	.	A	G	24.8	PASS	.	GT:GQ:DP:AD:VAF:PL	0/1:22:364:184,180:0.494505:24,0,24
+chr2	166041479	.	G	A	0	RefCall	.	GT:GQ:DP:AD:VAF:PL	0/0:21:109:61,31:0.284404:0,24,24
+chr3	41233324	.	C	G	24.7	PASS	.	GT:GQ:DP:AD:VAF:PL	0/1:22:175:85,90:0.514286:24,0,24
+chr3	70965870	.	G	T	24.8	PASS	.	GT:GQ:DP:AD:VAF:PL	0/1:22:283:152,131:0.462898:24,0,24

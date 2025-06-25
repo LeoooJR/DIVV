@@ -2,7 +2,7 @@ class CompressionIndexError(OSError):
     
     pass
 
-class FileError(ValueError):
+class FileError(Exception):
 
     pass
 
@@ -15,5 +15,13 @@ class IndexError(FileError):
     pass
 
 class ProcessError(RuntimeError):
+
+    pass
+
+class ReportError(FileError):
+
+    pass
+
+class VariantError(Exception):
 
     pass
