@@ -1,0 +1,25 @@
+##fileformat=VCFv4.2
+##FILTER=<ID=PASS,Description="All filters passed">
+##FILTER=<ID=LowQual,Description="Low quality">
+##FORMAT=<ID=AD,Number=R,Type=Integer,Description="Allelic depths for the ref and alt alleles in the order listed">
+##FORMAT=<ID=DP,Number=1,Type=Integer,Description="Approximate read depth (reads with MQ=255 or with bad mates are filtered)">
+##FORMAT=<ID=GQ,Number=1,Type=Integer,Description="Genotype Quality">
+##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">
+##FORMAT=<ID=PL,Number=G,Type=Integer,Description="Normalized, Phred-scaled likelihoods for genotypes as defined in the VCF specification">
+##contig=<ID=chr1,length=248956422>
+##contig=<ID=chr2,length=242193529>
+##contig=<ID=chr3,length=198295559>
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	2125DI000070M_S3
+chr1	22078886	.	CT	C	247.73	.	.	GT:AD:DP:GQ:PL	0/1:33,37:70:99:285,0,490
+chr1	22081706	.	A	AT	1867.73	.	.	GT:AD:DP:GQ:PL	0/1:124,78:202:99:1905,0,3093
+chr1	42930743	.	G	A	8023.77	.	.	GT:AD:DP:GQ:PL	0/1:353,305:658:99:8052,0,9367
+chr1	42943295	.	G	A	3973.77	.	.	GT:AD:DP:GQ:PL	0/1:212,149:361:99:4002,0,5236
+chr2	165388720	.	T	A	6792.77	.	.	GT:AD:DP:GQ:PL	0/1:240,236:476:99:6821,0,6938
+chr2	166036278	.	C	T	7181.77	.	.	GT:AD:DP:GQ:PL	0/1:265,252:517:99:7210,0,8381
+chr2	166039403	.	CTT	C	2146.73	.	.	GT:AD:DP:GQ:PL	0/1:84,108:192:99:2184,0,1763
+chr2	166041354	.	A	G	4920.77	.	.	GT:AD:DP:GQ:PL	0/1:192,189:381:99:4949,0,5674
+chr2	166046935	.	T	C	11343.8	.	.	GT:AD:DP:GQ:PL	0/1:357,370:727:99:11372,0,9818
+chr2	166053034	.	C	T	9490.77	.	.	GT:AD:DP:GQ:PL	0/1:324,258:582:99:9519,0,17766
+chr3	41233324	.	C	G	7069.77	.	.	GT:AD:DP:GQ:PL	0/1:234,224:458:99:7098,0,7253
+chr3	70965870	.	G	T	3848.77	.	.	GT:AD:DP:GQ:PL	0/1:150,131:281:99:3877,0,4916
+chr3	197141315	.	A	C	5183.77	.	.	GT:AD:DP:GQ:PL	0/1:226,181:407:99:5212,0,6457
