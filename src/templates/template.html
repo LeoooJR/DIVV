@@ -1363,7 +1363,7 @@
                       {% for index, series in view['variants'].iterrows() -%}
                         {% if series['Variant.L']|is_nan or series['Variant.R']|is_nan -%}
                           <!-- Mismatch -->
-                          <div data-component="file-content-right" row="{{ loop.index0 }}" status="mismatch" class="w-fit h-[32px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] bg-[rgba(255,_0,_0,_0.2)]" chrom="{{ series['Chromosome']|upper() }}" type="{{ series['Type']|upper() }}" filter="{{ series['Filter.R']|upper() }}" pos={{ series['Position'] }} {% for tag in ((series['Variant.R']|string)|format_to_html).items() -%} {{ tag[0] }}="{{ tag[1] }}" {% endfor -%}>
+                          <div data-component="file-content-right" row="{{ loop.index0 }}" status="mismatch" class="w-fit h-[32px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] bg-[rgba(255,_0,_0,_0.2)] hover:bg-[rgba(255,_0,_0,_0.3)]" chrom="{{ series['Chromosome']|upper() }}" type="{{ series['Type']|upper() }}" filter="{{ series['Filter.R']|upper() }}" pos={{ series['Position'] }} {% for tag in ((series['Variant.R']|string)|format_to_html).items() -%} {{ tag[0] }}="{{ tag[1] }}" {% endfor -%}>
                             <div class="text-[#888] mr-[10px] select-none min-w-[30px] text-right">{{ loop.index }}</div>
                             {% if not series['Variant.R']|is_nan %}
                               <span data-component="column-diff" class="text-black bg-[rgba(255,_0,_0,_0.2)] table-cell px-[8px] py-[2px] whitespace-nowrap">
@@ -1373,7 +1373,7 @@
                           </div>
                         {% else -%}
                           <!-- Match -->
-                          <div data-component="file-content-right" status="match" row="{{ loop.index0 }}" class="w-fit h-[32px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] bg-[rgba(0,_255,_0,_0.2)]" chrom="{{ series['Chromosome']|upper() }}" type="{{ series['Type']|upper() }}" filter="{{ series['Filter.R']|upper() }}" pos={{ series['Position'] }} {% for tag in ((series['Variant.R']|string)|format_to_html).items() -%} {{ tag[0] }}="{{ tag[1] }}" {% endfor -%}>
+                          <div data-component="file-content-right" status="match" row="{{ loop.index0 }}" class="w-fit h-[32px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] bg-[rgba(0,_255,_0,_0.2)] hover:bg-[rgba(0,_255,_0,_0.3)]" chrom="{{ series['Chromosome']|upper() }}" type="{{ series['Type']|upper() }}" filter="{{ series['Filter.R']|upper() }}" pos={{ series['Position'] }} {% for tag in ((series['Variant.R']|string)|format_to_html).items() -%} {{ tag[0] }}="{{ tag[1] }}" {% endfor -%}>
                             <div class="text-[#888] mr-[10px] select-none min-w-[30px] text-right">{{ loop.index }}</div>
                             <span data-component="column-match" class="text-black bg-[rgba(0,_255,_0,_0.2)] table-cell px-[8px] py-[2px] whitespace-nowrap">
                               {{ series['Variant.R'] -}}
