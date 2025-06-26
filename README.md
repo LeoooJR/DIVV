@@ -35,7 +35,10 @@ cd DIVV
 ./install.sh
 
 # Get help about DIVV
-python src/main.py -h
+python src/main.py --help
+
+# Compare VCF files
+python src/main.py --vcfs <VCF1> <VCF2> --report --output <PATH>
 ```
 
 ### :whale2: Using docker
@@ -45,7 +48,10 @@ python src/main.py -h
 docker build -t divv .
 
 # Run the container
-docker run divv <command>
+docker run divv --vcfs <VCF1> <VCF2> --report --output <PATH>
+
+# Get help about DIVV
+docker run divv --help
 ```
 
 ## 🗨️ Contacts <a name="contacts"></a>
