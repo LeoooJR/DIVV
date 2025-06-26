@@ -109,7 +109,7 @@ class VCF(GenomicFile):
 
     """Class for VCF files"""
 
-    # Map the FORMAT values to there respectives informations
+    # Keywords used to extract the FORMAT values
     FORMAT: dict = {
         "genotype": ["GT"],
         "genotype_quality": ["GQ"],
@@ -120,10 +120,13 @@ class VCF(GenomicFile):
         
         super().__init__(path)
 
+        # The archive path
         self.archive: str = None
 
+        # The VCF file as a cyvcf2.VCF object
         self.stdin = None
 
+        # Whether the VCF file is the reference
         self.reference: bool = reference
 
         if not lazy:
@@ -147,8 +150,10 @@ class VCF(GenomicFile):
                                                  names=self.header_definition,
                                                  start=0)
 
+        # The list of samples
         self.SAMPLES = None
 
+        # The variants repository
         self.variants: VariantRepository = VariantRepository(filters)
 
         if self.archive and index:
@@ -235,6 +240,11 @@ class VCF(GenomicFile):
         if self.is_empty():
 
             raise errors.VCFError(f"The file {self} is empty.")
+        
+        # Add security measures to avoid large files (WGS, WES, etc.)
+        if self.informations()["size"] > 10:
+
+            raise errors.VCFError(f"The file {self} is too large. DIVV is not yet designed to handle large VCF files.")
         
         archive = filetype.archive_match(self.path)
         
@@ -449,11 +459,21 @@ class VCF(GenomicFile):
 
             except AttributeError as e:
 
-                raise errors.VCFError(e)
+                logger.warning(f"Cannot extract chromosomes from {self}: {e}")
 
-            self.variants.chromosomes = chromosomes
+                raise errors.VCFError(f"Cannot extract chromosomes from {self}: {e}")
+                        
+            if len(chromosomes):
 
-            logger.debug(f"File {self} is composed of {self.variants.chromosomes} chromosomes")
+                self.variants.chromosomes = chromosomes
+
+                logger.debug(f"File {self} is composed of {self.variants.chromosomes} chromosomes")
+            
+            else:
+
+                logger.warning(f"No chromosome found in {self}")
+
+                raise errors.VCFError(f"No chromosome found in {self}")
 
         if not self.variants.seqlens:
 
@@ -473,9 +493,9 @@ class VCF(GenomicFile):
 
             except Exception as e:
 
-                logger.error(e)
+                logger.warning(f"Cannot extract FORMAT from {self}: {e if len(str(e)) else 'File may be empty.'}")
 
-                raise errors.VCFError(f"Cannot extract FORMAT from {self.archive}: {e}")
+                raise errors.VCFError(f"Cannot extract FORMAT from {self}: {e if len(str(e)) else 'File may be empty.'}")
 
         if context:
 
@@ -940,7 +960,11 @@ class VCFProcessor:
             raise ValueError(f"Error: The file format {format} is not supported.")
     
 class VCFRepository():
+    """
+    A class to represent a repository of VCF files
+    """
 
+    # Class to process VCF files
     processor: VCFProcessor = VCFProcessor()
 
     def __init__(self, vcfs: list[str], index: list[str], reference: bool = False, filters: dict = None):
@@ -950,6 +974,15 @@ class VCFRepository():
         self.populate(vcfs, index, reference, filters)
 
     def populate(self, vcfs: list[str], index: list[str], reference: bool = False, filters: dict = None):
+        """
+        Populate the repository with the VCF files
+
+        Args:
+            vcfs: The list of VCF files
+            index: The list of index files
+            reference: Whether the first VCF file is the reference
+            filters: The filters to apply to the VCF files
+        """
 
         assert len(vcfs) == len(index), "VFC(s) and Index(s) collections must be the same size"
 
@@ -960,12 +993,22 @@ class VCFRepository():
         self.repository: list[VCF] = [VCF(path=vcf, reference=(reference and not i), index=index[i], filters=filters, lazy=False) for i, vcf in enumerate(vcfs)]
 
     def add(self, vcfs: list[str], index: list[str]):
+        """
+        Add VCF files to the repository
+
+        Args:
+            vcfs: The list of VCF files
+            index: The list of index files
+        """
 
         assert len(vcfs) == len(index), "VFC(s) and Index(s) collections must be the same size"
 
         self.repository.extend([VCF(path=vcf, index=index[i], lazy=False) for i, vcf in enumerate(vcfs)])
 
     def get_reference(self) -> VCF | None:
+        """
+        Get the reference VCF file
+        """
 
         try:
             vcf = self.repository[self.REF]
@@ -975,6 +1018,9 @@ class VCFRepository():
         return vcf
 
     def get_query(self) -> VCF | None:
+        """
+        Get the query VCF file
+        """
 
         try:
             vcf = self.repository[self.QUERY]
@@ -984,6 +1030,9 @@ class VCFRepository():
         return vcf
 
     def compare(self):
+        """
+        Compare the VCF files in the repository
+        """
 
         results: dict = {}
 
@@ -1256,7 +1305,12 @@ class Report:
         self.archive = archive
 
     def create(self, output: pathlib.Path = pathlib.Path.cwd()) -> pathlib.Path:
+        """
+        Create the report
 
+        Args:
+            output: The output directory
+        """
         # Report creation time
         self.date = datetime.datetime.now().strftime("%Y-%m-%d, %X")
 

@@ -1,4 +1,4 @@
-# VCFDelta
+# DIVV
 
 <center><img src="logo.png" width="500" height="500"></center><br>
 Why VCFDelta?
