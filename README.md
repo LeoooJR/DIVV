@@ -7,9 +7,9 @@
 ![GitHub last commit](https://img.shields.io/github/last-commit/LeoooJR/DIVV)
 
 ## :bookmark_tabs: Table of Contents <a name="table">
-    - [About](#about)
-    - [Getting Started](#getting-started)
-    - [Contacts](#contacts)
+- [About](#about)
+- [Getting Started](#getting-started)
+- [Contacts](#contacts)
 
 ## :pencil: About The Project <a name="about">
 
