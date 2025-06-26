@@ -31,7 +31,7 @@ cd DIVV
 ### :computer: Local installation
 
 ```bash
-# Compile hstlib
+# Compile htslib
 ./install.sh
 
 # Get help about DIVV
