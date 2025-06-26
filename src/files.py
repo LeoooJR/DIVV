@@ -241,6 +241,11 @@ class VCF(GenomicFile):
 
             raise errors.VCFError(f"The file {self} is empty.")
         
+        # Add security measures to avoid large files (WGS, WES, etc.)
+        if self.informations()["size"] > 10:
+
+            raise errors.VCFError(f"The file {self} is too large. DIVV is not yet designed to handle large VCF files.")
+        
         archive = filetype.archive_match(self.path)
         
         # Is a archive
