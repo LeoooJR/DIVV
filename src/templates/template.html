@@ -1098,15 +1098,19 @@
 
             <!-- Status filter -->
             <div class="w-fit min-w-0 flex-shrink flex flew-row gap-2 items-center">
-              <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 17 14" width="50px" height="50px" class="min-w-[50px] min-h-[50px]">
+              <svg id="status-svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 17 14" width="50px" height="50px" class="min-w-[50px] min-h-[50px]">
                 <g transform="translate(-1.5-2.309323)">
                   <path d="M3.5,7C2.671573,7,2,7.671573,2,8.5v3c0,.828427.671573,1.5,1.5,1.5h4c.828427,0,1.5-.671573,1.5-1.5v-3C9,7.671573,8.328427,7,7.5,7h-4Zm9,0c-.828427,0-1.5.671573-1.5,1.5v3c0,.828427.671573,1.5,1.5,1.5h4c.828427,0,1.5-.671573,1.5-1.5v-3c0-.828427-.671573-1.5-1.5-1.5h-4Z" transform="translate(0-4.381353)"/>
                   <path d="M3.5,7C2.671573,7,2,7.671573,2,8.5v3c0,.828427.671573,1.5,1.5,1.5h4c.828427,0,1.5-.671573,1.5-1.5v-3C9,7.671573,8.328427,7,7.5,7h-4ZM3,8.5c0-.276142.223858-.5.5-.5h4c.276142,0,.5.223858.5.5v3c0,.276142-.223858.5-.5.5h-4c-.276142,0-.5-.223858-.5-.5v-3ZM12.5,7c-.828427,0-1.5.671573-1.5,1.5v3c0,.828427.671573,1.5,1.5,1.5h4c.828427,0,1.5-.671573,1.5-1.5v-3c0-.828427-.671573-1.5-1.5-1.5h-4ZM12,8.5c0-.276142.223858-.5.5-.5h4c.276142,0,.5.223858.5.5v3c0,.276142-.223858.5-.5.5h-4c-.276142,0-.5-.223858-.5-.5v-3Z" transform="translate(0 3)"/>
+                  <!-- Animated fill for status -->
+                  <path id="status-fill" d="M3.5,7C2.671573,7,2,7.671573,2,8.5v3c0,.828427.671573,1.5,1.5,1.5h4c.828427,0,1.5-.671573,1.5-1.5v-3C9,7.671573,8.328427,7,7.5,7h-4Zm9,0c-.828427,0-1.5.671573-1.5,1.5v3c0,.828427.671573,1.5,1.5,1.5h4c.828427,0,1.5-.671573,1.5-1.5v-3c0-.828427-.671573-1.5-1.5-1.5h-4Z" transform="translate(0-4.381353)" fill="transparent" opacity="0.6" class="transition-all duration-700 ease-in-out">
+                    <animate id="status-animation" attributeName="fill" dur="1s" begin="indefinite" fill="freeze"/>
+                  </path>
                 </g>
               </svg>
               <div class="relative w-fit">
                 <span id="status-filter-set-indicator" data-component="filter-set-indicator" class="flex w-3 h-3 bg-green-400 rounded-full absolute -translate-y-1/2 translate-x-1/2 left-auto top-0 right-0 z-999"></span>
-                <select id="query-status" class="select select-md ![--input-color:black] px-[10px] py-[10px] rounded-[5px] border-[none] min-w-[150px] max-w-full text-[14px] font-[Ubuntu] bg-neutral text-[white] cursor-pointer">
+                <select id="query-status" class="select select-md ![--input-color:black] px-[10px] py-[10px] rounded-[5px] border-[none] min-w-[150px] max-w-full text-[14px] font-[Ubuntu] bg-neutral text-[white] cursor-pointer" onchange="animateStatusSVG(this.value)">
                     <option selected disabled>Select a status...</option>
                     <option>ALL</option>
                     <option>MATCH</option>
@@ -1114,6 +1118,34 @@
                 </select>
               </div>
             </div>
+
+            <script>
+              function animateStatusSVG(value) {
+                const statusSvg = document.getElementById('status-svg');
+                const fillPath = document.getElementById('status-fill');
+                const animation = document.getElementById('status-animation');
+                
+                // Reset animation
+                animation.endElement();
+                
+                if (value === 'MATCH') {
+                  // Green fill animation for match
+                  fillPath.setAttribute('fill', 'oklch(79.2% 0.209 151.711)');
+                  animation.setAttribute('values', 'transparent;oklch(79.2% 0.209 151.711)');
+                  animation.beginElement();
+                } else if (value === 'MISMATCH') {
+                  // Red fill animation for mismatch
+                  fillPath.setAttribute('fill', 'oklch(70.4% 0.191 22.216)');
+                  animation.setAttribute('values', 'transparent;oklch(70.4% 0.191 22.216)');
+                  animation.beginElement();
+                } else if (value === 'ALL') {
+                  // Reset to transparent for all
+                  fillPath.setAttribute('fill', 'transparent');
+                  animation.setAttribute('values', 'transparent;transparent');
+                  animation.beginElement();
+                }
+              }
+            </script>
 
         </div>
 
@@ -1124,12 +1156,17 @@
 
             <!-- Variant filter filter -->
             <div class="w-fit mr-[5%] min-w-0 flex-shrink flex flex-row gap-2 items-center">
-               <svg xmlns="http://www.w3.org/2000/svg" width="50px" height="50px" fill="white" viewBox="0 0 16 16" class="min-w-[50px] min-h-[50px]">
+              <!-- Funnel svg -->
+               <svg id="funnel-svg" xmlns="http://www.w3.org/2000/svg" width="50px" height="50px" fill="white" viewBox="0 0 16 16" class="min-w-[50px] min-h-[50px]">
                 <path d="M1.5 1.5A.5.5 0 0 1 2 1h12a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.128.334L10 8.692V13.5a.5.5 0 0 1-.342.474l-3 1A.5.5 0 0 1 6 14.5V8.692L1.628 3.834A.5.5 0 0 1 1.5 3.5zm1 .5v1.308l4.372 4.858A.5.5 0 0 1 7 8.5v5.306l2-.666V8.5a.5.5 0 0 1 .128-.334L13.5 3.308V2z"/>
+                <!-- Animated fill for PASS/FAIL -->
+                <path id="funnel-fill" d="M2.5 2v1.308l4.372 4.858A.5.5 0 0 1 7 8.5v5.306l2-.666V8.5a.5.5 0 0 1 .128-.334L13.5 3.308V2z" fill="transparent" opacity="0.6" class="transition-all duration-700 ease-in-out">
+                  <animate id="funnel-animation" attributeName="fill" dur="1s" begin="indefinite" fill="freeze"/>
+                </path>
               </svg>
               <div class="relative w-fit">
                 <span id="filter-filter-set-indicator" data-component="filter-set-indicator" class="flex w-3 h-3 bg-green-400 rounded-full absolute -translate-y-1/2 translate-x-1/2 left-auto top-0 right-0 z-999"></span>
-                <select id="query-filter" class="select select-md ![--input-color:white] px-[10px] py-[10px] rounded-[5px] border-[none] min-w-[150px] max-w-full text-[14px] font-[Ubuntu] text-[black] bg-white cursor-pointer">
+                <select id="query-filter" class="select select-md ![--input-color:white] px-[10px] py-[10px] rounded-[5px] border-[none] min-w-[150px] max-w-full text-[14px] font-[Ubuntu] text-[black] bg-white cursor-pointer" onchange="animateFunnelSVG(this.value)">
                     <option selected disabled>Select a filter...</option>
                     <option>ALL</option>
                     <option>PASS</option>
@@ -1138,15 +1175,47 @@
               </div>
             </div>
 
+            <script>
+              function animateFunnelSVG(value) {
+                const funnelSvg = document.getElementById('funnel-svg');
+                const fillPath = document.getElementById('funnel-fill');
+                const animation = document.getElementById('funnel-animation');
+                
+                // Reset animation
+                animation.endElement();
+                
+                if (value === 'PASS') {
+                  // Green fill animation for pass
+                  fillPath.setAttribute('fill', 'oklch(79.2% 0.209 151.711)');
+                  animation.setAttribute('values', 'transparent;oklch(79.2% 0.209 151.711)');
+                  animation.beginElement();
+                } else if (value === 'FAIL') {
+                  // Red fill animation for fail
+                  fillPath.setAttribute('fill', 'oklch(70.4% 0.191 22.216)');
+                  animation.setAttribute('values', 'transparent;oklch(70.4% 0.191 22.216)');
+                  animation.beginElement();
+                } else if (value === 'ALL') {
+                  // Reset to transparent for all
+                  fillPath.setAttribute('fill', 'transparent');
+                  animation.setAttribute('values', 'transparent;transparent');
+                  animation.beginElement();
+                }
+              }
+            </script>
+
             <!-- Variant type filter -->
             <div class="w-fit mr-[5%] min-w-0 flex-shrink flex flex-row gap-2 items-center">
-              <svg xmlns="http://www.w3.org/2000/svg" width="50px" height="50px" viewBox="0 0 32 32" class="min-w-[50px] min-h-[50px]">
+              <svg id="variant-svg" xmlns="http://www.w3.org/2000/svg" width="50px" height="50px" viewBox="0 0 32 32" class="min-w-[50px] min-h-[50px]">
                 <path fill="white" d="M30 15H17V2h-2v13H2v2h13v13h2V17h13z" />
                 <path fill="white" d="M25.586 20L27 21.414L23.414 25L27 28.586L25.586 30l-5-5zM11 30H3a1 1 0 0 1-.894-1.447l4-8a1.04 1.04 0 0 1 1.789 0l4 8A1 1 0 0 1 11 30m-6.382-2h4.764L7 23.236zM28 12h-6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2m-6-8v6h6.001L28 4zM7 12a5 5 0 1 1 5-5a5.006 5.006 0 0 1-5 5m0-8a3 3 0 1 0 3 3a3.003 3.003 0 0 0-3-3" />
+                <!-- Animated fill for variant types -->
+                <path id="variant-fill" d="M30 15H17V2h-2v13H2v2h13v13h2V17h13z" fill="transparent" opacity="0.6" class="transition-all duration-700 ease-in-out">
+                  <animate id="variant-animation" attributeName="fill" dur="1s" begin="indefinite" fill="freeze"/>
+                </path>
               </svg> 
               <div class="relative w-fit">
                 <span id="variant-filter-set-indicator" data-component="filter-set-indicator" class="flex w-3 h-3 bg-green-400 rounded-full absolute -translate-y-1/2 translate-x-1/2 left-auto top-0 right-0 z-999"></span>
-                <select id="query-variant" class="select select-md ![--input-color:white] px-[10px] py-[10px] rounded-[5px] border-[none] min-w-[150px] max-w-full text-[14px] font-[Ubuntu] text-[black] bg-white cursor-pointer">
+                <select id="query-variant" class="select select-md ![--input-color:white] px-[10px] py-[10px] rounded-[5px] border-[none] min-w-[150px] max-w-full text-[14px] font-[Ubuntu] text-[black] bg-white cursor-pointer" onchange="animateVariantSVG(this.value)">
                     <option selected disabled>Select a variant...</option>
                     <option>ALL</option>
                     <option>SNP</option>
@@ -1159,6 +1228,59 @@
                 </select>
               </div>
             </div>
+
+            <script>
+              function animateVariantSVG(value) {
+                const variantSvg = document.getElementById('variant-svg');
+                const fillPath = document.getElementById('variant-fill');
+                const animation = document.getElementById('variant-animation');
+                
+                // Reset animation
+                animation.endElement();
+                
+                if (value === 'SNP') {
+                  // Blue fill animation for SNP
+                  fillPath.setAttribute('fill', 'oklch(65.4% 0.196 240.0)');
+                  animation.setAttribute('values', 'transparent;oklch(65.4% 0.196 240.0)');
+                  animation.beginElement();
+                } else if (value === 'MNP') {
+                  // Purple fill animation for MNP
+                  fillPath.setAttribute('fill', 'oklch(65.4% 0.196 280.0)');
+                  animation.setAttribute('values', 'transparent;oklch(65.4% 0.196 280.0)');
+                  animation.beginElement();
+                } else if (value === 'INS') {
+                  // Green fill animation for INS
+                  fillPath.setAttribute('fill', 'oklch(79.2% 0.209 151.711)');
+                  animation.setAttribute('values', 'transparent;oklch(79.2% 0.209 151.711)');
+                  animation.beginElement();
+                } else if (value === 'DEL') {
+                  // Red fill animation for DEL
+                  fillPath.setAttribute('fill', 'oklch(70.4% 0.191 22.216)');
+                  animation.setAttribute('values', 'transparent;oklch(70.4% 0.191 22.216)');
+                  animation.beginElement();
+                } else if (value === 'INV') {
+                  // Orange fill animation for INV
+                  fillPath.setAttribute('fill', 'oklch(75.4% 0.196 45.0)');
+                  animation.setAttribute('values', 'transparent;oklch(75.4% 0.196 45.0)');
+                  animation.beginElement();
+                } else if (value === 'SV') {
+                  // Yellow fill animation for SV
+                  fillPath.setAttribute('fill', 'oklch(85.4% 0.196 85.0)');
+                  animation.setAttribute('values', 'transparent;oklch(85.4% 0.196 85.0)');
+                  animation.beginElement();
+                } else if (value === 'CSV') {
+                  // Cyan fill animation for CSV
+                  fillPath.setAttribute('fill', 'oklch(75.4% 0.196 195.0)');
+                  animation.setAttribute('values', 'transparent;oklch(75.4% 0.196 195.0)');
+                  animation.beginElement();
+                } else if (value === 'ALL') {
+                  // Reset to transparent for ALL
+                  fillPath.setAttribute('fill', 'transparent');
+                  animation.setAttribute('values', 'transparent;transparent');
+                  animation.beginElement();
+                }
+              }
+            </script>
 
             <!-- Terminal icon -->
             <svg xmlns="http://www.w3.org/2000/svg" state="close" fill="white" class="w-[50px] h-[50px] cursor-pointer flex-shrink-0" id="terminal-icon" viewBox="0 0 16 16">
@@ -2422,8 +2544,11 @@
                 function resetFilters() {
                     document.getElementById("query-chromosome").value = "";
                     document.getElementById("query-filter").value = "ALL";
+                    animateFunnelSVG("ALL")
                     document.getElementById("query-variant").value = "ALL";
+                    animateVariantSVG("ALL");
                     document.getElementById("query-status").value = "ALL";
+                    animateStatusSVG("ALL");
                     document.querySelectorAll('[data-component="error-popup"]').forEach(error => error.classList.replace('flex', 'hidden'));
                     filter();
                 }
