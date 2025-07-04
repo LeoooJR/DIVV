@@ -2,6 +2,7 @@ from ast import literal_eval
 import contextlib
 from cyvcf2 import VCF, Writer
 from datetime import datetime, timezone
+import errno
 from hashlib import sha256
 import json
 from loguru import logger
@@ -10,6 +11,7 @@ import os
 import subprocess
 from pathlib import Path
 from pandas import DataFrame, notna
+import pwd
 import warnings
 import _pickle as cPickle
 
@@ -17,7 +19,60 @@ import _pickle as cPickle
 # I/O
 # ===========================================================================================
 
-def runcmd(cmd: list, stdout: str = None) -> subprocess.CompletedProcess:
+def run_as_user():
+
+    def get_invoking_user() -> str|None:
+
+        if "SUDO_USER" in os.environ:
+           return os.environ["SUDO_USER"]
+        else:
+            for env_var in ["LOGNAME", "USER"]:
+                if env_var in os.environ:
+                    if os.environ[env_var] != "root":
+                        return os.environ[env_var]
+            return None
+
+    uid: int = os.getuid()
+    gid: int = os.getgid()
+
+    if uid != 0:
+        logger.debug("Not running as root. Skipping privilege drop.")
+    
+    else:
+
+        target: str = get_invoking_user()
+
+        if target:
+
+            target_infos = pwd.getpwnam(target)
+
+            try:
+                target_uid = target_infos.pw_uid
+            except KeyError as e:
+                logger.warning(f"Cannot retrieve {target} uid.")
+                raise RuntimeError(f"Cannot retrieve {target} uid.")
+
+            try:
+                target_gid = target_infos.pw_gid
+            except KeyError as e:
+                logger.warning(f"Cannot retrieve {target} gid.")
+                raise RuntimeError(f"Cannot retrieve {target} gid.")
+        
+            try:
+                os.setgid(target_gid)
+                os.setgroups([target_gid])
+                os.setuid(target_uid)
+                logger.debug(f"Successfully dropped privileges as {target} (uid: {target_uid}, gid: {target_gid})")
+            except OSError as e:
+                if e.errno == errno.EPERM:
+                    raise PermissionError(f"failed to run as user {target} (uid: {target_uid}, gid: {target_gid}): Permission denied.")
+                raise
+        
+        else:
+
+            logger.warning("Cannot determine invoking user.")
+
+def runcmd(cmd: list, stdout: str = None, user: bool = True) -> subprocess.CompletedProcess:
 
     logger.debug(f"Running command: {cmd}")
 
@@ -25,11 +80,23 @@ def runcmd(cmd: list, stdout: str = None) -> subprocess.CompletedProcess:
 
         with open(stdout, mode = "wb") as out:
 
-            return subprocess.run(cmd, check=True, stdout=out)
+            if user:
+
+                return subprocess.run(cmd, check=True, stdout=out, preexec_fn=run_as_user)
+
+            else:
+
+                return subprocess.run(cmd, check=True, stdout=out)
     
     else:
 
-        return subprocess.run(cmd, check=True, capture_output=True)
+        if user:
+
+            return subprocess.run(cmd, check=True, capture_output=True, preexec_fn=run_as_user)
+
+        else:
+
+            return subprocess.run(cmd, check=True, capture_output=True)
 
 def save(obj: DataFrame, path: Path, format: str = "pickle", lookup: dict = None, out: str = os.getcwd()) -> int:
     """ Serialize DataFrame to file of specified format """
@@ -115,6 +182,10 @@ def suppress_warnings():
         warnings.filterwarnings("ignore", message="no intervals found for*")
         warnings.filterwarnings("ignore", message="Mean of empty slice.")
         yield
+
+# ===========================================================================================
+# Filsystem
+# ===========================================================================================
 
 # ===========================================================================================
 # SETS
