@@ -77,11 +77,13 @@ class PlotLibrary:
                     x=nominal, 
                     y=y, 
                     color=color,
-                    title=title)
+                    title=title,
+                    barmode="relative")
         
-        fig.update_layout(barmode='stack')
-            
-        fig.update_xaxes(ticklabelstep=1)
+        fig.update_traces(offsetgroup=None)
+        
+        # Set x-axis type to category for proper stacking
+        fig.update_layout(xaxis_type='category')
 
         plot = Plot(fig=fig)
 
