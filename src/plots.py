@@ -29,7 +29,6 @@ class Plot:
                 xanchor= 'center',
                 yanchor= 'top'
             ),
-            barmode='relative',
             hovermode="x unified",
             legend=dict(
                 traceorder="normal",
@@ -79,6 +78,8 @@ class PlotLibrary:
                     y=y, 
                     color=color,
                     title=title)
+        
+        fig.update_layout(barmode='stack')
             
         fig.update_xaxes(ticklabelstep=1)
 
