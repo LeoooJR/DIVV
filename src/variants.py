@@ -323,15 +323,17 @@ class VariantRepository():
 
         for k in chromosomes:
 
-            data.append({"Chromosome": k, "Type": "Indel", "Count": self.profile[k]["variant"]["indel"]["deletion"] + self.profile[k]["variant"]["indel"]["insertion"]})
+            data.append({"Chromosome": k, "Type": "INDEL", "Count": self.profile[k]["variant"]["indel"]["deletion"] + self.profile[k]["variant"]["indel"]["insertion"]})
             data.append({"Chromosome": k, "Type": "SNP", "Count": self.profile[k]["variant"]["snp"]["transition"] + self.profile[k]["variant"]["snp"]["transversion"]})
+            data.append({"Chromosome": k, "Type": "MNP", "Count": self.profile[k]["variant"]["mnp"]})
+            data.append({"Chromosome": k, "Type": "INV", "Count": self.profile[k]["variant"]["inv"]})
             data.append({"Chromosome": k, "Type": "CSV", "Count": self.profile[k]["variant"]["csv"]})
 
         self.plots.barplot(data, "Chromosome","Count", "Type", "Variant by Chromosome", "VariantByChromosome")
 
         data: DataFrame = DataFrame([{"Chromosome": k, "Genotype": genotype, "Count": self.profile[k][code]} 
-                        for k in chromosomes 
-                        for genotype, code in [("Homozygous", "hom"), ("Heterozygous", "het")]])
+                                    for k in chromosomes 
+                                    for genotype, code in [("Homozygous", "hom"), ("Heterozygous", "het")]])
 
         self.plots.barplot(data, "Chromosome", "Count", "Genotype", "Genotype by Chromosome","GenotypeByChromosome")
 
