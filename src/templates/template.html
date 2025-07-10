@@ -1619,11 +1619,11 @@
               });
               
               function interpretTabs(component) {
-              document.querySelectorAll(`[data-component="${component}"]`).forEach(element => {
-                  element.innerHTML = element.innerHTML.split("\\t").join('&nbsp;&nbsp;&nbsp;&nbsp;');
-              });
+                document.querySelectorAll(`[data-component="${component}"]`).forEach(element => {
+                    element.innerHTML = element.innerHTML.split("\\t").join('&nbsp;&nbsp;&nbsp;&nbsp;');
+                });
               }
-              interpretTabs("column-header")
+              interpretTabs("column-header");
               interpretTabs("column-match");
               interpretTabs("column-diff");
             </script>
@@ -1640,7 +1640,7 @@
                       <path fill="black" d="m11.852 2.011l.058-.007L12 2l.075.003l.126.017l.111.03l.111.044l.098.052l.104.074l.082.073l3 3a1 1 0 1 1-1.414 1.414L13 5.415V13a1 1 0 0 1-2 0V5.415L9.707 6.707a1 1 0 0 1-1.32.083l-.094-.083a1 1 0 0 1 0-1.414l3-3q.053-.054.112-.097l.11-.071l.114-.054l.105-.035zM12 16a3 3 0 1 1 0 6a3 3 0 0 1 0-6"/>
                     </svg>
                   </button>
-                  <div class="w-[50%] max-w-[1200px] mx-[auto] my-[0] grid grid-cols-[1fr] sm:grid-cols-[1fr_1fr] lg:grid-cols-[1fr_1fr_1fr] place-items-center gap-1">
+                  <div id="cards" class="w-[50%] max-w-[1200px] mx-[auto] my-[0] grid grid-cols-[1fr] sm:grid-cols-[1fr_1fr] lg:grid-cols-[1fr_1fr_1fr] place-items-center gap-1">
                     
                     <!-- Matching lines -->
                     <div class="w-fit flex p-4 rounded-lg bg-[#fafafa] gap-4">
@@ -1714,45 +1714,182 @@
                       </div>
                     </div>
                   </div>
-                  <button id="move-button-right" state="moveTop" title="Move to top" class="cursor-pointer" onclick="moveGeneralStatistics()">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                      <path fill="black" d="m11.852 2.011l.058-.007L12 2l.075.003l.126.017l.111.03l.111.044l.098.052l.104.074l.082.073l3 3a1 1 0 1 1-1.414 1.414L13 5.415V13a1 1 0 0 1-2 0V5.415L9.707 6.707a1 1 0 0 1-1.32.083l-.094-.083a1 1 0 0 1 0-1.414l3-3q.053-.054.112-.097l.11-.071l.114-.054l.105-.035zM12 16a3 3 0 1 1 0 6a3 3 0 0 1 0-6"/>
-                    </svg>
-                  </button>
-                  <script type="text/javascript">
-                    function moveGeneralStatistics() {
-                      const moveButtonLeft = document.getElementById("move-button-left");
-                      const moveButtonRight = document.getElementById("move-button-right");
-                      const moveButtonPathLeft = moveButtonLeft.getElementsByTagName("path")[0];
-                      const moveButtonPathRight = moveButtonRight.getElementsByTagName("path")[0];
-                      const generalStatistics = document.getElementById("general-statistics");
-                      const filesView = document.getElementById("fileTab");
-                      const statsSection = document.getElementById("stats-section");
-                      if (moveButtonLeft.state === "moveTop" || moveButtonRight.state === "moveTop") {
-                        filesView.insertBefore(generalStatistics, filesView.firstChild);
-                        generalStatistics.classList.replace("bg-[#f3f4f6]", "bg-[linear-gradient(to_right,_white_50%,_#111111_50%)]");
-                        moveButtonPathLeft.setAttribute('d',"M12 10a1 1 0 0 1 1 1v7.584l1.293-1.291a1 1 0 0 1 1.32-.083l.094.083a1 1 0 0 1 0 1.414l-3 3a1 1 0 0 1-.112.097l-.11.071l-.114.054l-.105.035l-.149.03L12 22l-.075-.003l-.126-.017l-.111-.03l-.111-.044l-.098-.052l-.096-.067l-.09-.08l-3-3a1 1 0 0 1 1.414-1.414L11 18.586V11a1 1 0 0 1 1-1m0-8a3 3 0 1 1-3 3l.005-.176A3 3 0 0 1 12 2")
-                        moveButtonPathLeft.setAttribute('fill',"black")
-                        moveButtonPathRight.setAttribute('d',"M12 10a1 1 0 0 1 1 1v7.584l1.293-1.291a1 1 0 0 1 1.32-.083l.094.083a1 1 0 0 1 0 1.414l-3 3a1 1 0 0 1-.112.097l-.11.071l-.114.054l-.105.035l-.149.03L12 22l-.075-.003l-.126-.017l-.111-.03l-.111-.044l-.098-.052l-.096-.067l-.09-.08l-3-3a1 1 0 0 1 1.414-1.414L11 18.586V11a1 1 0 0 1 1-1m0-8a3 3 0 1 1-3 3l.005-.176A3 3 0 0 1 12 2")
-                        moveButtonPathRight.setAttribute('fill',"white")
-                        moveButtonLeft.state = "moveBottom";
-                        moveButtonLeft.title = "Move to bottom";
-                        moveButtonRight.state = "moveBottom";
-                        moveButtonRight.title = "Move to bottom";
-                      } else {
-                        statsSection.insertBefore(generalStatistics, statsSection.firstElementChild);
-                        generalStatistics.classList.replace("bg-[linear-gradient(to_right,_white_50%,_#111111_50%)]", "bg-[#f3f4f6]");
-                        moveButtonPathLeft.setAttribute('d',"m11.852 2.011l.058-.007L12 2l.075.003l.126.017l.111.03l.111.044l.098.052l.104.074l.082.073l3 3a1 1 0 1 1-1.414 1.414L13 5.415V13a1 1 0 0 1-2 0V5.415L9.707 6.707a1 1 0 0 1-1.32.083l-.094-.083a1 1 0 0 1 0-1.414l3-3q.053-.054.112-.097l.11-.071l.114-.054l.105-.035zM12 16a3 3 0 1 1 0 6a3 3 0 0 1 0-6")
-                        moveButtonPathLeft.setAttribute('fill',"black")
-                        moveButtonPathRight.setAttribute('d',"m11.852 2.011l.058-.007L12 2l.075.003l.126.017l.111.03l.111.044l.098.052l.104.074l.082.073l3 3a1 1 0 1 1-1.414 1.414L13 5.415V13a1 1 0 0 1-2 0V5.415L9.707 6.707a1 1 0 0 1-1.32.083l-.094-.083a1 1 0 0 1 0-1.414l3-3q.053-.054.112-.097l.11-.071l.114-.054l.105-.035zM12 16a3 3 0 1 1 0 6a3 3 0 0 1 0-6")
-                        moveButtonPathRight.setAttribute('fill',"black")
-                        moveButtonLeft.state = "moveTop";
-                        moveButtonLeft.title = "Move to top";
-                        moveButtonRight.state = "moveTop";
-                        moveButtonRight.title = "Move to top";
+                  <div id="general-statistics-controls" class="flex flex-col gap-2 justify-center items-center">
+                    <button id="drag-button" class="cursor-pointer hidden" title="Move" onmousedown="dragGeneralStatistics()">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+                        <path fill="black" d="M7.646.146a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 1.707V5.5a.5.5 0 0 1-1 0V1.707L6.354 2.854a.5.5 0 1 1-.708-.708zM8 10a.5.5 0 0 1 .5.5v3.793l1.146-1.147a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 0 1 .708-.708L7.5 14.293V10.5A.5.5 0 0 1 8 10M.146 8.354a.5.5 0 0 1 0-.708l2-2a.5.5 0 1 1 .708.708L1.707 7.5H5.5a.5.5 0 0 1 0 1H1.707l1.147 1.146a.5.5 0 0 1-.708.708zM10 8a.5.5 0 0 1 .5-.5h3.793l-1.147-1.146a.5.5 0 0 1 .708-.708l2 2a.5.5 0 0 1 0 .708l-2 2a.5.5 0 0 1-.708-.708L14.293 8.5H10.5A.5.5 0 0 1 10 8"/>
+                      </svg>
+                    </button>
+                    <script type="text/javascript">
+                      function dragGeneralStatistics() {
+                        const generalStatistics = document.getElementById("general-statistics");
+                        const dragButton= document.getElementById("drag-button");
+                        const lockButton = document.getElementById("lock-button");
+                        if (lockButton.state === "unlock") {
+                          let positions = [0, 0, 0, 0];
+                          dragButton.onmousedown = dragOnMouseDown;
+
+                          function dragOnMouseDown(e) {
+                            e = e || window.event;
+                            e.preventDefault();
+                            positions[0] = e.clientX;
+                            positions[1] = e.clientY;
+                            positions[2] = generalStatistics.offsetLeft;
+                            positions[3] = generalStatistics.offsetTop;
+                            dragButton.classList.replace("cursor-pointer", "cursor-grabbing");
+                            document.onmousemove = dragOnMouseMove;
+                            document.onmouseup = dragOnMouseUp;
+                          }
+
+                          function dragOnMouseMove(e) {
+                            e = e || window.event;
+                            e.preventDefault();
+                            const deltaX = e.clientX - positions[0];
+                            const deltaY = e.clientY - positions[1];
+                            const newTop = positions[3] + deltaY;
+                            const newLeft = positions[2] + deltaX;
+                            generalStatistics.style.top = newTop + "px";
+                            generalStatistics.style.left = newLeft + "px";
+                          }
+
+                          function dragOnMouseUp(e) {
+                            e = e || window.event;
+                            e.preventDefault();
+                            document.onmousemove = null;
+                            document.onmouseup = null;
+                            dragButton.classList.replace("cursor-grabbing", "cursor-pointer");
+                          }
+                        }
                       }
-                    }
-                  </script>
+                    </script>
+                    <button id="lock-button" state="lock" class="cursor-pointer" title="Unlock" onclick="lockGeneralStatistics()">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+                        <path fill="black" d="M8 0a4 4 0 0 1 4 4v2.05a2.5 2.5 0 0 1 2 2.45v5a2.5 2.5 0 0 1-2.5 2.5h-7A2.5 2.5 0 0 1 2 13.5v-5a2.5 2.5 0 0 1 2-2.45V4a4 4 0 0 1 4-4m0 1a3 3 0 0 0-3 3v2h6V4a3 3 0 0 0-3-3"/>
+                      </svg>
+                    </button>
+                    <script type="text/javascript">
+                      function lockGeneralStatistics() {
+                        const lockButton = document.getElementById("lock-button");
+                        const dragButton = document.getElementById("drag-button");
+                        const moveButtonLeft = document.getElementById("move-button-left");
+                        const moveButtonRight = document.getElementById("move-button-right");
+                        const generalStatistics = document.getElementById("general-statistics");
+                        const layoutButton = document.getElementById("layout-button");
+                        const generalStatisticsControls = document.getElementById("general-statistics-controls").querySelectorAll("button");
+                        const cards = document.getElementById("cards");
+                        if (lockButton.state === "lock") {
+                          lockButton.state = "unlock";
+                          lockButton.title = "Lock";
+                          lockButton.querySelector('path').setAttribute('d', "M8 0c1.07 0 2.041.42 2.759 1.104l.14.14.062.08a.5.5 0 0 1-.71.675l-.076-.066-.216-.205A3 3 0 0 0 5 4v2h6.5A2.5 2.5 0 0 1 14 8.5v5a2.5 2.5 0 0 1-2.5 2.5h-7A2.5 2.5 0 0 1 2 13.5v-5a2.5 2.5 0 0 1 2-2.45V4a4 4 0 0 1 4-4");
+                          dragButton.classList.remove("hidden");
+                          generalStatistics.classList.add("absolute", "z-999", "rounded-lg");
+                          generalStatistics.classList.replace("w-full", "w-fit");
+                          generalStatistics.classList.replace("bg-[linear-gradient(to_right,_white_50%,_#111111_50%)]", "bg-[#f3f4f6]");
+                          cards.classList.replace("w-[50%]", "w-fit");
+                          moveButtonLeft.classList.add("hidden");
+                          moveButtonRight.classList.add("hidden");
+                          layoutButton.classList.remove("hidden");
+                          generalStatisticsControls.forEach(button => {
+                            button.querySelector('path').setAttribute('fill',"black");
+                          });
+                        } else {
+                          lockButton.state = "lock";
+                          lockButton.title = "Unlock";
+                          lockButton.querySelector('path').setAttribute('d', "M8 0a4 4 0 0 1 4 4v2.05a2.5 2.5 0 0 1 2 2.45v5a2.5 2.5 0 0 1-2.5 2.5h-7A2.5 2.5 0 0 1 2 13.5v-5a2.5 2.5 0 0 1 2-2.45V4a4 4 0 0 1 4-4m0 1a3 3 0 0 0-3 3v2h6V4a3 3 0 0 0-3-3");
+                          dragButton.classList.add("hidden");
+                          generalStatistics.classList.remove("absolute", "z-999", "rounded-lg");
+                          generalStatistics.classList.replace("w-fit", "w-full");
+                          generalStatistics.removeAttribute("style");
+                          cards.classList.replace("w-fit", "w-[50%]");
+                          cards.classList.replace("sm:grid-cols-[1fr]", "sm:grid-cols-[1fr_1fr]");
+                          cards.classList.replace("lg:grid-cols-[1fr]", "lg:grid-cols-[1fr_1fr_1fr]");
+                          layoutButton.state = "horizontal";
+                          layoutButton.title = "Vertical layout";
+                          layoutButton.querySelector('path').setAttribute('d', "M2 2h16v6H2zm0 8h16v12H2zm20-8v20h-2V2z");
+                          moveButtonLeft.classList.remove("hidden");
+                          moveButtonRight.classList.remove("hidden");
+                          layoutButton.classList.add("hidden");
+                          if (moveButtonLeft.state === "moveBottom" || moveButtonRight.state === "moveBottom") {
+                            generalStatistics.classList.replace("bg-[#f3f4f6]", "bg-[linear-gradient(to_right,_white_50%,_#111111_50%)]");
+                            generalStatisticsControls.forEach(button => {
+                              button.querySelector('path').setAttribute('fill',"white");
+                            });
+                          }
+                        }
+                      }
+                    </script>
+                    <button id="move-button-right" state="moveTop" title="Move to top" class="cursor-pointer" onclick="moveGeneralStatistics()">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                        <path fill="black" d="m11.852 2.011l.058-.007L12 2l.075.003l.126.017l.111.03l.111.044l.098.052l.104.074l.082.073l3 3a1 1 0 1 1-1.414 1.414L13 5.415V13a1 1 0 0 1-2 0V5.415L9.707 6.707a1 1 0 0 1-1.32.083l-.094-.083a1 1 0 0 1 0-1.414l3-3q.053-.054.112-.097l.11-.071l.114-.054l.105-.035zM12 16a3 3 0 1 1 0 6a3 3 0 0 1 0-6"/>
+                      </svg>
+                    </button>
+                    <script type="text/javascript">
+                      function moveGeneralStatistics() {
+                        const lockButton = document.getElementById("lock-button");
+                        if (lockButton.getAttribute("state") === "lock") {
+                          const generalStatisticsControls = document.getElementById("general-statistics-controls").querySelectorAll("button");
+                          const moveButtonLeft = document.getElementById("move-button-left");
+                          const moveButtonRight = document.getElementById("move-button-right");
+                          const moveButtonPathLeft = moveButtonLeft.getElementsByTagName("path")[0];
+                          const moveButtonPathRight = moveButtonRight.getElementsByTagName("path")[0];
+                          const generalStatistics = document.getElementById("general-statistics");
+                          const filesView = document.getElementById("fileTab");
+                          const statsSection = document.getElementById("stats-section");
+                          if (moveButtonLeft.state === "moveTop" || moveButtonRight.state === "moveTop") {
+                            filesView.insertBefore(generalStatistics, filesView.firstChild);
+                            generalStatistics.classList.replace("bg-[#f3f4f6]", "bg-[linear-gradient(to_right,_white_50%,_#111111_50%)]");
+                            moveButtonPathLeft.setAttribute('d',"M12 10a1 1 0 0 1 1 1v7.584l1.293-1.291a1 1 0 0 1 1.32-.083l.094.083a1 1 0 0 1 0 1.414l-3 3a1 1 0 0 1-.112.097l-.11.071l-.114.054l-.105.035l-.149.03L12 22l-.075-.003l-.126-.017l-.111-.03l-.111-.044l-.098-.052l-.096-.067l-.09-.08l-3-3a1 1 0 0 1 1.414-1.414L11 18.586V11a1 1 0 0 1 1-1m0-8a3 3 0 1 1-3 3l.005-.176A3 3 0 0 1 12 2")
+                            moveButtonPathLeft.setAttribute('fill',"black")
+                            moveButtonPathRight.setAttribute('d',"M12 10a1 1 0 0 1 1 1v7.584l1.293-1.291a1 1 0 0 1 1.32-.083l.094.083a1 1 0 0 1 0 1.414l-3 3a1 1 0 0 1-.112.097l-.11.071l-.114.054l-.105.035l-.149.03L12 22l-.075-.003l-.126-.017l-.111-.03l-.111-.044l-.098-.052l-.096-.067l-.09-.08l-3-3a1 1 0 0 1 1.414-1.414L11 18.586V11a1 1 0 0 1 1-1m0-8a3 3 0 1 1-3 3l.005-.176A3 3 0 0 1 12 2")
+                            generalStatisticsControls.forEach(button => {
+                              button.querySelector('path').setAttribute('fill',"white");
+                            });
+                            moveButtonLeft.state = "moveBottom";
+                            moveButtonLeft.title = "Move to bottom";
+                            moveButtonRight.state = "moveBottom";
+                            moveButtonRight.title = "Move to bottom";
+                          } else {
+                            statsSection.insertBefore(generalStatistics, statsSection.firstElementChild);
+                            generalStatistics.classList.replace("bg-[linear-gradient(to_right,_white_50%,_#111111_50%)]", "bg-[#f3f4f6]");
+                            moveButtonPathLeft.setAttribute('d',"m11.852 2.011l.058-.007L12 2l.075.003l.126.017l.111.03l.111.044l.098.052l.104.074l.082.073l3 3a1 1 0 1 1-1.414 1.414L13 5.415V13a1 1 0 0 1-2 0V5.415L9.707 6.707a1 1 0 0 1-1.32.083l-.094-.083a1 1 0 0 1 0-1.414l3-3q.053-.054.112-.097l.11-.071l.114-.054l.105-.035zM12 16a3 3 0 1 1 0 6a3 3 0 0 1 0-6")
+                            moveButtonPathLeft.setAttribute('fill',"black")
+                            moveButtonPathRight.setAttribute('d',"m11.852 2.011l.058-.007L12 2l.075.003l.126.017l.111.03l.111.044l.098.052l.104.074l.082.073l3 3a1 1 0 1 1-1.414 1.414L13 5.415V13a1 1 0 0 1-2 0V5.415L9.707 6.707a1 1 0 0 1-1.32.083l-.094-.083a1 1 0 0 1 0-1.414l3-3q.053-.054.112-.097l.11-.071l.114-.054l.105-.035zM12 16a3 3 0 1 1 0 6a3 3 0 0 1 0-6")
+                            generalStatisticsControls.forEach(button => {
+                              button.querySelector('path').setAttribute('fill',"black");
+                            });
+                            moveButtonLeft.state = "moveTop";
+                            moveButtonLeft.title = "Move to top";
+                            moveButtonRight.state = "moveTop";
+                            moveButtonRight.title = "Move to top";
+                          }
+                        }
+                      }
+                    </script>
+                    <button id="layout-button" state="horizontal" class="cursor-pointer hidden" onclick="updateGeneralStatisticsLayout()">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                        <path fill="black" d="M2 2h16v6H2zm0 8h16v12H2zm20-8v20h-2V2z" />
+                      </svg>
+                    </button>
+                    <script type="text/javascript">
+                      function updateGeneralStatisticsLayout() {
+                        const layoutButton = document.getElementById("layout-button");
+                        const cards = document.getElementById("cards");
+                        if (layoutButton.state === "horizontal") {
+                          layoutButton.state = "vertical";
+                          layoutButton.title = "Horizontal layout";
+                          layoutButton.querySelector('path').setAttribute('d', "M2 2h20v6H2zm0 8h20v12H2z");
+                          cards.classList.replace("sm:grid-cols-[1fr_1fr]", "sm:grid-cols-[1fr]");
+                          cards.classList.replace("lg:grid-cols-[1fr_1fr_1fr]", "lg:grid-cols-[1fr]");
+                        } else {
+                          layoutButton.state = "horizontal";
+                          layoutButton.title = "Vertical layout";
+                          layoutButton.querySelector('path').setAttribute('d', "M2 2h16v6H2zm0 8h16v12H2zm20-8v20h-2V2z");
+                          cards.classList.replace("sm:grid-cols-[1fr]", "sm:grid-cols-[1fr_1fr]");
+                          cards.classList.replace("lg:grid-cols-[1fr]", "lg:grid-cols-[1fr_1fr_1fr]");
+                        }
+                      }
+                    </script>
+                  </div>                
                 </div> 
 
                 <!-- Variant statistics -->
@@ -1760,7 +1897,7 @@
                   <div class="w-full grid grid-cols-[1fr] lg:grid-cols-[1fr_1fr] 2xl:grid-cols-[1fr_1fr_1fr] gap-[1.0rem]">
 
                     <!-- SNP (Single Nucleotide Polymorphism) -->
-                    <div class="flex p-4 rounded-lg bg-[#fafafa] gap-4 min-w-0">
+                    <div variant="SNP" class="flex p-4 rounded-lg bg-[#fafafa] gap-4 min-w-0">
                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 250" width="125" height="150">
                         <g transform="translate(100, 100)">
                         <!-- SNP (Single Nucleotide Polymorphism) Icon -->
@@ -1805,9 +1942,9 @@
                         </ul>
                         <!-- Composition bar -->
                         <div class="w-full h-[25px] rounded-full bg-[#E5E7EB] p-1" id="stats-bar-snp">
-                          <div class="h-full bg-[#2C7A7B] opacity-75 float-left rounded-tl-full rounded-bl-full rounded-tr-none rounded-br-none">
+                          <div class="h-full z-2 bg-[#2C7A7B] float-left rounded-tl-full rounded-bl-full rounded-tr-none rounded-br-none">
                           </div>
-                          <div class="h-full bg-[#822E4A] opacity-75 float-left rounded-tl-none rounded-bl-none rounded-tr-full rounded-br-full">
+                          <div class="h-full z-2 bg-[#822E4A] float-left rounded-tl-none rounded-bl-none rounded-tr-full rounded-br-full">
                           </div>
                         </div>
                         <svg width="30" height="30" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="self-center mt-[3px]">
@@ -1817,7 +1954,7 @@
                     </div>
 
                     <!-- MNP (Multiple Nucleotide Polymorphism) -->
-                    <div class="flex p-4 rounded-lg bg-[#fafafa] gap-4 min-w-0">
+                    <div variant="MNP" class="flex p-4 rounded-lg bg-[#fafafa] gap-4 min-w-0">
                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 250" width="125" height="150">
                         <g transform="translate(100, 100)">
                           <circle cx="0" cy="0" r="70" fill="#f8f9fa" stroke="#6c757d" stroke-width="3"/>
@@ -1863,9 +2000,9 @@
                         </ul>
                         <!-- Composition bar -->
                         <div class="w-full h-[25px] rounded-full bg-[#E5E7EB] p-1" id="stats-bar-mnp">
-                          <div class="h-full bg-[#2C7A7B] opacity-75 float-left rounded-tl-full rounded-bl-full rounded-tr-none rounded-br-none">
+                          <div class="h-full z-2 bg-[#2C7A7B] float-left rounded-tl-full rounded-bl-full rounded-tr-none rounded-br-none">
                           </div>
-                          <div class="h-full bg-[#822E4A] opacity-75 float-left rounded-tl-none rounded-bl-none rounded-tr-full rounded-br-full">
+                          <div class="h-full z-2 bg-[#822E4A] float-left rounded-tl-none rounded-bl-none rounded-tr-full rounded-br-full">
                           </div>
                         </div>
                         <svg width="30" height="30" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="self-center mt-[3px]">
@@ -1875,7 +2012,7 @@
                     </div>
 
                     <!-- SV (Structural Variation) -->
-                    <div class="flex p-4 rounded-lg bg-[#fafafa] gap-4 min-w-0">
+                    <div variant="SV" class="flex p-4 rounded-lg bg-[#fafafa] gap-4 min-w-0">
                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 250" width="125" height="150">
                         <g transform="translate(100, 100)">
                           <circle cx="0" cy="0" r="70" fill="#f8f9fa" stroke="#6c757d" stroke-width="3"/>
@@ -1924,9 +2061,9 @@
                         </ul>
                         <!-- Composition bar -->
                         <div class="w-full h-[25px] rounded-full bg-[#E5E7EB] p-1" id="stats-bar-sv">
-                          <div class="h-full bg-[#2C7A7B] opacity-75 float-left rounded-tl-full rounded-bl-full rounded-tr-none rounded-br-none">
+                          <div class="h-full z-2 bg-[#2C7A7B] float-left rounded-tl-full rounded-bl-full rounded-tr-none rounded-br-none">
                           </div>
-                          <div class="h-full bg-[#822E4A] opacity-75 float-left rounded-tl-none rounded-bl-none rounded-tr-full rounded-br-full">
+                          <div class="h-full z-2 bg-[#822E4A] float-left rounded-tl-none rounded-bl-none rounded-tr-full rounded-br-full">
                           </div>
                         </div>
                         <svg width="30" height="30" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="self-center mt-[3px]">
@@ -1936,7 +2073,7 @@
                     </div>
 
                     <!-- INDEL (Insertion/Deletion) -->
-                    <div class="flex p-4 rounded-lg bg-[#fafafa] gap-4 min-w-0">
+                    <div variant="INDEL" class="flex p-4 rounded-lg bg-[#fafafa] gap-4 min-w-0">
                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 250" width="125" height="150">
                         <g transform="translate(100, 100)">
                           <circle cx="0" cy="0" r="70" fill="#f8f9fa" stroke="#6c757d" stroke-width="3"/>
@@ -1990,9 +2127,9 @@
                         </ul>
                         <!-- Composition bar -->
                         <div class="w-full h-[25px] rounded-full bg-[#E5E7EB] p-1" id="stats-bar-indel">
-                          <div class="h-full bg-[#2C7A7B] opacity-75 float-left rounded-tl-full rounded-bl-full rounded-tr-none rounded-br-none">
+                          <div class="h-full z-2 bg-[#2C7A7B] float-left rounded-tl-full rounded-bl-full rounded-tr-none rounded-br-none">
                           </div>
-                          <div class="h-full bg-[#822E4A] opacity-75 float-left rounded-tl-none rounded-bl-none rounded-tr-full rounded-br-full">
+                          <div class="h-full z-2 bg-[#822E4A] float-left rounded-tl-none rounded-bl-none rounded-tr-full rounded-br-full">
                           </div>
                         </div>
                         <svg width="30" height="30" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="self-center mt-[3px]">
@@ -2002,7 +2139,7 @@
                     </div>
 
                     <!-- INV (Inversion) -->
-                    <div class="flex p-4 rounded-lg bg-[#fafafa] gap-4 min-w-0">
+                    <div variant="INV" class="flex p-4 rounded-lg bg-[#fafafa] gap-4 min-w-0">
                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 250" width="125" height="150">
                         <g transform="translate(100, 100)">
                           <circle cx="0" cy="0" r="70" fill="#f8f9fa" stroke="#6c757d" stroke-width="3"/>
@@ -2070,9 +2207,9 @@
                         </ul>
                         <!-- Composition bar -->
                         <div class="w-full h-[25px] rounded-full bg-[#E5E7EB] p-1" id="stats-bar-inv">
-                          <div class="h-full bg-[#2C7A7B] opacity-75 float-left rounded-tl-full rounded-bl-full rounded-tr-none rounded-br-none">
+                          <div class="h-full z-2 bg-[#2C7A7B] float-left rounded-tl-full rounded-bl-full rounded-tr-none rounded-br-none">
                           </div>
-                          <div class="h-full bg-[#822E4A] opacity-75 float-left rounded-tl-none rounded-bl-none rounded-tr-full rounded-br-full">
+                          <div class="h-full z-2 bg-[#822E4A] float-left rounded-tl-none rounded-bl-none rounded-tr-full rounded-br-full">
                           </div>
                         </div>
                         <svg width="30" height="30" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="self-center mt-[3px]">
@@ -2083,7 +2220,7 @@
                     
 
                     <!-- CSV (Complex) -->
-                    <div class="flex p-4 rounded-lg bg-[#fafafa] gap-4 min-w-0">
+                    <div variant="CSV" class="flex p-4 rounded-lg bg-[#fafafa] gap-4 min-w-0">
                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 250" width="125" height="150">
                         <g transform="translate(100, 100)">
                           <circle cx="0" cy="0" r="70" fill="#f8f9fa" stroke="#6c757d" stroke-width="3"/>
@@ -2148,9 +2285,9 @@
                         </ul>
                         <!-- Composition bar -->
                         <div class="w-full h-[25px] rounded-full bg-[#E5E7EB] p-1" id="stats-bar-comp">
-                          <div class="h-full bg-[#2C7A7B] opacity-75 float-left rounded-tl-full rounded-bl-full rounded-tr-none rounded-br-none">
+                          <div class="h-full z-2 bg-[#2C7A7B] float-left rounded-tl-full rounded-bl-full rounded-tr-none rounded-br-none">
                           </div>
-                          <div class="h-full bg-[#822E4A] opacity-75 float-left rounded-tl-none rounded-bl-none rounded-tr-full rounded-br-full">
+                          <div class="h-full z-2 bg-[#822E4A] float-left rounded-tl-none rounded-bl-none rounded-tr-full rounded-br-full">
                           </div>
                         </div>
                         <svg width="30" height="30" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="self-center mt-[3px]">
@@ -2201,11 +2338,17 @@
 
                   let numberFiltersApplied = 0;
 
+                  const statsCards = document.getElementById('variant-statistics');
+
                   if (chromosomeQuery !== "") {
                     ++numberFiltersApplied;
                   }
+                  variants.forEach(variant => {
+                    statsCards.querySelector(`[variant="${variant === "INS" || variant === "DEL" ? "INDEL" : variant}"]`).classList.remove("border", "border-solid", "border-red-500");
+                  });
                   if (variantTypeQuery !== "ALL") {
                     ++numberFiltersApplied;
+                    statsCards.querySelector(`[variant="${variantTypeQuery === "INS" || variantTypeQuery === "DEL" ? "INDEL" : variantTypeQuery}"]`).classList.add("border", "border-solid", "border-red-500");
                   }
                   if (variantFilterQuery !== "ALL") {
                     ++numberFiltersApplied;

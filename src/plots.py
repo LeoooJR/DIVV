@@ -97,6 +97,12 @@ class PlotLibrary:
         fig = px.histogram(data_frame=df, 
                            x=x, 
                            title=title)
+        
+        fig.update_layout(yaxis=dict(
+            title=dict(
+                text="Count"
+            )
+        ))
 
         plot = Plot(fig=fig)
 
