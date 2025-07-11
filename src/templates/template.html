@@ -231,7 +231,7 @@
             cBtwK2mK/3rSI32SJEmSJEmSJEmSJEmSJEmSJEmSJEmSJEmSJEmSJEmSJEmSJEmSJEmSJEmSJEmS
             JEkT+v87EJ4yRVPFhwAAAABJRU5ErkJggg==
             " alt="vcf-icon-white" class="h-[70px] w-[70px] pl-[10px] py-[5px]">
-            <h2 class="mt-[20px] mb-[10px] font-[Ubuntu] font-bold italic text-center text-2xl w-full text-[#111111]">
+            <h2 class="mt-[20px] mb-[10px] font-[Ubuntu] font-bold italic text-center text-2xl w-full text-[#111111] max-w-full overflow-hidden text-ellipsis whitespace-nowrap">
               {{ vcfs.repository[0].informations().basename|default("VCF.L") }}
             </h2>
         </div>
@@ -485,7 +485,7 @@
             EIAABCAAgQsJYAAuLDopQwACEIAABDAAaAACEIAABCBwIQEMwIVFJ2UIQAACEIDA/wO6J1d42Pfl
             HwAAAABJRU5ErkJggg==
             " alt="vcf-icon-black" class="h-[70px] w-[70px] pl-[10px] py-[5px]">
-            <h2 class="mt-[20px] mb-[10px] font-[Ubuntu] font-bold italic text-center text-2xl w-full text-[white]">
+            <h2 class="mt-[20px] mb-[10px] font-[Ubuntu] font-bold italic text-center text-2xl w-full text-[white] max-w-full truncate overflow-hidden whitespace-nowrap">
               {{ vcfs.repository[1].informations().basename|default("VCF.R") }}
             </h2>
         </div>
@@ -747,11 +747,14 @@
         }
         else if (this.id === "terminal-icon") {
           let element = document.getElementById("terminal");
+          let keywords = document.getElementById("keywords-terminal");
           if (element.classList.contains('hidden')) {
             element.classList.replace('hidden', 'block');
+            keywords.classList.remove('hidden');
           }
           else {
             element.classList.replace('block', 'hidden');
+            keywords.classList.add('hidden');
           }
           updateTerminal(this);
         }
@@ -838,8 +841,16 @@
                 </div>
               {% endif %}
             {% endfor %}
+            <!-- Resize button -->
+            <div class="flex justify-center items-center w-full">
+              <button id="resize-button-left" class="cursor-pointer hover:bg-gray-200" title="Resize" onmousedown="resizePlot(event, this)">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                  <path fill="black" d="M8 18h3v-3H2v-2h20v2h-9v3h3l-4 4zm4-16L8 6h3v3H2v2h20V9h-9V6h3z" />
+                </svg>
+              </button>
+            </div>
             <!-- Left plot navigation -->
-            <div class="flex justify-between items-center w-full mx-[0] my-[10px]">
+            <div id="plot-navigation-left" class="flex justify-between items-center w-full mx-[0] my-[10px]">
               <div class="flex justify-center w-full pl-[20px]">
                   <div class="cursor-pointer text-[24px] bg-[rgba(200,_200,_200,_0.3)] rounded-[50%] flex items-center justify-center w-[40px] h-[40px] [transition:all_0.3s_ease] mb-[5px] text-[black] hover:bg-[rgba(150,_150,_150,_0.7)] hover:scale-110" id="leftPrevArrow">&#8592;</div>
                   <div class="flex gap-[5px] mx-[15px] my-[0] items-center" id="leftPlotIndicator"></div>
@@ -861,8 +872,16 @@
                 </div>
               {% endif %}
             {% endfor %}
+            <!-- Resize button -->
+            <div class="flex justify-center items-center w-full">
+              <button id="resize-button-right" class="cursor-pointer hover:bg-gray-700" title="Resize" onmousedown="resizePlot(event, this)">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                  <path fill="white" d="M8 18h3v-3H2v-2h20v2h-9v3h3l-4 4zm4-16L8 6h3v3H2v2h20V9h-9V6h3z" />
+                </svg>
+              </button>
+            </div>
             <!-- Right plot navigation -->
-            <div class="flex justify-between items-center w-full mx-[0] my-[10px]">
+            <div id="plot-navigation-right" class="flex justify-between items-center w-full mx-[0] my-[10px]">
               <div class="flex justify-center w-full pl-[20px]">
                 <div class="cursor-pointer text-[24px] bg-[rgba(200,_200,_200,_0.3)] rounded-[50%] flex items-center justify-center w-[40px] h-[40px] [transition:all_0.3s_ease] mb-[5px] text-[white] hover:bg-[rgba(150,_150,_150,_0.7)] hover:scale-110" id="rightPrevArrow">&#8592;</div>
                 <div class="flex gap-[5px] mx-[15px] my-[0] items-center" id="rightPlotIndicator"></div>
@@ -873,6 +892,66 @@
 
     </section>
 
+    <!-- Plot resizing logic -->
+    <script type="text/javascript">
+      function resizePlot(e, element) {
+        e = e || window.event;
+        e.preventDefault();
+        let activePlotContainer;
+        let inactivePlotContainer;
+        if (element.id === 'resize-button-right') {
+          activePlotContainer = document.getElementById("right-plots");
+          inactivePlotContainer = document.getElementById("left-plots");
+        }
+        else {
+          activePlotContainer = document.getElementById("left-plots");
+          inactivePlotContainer = document.getElementById("right-plots");
+        }
+        const activeCurrentPlot = Array.from(activePlotContainer.children).find(child => {
+          if (!child.classList.contains('hidden')) {
+            return child;
+          }
+        });
+        const inactiveCurrentPlot = Array.from(inactivePlotContainer.children).find(child => {
+          if (!child.classList.contains('hidden')) {
+            return child;
+          }
+        });
+        if (!activePlotContainer) return;
+        const plotWidth = activePlotContainer.offsetWidth;
+        const plotHeight = activePlotContainer.offsetHeight;
+          
+        const startY = e.clientY;
+          
+        function onDrag(e) {
+          e = e || window.event;
+          e.preventDefault();
+          const currentY = e.clientY;
+          const deltaY = currentY - startY;
+
+          const newHeight = Math.max(150, plotHeight + deltaY);
+            
+          activePlotContainer.style.height = `${newHeight}px`;
+          inactivePlotContainer.style.height = `${newHeight}px`;
+
+          Plotly.relayout(activeCurrentPlot.querySelector('.plotly-graph-div'), {
+            height: newHeight - (element.offsetHeight + document.getElementById('plot-navigation-right').offsetHeight) - 20
+          });
+          Plotly.relayout(inactiveCurrentPlot.querySelector('.plotly-graph-div'), {
+            height: newHeight - (element.offsetHeight + document.getElementById('plot-navigation-right').offsetHeight) - 20
+          });
+        }
+
+        function onMouseUp() {
+          document.removeEventListener('mousemove', onDrag);
+          document.removeEventListener('mouseup', onMouseUp);
+        }
+
+        document.addEventListener('mousemove', onDrag);
+        document.addEventListener('mouseup', onMouseUp);
+      }
+    </script>
+    
     <!-- Plots navigation logic -->
     <script type="text/javascript">
       document.addEventListener('DOMContentLoaded', function() {
@@ -960,7 +1039,10 @@
               leftPlots[leftCurrentPlot].classList.replace("opacity-0", "opacity-100");
               leftPlots[leftCurrentPlot].classList.add('col-auto', 'row-auto');
               leftPlots[leftCurrentPlot].classList.add('relative');
-              Plotly.update(leftPlots[leftCurrentPlot].querySelector('.plotly-graph-div'));
+              Plotly.relayout(leftPlots[leftCurrentPlot].querySelector('.plotly-graph-div'), {
+                width: leftPlots[leftCurrentPlot].parentElement.offsetWidth,
+                height: leftPlots[leftCurrentPlot].parentElement.offsetHeight - (document.getElementById('resize-button-left').offsetHeight + document.getElementById('plot-navigation-left').offsetHeight) - 20
+              });
               
               leftPlotIndicator.children[leftCurrentPlot].classList.replace("bg-[#ccc]", "bg-[#555]");
           });
@@ -980,7 +1062,10 @@
               leftPlots[leftCurrentPlot].classList.replace("opacity-0", "opacity-100");
               leftPlots[leftCurrentPlot].classList.add('col-auto', 'row-auto');
               leftPlots[leftCurrentPlot].classList.add('relative');
-              Plotly.update(leftPlots[leftCurrentPlot].querySelector('.plotly-graph-div'));
+              Plotly.relayout(leftPlots[leftCurrentPlot].querySelector('.plotly-graph-div'), {
+                width: leftPlots[leftCurrentPlot].parentElement.offsetWidth,
+                height: leftPlots[leftCurrentPlot].parentElement.offsetHeight - (document.getElementById('resize-button-left').offsetHeight + document.getElementById('plot-navigation-left').offsetHeight) - 20
+              });
               
               leftPlotIndicator.children[leftCurrentPlot].classList.replace("bg-[#ccc]", "bg-[#555]");
           });
@@ -1001,7 +1086,10 @@
               rightPlots[rightCurrentPlot].classList.replace("opacity-0", "opacity-100");
               rightPlots[rightCurrentPlot].classList.add('col-auto', 'row-auto');
               rightPlots[rightCurrentPlot].classList.add('relative');
-              Plotly.update(rightPlots[rightCurrentPlot].querySelector('.plotly-graph-div'));
+              Plotly.relayout(rightPlots[rightCurrentPlot].querySelector('.plotly-graph-div'), {
+                width: rightPlots[rightCurrentPlot].parentElement.offsetWidth,
+                height: rightPlots[rightCurrentPlot].parentElement.offsetHeight - (document.getElementById('resize-button-right').offsetHeight + document.getElementById('plot-navigation-right').offsetHeight) - 20
+              });
               
               rightPlotIndicator.children[rightCurrentPlot].classList.replace("bg-[#ccc]", "bg-[#555]");
           });
@@ -1021,9 +1109,22 @@
               rightPlots[rightCurrentPlot].classList.replace("opacity-0", "opacity-100");
               rightPlots[rightCurrentPlot].classList.add('col-auto', 'row-auto');
               rightPlots[rightCurrentPlot].classList.add('relative');
-              Plotly.update(rightPlots[rightCurrentPlot].querySelector('.plotly-graph-div'));
+              Plotly.relayout(rightPlots[rightCurrentPlot].querySelector('.plotly-graph-div'), {
+                width: rightPlots[rightCurrentPlot].parentElement.offsetWidth,
+                height: rightPlots[rightCurrentPlot].parentElement.offsetHeight - (document.getElementById('resize-button-right').offsetHeight + document.getElementById('plot-navigation-right').offsetHeight) - 20
+              });
               
               rightPlotIndicator.children[rightCurrentPlot].classList.replace("bg-[#ccc]", "bg-[#555]");
+          });
+
+          // Resize plots on window resize
+          window.addEventListener('resize', () => {
+            Plotly.relayout(leftPlots[leftCurrentPlot].querySelector('.plotly-graph-div'), {
+              width: leftPlots[leftCurrentPlot].parentElement.offsetWidth,
+            });
+            Plotly.relayout(rightPlots[rightCurrentPlot].querySelector('.plotly-graph-div'), {
+              width: rightPlots[rightCurrentPlot].parentElement.offsetWidth,
+            });
           });
       });
     </script>
@@ -1301,6 +1402,43 @@
 
     <!-- Terminal -->
     <div class="bg-[linear-gradient(to_right,_white_50%,_#111111_50%)] w-full block pt-[2px] pb-[2px]">
+      <!-- Keywords -->
+      <div id="keywords-terminal" class="flex flex-row w-[90%] ml-[5%] mr-[5%] hidden">
+        <div id="keywords-terminal-left" class="flex flex-row flex-wrap w-[50%] gap-2 justify-center mb-[10px] mr-[10px]">
+          {% if vcfs.repository[0].variants.format -%}
+            {% for key in vcfs.repository[0].variants.format -%}
+            <div class="badge badge-primary text-white cursor-pointer" onclick="addKeyword(this)">{{ key }}</div>
+            {%- endfor %}
+          {%- endif %}
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+            <path fill="black" d="M11.589 3a.75.75 0 0 0-1.5 0v1.978a.75.75 0 0 0 1.5 0zM5.983 4.945A.75.75 0 0 0 4.917 6l1.47 1.483A.75.75 0 1 0 7.452 6.43zM16.761 6a.75.75 0 0 0-1.065-1.055l-1.47 1.484a.75.75 0 1 0 1.065 1.055zM11.8 10.096c-1.025-.404-1.994.617-1.61 1.61l3.581 9.25c.41 1.058 1.901 1.059 2.311 0l1.374-3.543l3.508-1.385c1.048-.414 1.048-1.903 0-2.317zm-6.84.067H3a.75.75 0 0 0 0 1.5h1.96a.75.75 0 0 0 0-1.5m2.492 5.234a.75.75 0 0 0-1.065-1.056l-1.47 1.484a.75.75 0 1 0 1.066 1.056z" />
+          </svg>
+        </div>
+        <div id="keywords-terminal-right" class="flex flex-row flex-wrap w-[50%] gap-2 justify-center mb-[10px] ml-[10px]">
+          {% if vcfs.repository[1].variants.format -%}
+            {% for key in vcfs.repository[1].variants.format -%}
+            <div class="badge badge-primary text-white cursor-pointer" onclick="addKeyword(this)">{{ key }}</div>
+            {%- endfor %}
+          {%- endif %}
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+            <path fill="white" d="M11.589 3a.75.75 0 0 0-1.5 0v1.978a.75.75 0 0 0 1.5 0zM5.983 4.945A.75.75 0 0 0 4.917 6l1.47 1.483A.75.75 0 1 0 7.452 6.43zM16.761 6a.75.75 0 0 0-1.065-1.055l-1.47 1.484a.75.75 0 1 0 1.065 1.055zM11.8 10.096c-1.025-.404-1.994.617-1.61 1.61l3.581 9.25c.41 1.058 1.901 1.059 2.311 0l1.374-3.543l3.508-1.385c1.048-.414 1.048-1.903 0-2.317zm-6.84.067H3a.75.75 0 0 0 0 1.5h1.96a.75.75 0 0 0 0-1.5m2.492 5.234a.75.75 0 0 0-1.065-1.056l-1.47 1.484a.75.75 0 1 0 1.066 1.056z" />
+          </svg>
+        </div>
+        <script>
+          function addKeyword(element) {
+            let keyword = element.textContent;
+            if (element.parentElement.id === "keywords-terminal-left") {
+              keyword = "L." + keyword;
+            }
+            else {
+              keyword = "R." + keyword;
+            }
+            let terminalInput = document.getElementById("terminal-input");
+            terminalInput.value += keyword;
+          }
+        </script>
+      </div>
+
       <div id="terminal" class="bg-[rgba(217,_217,_217,_0.18)] backdrop-filter backdrop-blur rounded-[12px] [box-shadow:0_4px_6px_rgba(0,_0,_0,_0.1)] overflow-hidden w-[90%] ml-[5%] mr-[5%] h-[250px] hidden">
         <div class="bg-[#202425] px-[15px] py-[10px] flex items-center">
           <span class="text-[#ffffff] text-[14px] font-semibold flex items-center gap-[8px] font-[Ubuntu]">
@@ -1398,6 +1536,8 @@
 
                     </div>
                     <div class="flex items-center gap-2">
+                      <!-- Loading spinner -->
+                      <span id="loading-spinner-left" class="loading loading-spinner loading-sm hidden"></span>
                       <button class="p-1 hover:bg-gray-200 rounded">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
@@ -1507,6 +1647,8 @@
                       </svg>
                     </div>
                     <div class="flex items-center gap-2">
+                      <!-- Loading spinner -->
+                      <span id="loading-spinner-right" class="loading loading-spinner loading-sm hidden"></span>
                       <button class="p-1 hover:bg-gray-700 rounded">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
@@ -1941,7 +2083,7 @@
                           <path d="M-3,50 L3,50" stroke="#EA4335" stroke-width="5" stroke-linecap="round"/>
                         </g>
                       </svg>
-                      <div id="snp-card-datas" data-component="variant-card-datas" class="flex flex-col justify-center min-w-0">
+                      <div id="snp-card-datas" data-component="variant-card-datas" class="flex flex-col justify-center min-w-0 w-full">
                         <!-- SNP legend -->
                         <ul class="list-none" id="file-legend-snp">
                           <li class="inline">
@@ -1978,6 +2120,15 @@
                           <path d="M52 2H12C6.477 2 2 6.477 2 12v40c0 5.523 4.477 10 10 10h40c5.523 0 10-4.477 10-10V12c0-5.523-4.477-10-10-10M23.23 44.365h-4.877L10 19.72h5.514l5.363 18.71l5.412-18.71h5.363L23.23 44.365m28.153-1.595C49.639 44.257 47.174 45 43.988 45c-3.252 0-5.809-.732-7.672-2.197c-1.863-1.467-2.795-3.481-2.795-6.045h4.928c.158 1.125.473 1.967.939 2.524c.855 1.016 2.322 1.521 4.398 1.521c1.242 0 2.252-.134 3.029-.401c1.471-.512 2.207-1.465 2.207-2.859c0-.813-.361-1.443-1.082-1.889c-.721-.436-1.865-.82-3.43-1.154l-2.674-.584c-2.629-.581-4.434-1.211-5.418-1.891c-1.664-1.136-2.496-2.915-2.496-5.334c0-2.207.813-4.04 2.441-5.501c1.629-1.46 4.021-2.19 7.178-2.19c2.635 0 4.883.688 6.742 2.065c1.861 1.376 2.836 3.375 2.928 5.994H48.25c-.092-1.482-.756-2.536-1.994-3.16c-.824-.412-1.85-.62-3.074-.62c-1.363 0-2.451.269-3.266.804c-.813.535-1.219 1.283-1.219 2.24c0 .881.4 1.539 1.203 1.975c.516.289 1.609.629 3.281 1.019l4.336 1.021c1.898.446 3.324 1.042 4.271 1.789C53.264 33.285 54 34.962 54 37.159c0 2.252-.871 4.121-2.617 5.611" fill="#000000"></path>
                         </svg>
                       </div>
+                      <div class="relative top-0 right-0 group flex w-5 h-5">
+                        <svg class="relative z-0" xmlns="http://www.w3.org/2000/svg" width="16" viewBox="0 0 16 16" height="16" fill="none">
+                          <path fill="#59cafc" d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M5.496 6.033h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286a.237.237 0 0 0 .241.247m2.325 6.443c.61 0 1.029-.394 1.029-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94 0 .533.425.927 1.01.927z">
+                          </path>
+                        </svg>
+                        <div class="absolute left-full ml-2 w-[300px] hidden group-hover:block z-10">
+                          <p class="text-info-content !bg-[#D7F1FD] rounded-2xl pt-[0.1em] pr-[16px] pb-[0.1em] pl-[16px]">A single base change in the DNA sequence.</p>
+                        </div>
+                      </div>
                     </div>
 
                     <!-- MNP (Multiple Nucleotide Polymorphism) -->
@@ -1999,7 +2150,7 @@
                           <path d="M-18,50 L18,50" stroke="#EA4335" stroke-width="5" stroke-linecap="round"/>
                         </g>
                       </svg>
-                      <div id="mnp-card-datas" data-component="variant-card-datas" class="flex flex-col justify-center min-w-0">
+                      <div id="mnp-card-datas" data-component="variant-card-datas" class="flex flex-col justify-center min-w-0 w-full">
                         <!-- MNP legend -->
                         <ul class="list-none" id="file-legend-mnp">
                           <li class="inline">
@@ -2036,6 +2187,15 @@
                           <path d="M52 2H12C6.477 2 2 6.477 2 12v40c0 5.523 4.477 10 10 10h40c5.523 0 10-4.477 10-10V12c0-5.523-4.477-10-10-10M23.23 44.365h-4.877L10 19.72h5.514l5.363 18.71l5.412-18.71h5.363L23.23 44.365m28.153-1.595C49.639 44.257 47.174 45 43.988 45c-3.252 0-5.809-.732-7.672-2.197c-1.863-1.467-2.795-3.481-2.795-6.045h4.928c.158 1.125.473 1.967.939 2.524c.855 1.016 2.322 1.521 4.398 1.521c1.242 0 2.252-.134 3.029-.401c1.471-.512 2.207-1.465 2.207-2.859c0-.813-.361-1.443-1.082-1.889c-.721-.436-1.865-.82-3.43-1.154l-2.674-.584c-2.629-.581-4.434-1.211-5.418-1.891c-1.664-1.136-2.496-2.915-2.496-5.334c0-2.207.813-4.04 2.441-5.501c1.629-1.46 4.021-2.19 7.178-2.19c2.635 0 4.883.688 6.742 2.065c1.861 1.376 2.836 3.375 2.928 5.994H48.25c-.092-1.482-.756-2.536-1.994-3.16c-.824-.412-1.85-.62-3.074-.62c-1.363 0-2.451.269-3.266.804c-.813.535-1.219 1.283-1.219 2.24c0 .881.4 1.539 1.203 1.975c.516.289 1.609.629 3.281 1.019l4.336 1.021c1.898.446 3.324 1.042 4.271 1.789C53.264 33.285 54 34.962 54 37.159c0 2.252-.871 4.121-2.617 5.611" fill="#000000"></path>
                         </svg>
                       </div>
+                      <div class="relative top-0 right-0 group flex w-5 h-5">
+                        <svg class="relative z-0" xmlns="http://www.w3.org/2000/svg" width="16" viewBox="0 0 16 16" height="16" fill="none">
+                          <path fill="#59cafc" d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M5.496 6.033h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286a.237.237 0 0 0 .241.247m2.325 6.443c.61 0 1.029-.394 1.029-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94 0 .533.425.927 1.01.927z">
+                          </path>
+                        </svg>
+                        <div class="absolute left-full ml-2 w-[300px] hidden group-hover:block z-10">
+                          <p class="text-info-content !bg-[#D7F1FD] rounded-2xl pt-[0.1em] pr-[16px] pb-[0.1em] pl-[16px]">A substitution of two or more adjacent bases.</p>
+                        </div>
+                      </div>
                     </div>
 
                     <!-- SV (Structural Variation) -->
@@ -2060,7 +2220,7 @@
                           </marker>
                         </g>
                       </svg>
-                      <div id="sv-card-datas" data-component="variant-card-datas" class="flex flex-col justify-center min-w-0">
+                      <div id="sv-card-datas" data-component="variant-card-datas" class="flex flex-col justify-center min-w-0 w-full">
                         <!-- SV legend -->
                         <ul class="list-none" id="file-legend-sv">
                           <li class="inline">
@@ -2097,6 +2257,15 @@
                           <path d="M52 2H12C6.477 2 2 6.477 2 12v40c0 5.523 4.477 10 10 10h40c5.523 0 10-4.477 10-10V12c0-5.523-4.477-10-10-10M23.23 44.365h-4.877L10 19.72h5.514l5.363 18.71l5.412-18.71h5.363L23.23 44.365m28.153-1.595C49.639 44.257 47.174 45 43.988 45c-3.252 0-5.809-.732-7.672-2.197c-1.863-1.467-2.795-3.481-2.795-6.045h4.928c.158 1.125.473 1.967.939 2.524c.855 1.016 2.322 1.521 4.398 1.521c1.242 0 2.252-.134 3.029-.401c1.471-.512 2.207-1.465 2.207-2.859c0-.813-.361-1.443-1.082-1.889c-.721-.436-1.865-.82-3.43-1.154l-2.674-.584c-2.629-.581-4.434-1.211-5.418-1.891c-1.664-1.136-2.496-2.915-2.496-5.334c0-2.207.813-4.04 2.441-5.501c1.629-1.46 4.021-2.19 7.178-2.19c2.635 0 4.883.688 6.742 2.065c1.861 1.376 2.836 3.375 2.928 5.994H48.25c-.092-1.482-.756-2.536-1.994-3.16c-.824-.412-1.85-.62-3.074-.62c-1.363 0-2.451.269-3.266.804c-.813.535-1.219 1.283-1.219 2.24c0 .881.4 1.539 1.203 1.975c.516.289 1.609.629 3.281 1.019l4.336 1.021c1.898.446 3.324 1.042 4.271 1.789C53.264 33.285 54 34.962 54 37.159c0 2.252-.871 4.121-2.617 5.611" fill="#000000"></path>
                         </svg>
                       </div>
+                      <div class="relative top-0 right-0 group flex w-5 h-5">
+                        <svg class="relative z-0" xmlns="http://www.w3.org/2000/svg" width="16" viewBox="0 0 16 16" height="16" fill="none">
+                          <path fill="#59cafc" d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M5.496 6.033h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286a.237.237 0 0 0 .241.247m2.325 6.443c.61 0 1.029-.394 1.029-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94 0 .533.425.927 1.01.927z">
+                          </path>
+                        </svg>
+                        <div class="absolute -right-full ml-2 w-[300px] hidden group-hover:block z-10">
+                          <p class="text-info-content !bg-[#D7F1FD] rounded-2xl pt-[0.1em] pr-[16px] pb-[0.1em] pl-[16px]">A large-scale genomic alteration such as deletions, duplications, insertions, inversions, or translocations.</p>
+                        </div>
+                      </div>
                     </div>
 
                     <!-- INDEL (Insertion/Deletion) -->
@@ -2126,7 +2295,7 @@
                           <line x1="5" y1="25" x2="5" y2="42" stroke="#212529" stroke-width="1.5" stroke-dasharray="3,3"/>
                         </g>
                       </svg>
-                      <div id="indel-card-datas" data-component="variant-card-datas" class="flex flex-col justify-center min-w-0">
+                      <div id="indel-card-datas" data-component="variant-card-datas" class="flex flex-col justify-center min-w-0 w-full">
                         <!-- INDEL legend -->
                         <ul class="list-none" id="file-legend-indel">
                           <li class="inline">
@@ -2162,6 +2331,15 @@
                         <svg width="30" height="30" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="self-center mt-[3px]">
                           <path d="M52 2H12C6.477 2 2 6.477 2 12v40c0 5.523 4.477 10 10 10h40c5.523 0 10-4.477 10-10V12c0-5.523-4.477-10-10-10M23.23 44.365h-4.877L10 19.72h5.514l5.363 18.71l5.412-18.71h5.363L23.23 44.365m28.153-1.595C49.639 44.257 47.174 45 43.988 45c-3.252 0-5.809-.732-7.672-2.197c-1.863-1.467-2.795-3.481-2.795-6.045h4.928c.158 1.125.473 1.967.939 2.524c.855 1.016 2.322 1.521 4.398 1.521c1.242 0 2.252-.134 3.029-.401c1.471-.512 2.207-1.465 2.207-2.859c0-.813-.361-1.443-1.082-1.889c-.721-.436-1.865-.82-3.43-1.154l-2.674-.584c-2.629-.581-4.434-1.211-5.418-1.891c-1.664-1.136-2.496-2.915-2.496-5.334c0-2.207.813-4.04 2.441-5.501c1.629-1.46 4.021-2.19 7.178-2.19c2.635 0 4.883.688 6.742 2.065c1.861 1.376 2.836 3.375 2.928 5.994H48.25c-.092-1.482-.756-2.536-1.994-3.16c-.824-.412-1.85-.62-3.074-.62c-1.363 0-2.451.269-3.266.804c-.813.535-1.219 1.283-1.219 2.24c0 .881.4 1.539 1.203 1.975c.516.289 1.609.629 3.281 1.019l4.336 1.021c1.898.446 3.324 1.042 4.271 1.789C53.264 33.285 54 34.962 54 37.159c0 2.252-.871 4.121-2.617 5.611" fill="#000000"></path>
                         </svg>
+                      </div>
+                      <div class="relative top-0 right-0 group flex w-5 h-5">
+                        <svg class="relative z-0" xmlns="http://www.w3.org/2000/svg" width="16" viewBox="0 0 16 16" height="16" fill="none">
+                          <path fill="#59cafc" d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M5.496 6.033h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286a.237.237 0 0 0 .241.247m2.325 6.443c.61 0 1.029-.394 1.029-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94 0 .533.425.927 1.01.927z">
+                          </path>
+                        </svg>
+                        <div class="absolute left-full ml-2 w-[300px] hidden group-hover:block z-10">
+                          <p class="text-info-content !bg-[#D7F1FD] rounded-2xl pt-[0.1em] pr-[16px] pb-[0.1em] pl-[16px]">A small insertion or deletion of bases in the DNA sequence.</p>
+                        </div>
                       </div>
                     </div>
 
@@ -2206,7 +2384,7 @@
                           </marker>
                         </g>
                       </svg>
-                      <div id="inv-card-datas" data-component="variant-card-datas" class="flex flex-col justify-center min-w-0">
+                      <div id="inv-card-datas" data-component="variant-card-datas" class="flex flex-col justify-center min-w-0 w-full">
                         <!-- INV legend -->
                         <ul class="list-none" id="file-legend-inversion">
                           <li class="inline">
@@ -2242,6 +2420,15 @@
                         <svg width="30" height="30" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="self-center mt-[3px]">
                           <path d="M52 2H12C6.477 2 2 6.477 2 12v40c0 5.523 4.477 10 10 10h40c5.523 0 10-4.477 10-10V12c0-5.523-4.477-10-10-10M23.23 44.365h-4.877L10 19.72h5.514l5.363 18.71l5.412-18.71h5.363L23.23 44.365m28.153-1.595C49.639 44.257 47.174 45 43.988 45c-3.252 0-5.809-.732-7.672-2.197c-1.863-1.467-2.795-3.481-2.795-6.045h4.928c.158 1.125.473 1.967.939 2.524c.855 1.016 2.322 1.521 4.398 1.521c1.242 0 2.252-.134 3.029-.401c1.471-.512 2.207-1.465 2.207-2.859c0-.813-.361-1.443-1.082-1.889c-.721-.436-1.865-.82-3.43-1.154l-2.674-.584c-2.629-.581-4.434-1.211-5.418-1.891c-1.664-1.136-2.496-2.915-2.496-5.334c0-2.207.813-4.04 2.441-5.501c1.629-1.46 4.021-2.19 7.178-2.19c2.635 0 4.883.688 6.742 2.065c1.861 1.376 2.836 3.375 2.928 5.994H48.25c-.092-1.482-.756-2.536-1.994-3.16c-.824-.412-1.85-.62-3.074-.62c-1.363 0-2.451.269-3.266.804c-.813.535-1.219 1.283-1.219 2.24c0 .881.4 1.539 1.203 1.975c.516.289 1.609.629 3.281 1.019l4.336 1.021c1.898.446 3.324 1.042 4.271 1.789C53.264 33.285 54 34.962 54 37.159c0 2.252-.871 4.121-2.617 5.611" fill="#000000"></path>
                         </svg>
+                      </div>
+                      <div class="relative top-0 right-0 group flex w-5 h-5">
+                        <svg class="relative z-0" xmlns="http://www.w3.org/2000/svg" width="16" viewBox="0 0 16 16" height="16" fill="none">
+                          <path fill="#59cafc" d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M5.496 6.033h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286a.237.237 0 0 0 .241.247m2.325 6.443c.61 0 1.029-.394 1.029-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94 0 .533.425.927 1.01.927z">
+                          </path>
+                        </svg>
+                        <div class="absolute right-full ml-2 w-[300px] hidden group-hover:block z-10">
+                          <p class="text-info-content !bg-[#D7F1FD] rounded-2xl pt-[0.1em] pr-[16px] pb-[0.1em] pl-[16px]">A segment of DNA that is reversed end to end.</p>
+                        </div>
                       </div>
                     </div>
                     
@@ -2284,7 +2471,7 @@
                           <path d="M0,50 L-20,60 L20,60 Z" fill="#6c757d"/>
                         </g>
                       </svg>
-                      <div id="csv-card-datas" data-component="variant-card-datas" class="flex flex-col justify-center min-w-0">
+                      <div id="csv-card-datas" data-component="variant-card-datas" class="flex flex-col justify-center min-w-0 w-full">
                         <!-- CSV legend -->
                         <ul class="list-none" id="file-legend-cv">
                           <li class="inline">
@@ -2321,6 +2508,15 @@
                           <path d="M52 2H12C6.477 2 2 6.477 2 12v40c0 5.523 4.477 10 10 10h40c5.523 0 10-4.477 10-10V12c0-5.523-4.477-10-10-10M23.23 44.365h-4.877L10 19.72h5.514l5.363 18.71l5.412-18.71h5.363L23.23 44.365m28.153-1.595C49.639 44.257 47.174 45 43.988 45c-3.252 0-5.809-.732-7.672-2.197c-1.863-1.467-2.795-3.481-2.795-6.045h4.928c.158 1.125.473 1.967.939 2.524c.855 1.016 2.322 1.521 4.398 1.521c1.242 0 2.252-.134 3.029-.401c1.471-.512 2.207-1.465 2.207-2.859c0-.813-.361-1.443-1.082-1.889c-.721-.436-1.865-.82-3.43-1.154l-2.674-.584c-2.629-.581-4.434-1.211-5.418-1.891c-1.664-1.136-2.496-2.915-2.496-5.334c0-2.207.813-4.04 2.441-5.501c1.629-1.46 4.021-2.19 7.178-2.19c2.635 0 4.883.688 6.742 2.065c1.861 1.376 2.836 3.375 2.928 5.994H48.25c-.092-1.482-.756-2.536-1.994-3.16c-.824-.412-1.85-.62-3.074-.62c-1.363 0-2.451.269-3.266.804c-.813.535-1.219 1.283-1.219 2.24c0 .881.4 1.539 1.203 1.975c.516.289 1.609.629 3.281 1.019l4.336 1.021c1.898.446 3.324 1.042 4.271 1.789C53.264 33.285 54 34.962 54 37.159c0 2.252-.871 4.121-2.617 5.611" fill="#000000"></path>
                         </svg>
                       </div>
+                      <div class="relative top-0 right-0 group flex w-5 h-5">
+                        <svg class="relative z-0" xmlns="http://www.w3.org/2000/svg" width="16" viewBox="0 0 16 16" height="16" fill="none">
+                          <path fill="#59cafc" d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M5.496 6.033h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286a.237.237 0 0 0 .241.247m2.325 6.443c.61 0 1.029-.394 1.029-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94 0 .533.425.927 1.01.927z">
+                          </path>
+                        </svg>
+                        <div class="absolute -right-full mr-2 w-[300px] hidden group-hover:block z-10">
+                          <p class="text-info-content !bg-[#D7F1FD] rounded-2xl pt-[0.1em] pr-[16px] pb-[0.1em] pl-[16px]">A combination of multiple variant types (e.g., SNPs and INDELs) occurring close together or overlapping.</p>
+                        </div>
+                      </div>
                     </div>
 
                   </div>
@@ -2338,6 +2534,10 @@
                     document.getElementById("terminal-input").addEventListener("keypress", runQuery);
                 });
                 function filter() {
+                  const animationLoadingLeft = document.getElementById("loading-spinner-left");
+                  const animationLoadingRight = document.getElementById("loading-spinner-right");
+                  animationLoadingLeft.classList.remove("hidden");
+                  animationLoadingRight.classList.remove("hidden");
 
                   const matchs = ["MATCH", "MISMATCH"];
                   const filters = ["PASS", "FAIL"];
@@ -2366,6 +2566,9 @@
                   let numberFiltersApplied = 0;
 
                   const statsCards = document.getElementById('variant-statistics');
+                  {% if table is not none -%}
+                  const benchmarkRows = Array.from(document.getElementById("benchmark-table").getElementsByTagName("tr")).slice(1);
+                  {%- endif %}
 
                   if (chromosomeQuery !== "") {
                     ++numberFiltersApplied;
@@ -2373,9 +2576,23 @@
                   variants.forEach(variant => {
                     statsCards.querySelector(`[variant="${variant === "INS" || variant === "DEL" ? "INDEL" : variant}"]`).classList.remove("border", "border-solid", "border-red-500");
                   });
+                  {% if table is not none -%}
+                  benchmarkRows.forEach(row => {
+                    const cell = row.getElementsByTagName("td")[0];
+                    cell.parentElement.classList.remove("border", "border-solid", "border-red-500");
+                  });
+                  {%- endif %}
                   if (variantTypeQuery !== "ALL") {
                     ++numberFiltersApplied;
                     statsCards.querySelector(`[variant="${variantTypeQuery === "INS" || variantTypeQuery === "DEL" ? "INDEL" : variantTypeQuery}"]`).classList.add("border", "border-solid", "border-red-500");
+                    {% if table is not none -%}
+                    benchmarkRows.forEach(row => {
+                      const cell = row.getElementsByTagName("td")[0];
+                      if (cell.textContent.trim() === (variantTypeQuery === "INS" || variantTypeQuery === "DEL" ? "INDEL" : variantTypeQuery)) {
+                        cell.parentElement.classList.add("border", "border-solid", "border-red-500");
+                      }
+                    });
+                    {%- endif %}
                   }
                   if (variantFilterQuery !== "ALL") {
                     ++numberFiltersApplied;
@@ -2547,6 +2764,9 @@
                       }
                     }
                   )
+
+                  animationLoadingLeft.classList.add("hidden");
+                  animationLoadingRight.classList.add("hidden");
                 }
 
                 function updateFilterIndicator(value, element) {
