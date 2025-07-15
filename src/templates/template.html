@@ -507,41 +507,43 @@
               <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/>
             </svg>            
 
-            <div class="flex justify-center items-center flex-wrap w-full pt-[5px] overflow-x-auto gap-2">
-              <!-- Path -->
-              <div class="flex rounded-[2em] m-[2px] h-[90%] bg-[#D7F1FD] items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" width="25px" height="25px" viewBox="0 0 512 512" class="px-[5px] py-[5px]">
-                  <path fill="#0074a8" d="M491 326V92.143C491 79.021 480.259 68 467.137 68H341.13c-9.287 0-17.723 5.603-21.596 14.044l-12.709 27.903C302.952 118.388 294.516 124 285.229 124H67.538C54.416 124 44 134.426 44 147.549v216.363C44 377.034 54.416 388 67.538 388h399.599c.628 0 1.248-.36 1.863-.408V433h.342c0 6 4.877 10.636 10.829 10.636S491 438.669 491 432.717z" />
-                  <path fill="#59cafc" d="M480.171 443.636c-5.952 0-10.829-4.636-10.829-10.636H469V210.181C469 197.058 458.661 186 445.539 186H45.94C32.818 186 22 197.058 22 210.181V449.37C22 462.492 32.818 473 45.94 473h399.599c1.385 0 2.741-.06 4.061-.288c1.639.227 3.31.385 5.012.385c20.04 0 36.136-16.229 36.136-36.269c0-.534-.036-1.058-.058-1.586c-1.147 4.766-5.435 8.394-10.519 8.394" />
-                </svg>
-                <p class="text-[15px] px-[5px] font-bold text-center leading-[22px] font-[Ubuntu] text-[#0C2A75]">
-                  {{ vcfs.repository[0].informations().path|default("Na") }}
-                </p>
-              </div>
-              <!-- Size -->
-              <div class="flex rounded-[2em] m-[2px] h-[90%] bg-[#D7F1FD] items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" width="25px" height="25px" viewBox="0 0 14 14" class="px-[5px] py-[5px]">
-                  <g fill="none">
-                    <path fill="#59cafc" d="M.488 2.5v8.709C.488 12.749 3.403 14 7 14s6.512-1.25 6.512-2.791V2.5" />
-                    <path fill="#0074a8" d="M7 5c3.59 0 6.5-1.12 6.5-2.5S10.59 0 7 0S.5 1.12.5 2.5S3.41 5 7 5" />
-                    <path fill="#0074a8" fill-rule="evenodd" d="M.488 8.493V6.845c.056.085.135.178.246.279c.29.263.745.53 1.36.766c1.224.471 2.959.776 4.906.776s3.682-.305 4.907-.776c.614-.237 1.069-.503 1.359-.766q.163-.151.246-.28v1.649c-.341.213-.732.4-1.156.564c-1.402.539-3.295.859-5.356.859s-3.954-.32-5.356-.86a7 7 0 0 1-1.156-.563" clip-rule="evenodd" />
-                  </g>
-                </svg>
-                <p class="text-[15px] px-[5px] font-bold text-center leading-[22px] font-[Ubuntu] text-[#0C2A75]">
-                  {{ vcfs.repository[0].informations().size|default('NaN') }} Mo
-                </p>
-              </div>
-              <!-- Modification time -->
-              <div class="flex rounded-[2em] m-[2px] h-[90%] bg-[#D7F1FD] items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" width="25px" height="25px" viewBox="0 0 14 14" class="px-[5px] py-[5px]">
-                  <g fill="none">
-                    <path fill="#59cafc" d="M2.5 0A1.5 1.5 0 0 0 1 1.5v11A1.5 1.5 0 0 0 2.5 14h9a1.5 1.5 0 0 0 1.5-1.5V5a.5.5 0 0 0-.146-.354l-4.5-4.5A.5.5 0 0 0 8 0z" />
-                    <path fill="#0074a8" d="M13 5a.5.5 0 0 0-.146-.354l-4.5-4.5A.5.5 0 0 0 8 0v4.5a.5.5 0 0 0 .5.5z" />
-                  </g>
-                </svg>
-                <p class="text-[15px] px-[5px] font-bold text-center leading-[22px] font-[Ubuntu] text-[#0C2A75]">
-                  {{ vcfs.repository[0].informations().mtime|default('NA') }}
-                </p>
+            <div class="flex justify-center items-center flex-wrap w-full pt-[5px] overflow-x-auto" id="metadatas-container-left">
+              <div class="stack stack-start h-full" style="transition: all 0.3s ease-in-out;" onmouseover="showMetadatas(this)" onmouseleave="hideMetadatas(this)">
+                <!-- Path -->
+                <div class="flex rounded-[2em] m-[2px] h-[90%] bg-[#D7F1FD] items-center shadow-md">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="25px" height="25px" viewBox="0 0 512 512" class="px-[5px] py-[5px]">
+                    <path fill="#0074a8" d="M491 326V92.143C491 79.021 480.259 68 467.137 68H341.13c-9.287 0-17.723 5.603-21.596 14.044l-12.709 27.903C302.952 118.388 294.516 124 285.229 124H67.538C54.416 124 44 134.426 44 147.549v216.363C44 377.034 54.416 388 67.538 388h399.599c.628 0 1.248-.36 1.863-.408V433h.342c0 6 4.877 10.636 10.829 10.636S491 438.669 491 432.717z" />
+                    <path fill="#59cafc" d="M480.171 443.636c-5.952 0-10.829-4.636-10.829-10.636H469V210.181C469 197.058 458.661 186 445.539 186H45.94C32.818 186 22 197.058 22 210.181V449.37C22 462.492 32.818 473 45.94 473h399.599c1.385 0 2.741-.06 4.061-.288c1.639.227 3.31.385 5.012.385c20.04 0 36.136-16.229 36.136-36.269c0-.534-.036-1.058-.058-1.586c-1.147 4.766-5.435 8.394-10.519 8.394" />
+                  </svg>
+                  <p class="text-[15px] px-[5px] font-bold text-center leading-[22px] font-[Ubuntu] text-[#0C2A75]">
+                    {{ vcfs.repository[0].informations().path|default("Na") }}
+                  </p>
+                </div>
+                <!-- Size -->
+                <div class="flex rounded-[2em] m-[2px] h-[90%] bg-[#D7F1FD] items-center shadow-md">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="25px" height="25px" viewBox="0 0 14 14" class="px-[5px] py-[5px]">
+                    <g fill="none">
+                      <path fill="#59cafc" d="M.488 2.5v8.709C.488 12.749 3.403 14 7 14s6.512-1.25 6.512-2.791V2.5" />
+                      <path fill="#0074a8" d="M7 5c3.59 0 6.5-1.12 6.5-2.5S10.59 0 7 0S.5 1.12.5 2.5S3.41 5 7 5" />
+                      <path fill="#0074a8" fill-rule="evenodd" d="M.488 8.493V6.845c.056.085.135.178.246.279c.29.263.745.53 1.36.766c1.224.471 2.959.776 4.906.776s3.682-.305 4.907-.776c.614-.237 1.069-.503 1.359-.766q.163-.151.246-.28v1.649c-.341.213-.732.4-1.156.564c-1.402.539-3.295.859-5.356.859s-3.954-.32-5.356-.86a7 7 0 0 1-1.156-.563" clip-rule="evenodd" />
+                    </g>
+                  </svg>
+                  <p class="text-[15px] px-[5px] font-bold text-center leading-[22px] font-[Ubuntu] text-[#0C2A75]">
+                    {{ vcfs.repository[0].informations().size|default('NaN') }} Mo
+                  </p>
+                </div>
+                <!-- Modification time -->
+                <div class="flex rounded-[2em] m-[2px] h-[90%] bg-[#D7F1FD] items-center shadow-md">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="25px" height="25px" viewBox="0 0 14 14" class="px-[5px] py-[5px]">
+                    <g fill="none">
+                      <path fill="#59cafc" d="M2.5 0A1.5 1.5 0 0 0 1 1.5v11A1.5 1.5 0 0 0 2.5 14h9a1.5 1.5 0 0 0 1.5-1.5V5a.5.5 0 0 0-.146-.354l-4.5-4.5A.5.5 0 0 0 8 0z" />
+                      <path fill="#0074a8" d="M13 5a.5.5 0 0 0-.146-.354l-4.5-4.5A.5.5 0 0 0 8 0v4.5a.5.5 0 0 0 .5.5z" />
+                    </g>
+                  </svg>
+                  <p class="text-[15px] px-[5px] font-bold text-center leading-[22px] font-[Ubuntu] text-[#0C2A75]">
+                    {{ vcfs.repository[0].informations().mtime|default('NA') }}
+                  </p>
+                </div>
               </div>
             </div>
 
@@ -578,43 +580,56 @@
               <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/>
             </svg>            
 
-            <div class="flex justify-center items-center flex-wrap w-full pt-[5px] overflow-x-auto gap-2">
-              <!-- Path -->
-              <div class="flex rounded-[2em] m-[2px] h-[90%] bg-[#D7F1FD] items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" width="25px" height="25px" viewBox="0 0 512 512" class="px-[5px] py-[5px]">
-                  <path fill="#0074a8" d="M491 326V92.143C491 79.021 480.259 68 467.137 68H341.13c-9.287 0-17.723 5.603-21.596 14.044l-12.709 27.903C302.952 118.388 294.516 124 285.229 124H67.538C54.416 124 44 134.426 44 147.549v216.363C44 377.034 54.416 388 67.538 388h399.599c.628 0 1.248-.36 1.863-.408V433h.342c0 6 4.877 10.636 10.829 10.636S491 438.669 491 432.717z" />
-                  <path fill="#59cafc" d="M480.171 443.636c-5.952 0-10.829-4.636-10.829-10.636H469V210.181C469 197.058 458.661 186 445.539 186H45.94C32.818 186 22 197.058 22 210.181V449.37C22 462.492 32.818 473 45.94 473h399.599c1.385 0 2.741-.06 4.061-.288c1.639.227 3.31.385 5.012.385c20.04 0 36.136-16.229 36.136-36.269c0-.534-.036-1.058-.058-1.586c-1.147 4.766-5.435 8.394-10.519 8.394" />
-                </svg>
-                <p class="text-[15px] px-[5px] font-bold text-center leading-[22px] font-[Ubuntu] text-[#0C2A75]">
-                  {{ vcfs.repository[1].informations().path|default("Na") }}
-                </p>
-              </div>
-              <!-- Size -->
-              <div class="flex rounded-[2em] m-[2px] h-[90%] bg-[#D7F1FD] items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" width="25px" height="25px" viewBox="0 0 14 14" class="px-[5px] py-[5px]">
-                  <g fill="none">
-                    <path fill="#59cafc" d="M.488 2.5v8.709C.488 12.749 3.403 14 7 14s6.512-1.25 6.512-2.791V2.5" />
-                    <path fill="#0074a8" d="M7 5c3.59 0 6.5-1.12 6.5-2.5S10.59 0 7 0S.5 1.12.5 2.5S3.41 5 7 5" />
-                    <path fill="#0074a8" fill-rule="evenodd" d="M.488 8.493V6.845c.056.085.135.178.246.279c.29.263.745.53 1.36.766c1.224.471 2.959.776 4.906.776s3.682-.305 4.907-.776c.614-.237 1.069-.503 1.359-.766q.163-.151.246-.28v1.649c-.341.213-.732.4-1.156.564c-1.402.539-3.295.859-5.356.859s-3.954-.32-5.356-.86a7 7 0 0 1-1.156-.563" clip-rule="evenodd" />
-                  </g>
-                </svg>
-                <p class="text-[15px] px-[5px] font-bold text-center leading-[22px] font-[Ubuntu] text-[#0C2A75]">
-                  {{ vcfs.repository[1].informations().size|default('NaN') }} Mo
-                </p>
-              </div>
-              <!-- Modification time -->
-              <div class="flex rounded-[2em] m-[2px] h-[90%] bg-[#D7F1FD] items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" width="25px" height="25px" viewBox="0 0 14 14" class="px-[5px] py-[5px]">
-                  <g fill="none">
-                    <path fill="#59cafc" d="M2.5 0A1.5 1.5 0 0 0 1 1.5v11A1.5 1.5 0 0 0 2.5 14h9a1.5 1.5 0 0 0 1.5-1.5V5a.5.5 0 0 0-.146-.354l-4.5-4.5A.5.5 0 0 0 8 0z" />
-                    <path fill="#0074a8" d="M13 5a.5.5 0 0 0-.146-.354l-4.5-4.5A.5.5 0 0 0 8 0v4.5a.5.5 0 0 0 .5.5z" />
-                  </g>
-                </svg>
-                <p class="text-[15px] px-[5px] font-bold text-center leading-[22px] font-[Ubuntu] text-[#0C2A75]">
-                  {{ vcfs.repository[1].informations().mtime|default('NA') }}
-                </p>
+            <div class="flex justify-center items-center flex-wrap w-full pt-[5px] overflow-x-auto" id="metadatas-container-right">
+              <div class="stack stack-start h-full" style="transition: all 0.3s ease-in-out;" onmouseover="showMetadatas(this)" onmouseleave="hideMetadatas(this)">
+                <!-- Path -->
+                <div class="flex rounded-[2em] m-[2px] h-[90%] bg-[#D7F1FD] items-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="25px" height="25px" viewBox="0 0 512 512" class="px-[5px] py-[5px]">
+                    <path fill="#0074a8" d="M491 326V92.143C491 79.021 480.259 68 467.137 68H341.13c-9.287 0-17.723 5.603-21.596 14.044l-12.709 27.903C302.952 118.388 294.516 124 285.229 124H67.538C54.416 124 44 134.426 44 147.549v216.363C44 377.034 54.416 388 67.538 388h399.599c.628 0 1.248-.36 1.863-.408V433h.342c0 6 4.877 10.636 10.829 10.636S491 438.669 491 432.717z" />
+                    <path fill="#59cafc" d="M480.171 443.636c-5.952 0-10.829-4.636-10.829-10.636H469V210.181C469 197.058 458.661 186 445.539 186H45.94C32.818 186 22 197.058 22 210.181V449.37C22 462.492 32.818 473 45.94 473h399.599c1.385 0 2.741-.06 4.061-.288c1.639.227 3.31.385 5.012.385c20.04 0 36.136-16.229 36.136-36.269c0-.534-.036-1.058-.058-1.586c-1.147 4.766-5.435 8.394-10.519 8.394" />
+                  </svg>
+                  <p class="text-[15px] px-[5px] font-bold text-center leading-[22px] font-[Ubuntu] text-[#0C2A75]">
+                    {{ vcfs.repository[1].informations().path|default("Na") }}
+                  </p>
+                </div>
+                <!-- Size -->
+                <div class="flex rounded-[2em] m-[2px] h-[90%] bg-[#D7F1FD] items-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="25px" height="25px" viewBox="0 0 14 14" class="px-[5px] py-[5px]">
+                    <g fill="none">
+                      <path fill="#59cafc" d="M.488 2.5v8.709C.488 12.749 3.403 14 7 14s6.512-1.25 6.512-2.791V2.5" />
+                      <path fill="#0074a8" d="M7 5c3.59 0 6.5-1.12 6.5-2.5S10.59 0 7 0S.5 1.12.5 2.5S3.41 5 7 5" />
+                      <path fill="#0074a8" fill-rule="evenodd" d="M.488 8.493V6.845c.056.085.135.178.246.279c.29.263.745.53 1.36.766c1.224.471 2.959.776 4.906.776s3.682-.305 4.907-.776c.614-.237 1.069-.503 1.359-.766q.163-.151.246-.28v1.649c-.341.213-.732.4-1.156.564c-1.402.539-3.295.859-5.356.859s-3.954-.32-5.356-.86a7 7 0 0 1-1.156-.563" clip-rule="evenodd" />
+                    </g>
+                  </svg>
+                  <p class="text-[15px] px-[5px] font-bold text-center leading-[22px] font-[Ubuntu] text-[#0C2A75]">
+                    {{ vcfs.repository[1].informations().size|default('NaN') }} Mo
+                  </p>
+                </div>
+                <!-- Modification time -->
+                <div class="flex rounded-[2em] m-[2px] h-[90%] bg-[#D7F1FD] items-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="25px" height="25px" viewBox="0 0 14 14" class="px-[5px] py-[5px]">
+                    <g fill="none">
+                      <path fill="#59cafc" d="M2.5 0A1.5 1.5 0 0 0 1 1.5v11A1.5 1.5 0 0 0 2.5 14h9a1.5 1.5 0 0 0 1.5-1.5V5a.5.5 0 0 0-.146-.354l-4.5-4.5A.5.5 0 0 0 8 0z" />
+                      <path fill="#0074a8" d="M13 5a.5.5 0 0 0-.146-.354l-4.5-4.5A.5.5 0 0 0 8 0v4.5a.5.5 0 0 0 .5.5z" />
+                    </g>
+                  </svg>
+                  <p class="text-[15px] px-[5px] font-bold text-center leading-[22px] font-[Ubuntu] text-[#0C2A75]">
+                    {{ vcfs.repository[1].informations().mtime|default('NA') }}
+                  </p>
+                </div>
               </div>
             </div>
+
+            <script type="text/javascript">
+              function showMetadatas(element) {
+                element.classList.remove('stack', 'stack-start');
+                element.classList.add('flex', 'flex-wrap', 'gap-2');
+              }
+              function hideMetadatas(element) {
+                element.classList.add('stack', 'stack-start');
+                element.classList.remove('flex', 'flex-wrap', 'gap-2');
+              }
+            </script>
 
             <!-- Expand/collapse button -->
             <div class="flex relative justify-center items-center h-fit self-center">
@@ -842,8 +857,8 @@
               {% endif %}
             {% endfor %}
             <!-- Resize button -->
-            <div class="flex justify-center items-center w-full">
-              <button id="resize-button-left" class="cursor-pointer hover:bg-gray-200" title="Resize" onmousedown="resizePlot(event, this)">
+            <div class="flex justify-center items-center w-full bg-[rgba(200,_200,_200,_0.3)]">
+              <button id="resize-button-left" class="cursor-grab hover:bg-gray-200" title="Resize" onmousedown="resizePlot(event, this)">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
                   <path fill="black" d="M8 18h3v-3H2v-2h20v2h-9v3h3l-4 4zm4-16L8 6h3v3H2v2h20V9h-9V6h3z" />
                 </svg>
@@ -873,8 +888,8 @@
               {% endif %}
             {% endfor %}
             <!-- Resize button -->
-            <div class="flex justify-center items-center w-full">
-              <button id="resize-button-right" class="cursor-pointer hover:bg-gray-700" title="Resize" onmousedown="resizePlot(event, this)">
+            <div class="flex justify-center items-center w-full bg-[rgba(200,_200,_200,_0.3)]">
+              <button id="resize-button-right" class="cursor-grab hover:bg-gray-700" title="Resize" onmousedown="resizePlot(event, this)">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
                   <path fill="white" d="M8 18h3v-3H2v-2h20v2h-9v3h3l-4 4zm4-16L8 6h3v3H2v2h20V9h-9V6h3z" />
                 </svg>
@@ -1046,7 +1061,7 @@
               leftPlots[leftCurrentPlot].classList.add('relative');
               Plotly.relayout(leftPlots[leftCurrentPlot].querySelector('.plotly-graph-div'), {
                 width: leftPlots[leftCurrentPlot].parentElement.offsetWidth,
-                height: leftPlots[leftCurrentPlot].parentElement.offsetHeight - (document.getElementById('resize-button-left').offsetHeight + document.getElementById('plot-navigation-left').offsetHeight) - 20
+                height: leftPlots[leftCurrentPlot].parentElement.offsetHeight - (document.getElementById('resize-button-left').offsetHeight + document.getElementById('plot-navigation-left').offsetHeight) - 30
               });
               
               leftPlotIndicator.children[leftCurrentPlot].classList.replace("bg-[#ccc]", "bg-[#555]");
@@ -1069,7 +1084,7 @@
               leftPlots[leftCurrentPlot].classList.add('relative');
               Plotly.relayout(leftPlots[leftCurrentPlot].querySelector('.plotly-graph-div'), {
                 width: leftPlots[leftCurrentPlot].parentElement.offsetWidth,
-                height: leftPlots[leftCurrentPlot].parentElement.offsetHeight - (document.getElementById('resize-button-left').offsetHeight + document.getElementById('plot-navigation-left').offsetHeight) - 20
+                height: leftPlots[leftCurrentPlot].parentElement.offsetHeight - (document.getElementById('resize-button-left').offsetHeight + document.getElementById('plot-navigation-left').offsetHeight) - 30
               });
               
               leftPlotIndicator.children[leftCurrentPlot].classList.replace("bg-[#ccc]", "bg-[#555]");
@@ -1093,7 +1108,7 @@
               rightPlots[rightCurrentPlot].classList.add('relative');
               Plotly.relayout(rightPlots[rightCurrentPlot].querySelector('.plotly-graph-div'), {
                 width: rightPlots[rightCurrentPlot].parentElement.offsetWidth,
-                height: rightPlots[rightCurrentPlot].parentElement.offsetHeight - (document.getElementById('resize-button-right').offsetHeight + document.getElementById('plot-navigation-right').offsetHeight) - 20
+                height: rightPlots[rightCurrentPlot].parentElement.offsetHeight - (document.getElementById('resize-button-right').offsetHeight + document.getElementById('plot-navigation-right').offsetHeight) - 30
               });
               
               rightPlotIndicator.children[rightCurrentPlot].classList.replace("bg-[#ccc]", "bg-[#555]");
@@ -1116,7 +1131,7 @@
               rightPlots[rightCurrentPlot].classList.add('relative');
               Plotly.relayout(rightPlots[rightCurrentPlot].querySelector('.plotly-graph-div'), {
                 width: rightPlots[rightCurrentPlot].parentElement.offsetWidth,
-                height: rightPlots[rightCurrentPlot].parentElement.offsetHeight - (document.getElementById('resize-button-right').offsetHeight + document.getElementById('plot-navigation-right').offsetHeight) - 20
+                height: rightPlots[rightCurrentPlot].parentElement.offsetHeight - (document.getElementById('resize-button-right').offsetHeight + document.getElementById('plot-navigation-right').offsetHeight) - 30
               });
               
               rightPlotIndicator.children[rightCurrentPlot].classList.replace("bg-[#ccc]", "bg-[#555]");
@@ -1184,27 +1199,12 @@
                   z"/>
               </svg>
 
+              <!-- Chromosome input -->
               <div id="filter-chromosome" class="h-[45px] mr-[5%] border-[1px] border-[solid] border-[#3d444d] rounded-xl px-[15px] py-[5px] bg-[#0d1117] [transition:150ms_cubic-bezier(0.4,0,0.2,1)] flex flew-row items-center hover:border-[#999999] min-w-[180px] flex-shrink">
-
                 <div class="relative w-full h-full flex items-center min-w-0">
-
-                  <input id="query-chromosome" placeholder="Search chromosome" class="h-full border-[0] border-transparent text-[1rem] pr-[60px] text-[#cccccc] bg-[#0d1117] border-r-[2px_solid_#3d444d] outline-[none] placeholder:text-white focus:text-[white] focus:placeholder:text-[white] min-w-0 flex-shrink w-full" type="text">
-
-                  <div class="absolute right-0 top-1/2 transform -translate-y-1/2 w-[52px] h-[35px] bg-transparent rounded-r-xl [transition:150ms_cubic-bezier(0.4,0,0.2,1)] flex items-center justify-center hover:bg-[#3d444d] flex-shrink-0">
-
-                    <button class="w-full h-full bg-transparent border-[none] cursor-pointer rounded-r-xl [transition:150ms_cubic-bezier(0.4,0,0.2,1)] opacity-[.4] flex items-center justify-center hover:opacity-[.8]">
-                      <i class="w-[21px] h-[21px] flex items-center justify-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 512 512">
-                          <path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z" fill="#fff">
-                          </path>
-                        </svg>
-                      </i>
-                    </button>
-
-                  </div>
-
+                  <input id="query-chromosome" placeholder="" class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-white bg-transparent appearance-none focus:outline-none focus:ring-0 peer" type="text">
+                  <label for="query-chromosome" class="absolute text-sm text-white duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-[#0d1117] px-2 peer-focus:px-2 peer-focus:text-gray-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1">Search chromosome</label>
                 </div>
-
               </div>
 
             <!-- Status filter -->
@@ -1220,7 +1220,7 @@
                 </g>
               </svg>
               <div class="relative w-fit">
-                <span id="status-filter-set-indicator" data-component="filter-set-indicator" class="flex w-3 h-3 bg-green-400 rounded-full absolute -translate-y-1/2 translate-x-1/2 left-auto top-0 right-0 z-999"></span>
+                <span id="status-filter-set-indicator" data-component="filter-set-indicator" class="flex w-3 h-3 bg-green-400 rounded-full absolute -translate-y-1/2 translate-x-1/2 left-auto top-0 right-0 z-999 border-1 border-solid border-white"></span>
                 <select id="query-status" class="select select-md ![--input-color:black] px-[10px] py-[10px] rounded-[5px] border-[none] min-w-[150px] max-w-full text-[14px] font-[Ubuntu] bg-neutral text-[white] cursor-pointer" onchange="animateStatusSVG(this.value)">
                     <option selected disabled>Select a status...</option>
                     <option>ALL</option>
@@ -1276,7 +1276,7 @@
                 </path>
               </svg>
               <div class="relative w-fit">
-                <span id="filter-filter-set-indicator" data-component="filter-set-indicator" class="flex w-3 h-3 bg-green-400 rounded-full absolute -translate-y-1/2 translate-x-1/2 left-auto top-0 right-0 z-999"></span>
+                <span id="filter-filter-set-indicator" data-component="filter-set-indicator" class="flex w-3 h-3 bg-green-400 rounded-full absolute -translate-y-1/2 translate-x-1/2 left-auto top-0 right-0 z-999 border-1 border-solid border-[#111111]"></span>
                 <select id="query-filter" class="select select-md ![--input-color:white] px-[10px] py-[10px] rounded-[5px] border-[none] min-w-[150px] max-w-full text-[14px] font-[Ubuntu] text-[black] bg-white cursor-pointer" onchange="animateFunnelSVG(this.value)">
                     <option selected disabled>Select a filter...</option>
                     <option>ALL</option>
@@ -1325,7 +1325,7 @@
                 </path>
               </svg> 
               <div class="relative w-fit">
-                <span id="variant-filter-set-indicator" data-component="filter-set-indicator" class="flex w-3 h-3 bg-green-400 rounded-full absolute -translate-y-1/2 translate-x-1/2 left-auto top-0 right-0 z-999"></span>
+                <span id="variant-filter-set-indicator" data-component="filter-set-indicator" class="flex w-3 h-3 bg-green-400 rounded-full absolute -translate-y-1/2 translate-x-1/2 left-auto top-0 right-0 z-999 border-1 border-solid border-[#111111]"></span>
                 <select id="query-variant" class="select select-md ![--input-color:white] px-[10px] py-[10px] rounded-[5px] border-[none] min-w-[150px] max-w-full text-[14px] font-[Ubuntu] text-[black] bg-white cursor-pointer" onchange="animateVariantSVG(this.value)">
                     <option selected disabled>Select a variant...</option>
                     <option>ALL</option>
@@ -1400,7 +1400,12 @@
             </svg>
 
             <!-- Reset button -->
-            <button id="reset-button" class="bg-[rgba(79,_70,_229,_0.9)] border-[none] rounded-[6px] px-[20px] py-[10px] mx-[3%] cursor-pointer text-[14px] text-white rounded-[16px] font-[Ubuntu] font-bold hover:bg-[rgba(67,_56,_202,_0.9)] flex-shrink-0 whitespace-nowrap" onclick="resetFilters()">Reset</button>
+            <button id="reset-button" class="relative bg-[rgba(79,_70,_229,_0.9)] border-[none] rounded-[6px] px-[20px] py-[10px] mx-[3%] cursor-pointer text-[14px] text-white rounded-[16px] font-[Ubuntu] font-bold hover:bg-[rgba(67,_56,_202,_0.9)] flex-shrink-0 whitespace-nowrap" onclick="resetFilters()">
+              Reset
+              <svg xmlns="http://www.w3.org/2000/svg" class="absolute -top-2 -right-2" width="24" height="24" viewBox="0 0 24 24">
+                <path fill="white" d="M13.75 14.25h2.5q.325 0 .538.213T17 15t-.213.538t-.537.212h-2.5q-.325 0-.537-.213T13 15t.213-.537t.537-.213m.75 6v-.5h-.75q-.325 0-.537-.213T13 19t.213-.537t.537-.213h.75v-.5q0-.325.213-.537T15.25 17t.538.213t.212.537v2.5q0 .325-.213.538T15.25 21t-.537-.213t-.213-.537m3.25-2h2.5q.325 0 .538.213T21 19t-.213.538t-.537.212h-2.5q-.325 0-.537-.213T17 19t.213-.537t.537-.213m.25-2v-2.5q0-.325.213-.537T18.75 13t.538.213t.212.537v.5h.75q.325 0 .538.213T21 15t-.213.538t-.537.212h-.75v.5q0 .325-.213.538T18.75 17t-.537-.213T18 16.25M12 5Q9.075 5 7.038 7.038T5 12q0 1.8.813 3.3T8 17.75V16q0-.425.288-.712T9 15t.713.288T10 16v4q0 .425-.288.713T9 21H5q-.425 0-.712-.288T4 20t.288-.712T5 19h1.35Q4.8 17.75 3.9 15.938T3 12q0-1.875.713-3.512t1.924-2.85t2.85-1.925T12 3q2.825 0 5.088 1.575t3.262 4.05q.15.4 0 .775t-.55.525t-.788 0t-.537-.55q-.775-1.95-2.513-3.162T12 5" />
+              </svg>
+            </button>
         </div>
       </div>
     </div>
@@ -1415,7 +1420,7 @@
             <div class="badge badge-primary text-white cursor-pointer" onclick="addKeyword(this)">{{ key }}</div>
             {%- endfor %}
           {%- endif %}
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+          <svg id="keywords-click-left-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
             <path fill="black" d="M11.589 3a.75.75 0 0 0-1.5 0v1.978a.75.75 0 0 0 1.5 0zM5.983 4.945A.75.75 0 0 0 4.917 6l1.47 1.483A.75.75 0 1 0 7.452 6.43zM16.761 6a.75.75 0 0 0-1.065-1.055l-1.47 1.484a.75.75 0 1 0 1.065 1.055zM11.8 10.096c-1.025-.404-1.994.617-1.61 1.61l3.581 9.25c.41 1.058 1.901 1.059 2.311 0l1.374-3.543l3.508-1.385c1.048-.414 1.048-1.903 0-2.317zm-6.84.067H3a.75.75 0 0 0 0 1.5h1.96a.75.75 0 0 0 0-1.5m2.492 5.234a.75.75 0 0 0-1.065-1.056l-1.47 1.484a.75.75 0 1 0 1.066 1.056z" />
           </svg>
         </div>
@@ -1425,18 +1430,26 @@
             <div class="badge badge-primary text-white cursor-pointer" onclick="addKeyword(this)">{{ key }}</div>
             {%- endfor %}
           {%- endif %}
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+          <svg id="keywords-click-right-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
             <path fill="white" d="M11.589 3a.75.75 0 0 0-1.5 0v1.978a.75.75 0 0 0 1.5 0zM5.983 4.945A.75.75 0 0 0 4.917 6l1.47 1.483A.75.75 0 1 0 7.452 6.43zM16.761 6a.75.75 0 0 0-1.065-1.055l-1.47 1.484a.75.75 0 1 0 1.065 1.055zM11.8 10.096c-1.025-.404-1.994.617-1.61 1.61l3.581 9.25c.41 1.058 1.901 1.059 2.311 0l1.374-3.543l3.508-1.385c1.048-.414 1.048-1.903 0-2.317zm-6.84.067H3a.75.75 0 0 0 0 1.5h1.96a.75.75 0 0 0 0-1.5m2.492 5.234a.75.75 0 0 0-1.065-1.056l-1.47 1.484a.75.75 0 1 0 1.066 1.056z" />
           </svg>
         </div>
-        <script>
+        <script type="text/javascript">
           function addKeyword(element) {
             let keyword = element.textContent;
             if (element.parentElement.id === "keywords-terminal-left") {
               keyword = "L." + keyword;
+              document.getElementById("keywords-click-left-icon").getElementsByTagName("path")[0].setAttribute("fill", "oklch(79.2% 0.209 151.711)");
+              setTimeout(() => {
+                document.getElementById("keywords-click-left-icon").getElementsByTagName("path")[0].setAttribute("fill", "black");
+              }, 100);
             }
             else {
               keyword = "R." + keyword;
+              document.getElementById("keywords-click-right-icon").getElementsByTagName("path")[0].setAttribute("fill", "oklch(79.2% 0.209 151.711)");
+              setTimeout(() => {
+                document.getElementById("keywords-click-right-icon").getElementsByTagName("path")[0].setAttribute("fill", "white");
+              }, 100);
             }
             let terminalInput = document.getElementById("terminal-input");
             terminalInput.value += keyword;
@@ -1474,7 +1487,24 @@
                   class="border-[#202425] text-[white] [font-family:inherit] outline-[#202425] w-full placeholder-[rgba(255,_255,_255,_0.5)]"
                   placeholder="Enter condition(s)..."
                 />
-                <span class="w-[8px] h-[1.5] bg-[#ffffff] inline-block animate-[blink_1s_step-end_infinite] ml-[2px]"></span>
+                <button class="cursor-pointer hover:bg-gray-600 rounded p-1" title="Clear terminal" onclick="clearTerminal()">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="white" viewBox="0 0 16 16">
+                    <path d="M8.086 2.207a2 2 0 0 1 2.828 0l3.879 3.879a2 2 0 0 1 0 2.828l-5.5 5.5A2 2 0 0 1 7.879 15H5.12a2 2 0 0 1-1.414-.586l-2.5-2.5a2 2 0 0 1 0-2.828zm.66 11.34L3.453 8.254 1.914 9.793a1 1 0 0 0 0 1.414l2.5 2.5a1 1 0 0 0 .707.293H7.88a1 1 0 0 0 .707-.293z"/>
+                  </svg>  
+                </button>
+                <script type="text/javascript">
+                  function clearTerminal() {
+                    const input = document.getElementById("terminal-input");
+                    input.value = "";
+                    input.focus();
+                    const stdout = document.getElementById("stdout");
+                    const stderr = document.getElementById("stderr");
+                    stdout.classList.replace("flex", "hidden");
+                    stdout.textContent = "";
+                    stderr.classList.replace("flex", "hidden");
+                    stderr.textContent = "";
+                  }
+                </script>
               </div>
               <p id="stdout" class="hidden text-[black] border-2 border-solid border-green-200 rounded-lg p-1 bg-green-200"></p>
               <p id="stderr" class="hidden text-[black] border-2 border-solid border-red-200 rounded-lg p-1 bg-red-200"></p>
@@ -1533,8 +1563,16 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                       </svg>
                       <span>{{ vcfs.repository[0].informations().basename|default(vcfs.repository[0]) }}</span>
+                      {% if table is not none %}
+                        <!-- State -->
+                        <svg xmlns="http://www.w3.org/2000/svg" class="cursor-help" width="20" height="20" viewBox="0 0 20 20">
+                          <title>Reference</title>
+                          <path fill="black" d="m15 10l-2.78-2.78L9.44 10V1H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2z" />
+                        </svg>                      
+                      {% endif %}
                       <!-- Number of filter(s) applied -->
-                      <svg id="filter-applied-icon-left" xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="hidden w-4 h-4" viewBox="0 0 16 16">
+                      <svg id="filter-applied-icon-left" xmlns="http://www.w3.org/2000/svg" fill="black" class="hidden w-4 h-4 cursor-help" viewBox="0 0 16 16">
+                        <title>Number of filters applied</title>
                         <path element="number" d=""/>
                         <path element="border" d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm15 0a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1z"/>
                       </svg>
@@ -1544,12 +1582,12 @@
                       <!-- Loading spinner -->
                       <span id="loading-spinner-left" class="loading loading-spinner loading-sm hidden"></span>
                       <button class="p-1 hover:bg-gray-200 rounded">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="black">
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                         </svg>
                       </button>
                       <!-- Fullscreen button -->
-                      <button id="fullscreen-left-button" title="Fullscreen" state="enter" class="p-1 hover:bg-gray-200 rounded">
+                      <button id="fullscreen-left-button" title="Fullscreen" state="enter" class="p-1 hover:bg-gray-200 rounded cursor-pointer">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="black" viewBox="0 0 16 16">
                             <path d="M1.5 1a.5.5 0 0 0-.5.5v4a.5.5 0 0 1-1 0v-4A1.5 1.5 0 0 1 1.5 0h4a.5.5 0 0 1 0 1zM10 .5a.5.5 0 0 1 .5-.5h4A1.5 1.5 0 0 1 16 1.5v4a.5.5 0 0 1-1 0v-4a.5.5 0 0 0-.5-.5h-4a.5.5 0 0 1-.5-.5M.5 10a.5.5 0 0 1 .5.5v4a.5.5 0 0 0 .5.5h4a.5.5 0 0 1 0 1h-4A1.5 1.5 0 0 1 0 14.5v-4a.5.5 0 0 1 .5-.5m15 0a.5.5 0 0 1 .5.5v4a1.5 1.5 0 0 1-1.5 1.5h-4a.5.5 0 0 1 0-1h4a.5.5 0 0 0 .5-.5v-4a.5.5 0 0 1 .5-.5"/>
                         </svg>
@@ -1645,8 +1683,18 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                       </svg>
                       <span>{{ vcfs.repository[1].informations().basename|default(vcfs.repository[1]) }}</span>
+                      {% if table is not none %}
+                        <svg xmlns="http://www.w3.org/2000/svg" class="cursor-help" width="24" height="24" viewBox="0 0 24 24">
+                          <g fill="none">
+                            <title>Target</title>
+                            <path d="m12.593 23.258l-.011.002l-.071.035l-.02.004l-.014-.004l-.071-.035q-.016-.005-.024.005l-.004.01l-.017.428l.005.02l.01.013l.104.074l.015.004l.012-.004l.104-.074l.012-.016l.004-.017l-.017-.427q-.004-.016-.017-.018m.265-.113l-.013.002l-.185.093l-.01.01l-.003.011l.018.43l.005.012l.008.007l.201.093q.019.005.029-.008l.004-.014l-.034-.614q-.005-.018-.02-.022m-.715.002a.02.02 0 0 0-.027.006l-.006.014l-.034.614q.001.018.017.024l.015-.002l.201-.093l.01-.008l.004-.011l.017-.43l-.003-.012l-.01-.01z" />
+                            <path fill="white" d="M12 2q.563 0 1.11.061a1 1 0 0 1-.22 1.988a8 8 0 1 0 7.061 7.061a1 1 0 1 1 1.988-.22q.06.547.061 1.11c0 5.523-4.477 10-10 10S2 17.523 2 12S6.477 2 12 2m-.032 5.877a1 1 0 0 1-.719 1.217A3.002 3.002 0 0 0 12 15a3 3 0 0 0 2.906-2.25a1 1 0 0 1 1.936.5A5.002 5.002 0 0 1 7 12a5 5 0 0 1 3.75-4.842a1 1 0 0 1 1.218.719m6.536-5.75a1 1 0 0 1 .617.923v1.83h1.829a1 1 0 0 1 .707 1.707L18.12 10.12a1 1 0 0 1-.707.293H15l-1.828 1.829a1 1 0 0 1-1.415-1.415L13.586 9V6.586a1 1 0 0 1 .293-.707l3.535-3.536a1 1 0 0 1 1.09-.217m-1.383 3.337L15.586 7v1.414H17l1.536-1.535h-.415a1 1 0 0 1-1-1z" />
+                          </g>
+                        </svg>                      
+                      {% endif %}
                       <!-- Number of filter(s) applied -->
-                      <svg id="filter-applied-icon-right" xmlns="http://www.w3.org/2000/svg" fill="white" class="hidden w-4 h-4" viewBox="0 0 16 16">
+                      <svg id="filter-applied-icon-right" xmlns="http://www.w3.org/2000/svg" fill="white" class="hidden w-4 h-4 cursor-help" viewBox="0 0 16 16">
+                        <title>Number of filters applied</title>
                         <path element="number" d=""/>
                         <path element="border" d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm15 0a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1z"/>
                       </svg>
@@ -1655,12 +1703,12 @@
                       <!-- Loading spinner -->
                       <span id="loading-spinner-right" class="loading loading-spinner loading-sm hidden"></span>
                       <button class="p-1 hover:bg-gray-700 rounded">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="white">
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                         </svg>
                       </button>
                       <!-- Fullscreen button -->
-                      <button id="fullscreen-right-button" title="Fullscreen" state="enter" class="p-1 hover:bg-gray-700 rounded">
+                      <button id="fullscreen-right-button" title="Fullscreen" state="enter" class="p-1 hover:bg-gray-700 rounded cursor-pointer">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="white" viewBox="0 0 16 16">
                           <path d="M1.5 1a.5.5 0 0 0-.5.5v4a.5.5 0 0 1-1 0v-4A1.5 1.5 0 0 1 1.5 0h4a.5.5 0 0 1 0 1zM10 .5a.5.5 0 0 1 .5-.5h4A1.5 1.5 0 0 1 16 1.5v4a.5.5 0 0 1-1 0v-4a.5.5 0 0 0-.5-.5h-4a.5.5 0 0 1-.5-.5M.5 10a.5.5 0 0 1 .5.5v4a.5.5 0 0 0 .5.5h4a.5.5 0 0 1 0 1h-4A1.5 1.5 0 0 1 0 14.5v-4a.5.5 0 0 1 .5-.5m15 0a.5.5 0 0 1 .5.5v4a1.5 1.5 0 0 1-1.5 1.5h-4a.5.5 0 0 1 0-1h4a.5.5 0 0 0 .5-.5v-4a.5.5 0 0 1 .5-.5"/>
                         </svg>
@@ -2090,13 +2138,13 @@
                       </svg>
                       <div id="snp-card-datas" data-component="variant-card-datas" class="flex flex-col justify-center min-w-0 w-full">
                         <!-- SNP legend -->
-                        <ul class="list-none" id="file-legend-snp">
+                        <ul class="list-none overflow-x-auto" id="file-legend-snp">
                           <li class="inline">
                             <a class="inline-flex flex-nowrap items-center text-sm mr-[3px] min-w-0">
                               <svg class="inline-block mr-[0.5rem] flex-shrink-0" fill="currentColor" height="16" width="16" viewBox="0 0 16 16">
                                 <path fill="#2C7A7B" d="M8 4a4 4 0 1 1 0 8 4 4 0 0 1 0-8Z"></path>
                               </svg>
-                              <span class="text-black mr-[0.25rem] truncate max-w-[180px] block" title="{{ vcfs.repository[0].informations().basename }}">
+                              <span class="text-black mr-[0.25rem] truncate max-w-full whitespace-nowrap block" title="{{ vcfs.repository[0].informations().basename }}">
                                 {{ vcfs.repository[0].informations().basename }}
                               </span>
                               <span data-component="file-legend-value-left" class="text-black font-semibold">NA</span>
@@ -2107,7 +2155,7 @@
                               <svg class="inline-block mr-[0.5rem] flex-shrink-0" fill="currentColor" height="16" width="16" viewBox="0 0 16 16">
                                 <path fill="#822E4A" d="M8 4a4 4 0 1 1 0 8 4 4 0 0 1 0-8Z"></path>
                               </svg>
-                              <span class="text-black mr-[0.25rem] truncate max-w-[180px] block" title="{{ vcfs.repository[1].informations().basename }}">
+                              <span class="text-black mr-[0.25rem] truncate max-w-full whitespace-nowrap block" title="{{ vcfs.repository[1].informations().basename }}">
                                 {{ vcfs.repository[1].informations().basename }}
                               </span>
                               <span data-component="file-legend-value-right" class="text-black font-semibold">NA</span>
@@ -2126,7 +2174,7 @@
                         </svg>
                       </div>
                       <div class="relative top-0 right-0 group flex w-5 h-5">
-                        <svg class="relative z-0" xmlns="http://www.w3.org/2000/svg" width="16" viewBox="0 0 16 16" height="16" fill="none">
+                        <svg class="relative self-center z-0" xmlns="http://www.w3.org/2000/svg" width="16" viewBox="0 0 16 16" height="16" fill="none">
                           <path fill="#59cafc" d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M5.496 6.033h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286a.237.237 0 0 0 .241.247m2.325 6.443c.61 0 1.029-.394 1.029-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94 0 .533.425.927 1.01.927z">
                           </path>
                         </svg>
@@ -2157,13 +2205,13 @@
                       </svg>
                       <div id="mnp-card-datas" data-component="variant-card-datas" class="flex flex-col justify-center min-w-0 w-full">
                         <!-- MNP legend -->
-                        <ul class="list-none" id="file-legend-mnp">
+                        <ul class="list-none overflow-x-auto" id="file-legend-mnp">
                           <li class="inline">
                             <a class="inline-flex flex-nowrap items-center text-sm mr-[3px] min-w-0">
                               <svg class="inline-block mr-[0.5rem] flex-shrink-0" fill="currentColor" height="16" width="16" viewBox="0 0 16 16">
                                 <path fill="#2C7A7B" d="M8 4a4 4 0 1 1 0 8 4 4 0 0 1 0-8Z"></path>
                               </svg>
-                              <span class="text-black mr-[0.25rem] truncate max-w-[180px] block" title="{{ vcfs.repository[0].informations().basename }}">
+                              <span class="text-black mr-[0.25rem] truncate max-w-full whitespace-nowrap block" title="{{ vcfs.repository[0].informations().basename }}">
                                 {{ vcfs.repository[0].informations().basename }}
                               </span>
                               <span data-component="file-legend-value-left" class="text-black font-semibold">NA</span>
@@ -2174,7 +2222,7 @@
                               <svg class="inline-block mr-[0.5rem] flex-shrink-0" fill="currentColor" height="16" width="16" viewBox="0 0 16 16">
                                 <path fill="#822E4A" d="M8 4a4 4 0 1 1 0 8 4 4 0 0 1 0-8Z"></path>
                               </svg>
-                              <span class="text-black mr-[0.25rem] truncate max-w-[180px] block" title="{{ vcfs.repository[1].informations().basename }}">
+                              <span class="text-black mr-[0.25rem] truncate max-w-full whitespace-nowrap block" title="{{ vcfs.repository[1].informations().basename }}">
                                 {{ vcfs.repository[1].informations().basename }}
                               </span>
                               <span data-component="file-legend-value-right" class="text-black font-semibold">NA</span>
@@ -2193,7 +2241,7 @@
                         </svg>
                       </div>
                       <div class="relative top-0 right-0 group flex w-5 h-5">
-                        <svg class="relative z-0" xmlns="http://www.w3.org/2000/svg" width="16" viewBox="0 0 16 16" height="16" fill="none">
+                        <svg class="relative self-center z-0" xmlns="http://www.w3.org/2000/svg" width="16" viewBox="0 0 16 16" height="16" fill="none">
                           <path fill="#59cafc" d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M5.496 6.033h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286a.237.237 0 0 0 .241.247m2.325 6.443c.61 0 1.029-.394 1.029-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94 0 .533.425.927 1.01.927z">
                           </path>
                         </svg>
@@ -2227,13 +2275,13 @@
                       </svg>
                       <div id="sv-card-datas" data-component="variant-card-datas" class="flex flex-col justify-center min-w-0 w-full">
                         <!-- SV legend -->
-                        <ul class="list-none" id="file-legend-sv">
+                        <ul class="list-none overflow-x-auto" id="file-legend-sv">
                           <li class="inline">
                             <a class="inline-flex flex-nowrap items-center text-sm mr-[3px] min-w-0">
                               <svg class="inline-block mr-[0.5rem] flex-shrink-0" fill="currentColor" height="16" width="16" viewBox="0 0 16 16">
                                 <path fill="#2C7A7B" d="M8 4a4 4 0 1 1 0 8 4 4 0 0 1 0-8Z"></path>
                               </svg>
-                              <span class="text-black mr-[0.25rem] truncate max-w-[180px] block" title="{{ vcfs.repository[0].informations().basename }}">
+                              <span class="text-black mr-[0.25rem] truncate max-w-full whitespace-nowrap block" title="{{ vcfs.repository[0].informations().basename }}">
                                 {{ vcfs.repository[0].informations().basename }}
                               </span>
                               <span data-component="file-legend-value-left" class="text-black font-semibold">NA</span>
@@ -2244,7 +2292,7 @@
                               <svg class="inline-block mr-[0.5rem] flex-shrink-0" fill="currentColor" height="16" width="16" viewBox="0 0 16 16">
                                 <path fill="#822E4A" d="M8 4a4 4 0 1 1 0 8 4 4 0 0 1 0-8Z"></path>
                               </svg>
-                              <span class="text-black mr-[0.25rem] truncate max-w-[180px] block" title="{{ vcfs.repository[1].informations().basename }}">
+                              <span class="text-black mr-[0.25rem] truncate max-w-full whitespace-nowrap block" title="{{ vcfs.repository[1].informations().basename }}">
                                 {{ vcfs.repository[1].informations().basename }}
                               </span>
                               <span data-component="file-legend-value-right" class="text-black font-semibold">NA</span>
@@ -2263,7 +2311,7 @@
                         </svg>
                       </div>
                       <div class="relative top-0 right-0 group flex w-5 h-5">
-                        <svg class="relative z-0" xmlns="http://www.w3.org/2000/svg" width="16" viewBox="0 0 16 16" height="16" fill="none">
+                        <svg class="relative self-center z-0" xmlns="http://www.w3.org/2000/svg" width="16" viewBox="0 0 16 16" height="16" fill="none">
                           <path fill="#59cafc" d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M5.496 6.033h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286a.237.237 0 0 0 .241.247m2.325 6.443c.61 0 1.029-.394 1.029-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94 0 .533.425.927 1.01.927z">
                           </path>
                         </svg>
@@ -2302,13 +2350,13 @@
                       </svg>
                       <div id="indel-card-datas" data-component="variant-card-datas" class="flex flex-col justify-center min-w-0 w-full">
                         <!-- INDEL legend -->
-                        <ul class="list-none" id="file-legend-indel">
+                        <ul class="list-none overflow-x-auto" id="file-legend-indel">
                           <li class="inline">
                             <a class="inline-flex flex-nowrap items-center text-sm mr-[3px] min-w-0">
                               <svg class="inline-block mr-[0.5rem] flex-shrink-0" fill="currentColor" height="16" width="16" viewBox="0 0 16 16">
                                 <path fill="#2C7A7B" d="M8 4a4 4 0 1 1 0 8 4 4 0 0 1 0-8Z"></path>
                               </svg>
-                              <span class="text-black mr-[0.25rem] truncate max-w-[180px] block" title="{{ vcfs.repository[0].informations().basename }}">
+                              <span class="text-black mr-[0.25rem] truncate max-w-full whitespace-nowrap block" title="{{ vcfs.repository[0].informations().basename }}">
                                 {{ vcfs.repository[0].informations().basename }}
                               </span>
                               <span data-component="file-legend-value-left" class="text-black font-semibold">NA</span>
@@ -2319,7 +2367,7 @@
                               <svg class="inline-block mr-[0.5rem] flex-shrink-0" fill="currentColor" height="16" width="16" viewBox="0 0 16 16">
                                 <path fill="#822E4A" d="M8 4a4 4 0 1 1 0 8 4 4 0 0 1 0-8Z"></path>
                               </svg>
-                              <span class="text-black mr-[0.25rem] truncate max-w-[180px] block" title="{{ vcfs.repository[1].informations().basename }}">
+                              <span class="text-black mr-[0.25rem] truncate max-w-full whitespace-nowrap block" title="{{ vcfs.repository[1].informations().basename }}">
                                 {{ vcfs.repository[1].informations().basename }}
                               </span>
                               <span data-component="file-legend-value-right" class="text-black font-semibold">NA</span>
@@ -2338,7 +2386,7 @@
                         </svg>
                       </div>
                       <div class="relative top-0 right-0 group flex w-5 h-5">
-                        <svg class="relative z-0" xmlns="http://www.w3.org/2000/svg" width="16" viewBox="0 0 16 16" height="16" fill="none">
+                        <svg class="relative self-center z-0" xmlns="http://www.w3.org/2000/svg" width="16" viewBox="0 0 16 16" height="16" fill="none">
                           <path fill="#59cafc" d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M5.496 6.033h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286a.237.237 0 0 0 .241.247m2.325 6.443c.61 0 1.029-.394 1.029-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94 0 .533.425.927 1.01.927z">
                           </path>
                         </svg>
@@ -2391,13 +2439,13 @@
                       </svg>
                       <div id="inv-card-datas" data-component="variant-card-datas" class="flex flex-col justify-center min-w-0 w-full">
                         <!-- INV legend -->
-                        <ul class="list-none" id="file-legend-inversion">
+                        <ul class="list-none overflow-x-auto" id="file-legend-inversion">
                           <li class="inline">
                             <a class="inline-flex flex-nowrap items-center text-sm mr-[3px] min-w-0">
                               <svg class="inline-block mr-[0.5rem] flex-shrink-0" fill="currentColor" height="16" width="16" viewBox="0 0 16 16">
                                 <path fill="#2C7A7B" d="M8 4a4 4 0 1 1 0 8 4 4 0 0 1 0-8Z"></path>
                               </svg>
-                              <span class="text-black mr-[0.25rem] truncate max-w-[180px] block" title="{{ vcfs.repository[0].informations().basename }}">
+                              <span class="text-black mr-[0.25rem] truncate max-w-full whitespace-nowrap block" title="{{ vcfs.repository[0].informations().basename }}">
                                 {{ vcfs.repository[0].informations().basename }}
                               </span>
                               <span data-component="file-legend-value-left" class="text-black font-semibold">NA</span>
@@ -2408,7 +2456,7 @@
                               <svg class="inline-block mr-[0.5rem] flex-shrink-0" fill="currentColor" height="16" width="16" viewBox="0 0 16 16">
                                 <path fill="#822E4A" d="M8 4a4 4 0 1 1 0 8 4 4 0 0 1 0-8Z"></path>
                               </svg>
-                              <span class="text-black mr-[0.25rem] truncate max-w-[180px] block" title="{{ vcfs.repository[1].informations().basename }}">
+                              <span class="text-black mr-[0.25rem] truncate max-w-full whitespace-nowrap block" title="{{ vcfs.repository[1].informations().basename }}">
                                 {{ vcfs.repository[1].informations().basename }}
                               </span>
                               <span data-component="file-legend-value-right" class="text-black font-semibold">NA</span>
@@ -2427,7 +2475,7 @@
                         </svg>
                       </div>
                       <div class="relative top-0 right-0 group flex w-5 h-5">
-                        <svg class="relative z-0" xmlns="http://www.w3.org/2000/svg" width="16" viewBox="0 0 16 16" height="16" fill="none">
+                        <svg class="relative self-center z-0" xmlns="http://www.w3.org/2000/svg" width="16" viewBox="0 0 16 16" height="16" fill="none">
                           <path fill="#59cafc" d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M5.496 6.033h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286a.237.237 0 0 0 .241.247m2.325 6.443c.61 0 1.029-.394 1.029-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94 0 .533.425.927 1.01.927z">
                           </path>
                         </svg>
@@ -2478,13 +2526,13 @@
                       </svg>
                       <div id="csv-card-datas" data-component="variant-card-datas" class="flex flex-col justify-center min-w-0 w-full">
                         <!-- CSV legend -->
-                        <ul class="list-none" id="file-legend-cv">
+                        <ul class="list-none overflow-x-auto" id="file-legend-cv">
                           <li class="inline">
                             <a class="inline-flex flex-nowrap items-center text-sm mr-[3px] min-w-0">
                               <svg class="inline-block mr-[0.5rem] flex-shrink-0" fill="currentColor" height="16" width="16" viewBox="0 0 16 16">
                                 <path fill="#2C7A7B" d="M8 4a4 4 0 1 1 0 8 4 4 0 0 1 0-8Z"></path>
                               </svg>
-                              <span class="text-black mr-[0.25rem] truncate max-w-[180px] block" title="{{ vcfs.repository[0].informations().basename }}">
+                              <span class="text-black mr-[0.25rem] truncate max-w-full whitespace-nowrap block" title="{{ vcfs.repository[0].informations().basename }}">
                                 {{ vcfs.repository[0].informations().basename }}
                               </span>
                               <span data-component="file-legend-value-left" class="text-black font-semibold">NA</span>
@@ -2495,7 +2543,7 @@
                               <svg class="inline-block mr-[0.5rem] flex-shrink-0" fill="currentColor" height="16" width="16" viewBox="0 0 16 16">
                                 <path fill="#822E4A" d="M8 4a4 4 0 1 1 0 8 4 4 0 0 1 0-8Z"></path>
                               </svg>
-                              <span class="text-black mr-[0.25rem] truncate max-w-[180px] block" title="{{ vcfs.repository[1].informations().basename }}">
+                              <span class="text-black mr-[0.25rem] truncate max-w-full whitespace-nowrap block" title="{{ vcfs.repository[1].informations().basename }}">
                                 {{ vcfs.repository[1].informations().basename }}
                               </span>
                               <span data-component="file-legend-value-right" class="text-black font-semibold">NA</span>
@@ -2514,7 +2562,7 @@
                         </svg>
                       </div>
                       <div class="relative top-0 right-0 group flex w-5 h-5">
-                        <svg class="relative z-0" xmlns="http://www.w3.org/2000/svg" width="16" viewBox="0 0 16 16" height="16" fill="none">
+                        <svg class="relative self-center z-0" xmlns="http://www.w3.org/2000/svg" width="16" viewBox="0 0 16 16" height="16" fill="none">
                           <path fill="#59cafc" d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M5.496 6.033h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286a.237.237 0 0 0 .241.247m2.325 6.443c.61 0 1.029-.394 1.029-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94 0 .533.425.927 1.01.927z">
                           </path>
                         </svg>
@@ -2579,24 +2627,28 @@
                     ++numberFiltersApplied;
                   }
                   variants.forEach(variant => {
-                    statsCards.querySelector(`[variant="${variant === "INS" || variant === "DEL" ? "INDEL" : variant}"]`).classList.remove("border-2", "border-solid", "border-red-500");
+                    statsCards.querySelector(`[variant="${variant === "INS" || variant === "DEL" ? "INDEL" : variant}"]`).classList.remove("border-2", "border-solid", "border-red-500", "shadow-xl", "shadow-red-300/40", "transition-all", "duration-300", "overflow-visible");
                   });
                   {% if table is not none -%}
                   benchmarkRows.forEach(row => {
                     const cell = row.getElementsByTagName("td")[0];
-                    cell.parentElement.classList.remove("border-2", "border-solid", "border-red-500");
+                    cell.parentElement.classList.remove("border-2", "border-solid", "border-red-500", "shadow-xl", "shadow-red-300/40", "scale-103", "transition-all", "duration-300", "overflow-visible");
                     cell.parentElement.classList.add("border-b", "border-gray-200");
                   });
                   {%- endif %}
                   if (variantTypeQuery !== "ALL") {
                     ++numberFiltersApplied;
-                    statsCards.querySelector(`[variant="${variantTypeQuery === "INS" || variantTypeQuery === "DEL" ? "INDEL" : variantTypeQuery}"]`).classList.add("border-2", "border-solid", "border-red-500");
+                    const highlightedCard = statsCards.querySelector(`[variant="${variantTypeQuery === "INS" || variantTypeQuery === "DEL" ? "INDEL" : variantTypeQuery}"]`);
+                    highlightedCard.classList.add(
+                      "border-2", "border-solid", "border-red-500",
+                      "shadow-xl", "shadow-red-300/40", "transition-all", "duration-300", "overflow-visible"
+                    );
                     {% if table is not none -%}
                     benchmarkRows.forEach(row => {
                       const cell = row.getElementsByTagName("td")[0];
                       if (cell.textContent.trim() === (variantTypeQuery === "INS" || variantTypeQuery === "DEL" ? "INDEL" : variantTypeQuery)) {
                         cell.parentElement.classList.remove("border-b", "border-gray-200");
-                        cell.parentElement.classList.add("border-2", "border-solid", "border-red-500");
+                        cell.parentElement.classList.add("border-2", "border-solid", "border-red-500", "shadow-xl", "shadow-red-300/40", "scale-103", "transition-all", "duration-300", "overflow-visible");
                       }
                     });
                     {%- endif %}
@@ -2771,9 +2823,10 @@
                       }
                     }
                   )
-
-                  animationLoadingLeft.classList.add("hidden");
-                  animationLoadingRight.classList.add("hidden");
+                  setTimeout(() => {
+                    animationLoadingLeft.classList.add("hidden");
+                    animationLoadingRight.classList.add("hidden");
+                  }, 1000);
                 }
 
                 function updateFilterIndicator(value, element) {
