@@ -922,7 +922,7 @@
         const plotHeight = activePlotContainer.offsetHeight;
           
         const startY = e.clientY;
-          
+
         function onDrag(e) {
           e = e || window.event;
           e.preventDefault();
@@ -930,21 +930,26 @@
           const deltaY = currentY - startY;
 
           const newHeight = Math.max(150, plotHeight + deltaY);
+
+          activeCurrentPlot.classList.add("border-2", "border-dashed", "border-red-500");
+          inactiveCurrentPlot.classList.add("border-2", "border-dashed", "border-red-500");
             
           activePlotContainer.style.height = `${newHeight}px`;
           inactivePlotContainer.style.height = `${newHeight}px`;
 
           Plotly.relayout(activeCurrentPlot.querySelector('.plotly-graph-div'), {
-            height: newHeight - (element.offsetHeight + document.getElementById('plot-navigation-right').offsetHeight) - 20
+            height: newHeight - (element.offsetHeight + document.getElementById('plot-navigation-right').offsetHeight) - 30
           });
           Plotly.relayout(inactiveCurrentPlot.querySelector('.plotly-graph-div'), {
-            height: newHeight - (element.offsetHeight + document.getElementById('plot-navigation-right').offsetHeight) - 20
+            height: newHeight - (element.offsetHeight + document.getElementById('plot-navigation-right').offsetHeight) - 30
           });
         }
 
         function onMouseUp() {
           document.removeEventListener('mousemove', onDrag);
           document.removeEventListener('mouseup', onMouseUp);
+          activeCurrentPlot.classList.remove("border-2", "border-dashed", "border-red-500");
+          inactiveCurrentPlot.classList.remove("border-2", "border-dashed", "border-red-500");
         }
 
         document.addEventListener('mousemove', onDrag);
@@ -2574,22 +2579,24 @@
                     ++numberFiltersApplied;
                   }
                   variants.forEach(variant => {
-                    statsCards.querySelector(`[variant="${variant === "INS" || variant === "DEL" ? "INDEL" : variant}"]`).classList.remove("border", "border-solid", "border-red-500");
+                    statsCards.querySelector(`[variant="${variant === "INS" || variant === "DEL" ? "INDEL" : variant}"]`).classList.remove("border-2", "border-solid", "border-red-500");
                   });
                   {% if table is not none -%}
                   benchmarkRows.forEach(row => {
                     const cell = row.getElementsByTagName("td")[0];
-                    cell.parentElement.classList.remove("border", "border-solid", "border-red-500");
+                    cell.parentElement.classList.remove("border-2", "border-solid", "border-red-500");
+                    cell.parentElement.classList.add("border-b", "border-gray-200");
                   });
                   {%- endif %}
                   if (variantTypeQuery !== "ALL") {
                     ++numberFiltersApplied;
-                    statsCards.querySelector(`[variant="${variantTypeQuery === "INS" || variantTypeQuery === "DEL" ? "INDEL" : variantTypeQuery}"]`).classList.add("border", "border-solid", "border-red-500");
+                    statsCards.querySelector(`[variant="${variantTypeQuery === "INS" || variantTypeQuery === "DEL" ? "INDEL" : variantTypeQuery}"]`).classList.add("border-2", "border-solid", "border-red-500");
                     {% if table is not none -%}
                     benchmarkRows.forEach(row => {
                       const cell = row.getElementsByTagName("td")[0];
                       if (cell.textContent.trim() === (variantTypeQuery === "INS" || variantTypeQuery === "DEL" ? "INDEL" : variantTypeQuery)) {
-                        cell.parentElement.classList.add("border", "border-solid", "border-red-500");
+                        cell.parentElement.classList.remove("border-b", "border-gray-200");
+                        cell.parentElement.classList.add("border-2", "border-solid", "border-red-500");
                       }
                     });
                     {%- endif %}
