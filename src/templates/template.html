@@ -791,6 +791,7 @@
       function updateTerminal(icon) {
         // Get terminal svg path
         const path = icon.querySelector('[shape="content"]');
+        const title = icon.querySelector('title');
         // Update terminal icon display by state
         if (icon.getAttribute("state") === "close") {
           // Set terminal icon color to red
@@ -799,6 +800,8 @@
           path.setAttribute('d', "M3.146 5.146a.5.5 0 0 1 .708 0L5.177 6.47a.75.75 0 0 1 0 1.06L3.854 8.854a.5.5 0 1 1-.708-.708L4.293 7 3.146 5.854a.5.5 0 0 1 0-.708M5.5 9a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1H6a.5.5 0 0 1-.5-.5M16 12.5a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0m-5.5 0a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 0-1h-3a.5.5 0 0 0-.5.5");
           // Set terminal icon state to open
           icon.setAttribute("state", "open");
+          // Update terminal icon title
+          title.textContent = "Close terminal";
         }
         else {
           // Set terminal icon color to green
@@ -807,6 +810,8 @@
           path.setAttribute('d', "M3.146 5.146a.5.5 0 0 1 .708 0L5.177 6.47a.75.75 0 0 1 0 1.06L3.854 8.854a.5.5 0 1 1-.708-.708L4.293 7 3.146 5.854a.5.5 0 0 1 0-.708M5.5 9a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1H6a.5.5 0 0 1-.5-.5M16 12.5a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0m-3.5-2a.5.5 0 0 0-.5.5v1h-1a.5.5 0 0 0 0 1h1v1a.5.5 0 0 0 1 0v-1h1a.5.5 0 0 0 0-1h-1v-1a.5.5 0 0 0-.5-.5");
           // Set terminal icon state to close
           icon.setAttribute("state", "close")
+          // Update terminal icon title
+          title.textContent = "Open terminal";
         }
       }
 
@@ -893,7 +898,7 @@
               {% endif %}
             {% endfor %}
             <!-- Resize button -->
-            <div class="flex justify-center items-center w-full max-w-full bg-[rgba(200,_200,_200,_0.3)] overflow-x-auto overflow-y-auto">
+            <div class="flex justify-center items-center w-full min-w-0 bg-[rgba(200,_200,_200,_0.3)]">
               <button id="resize-button-left" class="cursor-grab hover:bg-gray-200" title="Resize" onmousedown="resizePlot(event, this)">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
                   <path fill="black" d="M8 18h3v-3H2v-2h20v2h-9v3h3l-4 4zm4-16L8 6h3v3H2v2h20V9h-9V6h3z" />
@@ -901,10 +906,10 @@
               </button>
             </div>
             <!-- Left plot navigation -->
-            <div id="plot-navigation-left" class="flex justify-between items-center w-full max-w-full overflow-x-auto overflow-y-auto mx-[0] my-[10px]">
-              <div class="flex justify-center w-full pl-[20px]">
+            <div id="plot-navigation-left" class="flex justify-between items-center w-full max-w-full min-w-0 mx-[0] my-[10px]">
+              <div class="flex justify-center w-full pl-[20px] max-w-full min-w-0">
                   <div class="cursor-pointer text-[24px] bg-[rgba(200,_200,_200,_0.3)] rounded-[50%] flex items-center justify-center w-[40px] min-w-[40px] h-[40px] min-h-[40px] [transition:all_0.3s_ease] mb-[5px] text-[black] hover:bg-[rgba(150,_150,_150,_0.7)] hover:scale-110" id="leftPrevArrow">&#8592;</div>
-                  <div class="flex gap-[5px] mx-[15px] my-[0] items-center" id="leftPlotIndicator"></div>
+                  <div class="flex gap-[5px] mx-[15px] my-[0] items-center min-w-0" id="leftPlotIndicator"></div>
                   <div class="cursor-pointer text-[24px] bg-[rgba(200,_200,_200,_0.3)] rounded-[50%] flex items-center justify-center w-[40px] min-w-[40px] h-[40px] min-h-[40px] [transition:all_0.3s_ease] mb-[5px] text-[black] hover:bg-[rgba(150,_150,_150,_0.7)] hover:scale-110" id="leftNextArrow">&#8594;</div>
               </div>
             </div>
@@ -924,7 +929,7 @@
               {% endif %}
             {% endfor %}
             <!-- Resize button -->
-            <div class="flex justify-center items-center w-full max-w-full bg-[rgba(200,_200,_200,_0.3)] overflow-x-auto overflow-y-auto">
+            <div class="flex justify-center items-center w-full min-w-0 bg-[rgba(200,_200,_200,_0.3)]">
               <button id="resize-button-right" class="cursor-grab hover:bg-gray-700" title="Resize" onmousedown="resizePlot(event, this)">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
                   <path fill="white" d="M8 18h3v-3H2v-2h20v2h-9v3h3l-4 4zm4-16L8 6h3v3H2v2h20V9h-9V6h3z" />
@@ -932,10 +937,10 @@
               </button>
             </div>
             <!-- Right plot navigation -->
-            <div id="plot-navigation-right" class="flex justify-between items-center w-full max-w-full overflow-x-auto overflow-y-auto mx-[0] my-[10px]">
-              <div class="flex justify-center w-full pl-[20px]">
+            <div id="plot-navigation-right" class="flex justify-between items-center w-full max-w-full min-w-0 mx-[0] my-[10px]">
+              <div class="flex justify-center w-full max-w-full min-w-0 pl-[20px]">
                 <div class="cursor-pointer text-[24px] bg-[rgba(200,_200,_200,_0.3)] rounded-[50%] flex items-center justify-center w-[40px] min-w-[40px] h-[40px] min-h-[40px] [transition:all_0.3s_ease] mb-[5px] text-[white] hover:bg-[rgba(150,_150,_150,_0.7)] hover:scale-110" id="rightPrevArrow">&#8592;</div>
-                <div class="flex gap-[5px] mx-[15px] my-[0] items-center" id="rightPlotIndicator"></div>
+                <div class="flex gap-[5px] mx-[15px] my-[0] items-center min-w-0" id="rightPlotIndicator"></div>
                 <div class="cursor-pointer text-[24px] bg-[rgba(200,_200,_200,_0.3)] rounded-[50%] flex items-center justify-center w-[40px] min-w-[40px] h-[40px] min-h-[40px] [transition:all_0.3s_ease] mb-[5px] text-[white] hover:bg-[rgba(150,_150,_150,_0.7)] hover:scale-110" id="rightNextArrow">&#8594;</div>
               </div>
             </div>
@@ -1243,7 +1248,7 @@
               <div id="filter-chromosome" class="h-[45px] mr-[5%] border-[1px] border-[solid] border-[#3d444d] rounded-xl px-[15px] py-[5px] bg-[#0d1117] [transition:150ms_cubic-bezier(0.4,0,0.2,1)] flex flew-row items-center hover:border-[#999999] min-w-[180px] flex-shrink">
                 <div class="relative w-full h-full flex items-center min-w-0">
                   <input id="query-chromosome" placeholder="" class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-white bg-transparent appearance-none focus:outline-none focus:ring-0 peer" type="text">
-                  <label for="query-chromosome" class="absolute text-sm text-white duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-[#0d1117] px-2 peer-focus:px-2 peer-focus:text-gray-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1">Search chromosome</label>
+                  <label for="query-chromosome" class="absolute text-sm text-white duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-[#0d1117] px-2 peer-focus:px-2 peer-focus:text-white peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1">Search chromosome</label>
                 </div>
               </div>
 
@@ -1440,20 +1445,78 @@
             </script>
 
             <!-- Terminal icon -->
-            <svg xmlns="http://www.w3.org/2000/svg" state="close" fill="white" class="w-[50px] h-[50px] cursor-pointer flex-shrink-0" id="terminal-icon" viewBox="0 0 16 16">
-              <path shape="border" d="M2 3a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h5.5a.5.5 0 0 1 0 1H2a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h11a2 2 0 0 1 2 2v4a.5.5 0 0 1-1 0V4a1 1 0 0 0-1-1z"/>
-              <path shape="content" fill="oklch(79.2% 0.209 151.711)" d="M3.146 5.146a.5.5 0 0 1 .708 0L5.177 6.47a.75.75 0 0 1 0 1.06L3.854 8.854a.5.5 0 1 1-.708-.708L4.293 7 3.146 5.854a.5.5 0 0 1 0-.708M5.5 9a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1H6a.5.5 0 0 1-.5-.5M16 12.5a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0m-3.5-2a.5.5 0 0 0-.5.5v1h-1a.5.5 0 0 0 0 1h1v1a.5.5 0 0 0 1 0v-1h1a.5.5 0 0 0 0-1h-1v-1a.5.5 0 0 0-.5-.5"/>
-            </svg>
+            <div class="flex flex-col items-center gap-2 mr-[5%]">
+              <svg xmlns="http://www.w3.org/2000/svg" state="close" fill="white" class="w-[50px] h-[50px] cursor-pointer flex-shrink-0" id="terminal-icon" viewBox="0 0 16 16">
+                <title>Open terminal</title>
+                <path shape="border" d="M2 3a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h5.5a.5.5 0 0 1 0 1H2a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h11a2 2 0 0 1 2 2v4a.5.5 0 0 1-1 0V4a1 1 0 0 0-1-1z"/>
+                <path shape="content" fill="oklch(79.2% 0.209 151.711)" d="M3.146 5.146a.5.5 0 0 1 .708 0L5.177 6.47a.75.75 0 0 1 0 1.06L3.854 8.854a.5.5 0 1 1-.708-.708L4.293 7 3.146 5.854a.5.5 0 0 1 0-.708M5.5 9a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1H6a.5.5 0 0 1-.5-.5M16 12.5a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0m-3.5-2a.5.5 0 0 0-.5.5v1h-1a.5.5 0 0 0 0 1h1v1a.5.5 0 0 0 1 0v-1h1a.5.5 0 0 0 0-1h-1v-1a.5.5 0 0 0-.5-.5"/>
+              </svg>
+              <!-- Keyboard shortcut for opening terminal -->
+              <div id="terminal-shortcut" class="flex flex-row gap-2 hidden">
+                <kbd class="kbd">shift</kbd> + <kbd class="kbd">t</kbd>
+              </div>
+            </div>
+            <!-- Keyboard shortcut for opening terminal -->
+            <script type="text/javascript">
+              // Open terminal on Shift+T
+              document.addEventListener('keydown', function(event) {
+                if (event.shiftKey && event.key.toLowerCase() === 't') {
+                  let element = document.getElementById("terminal");
+                  let keywords = document.getElementById("keywords-terminal");
+                  if (element.classList.contains('hidden')) {
+                    element.classList.replace('hidden', 'block');
+                    keywords.classList.remove('hidden');
+                  }
+                  else {
+                    element.classList.replace('block', 'hidden');
+                    keywords.classList.add('hidden');
+                  }
+                  updateTerminal(document.getElementById("terminal-icon"));
+                }
+              });
+            </script>
 
             <!-- Reset filters button -->
-            <button id="reset-button" class="relative bg-[rgba(79,_70,_229,_0.9)] border-[none] rounded-[6px] px-[20px] py-[10px] mx-[3%] cursor-pointer text-[14px] text-white rounded-[16px] font-[Ubuntu] font-bold hover:bg-[rgba(67,_56,_202,_0.9)] flex-shrink-0 whitespace-nowrap" onclick="resetFilters()">
-              Reset
-              <!-- Reset icon -->
-              <svg xmlns="http://www.w3.org/2000/svg" class="absolute -top-2 -right-2" width="24" height="24" viewBox="0 0 24 24">
-                <path fill="white" d="M13.75 14.25h2.5q.325 0 .538.213T17 15t-.213.538t-.537.212h-2.5q-.325 0-.537-.213T13 15t.213-.537t.537-.213m.75 6v-.5h-.75q-.325 0-.537-.213T13 19t.213-.537t.537-.213h.75v-.5q0-.325.213-.537T15.25 17t.538.213t.212.537v2.5q0 .325-.213.538T15.25 21t-.537-.213t-.213-.537m3.25-2h2.5q.325 0 .538.213T21 19t-.213.538t-.537.212h-2.5q-.325 0-.537-.213T17 19t.213-.537t.537-.213m.25-2v-2.5q0-.325.213-.537T18.75 13t.538.213t.212.537v.5h.75q.325 0 .538.213T21 15t-.213.538t-.537.212h-.75v.5q0 .325-.213.538T18.75 17t-.537-.213T18 16.25M12 5Q9.075 5 7.038 7.038T5 12q0 1.8.813 3.3T8 17.75V16q0-.425.288-.712T9 15t.713.288T10 16v4q0 .425-.288.713T9 21H5q-.425 0-.712-.288T4 20t.288-.712T5 19h1.35Q4.8 17.75 3.9 15.938T3 12q0-1.875.713-3.512t1.924-2.85t2.85-1.925T12 3q2.825 0 5.088 1.575t3.262 4.05q.15.4 0 .775t-.55.525t-.788 0t-.537-.55q-.775-1.95-2.513-3.162T12 5" />
-              </svg>
-            </button>
+            <div class="flex flex-col items-center justify-center gap-2">
+              <div class="flex h-[50px] items-center justify-center">
+                <button id="reset-button" class="relative self-center bg-[rgba(79,_70,_229,_0.9)] border-[none] px-[20px] py-[10px] mx-[3%] cursor-pointer text-[14px] text-white rounded-[16px] font-[Ubuntu] font-bold hover:bg-[rgba(67,_56,_202,_0.9)] flex-shrink-0 whitespace-nowrap" onclick="resetFilters()">
+                  Reset
+                  <!-- Reset icon -->
+                  <svg xmlns="http://www.w3.org/2000/svg" class="absolute -top-2 -right-2" width="24" height="24" viewBox="0 0 24 24">
+                    <path fill="white" d="M13.75 14.25h2.5q.325 0 .538.213T17 15t-.213.538t-.537.212h-2.5q-.325 0-.537-.213T13 15t.213-.537t.537-.213m.75 6v-.5h-.75q-.325 0-.537-.213T13 19t.213-.537t.537-.213h.75v-.5q0-.325.213-.537T15.25 17t.538.213t.212.537v2.5q0 .325-.213.538T15.25 21t-.537-.213t-.213-.537m3.25-2h2.5q.325 0 .538.213T21 19t-.213.538t-.537.212h-2.5q-.325 0-.537-.213T17 19t.213-.537t.537-.213m.25-2v-2.5q0-.325.213-.537T18.75 13t.538.213t.212.537v.5h.75q.325 0 .538.213T21 15t-.213.538t-.537.212h-.75v.5q0 .325-.213.538T18.75 17t-.537-.213T18 16.25M12 5Q9.075 5 7.038 7.038T5 12q0 1.8.813 3.3T8 17.75V16q0-.425.288-.712T9 15t.713.288T10 16v4q0 .425-.288.713T9 21H5q-.425 0-.712-.288T4 20t.288-.712T5 19h1.35Q4.8 17.75 3.9 15.938T3 12q0-1.875.713-3.512t1.924-2.85t2.85-1.925T12 3q2.825 0 5.088 1.575t3.262 4.05q.15.4 0 .775t-.55.525t-.788 0t-.537-.55q-.775-1.95-2.513-3.162T12 5" />
+                  </svg>
+                </button>
+              </div>
+              <!-- Keyboard shortcut for resetting filters -->
+              <div id="reset-shortcut" class="flex flex-row gap-2 hidden">
+                <kbd class="kbd">shift</kbd> + <kbd class="kbd">r</kbd>
+              </div>
+            </div>
+            <!-- Keyboard shortcut for resetting filters -->
+            <script type="text/javascript">
+              // Reset filters on Shift+R
+              document.addEventListener('keydown', function(event) {
+                if (event.shiftKey && event.key.toLowerCase() === 'r') {
+                  resetFilters();
+                }
+              });
+            </script>
         </div>
+        <div id="toggle-keyboard-shortcut" class="top-0 right-0 mx-[5px]">
+          <button class="cursor-pointer self-center" title="Toggle keyboard shortcuts" onclick="toggleKeyboardShortcut()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M0 6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm13 .25v.5c0 .138.112.25.25.25h.5a.25.25 0 0 0 .25-.25v-.5a.25.25 0 0 0-.25-.25h-.5a.25.25 0 0 0-.25.25M2.25 8a.25.25 0 0 0-.25.25v.5c0 .138.112.25.25.25h.5A.25.25 0 0 0 3 8.75v-.5A.25.25 0 0 0 2.75 8zM4 8.25v.5c0 .138.112.25.25.25h.5A.25.25 0 0 0 5 8.75v-.5A.25.25 0 0 0 4.75 8h-.5a.25.25 0 0 0-.25.25M6.25 8a.25.25 0 0 0-.25.25v.5c0 .138.112.25.25.25h.5A.25.25 0 0 0 7 8.75v-.5A.25.25 0 0 0 6.75 8zM8 8.25v.5c0 .138.112.25.25.25h.5A.25.25 0 0 0 9 8.75v-.5A.25.25 0 0 0 8.75 8h-.5a.25.25 0 0 0-.25.25M13.25 8a.25.25 0 0 0-.25.25v.5c0 .138.112.25.25.25h.5a.25.25 0 0 0 .25-.25v-.5a.25.25 0 0 0-.25-.25zm0 2a.25.25 0 0 0-.25.25v.5c0 .138.112.25.25.25h.5a.25.25 0 0 0 .25-.25v-.5a.25.25 0 0 0-.25-.25zm-3-2a.25.25 0 0 0-.25.25v.5c0 .138.112.25.25.25h1.5a.25.25 0 0 0 .25-.25v-.5a.25.25 0 0 0-.25-.25zm.75 2.25v.5c0 .138.112.25.25.25h.5a.25.25 0 0 0 .25-.25v-.5a.25.25 0 0 0-.25-.25h-.5a.25.25 0 0 0-.25.25M11.25 6a.25.25 0 0 0-.25.25v.5c0 .138.112.25.25.25h.5a.25.25 0 0 0 .25-.25v-.5a.25.25 0 0 0-.25-.25zM9 6.25v.5c0 .138.112.25.25.25h.5a.25.25 0 0 0 .25-.25v-.5A.25.25 0 0 0 9.75 6h-.5a.25.25 0 0 0-.25.25M7.25 6a.25.25 0 0 0-.25.25v.5c0 .138.112.25.25.25h.5A.25.25 0 0 0 8 6.75v-.5A.25.25 0 0 0 7.75 6zM5 6.25v.5c0 .138.112.25.25.25h.5A.25.25 0 0 0 6 6.75v-.5A.25.25 0 0 0 5.75 6h-.5a.25.25 0 0 0-.25.25M2.25 6a.25.25 0 0 0-.25.25v.5c0 .138.112.25.25.25h1.5A.25.25 0 0 0 4 6.75v-.5A.25.25 0 0 0 3.75 6zM2 10.25v.5c0 .138.112.25.25.25h.5a.25.25 0 0 0 .25-.25v-.5a.25.25 0 0 0-.25-.25h-.5a.25.25 0 0 0-.25.25M4.25 10a.25.25 0 0 0-.25.25v.5c0 .138.112.25.25.25h5.5a.25.25 0 0 0 .25-.25v-.5a.25.25 0 0 0-.25-.25z"/>
+            </svg>
+          </button>
+          <script type="text/javascript">
+            function toggleKeyboardShortcut() {
+              const terminalShortcut = document.getElementById("terminal-shortcut");
+              const resetShortcut = document.getElementById("reset-shortcut");
+              terminalShortcut.classList.toggle("hidden");
+              resetShortcut.classList.toggle("hidden");
+            }
+          </script>
+        </div>  
       </div>
     </div>
 
@@ -3257,11 +3320,21 @@
               {% if view["jaccard"] < 0.8 %}
               <!-- Venn Diagram container -->
               <div class="visible opacity-100 w-full relative flex justify-center [transition:opacity_0.3s_ease-in-out] bg-[#f3f4f6] overflow-x-auto max-w-full">
-                  <div class="max-w-full overflow-x-auto">
+                  <div id="venn-diagram-container" class="max-w-full overflow-x-auto">
                     <!-- Venn Diagram -->
                     {{ view["plots"].as_html()[0] }}
                   </div>
               </div>
+              <script type="text/javascript">
+                window.addEventListener("resize", () => {
+                  const vennDiagramContainer = document.getElementById("venn-diagram-container");
+                  if(vennDiagramContainer) {
+                    Plotly.relayout(vennDiagramContainer.querySelector(".plotly-graph-div"), {
+                      width: vennDiagramContainer.offsetWidth,
+                    });
+                  }
+                });
+              </script>
               {% endif %}
             </div>
 
@@ -5690,7 +5763,7 @@
       const loopButton = document.createElement('button');
       loopButton.className = 'loop-button';
       loopButton.textContent = 'Loop Differences';
-      loopButton.title = 'Auto-scroll through differences (Press L)';
+      loopButton.title = 'Auto-scroll through differences (Press Shift+L)';
       Object.assign(loopButton.style, {
         position: 'fixed',
         bottom: '20px',
