@@ -511,42 +511,45 @@
             </svg>            
             <!-- Metadatas container -->
             <div class="flex justify-center items-center flex-wrap w-full pt-[5px] overflow-x-auto" id="metadatas-container-left">
-              <div class="stack stack-start h-full" style="transition: all 0.3s ease-in-out;" onmouseover="showMetadatas(this)" onmouseleave="hideMetadatas(this)">
-                <!-- Path -->
-                <div class="flex rounded-[2em] m-[2px] h-[90%] bg-[#D7F1FD] items-center shadow-md">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="25px" height="25px" viewBox="0 0 512 512" class="px-[5px] py-[5px]">
-                    <path fill="#0074a8" d="M491 326V92.143C491 79.021 480.259 68 467.137 68H341.13c-9.287 0-17.723 5.603-21.596 14.044l-12.709 27.903C302.952 118.388 294.516 124 285.229 124H67.538C54.416 124 44 134.426 44 147.549v216.363C44 377.034 54.416 388 67.538 388h399.599c.628 0 1.248-.36 1.863-.408V433h.342c0 6 4.877 10.636 10.829 10.636S491 438.669 491 432.717z" />
-                    <path fill="#59cafc" d="M480.171 443.636c-5.952 0-10.829-4.636-10.829-10.636H469V210.181C469 197.058 458.661 186 445.539 186H45.94C32.818 186 22 197.058 22 210.181V449.37C22 462.492 32.818 473 45.94 473h399.599c1.385 0 2.741-.06 4.061-.288c1.639.227 3.31.385 5.012.385c20.04 0 36.136-16.229 36.136-36.269c0-.534-.036-1.058-.058-1.586c-1.147 4.766-5.435 8.394-10.519 8.394" />
-                  </svg>
-                  <p class="text-[15px] px-[5px] font-bold text-center leading-[22px] font-[Ubuntu] text-[#0C2A75]">
-                    {{ vcfs.repository[0].informations().path|default("Na") }}
-                  </p>
-                </div>
-                <!-- Size -->
-                <div class="flex rounded-[2em] m-[2px] h-[90%] bg-[#D7F1FD] items-center shadow-md">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="25px" height="25px" viewBox="0 0 14 14" class="px-[5px] py-[5px]">
-                    <g fill="none">
-                      <path fill="#59cafc" d="M.488 2.5v8.709C.488 12.749 3.403 14 7 14s6.512-1.25 6.512-2.791V2.5" />
-                      <path fill="#0074a8" d="M7 5c3.59 0 6.5-1.12 6.5-2.5S10.59 0 7 0S.5 1.12.5 2.5S3.41 5 7 5" />
-                      <path fill="#0074a8" fill-rule="evenodd" d="M.488 8.493V6.845c.056.085.135.178.246.279c.29.263.745.53 1.36.766c1.224.471 2.959.776 4.906.776s3.682-.305 4.907-.776c.614-.237 1.069-.503 1.359-.766q.163-.151.246-.28v1.649c-.341.213-.732.4-1.156.564c-1.402.539-3.295.859-5.356.859s-3.954-.32-5.356-.86a7 7 0 0 1-1.156-.563" clip-rule="evenodd" />
-                    </g>
-                  </svg>
-                  <p class="text-[15px] px-[5px] font-bold text-center leading-[22px] font-[Ubuntu] text-[#0C2A75]">
-                    {{ vcfs.repository[0].informations().size|default('NaN') }} Mo
-                  </p>
-                </div>
-                <!-- Modification time -->
-                <div class="flex rounded-[2em] m-[2px] h-[90%] bg-[#D7F1FD] items-center shadow-md">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="25px" height="25px" viewBox="0 0 14 14" class="px-[5px] py-[5px]">
-                    <g fill="none">
-                      <path fill="#59cafc" d="M2.5 0A1.5 1.5 0 0 0 1 1.5v11A1.5 1.5 0 0 0 2.5 14h9a1.5 1.5 0 0 0 1.5-1.5V5a.5.5 0 0 0-.146-.354l-4.5-4.5A.5.5 0 0 0 8 0z" />
-                      <path fill="#0074a8" d="M13 5a.5.5 0 0 0-.146-.354l-4.5-4.5A.5.5 0 0 0 8 0v4.5a.5.5 0 0 0 .5.5z" />
-                    </g>
-                  </svg>
-                  <p class="text-[15px] px-[5px] font-bold text-center leading-[22px] font-[Ubuntu] text-[#0C2A75]">
-                    {{ vcfs.repository[0].informations().mtime|default('NA') }}
-                  </p>
-                </div>
+              <div id="table-metadata-left-container" class="overflow-x-auto rounded-box">
+                <table id="table-metadata-left" class="table">
+                  <!-- head -->
+                  <thead class="text-black bg-[#EEF0F1]">
+                    <tr class="border-b border-gray-200">
+                      <th></th>
+                      <th class="text-zinc-500">Name</th>
+                      <th class="text-zinc-500">Path</th>
+                      <th class="text-zinc-500">Size</th>
+                      <th class="text-zinc-500">Last modified</th>
+                      <th class="text-zinc-500">State</th>
+                    </tr>
+                  </thead>
+                  <tbody class="text-black bg-white">
+                    <tr class="border-b border-gray-200">
+                      <th>
+                        <!-- File icon -->
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                      </th>
+                      <td class="text-black">{{ vcfs.repository[0].informations().basename|default("VCF.L") }}</td>
+                      <td class="overflow-x-scroll text-black">{{ vcfs.repository[0].informations().path|default("Na") }}</td>
+                      <td class="text-black">{{ vcfs.repository[0].informations().size|default('NaN') }} Mo</td>
+                      <td class="text-black">{{ vcfs.repository[0].informations().mtime|default('NA') }}</td>
+                      <td class="text-black">
+                        <div class="flex items-center">
+                          {% if table is not none %}
+                          <div class="w-2 h-2 rounded-full bg-green-500"></div>
+                          <p class="ml-2">Reference</p>
+                          {% else %}
+                          <div class="w-2 h-2 rounded-full bg-gray-500"></div>
+                          <p class="ml-2">None</p>
+                          {% endif %}
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </div>
 
@@ -585,43 +588,46 @@
             </svg>            
             <!-- Metadatas container -->
             <div class="flex justify-center items-center flex-wrap w-full pt-[5px] overflow-x-auto" id="metadatas-container-right">
-              <div class="stack stack-start h-full" style="transition: all 0.3s ease-in-out;" onmouseover="showMetadatas(this)" onmouseleave="hideMetadatas(this)">
-                <!-- Path -->
-                <div class="flex rounded-[2em] m-[2px] h-[90%] bg-[#D7F1FD] items-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="25px" height="25px" viewBox="0 0 512 512" class="px-[5px] py-[5px]">
-                    <path fill="#0074a8" d="M491 326V92.143C491 79.021 480.259 68 467.137 68H341.13c-9.287 0-17.723 5.603-21.596 14.044l-12.709 27.903C302.952 118.388 294.516 124 285.229 124H67.538C54.416 124 44 134.426 44 147.549v216.363C44 377.034 54.416 388 67.538 388h399.599c.628 0 1.248-.36 1.863-.408V433h.342c0 6 4.877 10.636 10.829 10.636S491 438.669 491 432.717z" />
-                    <path fill="#59cafc" d="M480.171 443.636c-5.952 0-10.829-4.636-10.829-10.636H469V210.181C469 197.058 458.661 186 445.539 186H45.94C32.818 186 22 197.058 22 210.181V449.37C22 462.492 32.818 473 45.94 473h399.599c1.385 0 2.741-.06 4.061-.288c1.639.227 3.31.385 5.012.385c20.04 0 36.136-16.229 36.136-36.269c0-.534-.036-1.058-.058-1.586c-1.147 4.766-5.435 8.394-10.519 8.394" />
-                  </svg>
-                  <p class="text-[15px] px-[5px] font-bold text-center leading-[22px] font-[Ubuntu] text-[#0C2A75]">
-                    {{ vcfs.repository[1].informations().path|default("Na") }}
-                  </p>
-                </div>
-                <!-- Size -->
-                <div class="flex rounded-[2em] m-[2px] h-[90%] bg-[#D7F1FD] items-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="25px" height="25px" viewBox="0 0 14 14" class="px-[5px] py-[5px]">
-                    <g fill="none">
-                      <path fill="#59cafc" d="M.488 2.5v8.709C.488 12.749 3.403 14 7 14s6.512-1.25 6.512-2.791V2.5" />
-                      <path fill="#0074a8" d="M7 5c3.59 0 6.5-1.12 6.5-2.5S10.59 0 7 0S.5 1.12.5 2.5S3.41 5 7 5" />
-                      <path fill="#0074a8" fill-rule="evenodd" d="M.488 8.493V6.845c.056.085.135.178.246.279c.29.263.745.53 1.36.766c1.224.471 2.959.776 4.906.776s3.682-.305 4.907-.776c.614-.237 1.069-.503 1.359-.766q.163-.151.246-.28v1.649c-.341.213-.732.4-1.156.564c-1.402.539-3.295.859-5.356.859s-3.954-.32-5.356-.86a7 7 0 0 1-1.156-.563" clip-rule="evenodd" />
-                    </g>
-                  </svg>
-                  <p class="text-[15px] px-[5px] font-bold text-center leading-[22px] font-[Ubuntu] text-[#0C2A75]">
-                    {{ vcfs.repository[1].informations().size|default('NaN') }} Mo
-                  </p>
-                </div>
-                <!-- Modification time -->
-                <div class="flex rounded-[2em] m-[2px] h-[90%] bg-[#D7F1FD] items-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="25px" height="25px" viewBox="0 0 14 14" class="px-[5px] py-[5px]">
-                    <g fill="none">
-                      <path fill="#59cafc" d="M2.5 0A1.5 1.5 0 0 0 1 1.5v11A1.5 1.5 0 0 0 2.5 14h9a1.5 1.5 0 0 0 1.5-1.5V5a.5.5 0 0 0-.146-.354l-4.5-4.5A.5.5 0 0 0 8 0z" />
-                      <path fill="#0074a8" d="M13 5a.5.5 0 0 0-.146-.354l-4.5-4.5A.5.5 0 0 0 8 0v4.5a.5.5 0 0 0 .5.5z" />
-                    </g>
-                  </svg>
-                  <p class="text-[15px] px-[5px] font-bold text-center leading-[22px] font-[Ubuntu] text-[#0C2A75]">
-                    {{ vcfs.repository[1].informations().mtime|default('NA') }}
-                  </p>
-                </div>
-              </div>
+              <div id="table-metadata-right-container" class="overflow-x-auto rounded-box">
+                <table id="table-metadata-right" class="table">
+                  <!-- head -->
+                  <thead class="text-white bg-[#333333]">
+                    <tr class="border-b border-gray-200">
+                      <th></th>
+                      <th class="text-white">Name</th>
+                      <th class="text-white">Path</th>
+                      <th class="text-white">Size</th>
+                      <th class="text-white">Last modified</th>
+                      <th class="text-white">State</th>
+                    </tr>
+                  </thead>
+                  <tbody class="text-black bg-white">
+                    <tr class="border-b border-gray-200">
+                      <th>
+                        <!-- File icon -->
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="black">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                      </th>
+                      <td class="text-black">{{ vcfs.repository[1].informations().basename|default("VCF.R") }}</td>
+                      <td class="overflow-x-scroll text-black">{{ vcfs.repository[1].informations().path|default("Na") }}</td>
+                      <td class="text-black">{{ vcfs.repository[1].informations().size|default('NaN') }} Mo</td>
+                      <td class="text-black">{{ vcfs.repository[1].informations().mtime|default('NA') }}</td>
+                      <td class="text-black">
+                        <div class="flex items-center">
+                          {% if table is not none %}
+                          <div class="w-2 h-2 rounded-full bg-green-500"></div>
+                          <p class="ml-2">Target</p>
+                          {% else %}
+                          <div class="w-2 h-2 rounded-full bg-gray-500"></div>
+                          <p class="ml-2">None</p>
+                          {% endif %}
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>            
             </div>
 
             <!-- Expand/collapse button -->
@@ -877,7 +883,7 @@
       </div>
       <!-- Right plots divider -->
       <div class="flex flex-col w-[50%] bg-[#111111] justify-center">
-          <div class="divider w-[90%] self-center"><span class="text-white">Plots</span></div>
+          <div class="divider w-[90%] self-center ![--color-base-content:white]"><span class="text-white">Plots</span></div>
       </div>
     </div>
 
@@ -1204,7 +1210,7 @@
         </div>
         <!-- Right filters divider -->
         <div class="flex flex-col w-[50%] bg-[#111111] justify-center">
-            <div class="divider w-[90%] self-center"><span class="text-white">Filters</span></div>
+            <div class="divider w-[90%] self-center ![--color-base-content:white]"><span class="text-white">Filters</span></div>
         </div>
     </div>
 
@@ -1504,7 +1510,7 @@
         </div>
         <div id="toggle-keyboard-shortcut" class="top-0 right-0 mx-[5px]">
           <button class="cursor-pointer self-center" title="Toggle keyboard shortcuts" onclick="toggleKeyboardShortcut()">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="white" viewBox="0 0 16 16">
               <path d="M0 6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm13 .25v.5c0 .138.112.25.25.25h.5a.25.25 0 0 0 .25-.25v-.5a.25.25 0 0 0-.25-.25h-.5a.25.25 0 0 0-.25.25M2.25 8a.25.25 0 0 0-.25.25v.5c0 .138.112.25.25.25h.5A.25.25 0 0 0 3 8.75v-.5A.25.25 0 0 0 2.75 8zM4 8.25v.5c0 .138.112.25.25.25h.5A.25.25 0 0 0 5 8.75v-.5A.25.25 0 0 0 4.75 8h-.5a.25.25 0 0 0-.25.25M6.25 8a.25.25 0 0 0-.25.25v.5c0 .138.112.25.25.25h.5A.25.25 0 0 0 7 8.75v-.5A.25.25 0 0 0 6.75 8zM8 8.25v.5c0 .138.112.25.25.25h.5A.25.25 0 0 0 9 8.75v-.5A.25.25 0 0 0 8.75 8h-.5a.25.25 0 0 0-.25.25M13.25 8a.25.25 0 0 0-.25.25v.5c0 .138.112.25.25.25h.5a.25.25 0 0 0 .25-.25v-.5a.25.25 0 0 0-.25-.25zm0 2a.25.25 0 0 0-.25.25v.5c0 .138.112.25.25.25h.5a.25.25 0 0 0 .25-.25v-.5a.25.25 0 0 0-.25-.25zm-3-2a.25.25 0 0 0-.25.25v.5c0 .138.112.25.25.25h1.5a.25.25 0 0 0 .25-.25v-.5a.25.25 0 0 0-.25-.25zm.75 2.25v.5c0 .138.112.25.25.25h.5a.25.25 0 0 0 .25-.25v-.5a.25.25 0 0 0-.25-.25h-.5a.25.25 0 0 0-.25.25M11.25 6a.25.25 0 0 0-.25.25v.5c0 .138.112.25.25.25h.5a.25.25 0 0 0 .25-.25v-.5a.25.25 0 0 0-.25-.25zM9 6.25v.5c0 .138.112.25.25.25h.5a.25.25 0 0 0 .25-.25v-.5A.25.25 0 0 0 9.75 6h-.5a.25.25 0 0 0-.25.25M7.25 6a.25.25 0 0 0-.25.25v.5c0 .138.112.25.25.25h.5A.25.25 0 0 0 8 6.75v-.5A.25.25 0 0 0 7.75 6zM5 6.25v.5c0 .138.112.25.25.25h.5A.25.25 0 0 0 6 6.75v-.5A.25.25 0 0 0 5.75 6h-.5a.25.25 0 0 0-.25.25M2.25 6a.25.25 0 0 0-.25.25v.5c0 .138.112.25.25.25h1.5A.25.25 0 0 0 4 6.75v-.5A.25.25 0 0 0 3.75 6zM2 10.25v.5c0 .138.112.25.25.25h.5a.25.25 0 0 0 .25-.25v-.5a.25.25 0 0 0-.25-.25h-.5a.25.25 0 0 0-.25.25M4.25 10a.25.25 0 0 0-.25.25v.5c0 .138.112.25.25.25h5.5a.25.25 0 0 0 .25-.25v-.5a.25.25 0 0 0-.25-.25z"/>
             </svg>
           </button>
@@ -1688,7 +1694,7 @@
       </div>
       <!-- Right view divider -->
       <div class="flex flex-col w-[50%] bg-[#111111] justify-center">
-          <div class="divider w-[90%] self-center"><span class="text-white">File view</span></div>
+          <div class="divider w-[90%] self-center ![--color-base-content:white]"><span class="text-white">File view</span></div>
       </div>
     </div>
 
