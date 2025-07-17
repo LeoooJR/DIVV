@@ -1016,8 +1016,8 @@
   .top-2 {
     top: calc(var(--spacing) * 2);
   }
-  .top-\[37px\] {
-    top: 37px;
+  .top-\[45px\] {
+    top: 45px;
   }
   .-right-2 {
     right: calc(var(--spacing) * -2);
@@ -1339,6 +1339,9 @@
   }
   .ml-\[5\%\] {
     margin-left: 5%;
+  }
+  .ml-\[5px\] {
+    margin-left: 5px;
   }
   .ml-\[10px\] {
     margin-left: 10px;
@@ -2296,11 +2299,24 @@
       --tw-shadow-color: color-mix(in oklab, color-mix(in oklab, var(--color-red-300) 40%, transparent) var(--tw-shadow-alpha), transparent);
     }
   }
+  .outline-1 {
+    outline-style: var(--tw-outline-style);
+    outline-width: 1px;
+  }
+  .outline-offset-2 {
+    outline-offset: 2px;
+  }
   .\!outline-\[\#D7F1FD\] {
     outline-color: #D7F1FD !important;
   }
   .outline-\[\#202425\] {
     outline-color: #202425;
+  }
+  .outline-black {
+    outline-color: var(--color-black);
+  }
+  .outline-white {
+    outline-color: var(--color-white);
   }
   .filter {
     filter: var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,) var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,) var(--tw-saturate,) var(--tw-sepia,) var(--tw-drop-shadow,);
@@ -2348,6 +2364,10 @@
   .btn-info {
     --btn-color: var(--color-info);
     --btn-fg: var(--color-info-content);
+  }
+  .outline-solid {
+    --tw-outline-style: solid;
+    outline-style: solid;
   }
   .select-none {
     -webkit-user-select: none;
@@ -2936,6 +2956,11 @@
   inherits: false;
   initial-value: 0 0 #0000;
 }
+@property --tw-outline-style {
+  syntax: "*";
+  inherits: false;
+  initial-value: solid;
+}
 @property --tw-blur {
   syntax: "*";
   inherits: false;
@@ -3070,6 +3095,7 @@
       --tw-ring-offset-width: 0px;
       --tw-ring-offset-color: #fff;
       --tw-ring-offset-shadow: 0 0 #0000;
+      --tw-outline-style: solid;
       --tw-blur: initial;
       --tw-brightness: initial;
       --tw-contrast: initial;

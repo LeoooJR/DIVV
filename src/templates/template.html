@@ -662,10 +662,10 @@
       <!-- If benchmark is requested -->
       <!-- Reference and query information -->
       {% if table is not none %}
-        <div class="flex flex-row w-full">
+        <div class="flex flex-row w-full my-[5px]">
           <!-- Reference information -->
           <div class="flex w-1/2 justify-center">
-            <div data-component="info-popup" class="font-[system-ui,_-apple-system,_BlinkMacSystemFont,_'Segoe_UI',_Roboto,_Oxygen,_Ubuntu,_Cantarell,_'Open_Sans',_'Helvetica_Neue',_sans-serif] w-[320px] p-[12px] mb-[5px] hidden flex-row items-center bg-[#D7F1FD] rounded-[8px]">
+            <div data-component="info-popup" class="font-[system-ui,_-apple-system,_BlinkMacSystemFont,_'Segoe_UI',_Roboto,_Oxygen,_Ubuntu,_Cantarell,_'Open_Sans',_'Helvetica_Neue',_sans-serif] w-[320px] p-[12px] mb-[5px] hidden flex-row items-center bg-[#D7F1FD] rounded-[8px] outline-1 outline-solid outline-black outline-offset-2">
               <div class="w-[20px] h-[20px] -translate-y-[2px] mr-[8px]">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" height="24" fill="none">
                   <path fill="#59cafc" d="m12 1.5c-5.79844 0-10.5 4.70156-10.5 10.5 0 5.7984 4.70156 10.5 10.5 10.5 5.7984 0 10.5-4.7016 10.5-10.5 0-5.79844-4.7016-10.5-10.5-10.5zm.75 15.5625c0 .1031-.0844.1875-.1875.1875h-1.125c-.1031 0-.1875-.0844-.1875-.1875v-6.375c0-.1031.0844-.1875.1875-.1875h1.125c.1031 0 .1875.0844.1875.1875zm-.75-8.0625c-.2944-.00601-.5747-.12718-.7808-.3375-.206-.21032-.3215-.49305-.3215-.7875s.1155-.57718.3215-.7875c.2061-.21032.4864-.33149.7808-.3375.2944.00601.5747.12718.7808.3375.206.21032.3215.49305.3215.7875s-.1155.57718-.3215.7875c-.2061.21032-.4864.33149-.7808.3375z">
@@ -677,7 +677,7 @@
           </div>
           <!-- Query information -->
           <div class="flex w-1/2 justify-center">
-            <div data-component="info-popup" class="font-[system-ui,_-apple-system,_BlinkMacSystemFont,_'Segoe_UI',_Roboto,_Oxygen,_Ubuntu,_Cantarell,_'Open_Sans',_'Helvetica_Neue',_sans-serif] w-[320px] p-[12px] mb-[5px] hidden flex-row items-center bg-[#D7F1FD] rounded-[8px]">
+            <div data-component="info-popup" class="font-[system-ui,_-apple-system,_BlinkMacSystemFont,_'Segoe_UI',_Roboto,_Oxygen,_Ubuntu,_Cantarell,_'Open_Sans',_'Helvetica_Neue',_sans-serif] w-[320px] p-[12px] mb-[5px] hidden flex-row items-center bg-[#D7F1FD] rounded-[8px] outline-1 outline-solid outline-white outline-offset-2">
               <div class="w-[20px] h-[20px] -translate-y-[2px] mr-[8px]">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" height="24" fill="none">
                   <path fill="#59cafc" d="m12 1.5c-5.79844 0-10.5 4.70156-10.5 10.5 0 5.7984 4.70156 10.5 10.5 10.5 5.7984 0 10.5-4.7016 10.5-10.5 0-5.79844-4.7016-10.5-10.5-10.5zm.75 15.5625c0 .1031-.0844.1875-.1875.1875h-1.125c-.1031 0-.1875-.0844-.1875-.1875v-6.375c0-.1031.0844-.1875.1875-.1875h1.125c.1031 0 .1875.0844.1875.1875zm-.75-8.0625c-.2944-.00601-.5747-.12718-.7808-.3375-.206-.21032-.3215-.49305-.3215-.7875s.1155-.57718.3215-.7875c.2061-.21032.4864-.33149.7808-.3375.2944.00601.5747.12718.7808.3375.206.21032.3215.49305.3215.7875s-.1155.57718-.3215.7875c-.2061.21032-.4864.33149-.7808.3375z">
@@ -1661,8 +1661,8 @@
     <!-- Error popups container -->
     <div class="flex flex-row w-full bg-[linear-gradient(to_right,_white_50%,_#111111_50%)]">
       <!-- Left error popup -->
-      <div class="flex w-1/2 justify-center">
-        <div data-component="error-popup" class="font-[system-ui,_-apple-system,_BlinkMacSystemFont,_'Segoe_UI',_Roboto,_Oxygen,_Ubuntu,_Cantarell,_'Open_Sans',_'Helvetica_Neue',_sans-serif] w-[320px] p-[12px] hidden flex-row items-center bg-[#EF665B] rounded-[8px] [box-shadow:0px_0px_5px_-3px_#111]">
+      <div class="flex w-1/2 justify-center my-[5px]">
+        <div data-component="error-popup" class="font-[system-ui,_-apple-system,_BlinkMacSystemFont,_'Segoe_UI',_Roboto,_Oxygen,_Ubuntu,_Cantarell,_'Open_Sans',_'Helvetica_Neue',_sans-serif] w-[320px] p-[12px] hidden flex-row items-center bg-[#EF665B] rounded-[8px] [box-shadow:0px_0px_5px_-3px_#111] outline-1 outline-solid outline-offset-2 outline-black">
           <div class="w-[20px] h-[20px] -translate-y-[2px] mr-[8px]">
               <svg xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" height="24" fill="none"><path fill="#393a37" d="m13 13h-2v-6h2zm0 4h-2v-2h2zm-1-15c-1.3132 0-2.61358.25866-3.82683.7612-1.21326.50255-2.31565 1.23915-3.24424 2.16773-1.87536 1.87537-2.92893 4.41891-2.92893 7.07107 0 2.6522 1.05357 5.1957 2.92893 7.0711.92859.9286 2.03098 1.6651 3.24424 2.1677 1.21325.5025 2.51363.7612 3.82683.7612 2.6522 0 5.1957-1.0536 7.0711-2.9289 1.8753-1.8754 2.9289-4.4189 2.9289-7.0711 0-1.3132-.2587-2.61358-.7612-3.82683-.5026-1.21326-1.2391-2.31565-2.1677-3.24424-.9286-.92858-2.031-1.66518-3.2443-2.16773-1.2132-.50254-2.5136-.7612-3.8268-.7612z"></path></svg>
           </div>
@@ -1670,8 +1670,8 @@
         </div>
       </div>
       <!-- Right error popup -->
-      <div class="flex w-1/2 justify-center">
-        <div data-component="error-popup" class="font-[system-ui,_-apple-system,_BlinkMacSystemFont,_'Segoe_UI',_Roboto,_Oxygen,_Ubuntu,_Cantarell,_'Open_Sans',_'Helvetica_Neue',_sans-serif] w-[320px] p-[12px] hidden flex-row items-center bg-[#EF665B] rounded-[8px] [box-shadow:0px_0px_5px_-3px_#111]">
+      <div class="flex w-1/2 justify-center my-[5px]">
+        <div data-component="error-popup" class="font-[system-ui,_-apple-system,_BlinkMacSystemFont,_'Segoe_UI',_Roboto,_Oxygen,_Ubuntu,_Cantarell,_'Open_Sans',_'Helvetica_Neue',_sans-serif] w-[320px] p-[12px] hidden flex-row items-center bg-[#EF665B] rounded-[8px] [box-shadow:0px_0px_5px_-3px_#111] outline-1 outline-solid outline-offset-2 outline-white">
           <div class="w-[20px] h-[20px] -translate-y-[2px] mr-[8px]">
               <svg xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" height="24" fill="none"><path fill="#393a37" d="m13 13h-2v-6h2zm0 4h-2v-2h2zm-1-15c-1.3132 0-2.61358.25866-3.82683.7612-1.21326.50255-2.31565 1.23915-3.24424 2.16773-1.87536 1.87537-2.92893 4.41891-2.92893 7.07107 0 2.6522 1.05357 5.1957 2.92893 7.0711.92859.9286 2.03098 1.6651 3.24424 2.1677 1.21325.5025 2.51363.7612 3.82683.7612 2.6522 0 5.1957-1.0536 7.0711-2.9289 1.8753-1.8754 2.9289-4.4189 2.9289-7.0711 0-1.3132-.2587-2.61358-.7612-3.82683-.5026-1.21326-1.2391-2.31565-2.1677-3.24424-.9286-.92858-2.031-1.66518-3.2443-2.16773-1.2132-.50254-2.5136-.7612-3.8268-.7612z"></path></svg>
           </div>
@@ -1756,9 +1756,19 @@
                     </div>
                   </div>
                   <!-- Filter summary and tags -->
-                  <div class="flex flex-row mt-2">
+                  <div class="flex flex-row mt-2 w-full mb-[5px] ml-[5px]">
                     <!-- Filter summary -->
-                    <p class="text-[15px] text-black mb-0 px-4 font-normal" id="filterSummaryL">All variants are shown</p>
+                    <div class="flex flex-row items-center gap-2 border-solid border-1 rounded-lg px-4">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                        <g fill="none">
+                          <path d="m12.594 23.258l-.012.002l-.071.035l-.02.004l-.014-.004l-.071-.036q-.016-.004-.024.006l-.004.01l-.017.428l.005.02l.01.013l.104.074l.015.004l.012-.004l.104-.074l.012-.016l.004-.017l-.017-.427q-.004-.016-.016-.018m.264-.113l-.014.002l-.184.093l-.01.01l-.003.011l.018.43l.005.012l.008.008l.201.092q.019.005.029-.008l.004-.014l-.034-.614q-.005-.019-.02-.022m-.715.002a.02.02 0 0 0-.027.006l-.006.014l-.034.614q.001.018.017.024l.015-.002l.201-.093l.01-.008l.003-.011l.018-.43l-.003-.012l-.01-.01z" />
+                          <path fill="black" d="M2.5 5A1.5 1.5 0 0 1 4 3.5h16a1.5 1.5 0 0 1 0 3H4A1.5 1.5 0 0 1 2.5 5M4 10.5a1.5 1.5 0 0 0 0 3h6a1.5 1.5 0 0 0 0-3zM2.5 19A1.5 1.5 0 0 1 4 17.5h1a1.5 1.5 0 0 1 0 3H4A1.5 1.5 0 0 1 2.5 19m10 0a1.5 1.5 0 0 1 1.5-1.5h1a1.5 1.5 0 0 1 0 3h-1a1.5 1.5 0 0 1-1.5-1.5M9 17.5a1.5 1.5 0 0 0 0 3h1a1.5 1.5 0 0 0 0-3zm8.5 1.5a1.5 1.5 0 0 1 1.5-1.5h1a1.5 1.5 0 0 1 0 3h-1a1.5 1.5 0 0 1-1.5-1.5m.446-10.323a1 1 0 0 0-1.892 0l-.13.378a3 3 0 0 1-1.869 1.87l-.378.129a1 1 0 0 0 0 1.892l.378.13a3 3 0 0 1 1.87 1.869l.129.378a1 1 0 0 0 1.892 0l.13-.378a3 3 0 0 1 1.869-1.87l.378-.129a1 1 0 0 0 0-1.892l-.378-.13a3 3 0 0 1-1.87-1.869z" />
+                        </g>
+                      </svg>
+                      <p class="text-[15px] text-black mb-0 font-normal" id="filterSummaryL">
+                        All variants are shown
+                      </p>
+                    </div>
                     <!-- Tags container -->
                     {% if tags[0] %}
                       <div class="flex flex-row w-1/2 justify-center gap-1">
@@ -1771,7 +1781,7 @@
                 </div>
 
                 <!-- File content container -->
-                <div class="absolute mt-[30px] top-[37px] bottom-[0] left-[0] right-[0] overflow-y-scroll overflow-x-auto bg-white" id="content1">
+                <div class="absolute mt-[30px] top-[45px] bottom-[0] left-[0] right-[0] overflow-y-scroll overflow-x-auto bg-white" id="content1">
                   <div class="relative">
                     <!-- Line number column -->
                     <div class="absolute left-0 top-0 bottom-0 w-[40px] bg-[#f6f8fa] border-r border-gray-200"></div>
@@ -1880,9 +1890,19 @@
                     </div>
                   </div>
                   <!-- Filter summary and tags -->
-                  <div class="flex flex-row mt-2">
+                  <div class="flex flex-row mt-2 w-full mb-[5px] ml-[5px]">
                     <!-- Filter summary -->
-                    <p class="text-[15px] mb-0 px-4 font-normal" id="filterSummaryR">All variants are shown</p>
+                    <div class="flex flex-row items-center gap-2 border-solid border-1 rounded-lg px-4">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                        <g fill="none">
+                          <path d="m12.594 23.258l-.012.002l-.071.035l-.02.004l-.014-.004l-.071-.036q-.016-.004-.024.006l-.004.01l-.017.428l.005.02l.01.013l.104.074l.015.004l.012-.004l.104-.074l.012-.016l.004-.017l-.017-.427q-.004-.016-.016-.018m.264-.113l-.014.002l-.184.093l-.01.01l-.003.011l.018.43l.005.012l.008.008l.201.092q.019.005.029-.008l.004-.014l-.034-.614q-.005-.019-.02-.022m-.715.002a.02.02 0 0 0-.027.006l-.006.014l-.034.614q.001.018.017.024l.015-.002l.201-.093l.01-.008l.003-.011l.018-.43l-.003-.012l-.01-.01z" />
+                          <path fill="white" d="M2.5 5A1.5 1.5 0 0 1 4 3.5h16a1.5 1.5 0 0 1 0 3H4A1.5 1.5 0 0 1 2.5 5M4 10.5a1.5 1.5 0 0 0 0 3h6a1.5 1.5 0 0 0 0-3zM2.5 19A1.5 1.5 0 0 1 4 17.5h1a1.5 1.5 0 0 1 0 3H4A1.5 1.5 0 0 1 2.5 19m10 0a1.5 1.5 0 0 1 1.5-1.5h1a1.5 1.5 0 0 1 0 3h-1a1.5 1.5 0 0 1-1.5-1.5M9 17.5a1.5 1.5 0 0 0 0 3h1a1.5 1.5 0 0 0 0-3zm8.5 1.5a1.5 1.5 0 0 1 1.5-1.5h1a1.5 1.5 0 0 1 0 3h-1a1.5 1.5 0 0 1-1.5-1.5m.446-10.323a1 1 0 0 0-1.892 0l-.13.378a3 3 0 0 1-1.869 1.87l-.378.129a1 1 0 0 0 0 1.892l.378.13a3 3 0 0 1 1.87 1.869l.129.378a1 1 0 0 0 1.892 0l.13-.378a3 3 0 0 1 1.869-1.87l.378-.129a1 1 0 0 0 0-1.892l-.378-.13a3 3 0 0 1-1.87-1.869z" />
+                        </g>
+                      </svg>
+                      <p class="text-[15px] text-white mb-0 font-normal" id="filterSummaryR">
+                        All variants are shown
+                      </p>
+                    </div>
                     <!-- Tags container -->
                     {% if tags[1] %}
                       <div class="flex flex-row w-1/2 justify-center gap-1">
@@ -1895,7 +1915,7 @@
                 </div>
 
                 <!-- File Content -->
-                <div class="absolute mt-[30px] top-[37px] bottom-[0] left-[0] right-[0] overflow-y-scroll overflow-x-auto bg-white" id="content2">
+                <div class="absolute mt-[30px] top-[45px] bottom-[0] left-[0] right-[0] overflow-y-scroll overflow-x-auto bg-white" id="content2">
                   <div class="relative">
                     <!-- Line number column -->
                     <div class="absolute left-0 top-0 bottom-0 w-[40px] bg-[#f6f8fa] border-r border-gray-200"></div>
@@ -2213,6 +2233,7 @@
                           const generalStatistics = document.getElementById("general-statistics");
                           const filesView = document.getElementById("fileTab");
                           const statsSection = document.getElementById("stats-section");
+                          const variantStatistics = document.getElementById("variant-statistics");
                           if (moveButtonLeft.state === "moveTop" || moveButtonRight.state === "moveTop") {
                             filesView.insertBefore(generalStatistics, filesView.firstChild);
                             generalStatistics.classList.replace("bg-[#f3f4f6]", "bg-[linear-gradient(to_right,_white_50%,_#111111_50%)]");
@@ -2227,7 +2248,7 @@
                             moveButtonRight.state = "moveBottom";
                             moveButtonRight.title = "Move to bottom";
                           } else {
-                            statsSection.insertBefore(generalStatistics, statsSection.firstElementChild);
+                            statsSection.insertBefore(generalStatistics, variantStatistics);
                             generalStatistics.classList.replace("bg-[linear-gradient(to_right,_white_50%,_#111111_50%)]", "bg-[#f3f4f6]");
                             moveButtonPathLeft.setAttribute('d',"m11.852 2.011l.058-.007L12 2l.075.003l.126.017l.111.03l.111.044l.098.052l.104.074l.082.073l3 3a1 1 0 1 1-1.414 1.414L13 5.415V13a1 1 0 0 1-2 0V5.415L9.707 6.707a1 1 0 0 1-1.32.083l-.094-.083a1 1 0 0 1 0-1.414l3-3q.053-.054.112-.097l.11-.071l.114-.054l.105-.035zM12 16a3 3 0 1 1 0 6a3 3 0 0 1 0-6")
                             moveButtonPathLeft.setAttribute('fill',"black")
@@ -6239,8 +6260,14 @@
         const windowHeight = window.innerHeight;
         // Retrieve document height
         const documentHeight = document.documentElement.scrollHeight;
-        // Calculate progress percentage
-        const progress = (scrollPosition / (documentHeight - windowHeight)) * 100;
+        // Prevent division by zero and overflow
+        let progress = 0;
+        const scrollable = documentHeight - windowHeight;
+        if (scrollable > 0) {
+          progress = (scrollPosition / scrollable) * 100;
+          // Clamp progress between 0 and 100
+          progress = Math.max(0, Math.min(progress, 100));
+        }
         // Update progress bar value
         progressBar.value = progress.toString();
       }
