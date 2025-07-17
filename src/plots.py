@@ -29,7 +29,6 @@ class Plot:
                 xanchor= 'center',
                 yanchor= 'top'
             ),
-            barmode='relative',
             hovermode="x unified",
             legend=dict(
                 traceorder="normal",
@@ -78,9 +77,13 @@ class PlotLibrary:
                     x=nominal, 
                     y=y, 
                     color=color,
-                    title=title)
-            
-        fig.update_xaxes(ticklabelstep=1)
+                    title=title,
+                    barmode="relative")
+        
+        fig.update_traces(offsetgroup=None)
+        
+        # Set x-axis type to category for proper stacking
+        fig.update_layout(xaxis_type='category')
 
         plot = Plot(fig=fig)
 
@@ -94,6 +97,12 @@ class PlotLibrary:
         fig = px.histogram(data_frame=df, 
                            x=x, 
                            title=title)
+        
+        fig.update_layout(yaxis=dict(
+            title=dict(
+                text="Count"
+            )
+        ))
 
         plot = Plot(fig=fig)
 

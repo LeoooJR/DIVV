@@ -361,7 +361,12 @@ class VCF(GenomicFile):
                         "bgzip": ["bgzip", "-c", "-f", str(self.path)]}
         else:
             binary = f"{os.path.dirname(os.path.abspath(__file__))}/htslib/bin/bgzip"
-            os.chmod(binary, os.stat(binary).st_mode | stat.S_IEXEC)
+            if not os.access(binary, os.X_OK):
+                try:
+                    os.chmod(binary, os.stat(binary).st_mode | stat.S_IEXEC)
+                except Exception as e:
+                    logger.warning(f"Binary bgzip is not executable: {e}")
+                    raise RuntimeError(f"Binary bgzip is not executable: {e}")
             CMDS: dict = {"bgzip": [binary, "-c", "-f", str(self.path)]}
 
         outcode: int = 1
@@ -397,7 +402,12 @@ class VCF(GenomicFile):
                         "tabix": ["tabix", "-f", "-p", "vcf", self.archive]}
         else:
             binary = f"{os.path.dirname(os.path.abspath(__file__))}/htslib/bin/tabix"
-            os.chmod(binary, os.stat(binary).st_mode | stat.S_IEXEC)
+            if not os.access(binary, os.X_OK):
+                try:
+                    os.chmod(binary, os.stat(binary).st_mode | stat.S_IEXEC)
+                except Exception as e:
+                    logger.warning(f"Binary tabix is not executable: {e}")
+                    raise RuntimeError(f"Binary tabix is not executable: {e}")
             CMDS: dict = {"tabix": [binary, "-f", "-p", "vcf", self.archive]}
 
         outcode: int = 1
