@@ -1,5 +1,6 @@
 from console import stdout_console
 import contextlib
+import enum
 import errors
 import files
 from itertools import repeat
@@ -12,12 +13,36 @@ from rich.errors import NotRenderableError
 from rich.panel import Panel
 from sys import argv
 
+class RunningMode(enum.Enum):
+
+    production = (1, ('prod'), ['false', '0', 'no', ''])
+    developpment = (0, ('dev'), ['true', '1', 'yes'])
+
+    def __init__(self, num: int, aliases: tuple[str], env_values: list[str]):
+        self.num: int = num
+        self.aliases: tuple[str] = aliases
+        self.env_values: list[str] = env_values
+
+    def is_production(self):
+
+        return os.getenv("DIVV_DEV", '').lower() in self.env_values
+
 
 def supervisor(params: object) -> int:
     """ 
     Main function to compute the delta between two VCF files 
             params: Namespace containing the command line parameters parsed.
     """
+
+    in_production: bool = RunningMode.production.is_production()
+
+    if in_production:
+
+        logger.debug("Running in production mode.")
+
+    else:
+
+        logger.debug("Running in developpment mode.")
 
     assert len(params.vcfs) == 2, "Two VCF files are required."
 
@@ -215,7 +240,7 @@ def supervisor(params: object) -> int:
                 view=comparaisons[(vcfs.repository[0],vcfs.repository[1])],
                 table=comparaisons[(vcfs.repository[0],vcfs.repository[1])]["benchmark"] if params.benchmark else None,
                 archive=params.archive
-            ).create(output=params.output)
+            ).create(output=params.output, bundle=in_production)
 
             stdout_console.print(Panel.fit(f"Report successfully generated at '{dest}'.", title="Success", highlight=True), style="result")
         except errors.ReportError as e:

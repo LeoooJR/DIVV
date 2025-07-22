@@ -4,18 +4,31 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>VCF comparison report</title>
-  <link rel="icon" href="statics/logo.png">  
+  <link rel="icon" href="statics/logo.png">
+{% if scripts is none %}
+  <script src="assets/js/shepherd-11.2.0.js"></script>
   <script src="assets/js/plotly-3.0.0.min.js" charset="utf-8"></script>
-  <link rel="stylesheet" href="assets/css/build.css"/>
   <script src="assets/js/alasql-4.6.5.js"></script>
+{% endif %}
+{% if stylesheets is not none %}
+  {% for stylesheet in stylesheets %}
+  <style>{{ stylesheets[stylesheet]|safe }}</style>
+  {% endfor %}
+{% else %}
+  <link rel="stylesheet" href="assets/css/build.css"/>
   <link
     rel="stylesheet"
     href="assets/css/shepherd-13.0.0.css"
   />
-  <script src="assets/js/shepherd-11.2.0.js"></script>
+{% endif %}
 </head>
 
 <body onload="filter(); highlightCommand(); collectVariants();">
+{% if scripts is not none %}
+  {% for script in scripts %}
+    <script {% if script == "plotly-3.0.0.min.js" %}charset="utf-8"{% endif %}>{{ scripts[script]|safe }}</script>
+  {% endfor %}
+{% endif %}
 
     <!-- Header -->
     <div class="flex w-full">
@@ -1796,7 +1809,7 @@
                     <div class="pl-[40px]">
                       <div id="file-header-left" class="w-fit h-[32px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] bg-[rgba(255,_255,_255,_0.2)]">
                         <div class="text-[#888] mr-[10px] select-none min-w-[30px] text-right">0</div>
-                        <span data-component="column-header" class="text-black bg-[rgba(255,_255,_255,_0.2)] table-cell px-[8px] py-[2px] whitespace-nowrap">
+                        <span data-component="column-header" class="text-black font-medium bg-[rgba(255,_255,_255,_0.2)] table-cell px-[8px] py-[2px] whitespace-nowrap">
                           {{ view['headers'][vcfs.repository[0]] }}
                         </span>
                       </div>
@@ -1805,7 +1818,7 @@
                         {% if series['Variant.L']|is_nan or series['Variant.R']|is_nan -%}
                           <!-- Mismatch -->
                           <div data-component="file-content-left" status="mismatch" row="{{ loop.index0 }}" class="w-fit h-[32px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] bg-[rgba(255,_0,_0,_0.2)] hover:bg-[rgba(255,_0,_0,_0.3)] transition-colors" chrom="{{ series['Chromosome']|upper() }}" type="{{ series['Type']|upper() }}" filter="{{ series['Filter.L']|upper() }}" pos="{{ series['Position'] }}" {% for tag in ((series['Variant.L']|string)|format_to_html).items() -%} {{ tag[0] }}="{{ tag[1] }}" {% endfor -%}>
-                            <div class="text-[#888] mr-[10px] select-none min-w-[30px] text-right">{{ loop.index }}</div>
+                            <div class="flex flex-row text-[#888] mr-[10px] select-none min-w-[30px] gap-2 justify-end" onmouseover="displayFav(this)" onmouseleave="hideFav(this)"><button data-component="bookmark-button" class="hidden" onclick="addBookmark(this)"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="black" class="" viewBox="0 0 16 16"><path d="M2.866 14.85c-.078.444.36.791.746.593l4.39-2.256 4.389 2.256c.386.198.824-.149.746-.592l-.83-4.73 3.522-3.356c.33-.314.16-.888-.282-.95l-4.898-.696L8.465.792a.513.513 0 0 0-.927 0L5.354 5.12l-4.898.696c-.441.062-.612.636-.283.95l3.523 3.356-.83 4.73zm4.905-2.767-3.686 1.894.694-3.957a.56.56 0 0 0-.163-.505L1.71 6.745l4.052-.576a.53.53 0 0 0 .393-.288L8 2.223l1.847 3.658a.53.53 0 0 0 .393.288l4.052.575-2.906 2.77a.56.56 0 0 0-.163.506l.694 3.957-3.686-1.894a.5.5 0 0 0-.461 0z"/></svg></button><span class="text-center">{{ loop.index }}</span></div>
                             {% if not series['Variant.L']|is_nan %}
                               <span data-component="column-diff" class="text-black bg-[rgba(255,_0,_0,_0.2)] table-cell px-[8px] py-[2px] whitespace-nowrap">
                                 {{ series['Variant.L'] -}}
@@ -1815,7 +1828,7 @@
                         {% else -%}
                           <!-- Match -->
                           <div data-component="file-content-left" status="match" row="{{ loop.index0 }}" class="w-fit h-[32px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] bg-[rgba(0,_255,_0,_0.2)] hover:bg-[rgba(0,_255,_0,_0.3)] transition-colors" chrom="{{ series['Chromosome']|upper() }}" type="{{ series['Type']|upper() }}" filter="{{ series['Filter.L']|upper() }}" pos="{{ series['Position'] }}" {% for tag in ((series['Variant.L']|string)|format_to_html).items() -%} {{ tag[0] }}="{{ tag[1] }}" {% endfor -%}>
-                            <div class="text-[#888] mr-[10px] select-none min-w-[30px] text-right">{{ loop.index }}</div>
+                            <div class="flex flex-row text-[#888] mr-[10px] select-none min-w-[30px] gap-2 justify-end" onmouseover="displayFav(this)" onmouseleave="hideFav(this)"><button data-component="bookmark-button" class="hidden" onclick="addBookmark(this)"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="black" class="" viewBox="0 0 16 16"><path d="M2.866 14.85c-.078.444.36.791.746.593l4.39-2.256 4.389 2.256c.386.198.824-.149.746-.592l-.83-4.73 3.522-3.356c.33-.314.16-.888-.282-.95l-4.898-.696L8.465.792a.513.513 0 0 0-.927 0L5.354 5.12l-4.898.696c-.441.062-.612.636-.283.95l3.523 3.356-.83 4.73zm4.905-2.767-3.686 1.894.694-3.957a.56.56 0 0 0-.163-.505L1.71 6.745l4.052-.576a.53.53 0 0 0 .393-.288L8 2.223l1.847 3.658a.53.53 0 0 0 .393.288l4.052.575-2.906 2.77a.56.56 0 0 0-.163.506l.694 3.957-3.686-1.894a.5.5 0 0 0-.461 0z"/></svg></button><span class="text-center">{{ loop.index }}</span></div>
                             <span data-component="column-match" class="text-black bg-[rgba(0,_255,_0,_0.2)] table-cell px-[8px] py-[2px] whitespace-nowrap">
                               {{ series['Variant.L'] -}}
                             </span>
@@ -1930,7 +1943,7 @@
                     <div class="pl-[40px]">
                       <div id="file-header-right" class="w-fit h-[32px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] bg-[rgba(255,_255,_255,_0.2)]">
                         <div class="text-[#888] mr-[10px] select-none min-w-[30px] text-right">0</div>
-                        <span data-component="column-header" class="text-black bg-[rgba(255,_255,_255,_0.2)] table-cell px-[8px] py-[2px] whitespace-nowrap">
+                        <span data-component="column-header" class="text-black font-medium bg-[rgba(255,_255,_255,_0.2)] table-cell px-[8px] py-[2px] whitespace-nowrap">
                           {{ view['headers'][vcfs.repository[1]] }}
                         </span>
                       </div>
@@ -1939,7 +1952,7 @@
                         {% if series['Variant.L']|is_nan or series['Variant.R']|is_nan -%}
                           <!-- Mismatch -->
                           <div data-component="file-content-right" row="{{ loop.index0 }}" status="mismatch" class="w-fit h-[32px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] bg-[rgba(255,_0,_0,_0.2)] hover:bg-[rgba(255,_0,_0,_0.3)]" chrom="{{ series['Chromosome']|upper() }}" type="{{ series['Type']|upper() }}" filter="{{ series['Filter.R']|upper() }}" pos={{ series['Position'] }} {% for tag in ((series['Variant.R']|string)|format_to_html).items() -%} {{ tag[0] }}="{{ tag[1] }}" {% endfor -%}>
-                            <div class="text-[#888] mr-[10px] select-none min-w-[30px] text-right">{{ loop.index }}</div>
+                            <div class="flex flex-row text-[#888] mr-[10px] select-none min-w-[30px] gap-2 justify-end" onmouseover="displayFav(this)" onmouseleave="hideFav(this)"><button data-component="bookmark-button" class="hidden" onclick="addBookmark(this)"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="black" class="" viewBox="0 0 16 16"><path d="M2.866 14.85c-.078.444.36.791.746.593l4.39-2.256 4.389 2.256c.386.198.824-.149.746-.592l-.83-4.73 3.522-3.356c.33-.314.16-.888-.282-.95l-4.898-.696L8.465.792a.513.513 0 0 0-.927 0L5.354 5.12l-4.898.696c-.441.062-.612.636-.283.95l3.523 3.356-.83 4.73zm4.905-2.767-3.686 1.894.694-3.957a.56.56 0 0 0-.163-.505L1.71 6.745l4.052-.576a.53.53 0 0 0 .393-.288L8 2.223l1.847 3.658a.53.53 0 0 0 .393.288l4.052.575-2.906 2.77a.56.56 0 0 0-.163.506l.694 3.957-3.686-1.894a.5.5 0 0 0-.461 0z"/></svg></button><span class="text-center">{{ loop.index }}</span></div>
                             {% if not series['Variant.R']|is_nan %}
                               <span data-component="column-diff" class="text-black bg-[rgba(255,_0,_0,_0.2)] table-cell px-[8px] py-[2px] whitespace-nowrap">
                                 {{ series['Variant.R'] -}}
@@ -1949,7 +1962,7 @@
                         {% else -%}
                           <!-- Match -->
                           <div data-component="file-content-right" status="match" row="{{ loop.index0 }}" class="w-fit h-[32px] box-border flex items-center px-[8px] py-[2px] whitespace-pre font-[monospace] bg-[rgba(0,_255,_0,_0.2)] hover:bg-[rgba(0,_255,_0,_0.3)]" chrom="{{ series['Chromosome']|upper() }}" type="{{ series['Type']|upper() }}" filter="{{ series['Filter.R']|upper() }}" pos={{ series['Position'] }} {% for tag in ((series['Variant.R']|string)|format_to_html).items() -%} {{ tag[0] }}="{{ tag[1] }}" {% endfor -%}>
-                            <div class="text-[#888] mr-[10px] select-none min-w-[30px] text-right">{{ loop.index }}</div>
+                            <div class="flex flex-row text-[#888] mr-[10px] select-none min-w-[30px] gap-2 justify-end" onmouseover="displayFav(this)" onmouseleave="hideFav(this)"><button data-component="bookmark-button" class="hidden" onclick="addBookmark(this)"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="black" class="" viewBox="0 0 16 16"><path d="M2.866 14.85c-.078.444.36.791.746.593l4.39-2.256 4.389 2.256c.386.198.824-.149.746-.592l-.83-4.73 3.522-3.356c.33-.314.16-.888-.282-.95l-4.898-.696L8.465.792a.513.513 0 0 0-.927 0L5.354 5.12l-4.898.696c-.441.062-.612.636-.283.95l3.523 3.356-.83 4.73zm4.905-2.767-3.686 1.894.694-3.957a.56.56 0 0 0-.163-.505L1.71 6.745l4.052-.576a.53.53 0 0 0 .393-.288L8 2.223l1.847 3.658a.53.53 0 0 0 .393.288l4.052.575-2.906 2.77a.56.56 0 0 0-.163.506l.694 3.957-3.686-1.894a.5.5 0 0 0-.461 0z"/></svg></button><span class="text-center">{{ loop.index }}</span></div>
                             <span data-component="column-match" class="text-black bg-[rgba(0,_255,_0,_0.2)] table-cell px-[8px] py-[2px] whitespace-nowrap">
                               {{ series['Variant.R'] -}}
                             </span>
@@ -1968,6 +1981,18 @@
                 </div>
               </div>
             </div>
+
+            <script type="text/javascript">
+              function displayFav(element) {
+                console.log(element);
+                element.querySelector('[data-component="bookmark-button"]').classList.remove('hidden');
+              }
+              function hideFav(element) {
+                element.querySelector('[data-component="bookmark-button"]').classList.add('hidden');
+              }
+              function addBookmark(element) {
+              }
+            </script>
 
             <script type="text/javascript">
               addEventListener("fullscreenchange", function() {
@@ -2782,8 +2807,8 @@
                   let rowsLeft = document.querySelectorAll('[data-component="file-content-left"]');
                   let rowsRight = document.querySelectorAll('[data-component="file-content-right"]');
 
-                  let totalLineLeft = document.querySelectorAll('[data-component="file-content-left"] span').length;
-                  let totalLineRight = document.querySelectorAll('[data-component="file-content-right"] span').length;
+                  let totalLineLeft = document.querySelectorAll('[data-component="file-content-left"] [data-component="column-match"], [data-component="file-content-left"] [data-component="column-diff"]').length;
+                  let totalLineRight = document.querySelectorAll('[data-component="file-content-right"] [data-component="column-match"], [data-component="file-content-right"] [data-component="column-diff"]').length;
                     
                   let chromosomeUserInput = document.getElementById("query-chromosome");
                   
@@ -2904,8 +2929,11 @@
                       countMismatchLine = isRowVisible && rowLeft.getAttribute("status").toUpperCase() === "MISMATCH" ? ++countMismatchLine : countMismatchLine;
 
                       if (isRowVisible){
+                        rowLeft.classList.replace("hidden", "flex");
+                        rowRight.classList.replace("hidden", "flex");
                         let variantType;
-                        if (rowLeft.querySelector("span")){
+                        if (rowLeft.querySelector("[data-component='column-match'], [data-component='column-diff']")){
+                          ++countVisibleLeft
                           variantType = rowLeft.getAttribute("type").toUpperCase();
                           if (variantType === "SNP") {
                             ++countSNP[0];
@@ -2927,7 +2955,8 @@
                           }
                         }
 
-                        if (rowRight.querySelector("span")){
+                        if (rowRight.querySelector("[data-component='column-match'], [data-component='column-diff']")){
+                          ++countVisibleRight;
                           variantType = rowRight.getAttribute("type").toUpperCase();
                           if (variantType === "SNP") {
                             ++countSNP[1];
@@ -2949,22 +2978,13 @@
                           }
                         }
                       }
-
-                      // console.log(`Row ${index}:`, {
-                      //     isChromosome, isVariantType, isLineClass, isVariantFilterLeft, isVariantFilterRight, isRowVisible
-                      // });
-
-                      countVisibleLeft = isRowVisible && rowLeft.querySelector("span") ? ++countVisibleLeft : countVisibleLeft;
-                      countVisibleRight = isRowVisible && rowRight.querySelector("span") ? ++countVisibleRight : countVisibleRight;
-
-                      if (isRowVisible) {
-                        rowLeft.classList.replace("hidden", "flex");
-                        rowRight.classList.replace("hidden", "flex");
-                      }
                       else {
                         rowLeft.classList.replace("flex", "hidden");
                         rowRight.classList.replace("flex", "hidden");
                       }
+                      // console.log(`Row ${index}:`, {
+                      //     isChromosome, isVariantType, isLineClass, isVariantFilterLeft, isVariantFilterRight, isRowVisible
+                      // });
                   });
                     
                   document.getElementById("filterSummaryL").innerText = `${countVisibleLeft} variants found out of ${totalLineLeft}`;
@@ -3082,8 +3102,8 @@
                     const queries = buildQueries(tokens)
                     console.log(queries);
                     const statsByVariantType = document.querySelectorAll('[data-component="variant-card-datas"]');
-                    const totalLineLeft = leftContent.querySelectorAll('span:not([data-component="column-header"])').length;
-                    const totalLineRight = rightContent.querySelectorAll('span:not([data-component="column-header"])').length;
+                    const totalLineLeft = document.querySelectorAll('[data-component="file-content-left"] [data-component="column-match"], [data-component="file-content-left"] [data-component="column-diff"]').length;
+                    const totalLineRight = document.querySelectorAll('[data-component="file-content-right"] [data-component="column-match"], [data-component="file-content-right"] [data-component="column-diff"]').length;
 
                     let countVisibleLeft = 0;
                     let countVisibleRight = 0;
@@ -3116,7 +3136,7 @@
                           ++countMismatchLine;
                         }
 
-                        if (divLeft.querySelector('span')) {
+                        if (divLeft.querySelector('[data-component="column-match"], [data-component="column-diff"]')) {
                           ++countVisibleLeft;
                           if (variantType === "SNP") {
                             ++countSNP[0];
@@ -3141,7 +3161,7 @@
                         const divRight = variantsDivsRight[element];
                         variantType = divRight.getAttribute('type').toUpperCase();
 
-                        if (divRight.querySelector('span')) {
+                        if (divRight.querySelector('[data-component="column-match"], [data-component="column-diff"]')) {
                           ++countVisibleRight;
                           if (variantType === "SNP") {
                             ++countSNP[1];
@@ -5758,7 +5778,7 @@
     </div>
 
     <!-- Guided tour button -->
-    <button id="tour-button" class="fixed bottom-[75px] right-[20px] z-999 cursor-pointer" onclick="startTour()">
+    <button id="tour-button" title="Get help" class="fixed bottom-[75px] right-[20px] z-999 cursor-pointer" onclick="startTour()">
       <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
         <!-- Background circle -->
         <circle cx="12" cy="12" r="11" fill="#4F46E5" stroke="#3730A3" stroke-width="2"/>

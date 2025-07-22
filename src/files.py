@@ -1289,7 +1289,7 @@ class Report:
         table: The benchmark table (truth metrics) object as a DataFrame
     """
     # Make use of __slots__ to avoid the creation of __dict__ and __weakref__ for each instance, reducing the memory footprint
-    __slots__ = ('vcfs', 'tags', 'cmd', 'view', 'table', 'archive', 'date')
+    __slots__ = ('vcfs', 'tags', 'cmd', 'view', 'table', 'archive', 'date', 'deps')
 
     def __init__(self, vcfs: VCFRepository, tags: list[str], cmd: str, view: dict, table: DataFrame = None, archive: bool = False):
 
@@ -1314,12 +1314,16 @@ class Report:
         # How to save the outputs
         self.archive = archive
 
-    def create(self, output: pathlib.Path = pathlib.Path.cwd()) -> pathlib.Path:
+        # Index all the dependencies
+        self.deps = {"scripts": ["alasql-4.6.5.js", "plotly-3.0.0.min.js", "shepherd-11.2.0.js"], "stylesheets": ["build.css", "shepherd-13.0.0.css"]}
+
+    def create(self, output: pathlib.Path = pathlib.Path.cwd(), bundle: bool = True) -> pathlib.Path:
         """
         Create the report
 
         Args:
             output: The output directory
+            bundle: Inline everything in the HTML
         """
         # Report creation time
         self.date = datetime.datetime.now().strftime("%Y-%m-%d, %X")
@@ -1366,8 +1370,9 @@ class Report:
         # Path to look for the assets
         assets = os.path.join(ressources, "assets")
 
-        # Path to look for the CSS stylesheets
-        stylesheets = os.path.join(ressources, "*.css")
+        stylesheets: dict[str:str] = {} if bundle else None
+
+        scripts: dict[str:str] = {} if bundle else None
 
         # Path to look for the statics
         statics = os.path.join(ressources, 'statics', "*.png")
@@ -1385,8 +1390,26 @@ class Report:
         # Load the template
         template = env.get_template("template.html")
 
+        if bundle:
+
+            for dep in self.deps:
+
+                for source in self.deps[dep]:
+
+                    if dep == "stylesheets":
+                        
+                        with open(os.path.join(assets, "css", source), mode='r') as dist:
+
+                            stylesheets[source] = dist.read()
+
+                    else:
+                        
+                        with open(os.path.join(assets, "js", source), mode='r') as dist:
+
+                            scripts[source] = dist.read()
+
         # Render the template
-        html = template.render(vcfs=self.vcfs, tags=self.tags, cmd=self.cmd, view=self.view, table=self.table, date=self.date, version=__version__)
+        html = template.render(vcfs=self.vcfs, tags=self.tags, cmd=self.cmd, view=self.view, table=self.table, date=self.date, stylesheets=stylesheets, scripts=scripts, version=__version__)
 
         if self.archive:
             # If the output has no suffix, add a .zip suffix
@@ -1395,22 +1418,20 @@ class Report:
 
             # Open data stream with context manager to create a ZIP file
             with zipfile.ZipFile(output, mode='w') as zip:
-                zip.writestr("delta.html", html)
-                # Copy the stylesheets to the ZIP file
-                for stylesheet in glob(stylesheets):
-                    zip.write(stylesheet, arcname=os.path.relpath(path=stylesheet, start=ressources))
-                # Copy the statics to the ZIP file
-                for static in glob(statics):
-                    zip.write(static, arcname=os.path.relpath(path=static, start=ressources))
-                # Copy the assets to the ZIP file
-                for root, dirs, files in os.walk(assets):
-                    for file in files:
-                        file_path = os.path.join(root, file)
-                        zip.write(file_path, arcname=os.path.relpath(path=file_path, start=ressources))
+                zip.writestr("report.html", html)
+                if not bundle:
+                    # Copy the statics to the ZIP file
+                    for static in glob(statics):
+                        zip.write(static, arcname=os.path.relpath(path=static, start=ressources))
+                    # Copy the assets to the ZIP file
+                    for root, dirs, files in os.walk(assets):
+                        for file in files:
+                            file_path = os.path.join(root, file)
+                            zip.write(file_path, arcname=os.path.relpath(path=file_path, start=ressources))
                     
         else:
 
-            output = output.joinpath("delta")
+            output = output.joinpath("divv")
 
             # Create the output directory
             try:
@@ -1424,20 +1445,19 @@ class Report:
                     raise errors.ReportError(f"An unexpected error has occurred when creating the output directory: {e}")
 
             # Write the HTML report to the output directory
-            with open(output.joinpath("delta.html"),'w') as f:
+            with open(output.joinpath("report.html"),'w') as f:
                 f.writelines(html)
 
-            # Copy the assets and statics files next to the report
-            for f in glob(stylesheets):
-                copy(f, output)
-            # Copy the assets to the output directory
-            copytree(assets, os.path.join(output, "assets"), dirs_exist_ok=True)
-            # Copy the statics to the output directory
-            copytree(os.path.dirname(statics), os.path.join(output,'statics'), dirs_exist_ok=True)
+            if not bundle:
+                # Copy the assets and statics files next to the report
+                # Copy the assets to the output directory
+                copytree(assets, os.path.join(output, "assets"), dirs_exist_ok=True)
+                # Copy the statics to the output directory
+                copytree(os.path.dirname(statics), os.path.join(output,'statics'), dirs_exist_ok=True)
 
             # Try to open the report in the default web browser
-            if os.path.exists(output.joinpath("delta.html")):
-                webbrowser.open(str(output.joinpath("delta.html")))
+            if os.path.exists(output.joinpath("report.html")):
+                webbrowser.open(str(output.joinpath("report.html")))
             else:
                 raise errors.ReportError("Report not found on filesystem.")
             
