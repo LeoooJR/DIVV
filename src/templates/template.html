@@ -1034,49 +1034,66 @@
     
     <!-- Plots navigation logic -->
     <script type="text/javascript">
+      function collectPlots() {
+        const repository = {
+          left: {
+            // Left side plot elements
+            plots: document.querySelectorAll('[data-component="plot-left"]'),
+            navigation: {  // Left side plot navigation elements
+              prevArrow: document.getElementById('leftPrevArrow'),
+              nextArrow: document.getElementById('leftNextArrow'),
+              indicator: document.getElementById('leftPlotIndicator')
+            },
+            // Current left plot index
+            currentPlot: 0
+          },
+          right: {
+            // Right side plot elements
+            plots: document.querySelectorAll('[data-component="plot-right"]'),
+            navigation: {  // Right side plot navigation elements
+              prevArrow: document.getElementById('rightPrevArrow'),
+              nextArrow: document.getElementById('rightNextArrow'),
+              indicator: document.getElementById('rightPlotIndicator')
+            },
+            // Current right plot index
+            currentPlot: 0
+          }
+        };
+        return repository;
+      }
+
       document.addEventListener('DOMContentLoaded', function() {
-          // Left side plot navigation
-          const leftPlots = document.querySelectorAll('[data-component="plot-left"]');
-          const leftPrevArrow = document.getElementById('leftPrevArrow');
-          const leftNextArrow = document.getElementById('leftNextArrow');
-          const leftPlotIndicator = document.getElementById('leftPlotIndicator');
-          let leftCurrentPlot = 0;
-          
-          // Right side plot navigation
-          const rightPlots = document.querySelectorAll('[data-component="plot-right"]');
-          const rightPrevArrow = document.getElementById('rightPrevArrow');
-          const rightNextArrow = document.getElementById('rightNextArrow');
-          const rightPlotIndicator = document.getElementById('rightPlotIndicator');
-          let rightCurrentPlot = 0;
+          // Ensure collectPlots runs before any code that uses window namespace objects
+          const plotRepository = collectPlots();
           
           // Hide arrows if only one plot
-          if (leftPlots.length <= 1) {
-              leftPrevArrow.classList.replace('flex', 'hidden')
-              leftNextArrow.classList.replace('flex', 'hidden')
+          if (plotRepository.left.plots.length <= 1) {
+              plotRepository.left.navigation.prevArrow.classList.replace('flex', 'hidden')
+              plotRepository.left.navigation.nextArrow.classList.replace('flex', 'hidden')
           }
           
-          if (rightPlots.length <= 1) {
-              rightPrevArrow.classList.replace('flex', 'hidden')
-              rightNextArrow.classList.replace('flex', 'hidden')
+          if (plotRepository.right.plots.length <= 1) {
+              plotRepository.right.navigation.prevArrow.classList.replace('flex', 'hidden')
+              plotRepository.right.navigation.nextArrow.classList.replace('flex', 'hidden')
           }
           
           // Create dot indicators for left plots
-          for (let i = 0; i < leftPlots.length; i++) {
+          for (let i = 0; i < plotRepository.left.plots.length; i++) {
               const dot = document.createElement('div');
               dot.className = i === 0 ? 'w-[10px] h-[10px] rounded-[50%] bg-[#555]' : 'w-[10px] h-[10px] rounded-[50%] bg-[#ccc]';
-              leftPlotIndicator.appendChild(dot);
+              plotRepository.left.navigation.indicator.appendChild(dot);
           }
           
           // Create dot indicators for right plots
-          for (let i = 0; i < rightPlots.length; i++) {
+          for (let i = 0; i < plotRepository.right.plots.length; i++) {
               const dot = document.createElement('div');
               dot.className = i === 0 ? 'w-[10px] h-[10px] rounded-[50%] bg-[#555]' : 'w-[10px] h-[10px] rounded-[50%] bg-[#ccc]';
-              rightPlotIndicator.appendChild(dot);
+              plotRepository.right.navigation.indicator.appendChild(dot);
           }
           
           // Ensure inactive plots are fully hidden
-          leftPlots.forEach((plot, index) => {
-              if (index !== leftCurrentPlot) {
+          plotRepository.left.plots.forEach((plot, index) => {
+              if (index !== plotRepository.left.currentPlot) {
                   plot.classList.remove('hidden', 'block', 'flex', 'grid', 'inline', 'inline-block');
                   plot.classList.add('hidden');
                   plot.classList.replace("visible", "invisible");
@@ -1089,8 +1106,8 @@
               }
           });
           
-          rightPlots.forEach((plot, index) => {
-              if (index !== rightCurrentPlot) {
+          plotRepository.right.plots.forEach((plot, index) => {
+              if (index !== plotRepository.right.currentPlot) {
                   plot.classList.remove('hidden', 'block', 'flex', 'grid', 'inline', 'inline-block');
                   plot.classList.add('hidden');
                   plot.classList.replace("visible", "invisible");
@@ -1104,112 +1121,112 @@
           });
           
           // Left plot navigation
-          leftPrevArrow.addEventListener('click', () => {
-              leftPlots[leftCurrentPlot].classList.replace('block', 'hidden');
-              leftPlots[leftCurrentPlot].classList.replace("visible", "invisible");
-              leftPlots[leftCurrentPlot].classList.replace("opacity-100", "opacity-0");
-              leftPlots[leftCurrentPlot].classList.remove('col-auto', 'row-auto');
-              leftPlots[leftCurrentPlot].classList.remove('relative');
+          plotRepository.left.navigation.prevArrow.addEventListener('click', () => {
+              plotRepository.left.plots[plotRepository.left.currentPlot].classList.replace('block', 'hidden');
+              plotRepository.left.plots[plotRepository.left.currentPlot].classList.replace("visible", "invisible");
+              plotRepository.left.plots[plotRepository.left.currentPlot].classList.replace("opacity-100", "opacity-0");
+              plotRepository.left.plots[plotRepository.left.currentPlot].classList.remove('col-auto', 'row-auto');
+              plotRepository.left.plots[plotRepository.left.currentPlot].classList.remove('relative');
               
-              leftPlotIndicator.children[leftCurrentPlot].classList.replace("bg-[#555]", "bg-[#ccc]");
-              leftCurrentPlot = (leftCurrentPlot - 1 + leftPlots.length) % leftPlots.length;
+              plotRepository.left.navigation.indicator.children[plotRepository.left.currentPlot].classList.replace("bg-[#555]", "bg-[#ccc]");
+              plotRepository.left.currentPlot = (plotRepository.left.currentPlot - 1 + plotRepository.left.plots.length) % plotRepository.left.plots.length;
               
-              leftPlots[leftCurrentPlot].classList.replace('hidden', 'block');
-              leftPlots[leftCurrentPlot].classList.replace("invisible", "visible");
-              leftPlots[leftCurrentPlot].classList.replace("opacity-0", "opacity-100");
-              leftPlots[leftCurrentPlot].classList.add('col-auto', 'row-auto');
-              leftPlots[leftCurrentPlot].classList.add('relative');
+              plotRepository.left.plots[plotRepository.left.currentPlot].classList.replace('hidden', 'block');
+              plotRepository.left.plots[plotRepository.left.currentPlot].classList.replace("invisible", "visible");
+              plotRepository.left.plots[plotRepository.left.currentPlot].classList.replace("opacity-0", "opacity-100");
+              plotRepository.left.plots[plotRepository.left.currentPlot].classList.add('col-auto', 'row-auto');
+              plotRepository.left.plots[plotRepository.left.currentPlot].classList.add('relative');
               // Relayout plot to fit container in case of manual resize or window resize
-              Plotly.relayout(leftPlots[leftCurrentPlot].querySelector('.plotly-graph-div'), {
-                width: leftPlots[leftCurrentPlot].parentElement.offsetWidth,
-                height: leftPlots[leftCurrentPlot].parentElement.offsetHeight - (document.getElementById('resize-button-left').offsetHeight + document.getElementById('plot-navigation-left').offsetHeight) - 30
+              Plotly.relayout(plotRepository.left.plots[plotRepository.left.currentPlot].querySelector('.plotly-graph-div'), {
+                width: plotRepository.left.plots[plotRepository.left.currentPlot].parentElement.offsetWidth,
+                height: plotRepository.left.plots[plotRepository.left.currentPlot].parentElement.offsetHeight - (document.getElementById('resize-button-left').offsetHeight + document.getElementById('plot-navigation-left').offsetHeight) - 30
               });
               
-              leftPlotIndicator.children[leftCurrentPlot].classList.replace("bg-[#ccc]", "bg-[#555]");
+              plotRepository.left.navigation.indicator.children[plotRepository.left.currentPlot].classList.replace("bg-[#ccc]", "bg-[#555]");
           });
           
-          leftNextArrow.addEventListener('click', () => {
-              leftPlots[leftCurrentPlot].classList.replace('block', 'hidden');
-              leftPlots[leftCurrentPlot].classList.replace("visible", "invisible");
-              leftPlots[leftCurrentPlot].classList.replace("opacity-100", "opacity-0");
-              leftPlots[leftCurrentPlot].classList.remove('col-auto', 'row-auto');
-              leftPlots[leftCurrentPlot].classList.remove('relative');
+          plotRepository.left.navigation.nextArrow.addEventListener('click', () => {
+              plotRepository.left.plots[plotRepository.left.currentPlot].classList.replace('block', 'hidden');
+              plotRepository.left.plots[plotRepository.left.currentPlot].classList.replace("visible", "invisible");
+              plotRepository.left.plots[plotRepository.left.currentPlot].classList.replace("opacity-100", "opacity-0");
+              plotRepository.left.plots[plotRepository.left.currentPlot].classList.remove('col-auto', 'row-auto');
+              plotRepository.left.plots[plotRepository.left.currentPlot].classList.remove('relative');
               
-              leftPlotIndicator.children[leftCurrentPlot].classList.replace("bg-[#555]", "bg-[#ccc]");
-              leftCurrentPlot = (leftCurrentPlot + 1) % leftPlots.length;
+              plotRepository.left.navigation.indicator.children[plotRepository.left.currentPlot].classList.replace("bg-[#555]", "bg-[#ccc]");
+              plotRepository.left.currentPlot = (plotRepository.left.currentPlot + 1) % plotRepository.left.plots.length;
               
-              leftPlots[leftCurrentPlot].classList.replace('hidden', 'block');
-              leftPlots[leftCurrentPlot].classList.replace("invisible", "visible");
-              leftPlots[leftCurrentPlot].classList.replace("opacity-0", "opacity-100");
-              leftPlots[leftCurrentPlot].classList.add('col-auto', 'row-auto');
-              leftPlots[leftCurrentPlot].classList.add('relative');
+              plotRepository.left.plots[plotRepository.left.currentPlot].classList.replace('hidden', 'block');
+              plotRepository.left.plots[plotRepository.left.currentPlot].classList.replace("invisible", "visible");
+              plotRepository.left.plots[plotRepository.left.currentPlot].classList.replace("opacity-0", "opacity-100");
+              plotRepository.left.plots[plotRepository.left.currentPlot].classList.add('col-auto', 'row-auto');
+              plotRepository.left.plots[plotRepository.left.currentPlot].classList.add('relative');
               // Relayout plot to fit container in case of manual resize or window resize
-              Plotly.relayout(leftPlots[leftCurrentPlot].querySelector('.plotly-graph-div'), {
-                width: leftPlots[leftCurrentPlot].parentElement.offsetWidth,
-                height: leftPlots[leftCurrentPlot].parentElement.offsetHeight - (document.getElementById('resize-button-left').offsetHeight + document.getElementById('plot-navigation-left').offsetHeight) - 30
+              Plotly.relayout(plotRepository.left.plots[plotRepository.left.currentPlot].querySelector('.plotly-graph-div'), {
+                width: plotRepository.left.plots[plotRepository.left.currentPlot].parentElement.offsetWidth,
+                height: plotRepository.left.plots[plotRepository.left.currentPlot].parentElement.offsetHeight - (document.getElementById('resize-button-left').offsetHeight + document.getElementById('plot-navigation-left').offsetHeight) - 30
               });
               
-              leftPlotIndicator.children[leftCurrentPlot].classList.replace("bg-[#ccc]", "bg-[#555]");
+              plotRepository.left.navigation.indicator.children[plotRepository.left.currentPlot].classList.replace("bg-[#ccc]", "bg-[#555]");
           });
           
           // Right plot navigation
-          rightPrevArrow.addEventListener('click', () => {
-              rightPlots[rightCurrentPlot].classList.replace('block', 'hidden');
-              rightPlots[rightCurrentPlot].classList.replace("visible", "invisible");
-              rightPlots[rightCurrentPlot].classList.replace("opacity-100", "opacity-0");
-              rightPlots[rightCurrentPlot].classList.remove('col-auto', 'row-auto');
-              rightPlots[rightCurrentPlot].classList.remove('relative');
+          plotRepository.right.navigation.prevArrow.addEventListener('click', () => {
+              plotRepository.right.plots[plotRepository.right.currentPlot].classList.replace('block', 'hidden');
+              plotRepository.right.plots[plotRepository.right.currentPlot].classList.replace("visible", "invisible");
+              plotRepository.right.plots[plotRepository.right.currentPlot].classList.replace("opacity-100", "opacity-0");
+              plotRepository.right.plots[plotRepository.right.currentPlot].classList.remove('col-auto', 'row-auto');
+              plotRepository.right.plots[plotRepository.right.currentPlot].classList.remove('relative');
               
-              rightPlotIndicator.children[rightCurrentPlot].classList.replace("bg-[#555]", "bg-[#ccc]");
-              rightCurrentPlot = (rightCurrentPlot - 1 + rightPlots.length) % rightPlots.length;
+              plotRepository.right.navigation.indicator.children[plotRepository.right.currentPlot].classList.replace("bg-[#555]", "bg-[#ccc]");
+              plotRepository.right.currentPlot = (plotRepository.right.currentPlot - 1 + plotRepository.right.plots.length) % plotRepository.right.plots.length;
               
-              rightPlots[rightCurrentPlot].classList.replace('hidden', 'block');
-              rightPlots[rightCurrentPlot].classList.replace("invisible", "visible");
-              rightPlots[rightCurrentPlot].classList.replace("opacity-0", "opacity-100");
-              rightPlots[rightCurrentPlot].classList.add('col-auto', 'row-auto');
-              rightPlots[rightCurrentPlot].classList.add('relative');
+              plotRepository.right.plots[plotRepository.right.currentPlot].classList.replace('hidden', 'block');
+              plotRepository.right.plots[plotRepository.right.currentPlot].classList.replace("invisible", "visible");
+              plotRepository.right.plots[plotRepository.right.currentPlot].classList.replace("opacity-0", "opacity-100");
+              plotRepository.right.plots[plotRepository.right.currentPlot].classList.add('col-auto', 'row-auto');
+              plotRepository.right.plots[plotRepository.right.currentPlot].classList.add('relative');
               // Relayout plot to fit container in case of manual resize or window resize
-              Plotly.relayout(rightPlots[rightCurrentPlot].querySelector('.plotly-graph-div'), {
-                width: rightPlots[rightCurrentPlot].parentElement.offsetWidth,
-                height: rightPlots[rightCurrentPlot].parentElement.offsetHeight - (document.getElementById('resize-button-right').offsetHeight + document.getElementById('plot-navigation-right').offsetHeight) - 30
+              Plotly.relayout(plotRepository.right.plots[plotRepository.right.currentPlot].querySelector('.plotly-graph-div'), {
+                width: plotRepository.right.plots[plotRepository.right.currentPlot].parentElement.offsetWidth,
+                height: plotRepository.right.plots[plotRepository.right.currentPlot].parentElement.offsetHeight - (document.getElementById('resize-button-right').offsetHeight + document.getElementById('plot-navigation-right').offsetHeight) - 30
               });
               
-              rightPlotIndicator.children[rightCurrentPlot].classList.replace("bg-[#ccc]", "bg-[#555]");
+              plotRepository.right.navigation.indicator.children[plotRepository.right.currentPlot].classList.replace("bg-[#ccc]", "bg-[#555]");
           });
           
-          rightNextArrow.addEventListener('click', () => {
-              rightPlots[rightCurrentPlot].classList.replace('block', 'hidden');
-              rightPlots[rightCurrentPlot].classList.replace("visible", "invisible");
-              rightPlots[rightCurrentPlot].classList.replace("opacity-100", "opacity-0");
-              rightPlots[rightCurrentPlot].classList.remove('col-auto', 'row-auto');
-              rightPlots[rightCurrentPlot].classList.remove('relative');
+          plotRepository.right.navigation.nextArrow.addEventListener('click', () => {
+              plotRepository.right.plots[plotRepository.right.currentPlot].classList.replace('block', 'hidden');
+              plotRepository.right.plots[plotRepository.right.currentPlot].classList.replace("visible", "invisible");
+              plotRepository.right.plots[plotRepository.right.currentPlot].classList.replace("opacity-100", "opacity-0");
+              plotRepository.right.plots[plotRepository.right.currentPlot].classList.remove('col-auto', 'row-auto');
+              plotRepository.right.plots[plotRepository.right.currentPlot].classList.remove('relative');
               
-              rightPlotIndicator.children[rightCurrentPlot].classList.replace("bg-[#555]", "bg-[#ccc]");
-              rightCurrentPlot = (rightCurrentPlot + 1) % rightPlots.length;
+              plotRepository.right.navigation.indicator.children[plotRepository.right.currentPlot].classList.replace("bg-[#555]", "bg-[#ccc]");
+              plotRepository.right.currentPlot = (plotRepository.right.currentPlot + 1) % plotRepository.right.plots.length;
               
-              rightPlots[rightCurrentPlot].classList.replace('hidden', 'block');
-              rightPlots[rightCurrentPlot].classList.replace("invisible", "visible");
-              rightPlots[rightCurrentPlot].classList.replace("opacity-0", "opacity-100");
-              rightPlots[rightCurrentPlot].classList.add('col-auto', 'row-auto');
-              rightPlots[rightCurrentPlot].classList.add('relative');
+              plotRepository.right.plots[plotRepository.right.currentPlot].classList.replace('hidden', 'block');
+              plotRepository.right.plots[plotRepository.right.currentPlot].classList.replace("invisible", "visible");
+              plotRepository.right.plots[plotRepository.right.currentPlot].classList.replace("opacity-0", "opacity-100");
+              plotRepository.right.plots[plotRepository.right.currentPlot].classList.add('col-auto', 'row-auto');
+              plotRepository.right.plots[plotRepository.right.currentPlot].classList.add('relative');
               // Relayout plot to fit container in case of manual resize or window resize
-              Plotly.relayout(rightPlots[rightCurrentPlot].querySelector('.plotly-graph-div'), {
-                width: rightPlots[rightCurrentPlot].parentElement.offsetWidth,
-                height: rightPlots[rightCurrentPlot].parentElement.offsetHeight - (document.getElementById('resize-button-right').offsetHeight + document.getElementById('plot-navigation-right').offsetHeight) - 30
+              Plotly.relayout(plotRepository.right.plots[plotRepository.right.currentPlot].querySelector('.plotly-graph-div'), {
+                width: plotRepository.right.plots[plotRepository.right.currentPlot].parentElement.offsetWidth,
+                height: plotRepository.right.plots[plotRepository.right.currentPlot].parentElement.offsetHeight - (document.getElementById('resize-button-right').offsetHeight + document.getElementById('plot-navigation-right').offsetHeight) - 30
               });
               
-              rightPlotIndicator.children[rightCurrentPlot].classList.replace("bg-[#ccc]", "bg-[#555]");
+              plotRepository.right.navigation.indicator.children[plotRepository.right.currentPlot].classList.replace("bg-[#ccc]", "bg-[#555]");
           });
 
           // Resize current plots on window resize
           window.addEventListener('resize', () => {
             // Relayout left current plot to fit container in case of window resize
-            Plotly.relayout(leftPlots[leftCurrentPlot].querySelector('.plotly-graph-div'), {
-              width: leftPlots[leftCurrentPlot].parentElement.offsetWidth,
+            Plotly.relayout(plotRepository.left.plots[plotRepository.left.currentPlot].querySelector('.plotly-graph-div'), {
+              width: plotRepository.left.plots[plotRepository.left.currentPlot].parentElement.offsetWidth,
             });
             // Relayout right current plot to fit container in case of window resize
-            Plotly.relayout(rightPlots[rightCurrentPlot].querySelector('.plotly-graph-div'), {
-              width: rightPlots[rightCurrentPlot].parentElement.offsetWidth,
+            Plotly.relayout(plotRepository.right.plots[plotRepository.right.currentPlot].querySelector('.plotly-graph-div'), {
+              width: plotRepository.right.plots[plotRepository.right.currentPlot].parentElement.offsetWidth,
             });
           });
       });
