@@ -76,17 +76,20 @@ def supervisor(params: object) -> int:
 
         logger.debug(f"Output a report: {params.report}")
 
-        # if a archive is requested, the output path must link to a file
-        if params.archive:
+        # if a archive | file (prod) is requested, the output path must link to a single file
+        if params.archive or in_production:
 
-            logger.debug(f"Generated report will be archived as ZIP file.")
+            if params.archive:
+                logger.debug("Generated report will be archived as ZIP file.")
+            else:
+                logger.debug("Generated report is a single HTML file.")
 
             # if the output path is a directory, raise an error
             if os.path.isdir(params.output):
 
-                logger.error(f"Output path '{params.output}' is a directory, expected a file with --archive option.")
+                logger.error(f"Output path '{params.output}' is a directory, expected a file {'with --archive option' if params.archive else ''}.")
 
-                raise SystemExit(f"Output path '{params.output}' is a directory, expected a file with --archive option.")
+                raise SystemExit(f"Output path '{params.output}' is a directory, expected a file {'with --archive option' if params.archive else ''}.")
 
             # if the output path is a file, check the parent directory
             else:
@@ -114,16 +117,16 @@ def supervisor(params: object) -> int:
 
                         raise SystemExit(f"Write permissions are not granted for the parent directory: {parent_dir}")
         
-        # A plain directory is expected        
+        # A plain directory (dev) is expected 
         else:
 
             # if the output path is a directory, check if it exists
             if not (os.path.isdir(params.output)):
-
+                    
                 logger.error(f"No such output directory: '{params.output}'")
 
                 raise SystemExit(f"No such output directory: '{params.output}'")
-                
+                    
             else:
 
                 # if the output directory is not writable, raise an error

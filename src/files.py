@@ -1317,6 +1317,15 @@ class Report:
         # Index all the dependencies
         self.deps = {"scripts": ["alasql-4.6.5.js", "plotly-3.0.0.min.js", "shepherd-11.2.0.js"], "stylesheets": ["build.css", "shepherd-13.0.0.css"]}
 
+    @staticmethod
+    def open(file: pathlib.Path):
+
+        # Try to open the report in the default web browser
+        if os.path.exists(file):
+            return webbrowser.open(str(file))
+        else:
+            raise errors.ReportError("Report not found on filesystem.")
+
     def create(self, output: pathlib.Path = pathlib.Path.cwd(), bundle: bool = True) -> pathlib.Path:
         """
         Create the report
@@ -1431,36 +1440,45 @@ class Report:
                     
         else:
 
-            output = output.joinpath("divv")
+            if bundle:
 
-            # Create the output directory
-            try:
-                output.mkdir(exist_ok=True)
-            except (PermissionError, FileNotFoundError, FileExistsError) as e:
-                raise errors.ReportError(f"Report cannot be created: {e}")
-            except Exception as e:
-                if isinstance(e,(PermissionError, FileNotFoundError, FileExistsError)):
-                    raise
-                else:
-                    raise errors.ReportError(f"An unexpected error has occurred when creating the output directory: {e}")
+                # If the output has no suffix, add a .html suffix
+                if not output.suffix:
+                    output: pathlib.Path = output.with_suffix(".html")
 
-            # Write the HTML report to the output directory
-            with open(output.joinpath("report.html"),'w') as f:
-                f.writelines(html)
+                # Write the HTML report to the output directory
+                with open(output, mode='w') as f:
+                    f.writelines(html)
 
-            if not bundle:
+                Report.open(output)
+
+            else:
+
+                output: pathlib.Path = output.joinpath("divv")
+
+                # Create the output directory
+                try:
+                    output.mkdir(exist_ok=True)
+                except (PermissionError, FileNotFoundError, FileExistsError) as e:
+                    raise errors.ReportError(f"Report cannot be created: {e}")
+                except Exception as e:
+                    if isinstance(e,(PermissionError, FileNotFoundError, FileExistsError)):
+                        raise
+                    else:
+                        raise errors.ReportError(f"An unexpected error has occurred when creating the output directory: {e}")
+
+                # Write the HTML report to the output directory
+                with open(output.joinpath("report.html"),'w') as f:
+                    f.writelines(html)
+
                 # Copy the assets and statics files next to the report
                 # Copy the assets to the output directory
                 copytree(assets, os.path.join(output, "assets"), dirs_exist_ok=True)
                 # Copy the statics to the output directory
                 copytree(os.path.dirname(statics), os.path.join(output,'statics'), dirs_exist_ok=True)
 
-            # Try to open the report in the default web browser
-            if os.path.exists(output.joinpath("report.html")):
-                webbrowser.open(str(output.joinpath("report.html")))
-            else:
-                raise errors.ReportError("Report not found on filesystem.")
-            
+                Report.open(output.joinpath("report.html"))
+
         return output
             
     def __str__(self):
