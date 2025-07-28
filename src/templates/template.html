@@ -821,6 +821,8 @@
           icon.setAttribute("state", "open");
           // Update terminal icon title
           title.textContent = "Close terminal";
+          // Update terminal input placeholder
+          loopQueryExample();
         }
         else {
           // Set terminal icon color to green
@@ -831,6 +833,8 @@
           icon.setAttribute("state", "close")
           // Update terminal icon title
           title.textContent = "Open terminal";
+          // Stop animation
+          stopAnimation();
         }
       }
 
@@ -1656,9 +1660,86 @@
                 <input
                   id="terminal-input"
                   type="text"
-                  class="border-[#202425] text-[white] [font-family:inherit] outline-[#202425] w-full placeholder-[rgba(255,_255,_255,_0.5)]"
+                  class="border-[#202425] text-[white] [font-family:inherit] outline-[#202425] w-full placeholder-[rgba(255,_255,_255,_0.5)] transition-all duration-500"
                   placeholder="Enter condition(s)..."
+                  onfocus="stopAnimation()"
                 />
+                <style>
+                  /* Tailwind can't style ::placeholder directly, so we add this for smooth opacity transition */
+                  #terminal-input::placeholder {
+                    transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+                    opacity: 1;
+                  }
+                  #terminal-input.placeholder-opacity-0::placeholder {
+                    opacity: 0;
+                  }
+                </style>
+                <script type="text/javascript">
+                  // Animation controller
+                  let animationController = null;
+                  // Loop query example
+                   async function loopQueryExample() {
+                    // Create animation controller
+                    animationController = new AbortController();
+                    const signal = animationController.signal;
+                    // Wait for 1 second displaying initial placeholder
+                    await new Promise(res => setTimeout(res, 1000));
+                    // Get terminal icon
+                    const terminalIcon = document.getElementById("terminal-icon");
+                    // Get terminal icon state
+                    let isTerminalOpen = terminalIcon.getAttribute("state") === "open";
+                    // Get examples
+                    const examples = ["GT='0/1'...", "DP>30...", "GT='1/1' AND DP>30..."];
+                    // Get terminal input
+                    const input = document.getElementById("terminal-input");
+                    // Get active element
+                    let activeElement = document.activeElement;
+                    try {
+                      // Loop until terminal is closed or active element is input or animation is aborted
+                      for (let i = 0; i < examples.length; i++) {
+                        // Fade out placeholder
+                        input.classList.add('placeholder-opacity-0');
+                        await new Promise((res, reject) => {const timeout = setTimeout(res, 850); signal.addEventListener('abort', () => {clearTimeout(timeout); reject(new Error('Animation aborted'));});});
+                        // Check state again
+                        isTerminalOpen = terminalIcon.getAttribute("state") === "open";
+                        activeElement = document.activeElement;
+                        // Check if terminal is closed or active element is not input
+                        if (!isTerminalOpen || activeElement == input || signal.aborted) {
+                          break;
+                        }
+                        // Update placeholder
+                        input.setAttribute("placeholder", examples[i]);
+                        // Small pause to ensure text is updated
+                        await new Promise((res, reject) => {const timeout = setTimeout(res, 50); signal.addEventListener('abort', () => {clearTimeout(timeout); reject(new Error('Animation aborted'));});});
+                        // Fade in placeholder
+                        input.classList.remove('placeholder-opacity-0');
+                        // Wait for 5 seconds
+                        await new Promise((res, reject) => {const timeout = setTimeout(res, 2800); signal.addEventListener('abort', () => {clearTimeout(timeout); reject(new Error('Animation aborted'));});});
+                      }
+                    } catch (error) {
+                      if (error.name === 'AbortError') {
+                        console.log('Animation aborted');
+                      } else {
+                        throw error;
+                      }
+                    }
+                    finally {
+                      // Reset placeholder
+                      input.classList.add('placeholder-opacity-0');
+                      await new Promise((res, reject) => {const timeout = setTimeout(res, 850); signal.addEventListener('abort', () => {clearTimeout(timeout); reject(new Error('Animation aborted'));});});
+                      input.setAttribute("placeholder", "Enter condition(s)...");
+                      // Small pause to ensure text is updated
+                      await new Promise((res, reject) => {const timeout = setTimeout(res, 50); signal.addEventListener('abort', () => {clearTimeout(timeout); reject(new Error('Animation aborted'));});});
+                      input.classList.remove('placeholder-opacity-0');
+                    }
+                  }
+
+                  function stopAnimation() {
+                    if (animationController) {
+                      animationController.abort();
+                    }
+                  }
+                </script>
                 <!-- Clear terminal button -->
                 <button class="cursor-pointer hover:bg-gray-600 rounded p-1" title="Clear terminal" onclick="clearTerminal()">
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="white" viewBox="0 0 16 16">
