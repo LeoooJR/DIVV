@@ -29,8 +29,12 @@ import _pickle as cPickle
 from __init__ import __version__
 
 class GenomicFile():
+    """
+    Base class for genomic files
 
-    """Base class for genomic files"""
+    Args:
+        path: The path to the genomic file
+    """
 
     def __init__(self, path: str):
 
@@ -106,8 +110,16 @@ class GenomicFile():
         return False
 
 class VCF(GenomicFile):
+    """
+    Class for a VCF file
 
-    """Class for VCF files"""
+    Args:
+        path: The path to the VCF file
+        reference: Whether the VCF file is the reference
+        index: The path to the index file
+        filters: The filters to apply to the VCF file
+        lazy: Whether to verify the VCF file at initialization
+    """
 
     # Keywords used to extract the FORMAT values
     FORMAT: dict = {
@@ -564,8 +576,14 @@ class VCF(GenomicFile):
                                    start=0)
 
 class VCFIndex(GenomicFile):
+    """
+    Class for a VCF index file
 
-    """Class for VCF index files"""
+    Args:
+        path: The path to the index file
+        vcf: The VCF file associated with the index file
+        lazy: Whether to verify the index file at initialization
+    """
 
     def __init__(self, path: str, vcf: VCF, lazy: bool = True):
         
@@ -605,6 +623,7 @@ class VCFIndex(GenomicFile):
                 raise errors.IndexError(f"{self.path} does not allow fast lookup for {self.vcf.path}")
             
 class VCFProcessor:
+    """Class to process VCF files"""
 
     def __init__(self):
 
@@ -972,6 +991,12 @@ class VCFProcessor:
 class VCFRepository():
     """
     A class to represent a repository of VCF files
+
+    Args:
+        vcfs: The list of VCF files
+        index: The list of index files
+        reference: Whether the first VCF file is the reference
+        filters: The filters to apply to the VCF files
     """
 
     # Class to process VCF files
@@ -1282,11 +1307,14 @@ class VCFRepository():
 class Report:
     """
     A class to represent a report
+
+    Args:
         vcfs: The list of VCF files
-        prefix: The prefix of the report
+        tags: Tags provided by user about VCFs
         cmd: The command used to generate the report
         view: The view object as a DataFrame
         table: The benchmark table (truth metrics) object as a DataFrame
+        archive: Whether to archive the report
     """
     # Make use of __slots__ to avoid the creation of __dict__ and __weakref__ for each instance, reducing the memory footprint
     __slots__ = ('vcfs', 'tags', 'cmd', 'view', 'table', 'archive', 'date', 'deps')
@@ -1319,6 +1347,12 @@ class Report:
 
     @staticmethod
     def open(file: pathlib.Path):
+        """
+        Open the report in the default web browser
+
+        Args:
+            file: The path to the report
+        """
 
         # Try to open the report in the default web browser
         if os.path.exists(file):
@@ -1338,9 +1372,12 @@ class Report:
         self.date = datetime.datetime.now().strftime("%Y-%m-%d, %X")
 
         # Custom filter to check if a value is NaN with Jinja2
+        # This is used to check if a value is NaN in the HTML report
         def is_nan(value):
             return isna(value)
         
+        # A function passed to Jinja2 to format the variant type
+        # This is used to format the variant type in the HTML report
         def format_variant_type(value:str):
 
             if value in ["ins", "del"]:
@@ -1353,6 +1390,7 @@ class Report:
 
             return vt
         
+        # A function passed to Jinja2 to format the variant to HTML
         def format_to_html(value:str):
 
             html_tags = {}
@@ -1369,6 +1407,7 @@ class Report:
 
             return html_tags
 
+        # A function passed to Jinja2 to format the variant info to HTML
         def info_to_html(value:str):
 
             pass
@@ -1379,8 +1418,10 @@ class Report:
         # Path to look for the assets
         assets = os.path.join(ressources, "assets")
 
+        # Stylesheets to be used in the HTML report
         stylesheets: dict[str:str] = {} if bundle else None
 
+        # Scripts to be used in the HTML report
         scripts: dict[str:str] = {} if bundle else None
 
         # Path to look for the statics
@@ -1399,20 +1440,25 @@ class Report:
         # Load the template
         template = env.get_template("template.html")
 
+        # If bundle option is True, load the dependencies in memory
         if bundle:
 
+            # Iterate over the dependencies (Js and CSS)
             for dep in self.deps:
 
+                # Iterate over the sources
                 for source in self.deps[dep]:
 
+                    # If the dependency is a stylesheet
                     if dep == "stylesheets":
-                        
+                        # Load stylesheet in memory
                         with open(os.path.join(assets, "css", source), mode='r') as dist:
 
                             stylesheets[source] = dist.read()
 
+                    # If the dependency is a script
                     else:
-                        
+                        # Load script in memory
                         with open(os.path.join(assets, "js", source), mode='r') as dist:
 
                             scripts[source] = dist.read()
@@ -1420,7 +1466,9 @@ class Report:
         # Render the template
         html = template.render(vcfs=self.vcfs, tags=self.tags, cmd=self.cmd, view=self.view, table=self.table, date=self.date, stylesheets=stylesheets, scripts=scripts, version=__version__)
 
+        # If the archive option is True, create a ZIP file
         if self.archive:
+
             # If the output has no suffix, add a .zip suffix
             if not output.suffix:
                 output: pathlib.Path = output.with_suffix(".zip")
@@ -1428,7 +1476,10 @@ class Report:
             # Open data stream with context manager to create a ZIP file
             with zipfile.ZipFile(output, mode='w') as zip:
                 zip.writestr("report.html", html)
+
+                # If the bundle option is False, copy the statics and assets to the ZIP file
                 if not bundle:
+
                     # Copy the statics to the ZIP file
                     for static in glob(statics):
                         zip.write(static, arcname=os.path.relpath(path=static, start=ressources))
@@ -1440,6 +1491,7 @@ class Report:
                     
         else:
 
+            # If the bundle option is True, create a HTML file
             if bundle:
 
                 # If the output has no suffix, add a .html suffix
@@ -1452,8 +1504,10 @@ class Report:
 
                 Report.open(output)
 
+            # If the bundle option is False, create directory structure
             else:
 
+                # Create the output directory
                 output: pathlib.Path = output.joinpath("divv")
 
                 # Create the output directory
@@ -1477,8 +1531,10 @@ class Report:
                 # Copy the statics to the output directory
                 copytree(os.path.dirname(statics), os.path.join(output,'statics'), dirs_exist_ok=True)
 
+                # Open the report in the default web browser
                 Report.open(output.joinpath("report.html"))
 
+        # Return the output path
         return output
             
     def __str__(self):
