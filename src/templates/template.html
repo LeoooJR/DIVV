@@ -2990,14 +2990,14 @@
                   // Remove highlight from all stats cards to avoid displaying multiple highlights
                   variants.forEach(variant => {
                     const card = statsCards.querySelector(`[variant="${variant === "INS" || variant === "DEL" ? "INDEL" : variant}"]`);
-                    card.classList.remove("border-2", "border-solid", "border-red-500", "shadow-xl", "shadow-red-300/40", "overflow-visible");
+                    card.classList.remove("border-2", "border-solid", "border-green-500", "shadow-xl", "shadow-green-300/40", "overflow-visible");
                     card.classList.add("hover:scale-103");
                   });
                   {% if table is not none -%}
                   // Remove highlight from all benchmark table rows to avoid displaying multiple highlights
                   benchmarkRows.forEach(row => {
                     const cell = row.getElementsByTagName("td")[0];
-                    cell.parentElement.classList.remove("border-2", "border-solid", "border-red-500", "shadow-xl", "shadow-red-300/40", "scale-103", "transition-all", "duration-300", "overflow-visible");
+                    cell.parentElement.classList.remove("border-2", "border-solid", "border-green-500", "shadow-xl", "shadow-green-300/40", "scale-103", "transition-all", "duration-300", "overflow-visible");
                     cell.parentElement.classList.add("border-b", "border-gray-200");
                   });
                   {%- endif %}
@@ -3010,8 +3010,8 @@
                     const highlightedCard = statsCards.querySelector(`[variant="${variantTypeQuery === "INS" || variantTypeQuery === "DEL" ? "INDEL" : variantTypeQuery}"]`);
                     highlightedCard.classList.remove("hover:scale-103");
                     highlightedCard.classList.add(
-                      "border-2", "border-solid", "border-red-500",
-                      "shadow-xl", "shadow-red-300/40", "overflow-visible"
+                      "border-2", "border-solid", "border-green-500",
+                      "shadow-xl", "shadow-green-300/40", "overflow-visible"
                     );
                     {% if table is not none -%}
                     // Highlight specific benchmark table row
@@ -3019,7 +3019,7 @@
                       const cell = row.getElementsByTagName("td")[0];
                       if (cell.textContent.trim() === (variantTypeQuery === "INS" || variantTypeQuery === "DEL" ? "INDEL" : variantTypeQuery)) {
                         cell.parentElement.classList.remove("border-b", "border-gray-200");
-                        cell.parentElement.classList.add("border-2", "border-solid", "border-red-500", "shadow-xl", "shadow-red-300/40", "scale-103", "transition-all", "duration-300", "overflow-visible");
+                        cell.parentElement.classList.add("border-2", "border-solid", "border-green-500", "shadow-xl", "shadow-green-300/40", "scale-103", "transition-all", "duration-300", "overflow-visible");
                       }
                     });
                     {%- endif %}

@@ -8,10 +8,10 @@
     --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New',
     monospace;
     --color-red-200: oklch(88.5% 0.062 18.334);
-    --color-red-300: oklch(80.8% 0.114 19.571);
     --color-red-400: oklch(70.4% 0.191 22.216);
     --color-red-500: oklch(63.7% 0.237 25.331);
     --color-green-200: oklch(92.5% 0.084 155.995);
+    --color-green-300: oklch(87.1% 0.15 154.449);
     --color-green-400: oklch(79.2% 0.209 151.711);
     --color-green-500: oklch(72.3% 0.219 149.579);
     --color-purple-400: oklch(71.4% 0.203 305.504);
@@ -2042,6 +2042,9 @@
   .border-green-200 {
     border-color: var(--color-green-200);
   }
+  .border-green-500 {
+    border-color: var(--color-green-500);
+  }
   .border-red-200 {
     border-color: var(--color-red-200);
   }
@@ -2433,10 +2436,10 @@
   .\[box-shadow\:0px_0px_5px_-3px_\#111\] {
     box-shadow: 0px 0px 5px -3px #111;
   }
-  .shadow-red-300\/40 {
-    --tw-shadow-color: color-mix(in srgb, oklch(80.8% 0.114 19.571) 40%, transparent);
+  .shadow-green-300\/40 {
+    --tw-shadow-color: color-mix(in srgb, oklch(87.1% 0.15 154.449) 40%, transparent);
     @supports (color: color-mix(in lab, red, red)) {
-      --tw-shadow-color: color-mix(in oklab, color-mix(in oklab, var(--color-red-300) 40%, transparent) var(--tw-shadow-alpha), transparent);
+      --tw-shadow-color: color-mix(in oklab, color-mix(in oklab, var(--color-green-300) 40%, transparent) var(--tw-shadow-alpha), transparent);
     }
   }
   .outline-1 {
