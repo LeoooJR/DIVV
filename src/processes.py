@@ -8,6 +8,13 @@ from psutil import cpu_count
 import re
 
 class TasksManager():
+    """ 
+    A class to manage tasks
+
+    Args:
+        vcfs: The VCF repository
+        processes: The number of processes to use
+    """
 
     def __init__(self, vcfs: files.VCFRepository, processes: int = 0):
 

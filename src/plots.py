@@ -6,7 +6,12 @@ import plotly.io as pio
 from pandas import DataFrame, concat
 
 class Plot:
-    """ A class representing a plot """
+    """ 
+    A class representing a plot 
+
+    Args:
+        fig: The figure object
+    """
 
     __slots__ = ('fig')
 
@@ -41,6 +46,11 @@ class Plot:
         pass
     
 class PlotLibrary:
+    """ A class representing a library of plots
+    
+    Args:
+        file: The path to the file associated with the plots
+    """
 
     __slots__ = ('file', 'plots')
 

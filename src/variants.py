@@ -9,7 +9,12 @@ from sortedcontainers import SortedSet
 from utils import suppress_warnings, convert
 
 class VariantRepository():
-    """ A class to store variants and perform operations on them """
+    """ 
+    A class to store variants and perform operations on them 
+
+    Args:
+        filters: The filters to apply to the variants
+    """
 
     INDEX: dict[str:int] = {
                 "CHROM": 0,
@@ -379,6 +384,13 @@ class VariantRepository():
         return len(self.repository)
     
 class Chromosome():
+    """
+    A class to represent a chromosome
+
+    Args:
+        name: The name of the chromosome
+        length: The length of the chromosome
+    """
 
     def __init__(self, name: str, length: int):
 
