@@ -70,7 +70,9 @@ class PlotLibrary:
     def as_html(self):
         """ Return the plots as HTML """
 
-        return list(map(lambda p: pio.to_html(p.fig, full_html=False, include_plotlyjs=False),self.plots))
+        return list(map(lambda p: pio.to_html(p.fig, full_html=False, include_plotlyjs=False, config={
+            "displayModeBar":"hover",
+            "displaylogo":False}),self.plots))
 
     def barplot(self, data, nominal: str, y: str, color: str, title: str, prefix: str) -> Plot:
         """ Create a bar plot """
