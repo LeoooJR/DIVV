@@ -10,6 +10,8 @@ def main():
     try:
         
         EntryPoint().launch()
+        # Exit with code 0 by Unix convention
+        exit(0)
     # If a SystemExit error occurs, print the error in the standard error stream
     except SystemExit as e:
         # Print raised error in standard error stream
