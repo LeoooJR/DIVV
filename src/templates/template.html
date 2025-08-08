@@ -32,7 +32,7 @@
 
     <!-- Header -->
     <div class="flex w-full">
-
+        <!-- Left header -->
         <div id="header-left" class="flex w-1/2 bg-[white]">
           <!-- File name-->
           <h2 class="mt-[20px] mb-[10px] font-[Ubuntu] font-bold italic text-center text-2xl w-full text-[#111111] max-w-full overflow-hidden text-ellipsis whitespace-nowrap">
@@ -40,6 +40,7 @@
           </h2>
         </div>
 
+        <!-- Right header -->
         <div id="header-right" class="flex w-1/2 bg-[#111111]">
           <!-- File name-->
           <h2 class="mt-[20px] mb-[10px] font-[Ubuntu] font-bold italic text-center text-2xl w-full text-[white] max-w-full truncate overflow-hidden whitespace-nowrap">
@@ -1739,12 +1740,12 @@
                             </div>
                           </div>
                         </div>
-                        <div id="match-card-supplementary-information" class="flex flex-col gap-2 border-t-4 border-green-200 border-dashed pt-1 hidden">
+                        <div id="match-card-supplementary-information" class="flex flex-col gap-2 border-t-4 border-green-200 border-dashed pt-2 hidden">
                           <div class="flex flex-row gap-2 justify-center">
                             <div class="badge badge-soft badge-success ![--color-base-content:oklch(100%_0_0)] ![--color-base-100:oklch(100%_0_0)]">PASS</div>
                             <div class="badge badge-soft badge-error ![--color-base-content:oklch(100%_0_0)] ![--color-base-100:oklch(100%_0_0)]">FAIL</div>
                           </div>
-                          <svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+                          <svg height="150" viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
                             <defs>
                               <!-- Enhanced gradients with more depth -->
                               <linearGradient id="bar1Gradient-match-card" x1="0%" y1="0%" x2="0%" y2="100%">
@@ -1787,6 +1788,24 @@
                                 <stop offset="100%" style="stop-color:#FFFFFF;stop-opacity:0.0"/>
                               </linearGradient>
                               
+                              <!-- Support bar gradient -->
+                              <linearGradient id="supportBarGradient-match-card" x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" style="stop-color:#f8f9fa;stop-opacity:0.8"/>
+                                <stop offset="50%" style="stop-color:#e9ecef;stop-opacity:0.9"/>
+                                <stop offset="100%" style="stop-color:#dee2e6;stop-opacity:1"/>
+                              </linearGradient>
+
+                              <!-- Subtle shadow for support bar -->
+                              <filter id="supportShadow-match-card" x="-20%" y="-20%" width="140%" height="140%">
+                                <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
+                                <feOffset dx="0" dy="2" result="offset"/>
+                                <feFlood flood-color="#000000" flood-opacity="0.1"/>
+                                <feComposite in2="offset" operator="in" result="shadow"/>
+                                <feMerge>
+                                  <feMergeNode in="shadow"/>
+                                  <feMergeNode in="SourceGraphic"/>
+                                </feMerge>
+                              </filter>
                             </defs>
                             
                             <!-- Subtle ambient lighting effect -->
@@ -1795,26 +1814,33 @@
                                      opacity="0.4" 
                                      filter="blur(20px)"/>
                             
+                            <!-- Support bar base -->
+                            <rect x="100" y="262" width="200" height="6" 
+                                  fill="url(#supportBarGradient-match-card)" 
+                                  rx="3" ry="3"
+                                  filter="url(#supportShadow-match-card)"
+                                  opacity="0.7"/>
+                            
                             <!-- Bar 1 (Left) -->
                             <g id="bar1Group-match-card">
                               <rect id="bar1-match-card" x="120" y="120" width="60" height="140" 
                                     fill="url(#bar1Gradient-match-card)" 
-                                    rx="30" ry="30"
+                                    rx="4" ry="4"
                                     filter="url(#modernShadow-match-card)"
                                     class="cursor-pointer transition-all duration-[0.4s] ease-[cubic-bezier(0.25,0.8,0.25,1)] origin-[center_bottom] hover:scale-102 -translate-y-6"/>
                               
                               <!-- Inner highlight stripe -->
-                              <rect x="125" y="125" width="8" height="130" 
+                              <rect x="125" y="125" width="8" height="130"
                                     fill="url(#innerHighlight-match-card)" 
                                     rx="4" ry="4"
                                     opacity="0.6"/>
                               
                               <!-- Value display inside bar -->
-                              <text id="value1-match-card" x="150" y="200" text-anchor="middle"
+                              <text id="pass-value-match-card" x="150" y="60" text-anchor="middle"
                                     font-family="'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif" 
-                                    font-size="18" 
-                                    font-weight="700"
-                                    fill="#FFFFFF"
+                                    font-size="25" 
+                                    font-weight="600"
+                                    fill="black"
                                     opacity="0.9"
                                     class="pointer-events-none select-none">65</text>
                             </g>
@@ -1823,7 +1849,7 @@
                             <g id="bar2Group-match-card">
                               <rect id="bar2-match-card" x="220" y="80" width="60" height="180" 
                                     fill="url(#bar2Gradient-match-card)" 
-                                    rx="30" ry="30"
+                                    rx="4" ry="4"
                                     filter="url(#modernShadow-match-card)"
                                     class="cursor-pointer transition-all duration-[0.4s] ease-[cubic-bezier(0.25,0.8,0.25,1)] origin-[center_bottom] hover:scale-102 -translate-y-6"/>
                               
@@ -1834,23 +1860,23 @@
                                     opacity="0.6"/>
                               
                               <!-- Value display inside bar -->
-                              <text id="value2-match-card" x="250" y="180" text-anchor="middle" 
+                              <text id="fail-value-match-card" x="250" y="20" text-anchor="middle" 
                                     font-family="'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif" 
-                                    font-size="18" 
-                                    font-weight="700"
-                                    fill="#FFFFFF"
+                                    font-size="25" 
+                                    font-weight="600"
+                                    fill="black"
                                     opacity="0.9"
                                     class="pointer-events-none select-none">82</text>
                             </g>
                             
                             <!-- Floating value indicators (minimal) -->
-                            <circle cx="150" cy="110" r="3" 
+                            <circle cx="150" cy="80" r="3" 
                                     fill="oklch(79.2% 0.209 151.711)" 
                                     opacity="0.6">
                               <animate attributeName="opacity" values="0.6;1;0.6" dur="2s" repeatCount="indefinite"/>
                             </circle>
                             
-                            <circle cx="250" cy="70" r="3" 
+                            <circle cx="250" cy="40" r="3" 
                                     fill="oklch(70.4% 0.191 22.216)" 
                                     opacity="0.6">
                               <animate attributeName="opacity" values="0.6;1;0.6" dur="2s" repeatCount="indefinite" begin="1s"/>
@@ -1895,12 +1921,12 @@
                             </div>
                           </div>
                         </div>
-                        <div id="mismatch-card-supplementary-information" class="flex flex-col gap-2 border-t-4 border-red-400 border-dashed pt-1 hidden">
+                        <div id="mismatch-card-supplementary-information" class="flex flex-col gap-2 border-t-4 border-red-400 border-dashed pt-2 hidden">
                           <div class="flex flex-row gap-2 justify-center">
                             <div class="badge badge-soft badge-success ![--color-base-content:oklch(100%_0_0)] ![--color-base-100:oklch(100%_0_0)]">PASS</div>
                             <div class="badge badge-soft badge-error ![--color-base-content:oklch(100%_0_0)] ![--color-base-100:oklch(100%_0_0)]">FAIL</div>
                           </div>
-                          <svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+                          <svg height="150" viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
                             <defs>
                               <!-- Enhanced gradients with more depth -->
                               <linearGradient id="bar1Gradient-mismatch-card" x1="0%" y1="0%" x2="0%" y2="100%">
@@ -1915,6 +1941,13 @@
                                 <stop offset="30%" style="stop-color:oklch(73% 0.18 22.216);stop-opacity:0.95"/>
                                 <stop offset="70%" style="stop-color:oklch(70.4% 0.191 22.216);stop-opacity:0.9"/>
                                 <stop offset="100%" style="stop-color:oklch(67% 0.2 22.216);stop-opacity:1"/>
+                              </linearGradient>
+
+                              <!-- Support bar gradient -->
+                              <linearGradient id="supportBarGradient-mismatch-card" x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" style="stop-color:#f8f9fa;stop-opacity:0.8"/>
+                                <stop offset="50%" style="stop-color:#e9ecef;stop-opacity:0.9"/>
+                                <stop offset="100%" style="stop-color:#dee2e6;stop-opacity:1"/>
                               </linearGradient>
                             
                               <!-- Stylish shadows with multiple layers -->
@@ -1942,6 +1975,18 @@
                                 <stop offset="50%" style="stop-color:#FFFFFF;stop-opacity:0.1"/>
                                 <stop offset="100%" style="stop-color:#FFFFFF;stop-opacity:0.0"/>
                               </linearGradient>
+
+                              <!-- Subtle shadow for support bar -->
+                              <filter id="supportShadow-mismatch-card" x="-20%" y="-20%" width="140%" height="140%">
+                                <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
+                                <feOffset dx="0" dy="2" result="offset"/>
+                                <feFlood flood-color="#000000" flood-opacity="0.1"/>
+                                <feComposite in2="offset" operator="in" result="shadow"/>
+                                <feMerge>
+                                  <feMergeNode in="shadow"/>
+                                  <feMergeNode in="SourceGraphic"/>
+                                </feMerge>
+                              </filter>
                               
                             </defs>
                             
@@ -1950,12 +1995,19 @@
                                      fill="#FFFFFF" 
                                      opacity="0.4" 
                                      filter="blur(20px)"/>
+
+                            <!-- Support bar base -->
+                            <rect x="100" y="262" width="200" height="6" 
+                                  fill="url(#supportBarGradient-mismatch-card)" 
+                                  rx="3" ry="3"
+                                  filter="url(#supportShadow-mismatch-card)"
+                                  opacity="0.7"/>
                             
                             <!-- Bar 1 (Left) -->
                             <g id="bar1Group-mismatch-card">
                               <rect id="bar1-mismatch-card" x="120" y="120" width="60" height="140" 
                                     fill="url(#bar1Gradient-mismatch-card)" 
-                                    rx="30" ry="30"
+                                    rx="4" ry="4"
                                     filter="url(#modernShadow-mismatch-card)"
                                     class="cursor-pointer transition-all duration-[0.4s] ease-[cubic-bezier(0.25,0.8,0.25,1)] origin-[center_bottom] hover:scale-102 -translate-y-6"/>
                               
@@ -1966,11 +2018,11 @@
                                     opacity="0.6"/>
                               
                               <!-- Value display inside bar -->
-                              <text id="value1-mismatch-card" x="150" y="200" text-anchor="middle"
+                              <text id="pass-value-mismatch-card" x="150" y="60" text-anchor="middle"
                                     font-family="'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif" 
-                                    font-size="18" 
-                                    font-weight="700"
-                                    fill="#FFFFFF"
+                                    font-size="25" 
+                                    font-weight="600"
+                                    fill="black"
                                     opacity="0.9"
                                     class="pointer-events-none select-none">65</text>
                             </g>
@@ -1979,7 +2031,7 @@
                             <g id="bar2Group-mismatch-card">
                               <rect id="bar2-mismatch-card" x="220" y="80" width="60" height="180" 
                                     fill="url(#bar2Gradient-mismatch-card)" 
-                                    rx="30" ry="30"
+                                    rx="4" ry="4"
                                     filter="url(#modernShadow-mismatch-card)"
                                     class="cursor-pointer transition-all duration-[0.4s] ease-[cubic-bezier(0.25,0.8,0.25,1)] origin-[center_bottom] hover:scale-102 -translate-y-6"/>
                               
@@ -1990,23 +2042,23 @@
                                     opacity="0.6"/>
                               
                               <!-- Value display inside bar -->
-                              <text id="value2-mismatch-card" x="250" y="180" text-anchor="middle" 
+                              <text id="fail-value-mismatch-card" x="250" y="20" text-anchor="middle" 
                                     font-family="'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif" 
-                                    font-size="18" 
-                                    font-weight="700"
-                                    fill="#FFFFFF"
+                                    font-size="25" 
+                                    font-weight="600"
+                                    fill="black"
                                     opacity="0.9"
                                     class="pointer-events-none select-none">82</text>
                             </g>
                             
                             <!-- Floating value indicators (minimal) -->
-                            <circle cx="150" cy="110" r="3" 
+                            <circle cx="150" cy="80" r="3" 
                                     fill="oklch(79.2% 0.209 151.711)" 
                                     opacity="0.6">
                               <animate attributeName="opacity" values="0.6;1;0.6" dur="2s" repeatCount="indefinite"/>
                             </circle>
                             
-                            <circle cx="250" cy="70" r="3" 
+                            <circle cx="250" cy="40" r="3" 
                                     fill="oklch(70.4% 0.191 22.216)" 
                                     opacity="0.6">
                               <animate attributeName="opacity" values="0.6;1;0.6" dur="2s" repeatCount="indefinite" begin="1s"/>
@@ -2161,14 +2213,16 @@
                               <text id="jaccardValue" x="200" y="262" text-anchor="middle" 
                                     font-family="Arial, sans-serif" 
                                     font-size="16" 
-                                    font-weight="bold"
+                                    font-weight="600"
                                     fill="#FFFFFF">0.42</text>
                               <script type="text/javascript">
                                 // Function to update Jaccard value
                                 function updateJaccardIndex(setASize, setBSize, intersectionSize) {
+                                  // Calculate the union size
                                   const unionSize = setASize + setBSize - intersectionSize;
+                                  // Calculate the Jaccard index
                                   const jaccardIndex = (intersectionSize / unionSize).toFixed(2);
-                                  
+                                  // Update the Jaccard index value
                                   document.getElementById('jaccardValue').textContent = jaccardIndex;
                                   
                                   // Update size displays
@@ -2360,19 +2414,32 @@
                     </button>
                     <script type="text/javascript">
                       function updateGeneralStatisticsLayout() {
+                        // Retrieve the layout button
                         const layoutButton = document.getElementById("layout-button");
+                        // Retrieve the cards container
                         const cards = document.getElementById("cards");
+                        // If the layout button is in horizontal state
                         if (layoutButton.state === "horizontal") {
+                          // Change the layout button state to vertical
                           layoutButton.state = "vertical";
+                          // Change the layout button title to horizontal
                           layoutButton.title = "Horizontal layout";
+                          // Change the layout button path to horizontal
                           layoutButton.querySelector('path').setAttribute('d', "M2 2h20v6H2zm0 8h20v12H2z");
+                          // Change the cards container to vertical layout with one column for all screens sizes
                           cards.classList.replace("sm:grid-cols-[1fr_1fr]", "sm:grid-cols-[1fr]");
                           cards.classList.replace("lg:grid-cols-[1fr_1fr_1fr]", "lg:grid-cols-[1fr]");
+                        // If the layout button is in vertical state
                         } else {
+                          // Change the layout button state to horizontal
                           layoutButton.state = "horizontal";
+                          // Change the layout button title to vertical
                           layoutButton.title = "Vertical layout";
+                          // Change the layout button path to vertical
                           layoutButton.querySelector('path').setAttribute('d', "M2 2h16v6H2zm0 8h16v12H2zm20-8v20h-2V2z");
+                          // Change the cards container to horizontal layout with two columns on small screens
                           cards.classList.replace("sm:grid-cols-[1fr]", "sm:grid-cols-[1fr_1fr]");
+                          // Change the cards container to horizontal layout with three columns on large screens
                           cards.classList.replace("lg:grid-cols-[1fr]", "lg:grid-cols-[1fr_1fr_1fr]");
                         }
                       }
