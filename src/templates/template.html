@@ -55,8 +55,8 @@
         <!-- Left file informations -->
         <div id="left-file-infos" class="flex flex-col justify-center items-center w-1/2 bg-[white]">
             <!-- Metadatas container -->
-            <div class="flex justify-center items-center flex-wrap w-full pt-[5px] ml-[5%] mr-[5%] overflow-x-auto" id="metadatas-container-left">
-              <div id="table-metadata-left-container" class="overflow-x-auto rounded-box">
+            <div class="flex justify-center items-center flex-wrap w-full pt-[5px] overflow-x-auto" id="metadatas-container-left">
+              <div id="table-metadata-left-container" class="overflow-x-auto rounded-box mx-[5%] w-[90%]">
                 <table id="table-metadata-left" class="table font-[Ubuntu]">
                   <!-- head -->
                   <thead class="text-black bg-[#EEF0F1]">
@@ -123,8 +123,8 @@
         <!-- Right file informations -->
         <div id="right-file-infos" class="flex flex-col justify-center items-center w-1/2 bg-[#111111]">
             <!-- Metadatas container -->
-            <div class="flex justify-center items-center flex-wrap w-full pt-[5px] ml-[5%] mr-[5%] overflow-x-auto" id="metadatas-container-right">
-              <div id="table-metadata-right-container" class="overflow-x-auto rounded-box">
+            <div class="flex justify-center items-center flex-wrap w-full pt-[5px] overflow-x-auto" id="metadatas-container-right">
+              <div id="table-metadata-right-container" class="overflow-x-auto rounded-box mx-[5%] w-[90%]">
                 <table id="table-metadata-right" class="table font-[Ubuntu]">
                   <!-- head -->
                   <thead class="text-white bg-[#333333]">
@@ -1159,7 +1159,7 @@
             >
               <path d="M4 17l6-6-6-6M12 19h8"></path>
             </svg>
-            Terminal
+            DIVV
           </span>
         </div>
         <!-- Terminal content -->
@@ -1698,13 +1698,13 @@
                 </div>
 
                 <!-- General statistics -->
-                <div id="general-statistics" class="w-full flex justify-center items-center bg-[#f3f4f6] overflow-x-auto overflow-y-auto">
+                <div id="general-statistics" class="w-full flex justify-center items-center bg-[#f3f4f6] overflow-x-auto overflow-y-visible">
                   <button id="move-button-left" state="moveTop" title="Move to top" class="cursor-pointer hover:bg-gray-300 rounded" onclick="moveGeneralStatistics()">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
                       <path fill="black" d="m11.852 2.011l.058-.007L12 2l.075.003l.126.017l.111.03l.111.044l.098.052l.104.074l.082.073l3 3a1 1 0 1 1-1.414 1.414L13 5.415V13a1 1 0 0 1-2 0V5.415L9.707 6.707a1 1 0 0 1-1.32.083l-.094-.083a1 1 0 0 1 0-1.414l3-3q.053-.054.112-.097l.11-.071l.114-.054l.105-.035zM12 16a3 3 0 1 1 0 6a3 3 0 0 1 0-6"/>
                     </svg>
                   </button>
-                  <div id="cards" class="w-[50%] max-w-[1200px] mx-[auto] my-[0] grid grid-cols-[1fr] sm:grid-cols-[1fr_1fr] lg:grid-cols-[1fr_1fr_1fr] place-items-center gap-1 overflow-x-auto overflow-y-auto">
+                  <div id="cards" class="w-auto max-w-[1200px] mx-[auto] my-[0] grid grid-cols-[1fr] sm:grid-cols-[1fr_1fr] lg:grid-cols-[1fr_1fr_1fr] place-items-center gap-2 overflow-x-auto overflow-y-visible">
                     
                     <!-- Matching lines statistic -->
                     <div class="w-fit flex p-4 rounded-lg bg-[#fafafa] gap-4 hover:scale-103 transition-all duration-300">
@@ -1835,14 +1835,14 @@
                                     rx="4" ry="4"
                                     opacity="0.6"/>
                               
-                              <!-- Value display inside bar -->
+                              <!-- Value display -->
                               <text id="pass-value-match-card" x="150" y="60" text-anchor="middle"
                                     font-family="'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif" 
                                     font-size="25" 
                                     font-weight="600"
                                     fill="black"
                                     opacity="0.9"
-                                    class="pointer-events-none select-none">65</text>
+                                    class="pointer-events-none select-none">Na</text>
                             </g>
                             
                             <!-- Bar 2 (Right) -->
@@ -1859,14 +1859,14 @@
                                     rx="4" ry="4"
                                     opacity="0.6"/>
                               
-                              <!-- Value display inside bar -->
+                              <!-- Value display  -->
                               <text id="fail-value-match-card" x="250" y="20" text-anchor="middle" 
                                     font-family="'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif" 
                                     font-size="25" 
                                     font-weight="600"
                                     fill="black"
                                     opacity="0.9"
-                                    class="pointer-events-none select-none">82</text>
+                                    class="pointer-events-none select-none">Na</text>
                             </g>
                             
                             <!-- Floating value indicators (minimal) -->
@@ -2017,14 +2017,14 @@
                                     rx="4" ry="4"
                                     opacity="0.6"/>
                               
-                              <!-- Value display inside bar -->
+                              <!-- Value display -->
                               <text id="pass-value-mismatch-card" x="150" y="60" text-anchor="middle"
                                     font-family="'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif" 
                                     font-size="25" 
                                     font-weight="600"
                                     fill="black"
                                     opacity="0.9"
-                                    class="pointer-events-none select-none">65</text>
+                                    class="pointer-events-none select-none">Na</text>
                             </g>
                             
                             <!-- Bar 2 (Right) -->
@@ -2041,14 +2041,14 @@
                                     rx="4" ry="4"
                                     opacity="0.6"/>
                               
-                              <!-- Value display inside bar -->
+                              <!-- Value display -->
                               <text id="fail-value-mismatch-card" x="250" y="20" text-anchor="middle" 
                                     font-family="'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif" 
                                     font-size="25" 
                                     font-weight="600"
                                     fill="black"
                                     opacity="0.9"
-                                    class="pointer-events-none select-none">82</text>
+                                    class="pointer-events-none select-none">Na</text>
                             </g>
                             
                             <!-- Floating value indicators (minimal) -->
@@ -3757,19 +3757,9 @@
             </div>
             <!-- Benchmarking info -->
             <div class="tooltip tooltip-info tooltip-right ![--tt-bg:#D7F1FD] w-fit ml-[5%] font-[Ubuntu]" data-tip="Benchmarking is carried out on exact equality in terms of chromosome, position, reference and alternative allele.">
-              <button class="btn btn-info !bg-[#D7F1FD] !border-[#D7F1FD] !outline-[#D7F1FD] !shadow-none">
-                <svg
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  fill="none"
-                  class="w-4 h-4"
-                >
-                  <path
-                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                    stroke-width="2"
-                    stroke-linejoin="round"
-                    stroke-linecap="round"
-                  ></path>
+              <button class="btn btn-info !bg-[#f3f4f6] !border-[#f3f4f6] !outline-[#f3f4f6] !shadow-none ![--btn-p:0rem]">
+                <svg class="relative" xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" height="24" fill="none">
+                  <path fill="#59cafc" d="m12 1.5c-5.79844 0-10.5 4.70156-10.5 10.5 0 5.7984 4.70156 10.5 10.5 10.5 5.7984 0 10.5-4.7016 10.5-10.5 0-5.79844-4.7016-10.5-10.5-10.5zm.75 15.5625c0 .1031-.0844.1875-.1875.1875h-1.125c-.1031 0-.1875-.0844-.1875-.1875v-6.375c0-.1031.0844-.1875.1875-.1875h1.125c.1031 0 .1875.0844.1875.1875zm-.75-8.0625c-.2944-.00601-.5747-.12718-.7808-.3375-.206-.21032-.3215-.49305-.3215-.7875s.1155-.57718.3215-.7875c.2061-.21032.4864-.33149.7808-.3375.2944.00601.5747.12718.7808.3375.206.21032.3215.49305.3215.7875s-.1155.57718-.3215.7875c-.2061.21032-.4864.33149-.7808.3375z"></path>
                 </svg>
               </button>
             </div>
