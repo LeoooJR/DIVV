@@ -1532,8 +1532,8 @@
   .h-25 {
     height: calc(var(--spacing) * 25);
   }
-  .h-50 {
-    height: calc(var(--spacing) * 50);
+  .h-40 {
+    height: calc(var(--spacing) * 40);
   }
   .h-\[4px\] {
     height: 4px;
@@ -1610,8 +1610,8 @@
   .w-25 {
     width: calc(var(--spacing) * 25);
   }
-  .w-50 {
-    width: calc(var(--spacing) * 50);
+  .w-40 {
+    width: calc(var(--spacing) * 40);
   }
   .w-\[10px\] {
     width: 10px;
