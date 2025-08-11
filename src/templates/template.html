@@ -57,44 +57,46 @@
             <!-- Metadatas container -->
             <div class="flex justify-center items-center flex-wrap w-full pt-[5px] overflow-x-auto" id="metadatas-container-left">
               <div id="table-metadata-left-container" class="overflow-x-auto rounded-box mx-[5%] w-[90%]">
-                <table id="table-metadata-left" class="table font-[Ubuntu]">
+                <table id="table-metadata-left" class="table font-[Ubuntu] w-full">
                   <!-- head -->
                   <thead class="text-black bg-[#EEF0F1]">
                     <tr class="border-b border-gray-200">
-                      <th>
+                      <th class="w-8 sm:w-10 md:w-12 px-1 sm:px-2 text-center">
                         <!-- Information icon -->
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="black" viewBox="0 0 16 16">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mx-auto" fill="black" viewBox="0 0 16 16">
                           <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
                           <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/>
                         </svg>
                       </th>
-                      <th class="text-zinc-500">Name</th>
-                      <th class="text-zinc-500">Path</th>
-                      <th class="text-zinc-500">Size</th>
-                      <th class="text-zinc-500">Last modified</th>
-                      <th class="text-zinc-500">State</th>
+                      <th class="text-zinc-500 text-left px-2 py-2 w-24 sm:w-32 md:w-40 truncate">Name</th>
+                      <th class="text-zinc-500 text-left px-2 py-2 w-32 sm:w-48 md:w-72 truncate">Path</th>
+                      <th class="text-zinc-500 text-left px-2 py-2 w-16 sm:w-20 md:w-24">Size</th>
+                      <th class="text-zinc-500 text-left px-2 py-2 w-24 sm:w-32 md:w-40 truncate">Last modified</th>
+                      <th class="text-zinc-500 text-left px-2 py-2 w-20 sm:w-28 md:w-32">State</th>
                     </tr>
                   </thead>
                   <tbody class="text-black bg-white">
                     <tr class="border-b border-gray-200">
-                      <th>
+                      <th class="w-8 sm:w-10 md:w-12 px-1 sm:px-2 text-center">
                         <!-- File icon -->
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mx-auto" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                         </svg>
                       </th>
-                      <td class="text-black">{{ vcfs.repository[0].informations().basename|default("VCF.L") }}</td>
-                      <td class="overflow-x-scroll text-black">{{ vcfs.repository[0].informations().path|default("Na") }}</td>
-                      <td class="text-black">{{ vcfs.repository[0].informations().size|default('NaN') }} Mo</td>
-                      <td class="text-black">{{ vcfs.repository[0].informations().mtime|default('NA') }}</td>
-                      <td class="text-black">
+                      <td id="file-name-left" class="text-black px-2 py-2 w-24 sm:w-32 md:w-40 truncate">{{ vcfs.repository[0].informations().basename|default("VCF.L") }}</td>
+                      <td id="file-path-left" class="px-2 py-2 w-32 sm:w-48 md:w-72 max-w-[12rem] sm:max-w-[18rem] md:max-w-[28rem] overflow-x-auto whitespace-nowrap text-black">
+                        <span class="block truncate">{{ vcfs.repository[0].informations().path|default("Na") }}</span>
+                      </td>
+                      <td id="file-size-left" class="text-black px-2 py-2 w-16 sm:w-20 md:w-24 text-right">{{ vcfs.repository[0].informations().size|default('NaN') }} Mo</td>
+                      <td id="file-last-modified-left" class="text-black px-2 py-2 w-24 sm:w-32 md:w-40 truncate">{{ vcfs.repository[0].informations().mtime|default('NA') }}</td>
+                      <td id="file-state-left" class="text-black px-2 py-2 w-20 sm:w-28 md:w-32">
                         <div class="flex items-center">
                           {% if table is not none %}
                           <div class="w-2 h-2 rounded-full bg-green-500"></div>
-                          <p class="ml-2">Reference</p>
+                          <p class="ml-2 truncate">Reference</p>
                           {% else %}
                           <div class="w-2 h-2 rounded-full bg-gray-500"></div>
-                          <p class="ml-2">None</p>
+                          <p class="ml-2 truncate">None</p>
                           {% endif %}
                         </div>
                       </td>
@@ -125,44 +127,46 @@
             <!-- Metadatas container -->
             <div class="flex justify-center items-center flex-wrap w-full pt-[5px] overflow-x-auto" id="metadatas-container-right">
               <div id="table-metadata-right-container" class="overflow-x-auto rounded-box mx-[5%] w-[90%]">
-                <table id="table-metadata-right" class="table font-[Ubuntu]">
+                <table id="table-metadata-right" class="table font-[Ubuntu] w-full">
                   <!-- head -->
                   <thead class="text-white bg-[#333333]">
                     <tr class="border-b border-gray-200">
-                      <th>
+                      <th class="w-8 sm:w-10 md:w-12 px-1 sm:px-2 text-center">
                         <!-- Information icon -->
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="white" viewBox="0 0 16 16">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mx-auto" fill="white" viewBox="0 0 16 16">
                           <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
                           <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/>
                         </svg>
                       </th>
-                      <th class="text-white">Name</th>
-                      <th class="text-white">Path</th>
-                      <th class="text-white">Size</th>
-                      <th class="text-white">Last modified</th>
-                      <th class="text-white">State</th>
+                      <th class="text-white text-left px-2 py-2 w-24 sm:w-32 md:w-40 truncate">Name</th>
+                      <th class="text-white text-left px-2 py-2 w-32 sm:w-48 md:w-72 truncate">Path</th>
+                      <th class="text-white text-left px-2 py-2 w-16 sm:w-20 md:w-24">Size</th>
+                      <th class="text-white text-left px-2 py-2 w-24 sm:w-32 md:w-40 truncate">Last modified</th>
+                      <th class="text-white text-left px-2 py-2 w-20 sm:w-28 md:w-32">State</th>
                     </tr>
                   </thead>
                   <tbody class="text-black bg-white">
                     <tr class="border-b border-gray-200">
-                      <th>
+                      <th class="w-8 sm:w-10 md:w-12 px-1 sm:px-2 text-center">
                         <!-- File icon -->
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="black">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mx-auto" viewBox="0 0 24 24" fill="none" stroke="black">
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                         </svg>
                       </th>
-                      <td class="text-black">{{ vcfs.repository[1].informations().basename|default("VCF.R") }}</td>
-                      <td class="overflow-x-scroll text-black">{{ vcfs.repository[1].informations().path|default("Na") }}</td>
-                      <td class="text-black">{{ vcfs.repository[1].informations().size|default('NaN') }} Mo</td>
-                      <td class="text-black">{{ vcfs.repository[1].informations().mtime|default('NA') }}</td>
-                      <td class="text-black">
+                      <td id="file-name-right" class="text-black px-2 py-2 w-24 sm:w-32 md:w-40 truncate">{{ vcfs.repository[1].informations().basename|default("VCF.R") }}</td>
+                      <td id="file-path-right" class="px-2 py-2 w-32 sm:w-48 md:w-72 max-w-[12rem] sm:max-w-[18rem] md:max-w-[28rem] overflow-x-auto whitespace-nowrap text-black">
+                        <span class="block truncate">{{ vcfs.repository[1].informations().path|default("Na") }}</span>
+                      </td>
+                      <td id="file-size-right" class="text-black px-2 py-2 w-16 sm:w-20 md:w-24 text-right">{{ vcfs.repository[1].informations().size|default('NaN') }} Mo</td>
+                      <td id="file-last-modified-right" class="text-black px-2 py-2 w-24 sm:w-32 md:w-40 truncate">{{ vcfs.repository[1].informations().mtime|default('NA') }}</td>
+                      <td id="file-state-right" class="text-black px-2 py-2 w-20 sm:w-28 md:w-32"">
                         <div class="flex items-center">
                           {% if table is not none %}
                           <div class="w-2 h-2 rounded-full bg-green-500"></div>
-                          <p class="ml-2">Target</p>
+                          <p class="ml-2 truncate">Target</p>
                           {% else %}
                           <div class="w-2 h-2 rounded-full bg-gray-500"></div>
-                          <p class="ml-2">None</p>
+                          <p class="ml-2 truncate">None</p>
                           {% endif %}
                         </div>
                       </td>
