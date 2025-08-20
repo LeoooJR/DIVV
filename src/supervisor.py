@@ -279,23 +279,28 @@ def supervisor(params: object) -> int:
         if vcfs.repository[0].variants.is_filtered() or vcfs.repository[1].variants.is_filtered():
             # Divider
             stdout_console.rule("[bold sky_blue3] Filters")
+            stdout_console.print("The following variants have been filtered out:")
             # Print the summary of the filtering steps for the first VCF
-            stdout_console.print(f":magnifying_glass_tilted_right: {vcfs.repository[0]}({vcfs.repository[0].variants.filtered.total()}) {dict(vcfs.repository[0].variants.filtered)}", style="info")
+            stdout_console.print(f"{vcfs.repository[0]} ({vcfs.repository[0].variants.filtered.total()}) {", ".join(f"{item[0].upper()} {item[1]}" for item in dict(vcfs.repository[0].variants.filtered).items())}", style="info")
             # Print the summary of the filtering steps for the second VCF
-            stdout_console.print(f":magnifying_glass_tilted_right: {vcfs.repository[1]}({vcfs.repository[1].variants.filtered.total()}) {dict(vcfs.repository[1].variants.filtered)}", style="info")
+            stdout_console.print(f"{vcfs.repository[1]} ({vcfs.repository[1].variants.filtered.total()}) {", ".join(f"{item[0].upper()} {item[1]}" for item in dict(vcfs.repository[1].variants.filtered).items())}", style="info")
         
         # Print the results of the comparison
         # Divider
         stdout_console.rule("[bold sky_blue3] Results")
         # Print the comparison results
-        stdout_console.print(f":vs: Comparaison: {vcfs.repository[0]} [{comparaisons[(vcfs.repository[0],vcfs.repository[1])]['unique'][vcfs.repository[0]]} unique]────[{comparaisons[(vcfs.repository[0],vcfs.repository[1])]['common']} common]────[{comparaisons[(vcfs.repository[0],vcfs.repository[1])]['unique'][vcfs.repository[1]]} unique] {vcfs.repository[1]}", style="result")
+        stdout_console.print("Comparison produced the following results:")
+        stdout_console.print(f":vs: {vcfs.repository[0]} ", style="info", end='', no_wrap=True)
+        stdout_console.print(f"[{comparaisons[(vcfs.repository[0],vcfs.repository[1])]['unique'][vcfs.repository[0]]} unique]────[{comparaisons[(vcfs.repository[0],vcfs.repository[1])]['common']} common]────[{comparaisons[(vcfs.repository[0],vcfs.repository[1])]['unique'][vcfs.repository[1]]} unique]", style="result", end='')
+        stdout_console.print(f" {vcfs.repository[1]}", style="info")
         # Print the Jaccard index
-        stdout_console.print(f":heavy_large_circle: Jaccard index: {comparaisons[(vcfs.repository[0],vcfs.repository[1])]['jaccard']}", style="result")
+        stdout_console.print(f"Jaccard index: {comparaisons[(vcfs.repository[0],vcfs.repository[1])]['jaccard']}", style="info")
         
         # If a benchmark is requested, print the benchmark results
         if params.benchmark:
             # Divider
             stdout_console.rule("[bold sky_blue3] Benchmark")
+            stdout_console.print("States of the VCF files:")
             # Print the reference VCF
             stdout_console.print(f":bookmark: Reference: {vcfs.repository[0]}", style="info")
             # Print the query VCF
