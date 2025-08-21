@@ -195,37 +195,6 @@
     <!-- Extra informations -->
     <div class="bg-[linear-gradient(to_right,_white_50%,_#111111_50%)] w-full block pt-[2px] pb-[2px]">
 
-      <!-- If benchmark is requested -->
-      <!-- Reference and query information -->
-      {% if table is not none %}
-        <div class="flex flex-row w-full my-[5px]">
-          <!-- Reference information -->
-          <div class="flex w-1/2 justify-center">
-            <div data-component="info-popup" class="w-[320px] p-[12px] mb-[5px] hidden flex-row items-center bg-[#D7F1FD] rounded-[8px] outline-1 outline-solid outline-black outline-offset-2">
-              <div class="w-[20px] h-[20px] -translate-y-[2px] mr-[8px]">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" height="24" fill="none">
-                  <path fill="#59cafc" d="m12 1.5c-5.79844 0-10.5 4.70156-10.5 10.5 0 5.7984 4.70156 10.5 10.5 10.5 5.7984 0 10.5-4.7016 10.5-10.5 0-5.79844-4.7016-10.5-10.5-10.5zm.75 15.5625c0 .1031-.0844.1875-.1875.1875h-1.125c-.1031 0-.1875-.0844-.1875-.1875v-6.375c0-.1031.0844-.1875.1875-.1875h1.125c.1031 0 .1875.0844.1875.1875zm-.75-8.0625c-.2944-.00601-.5747-.12718-.7808-.3375-.206-.21032-.3215-.49305-.3215-.7875s.1155-.57718.3215-.7875c.2061-.21032.4864-.33149.7808-.3375.2944.00601.5747.12718.7808.3375.206.21032.3215.49305.3215.7875s-.1155.57718-.3215.7875c-.2061.21032-.4864.33149-.7808.3375z">
-                  </path>
-                </svg>
-              </div>
-              <div class="font-[Ubuntu] font-medium text-[14px] text-[#0C2A75]">This VCF has been set as <strong>reference</strong>.</div>
-            </div>
-          </div>
-          <!-- Query information -->
-          <div class="flex w-1/2 justify-center">
-            <div data-component="info-popup" class="w-[320px] p-[12px] mb-[5px] hidden flex-row items-center bg-[#D7F1FD] rounded-[8px] outline-1 outline-solid outline-white outline-offset-2">
-              <div class="w-[20px] h-[20px] -translate-y-[2px] mr-[8px]">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" height="24" fill="none">
-                  <path fill="#59cafc" d="m12 1.5c-5.79844 0-10.5 4.70156-10.5 10.5 0 5.7984 4.70156 10.5 10.5 10.5 5.7984 0 10.5-4.7016 10.5-10.5 0-5.79844-4.7016-10.5-10.5-10.5zm.75 15.5625c0 .1031-.0844.1875-.1875.1875h-1.125c-.1031 0-.1875-.0844-.1875-.1875v-6.375c0-.1031.0844-.1875.1875-.1875h1.125c.1031 0 .1875.0844.1875.1875zm-.75-8.0625c-.2944-.00601-.5747-.12718-.7808-.3375-.206-.21032-.3215-.49305-.3215-.7875s.1155-.57718.3215-.7875c.2061-.21032.4864-.33149.7808-.3375.2944.00601.5747.12718.7808.3375.206.21032.3215.49305.3215.7875s-.1155.57718-.3215.7875c-.2061.21032-.4864.33149-.7808.3375z">
-                  </path>
-                </svg>
-              </div>
-              <div class="font-[Ubuntu] font-medium text-[14px] text-[#0C2A75]">This VCF has been set as <strong>query</strong>.</div>
-            </div>
-          </div>
-        </div>
-      {% endif %}
-
       <!-- Command information -->
       <div id="command" class="mockup-code !bg-[#202425] w-[90%] ml-[5%] mr-[5%] relative hidden">
         <!-- Copy button container -->
@@ -295,15 +264,6 @@
           else {
             element.classList.replace('block', 'hidden');
           }
-          elements = document.querySelectorAll('[data-component="info-popup"]');
-          elements.forEach(popup => {
-            if (popup.classList.contains('hidden')) {
-              popup.classList.replace('hidden', 'flex');
-            }
-            else {
-              popup.classList.replace('flex', 'hidden');
-            }
-          });
           updateCaret(caretLeft);
           updateCaret(careRight);
         }
@@ -426,11 +386,11 @@
         <div id="left-plots" class="grid grid-cols-[1fr] grid-rows-[1fr] [direction:ltr] gap-[8px] flex-wrap w-[50%] bg-[white]">
             {% for plot in vcfs.repository[0].variants.plots.as_html() %}
               {% if loop.index == 1 %}
-                <div class="w-full visible opacity-100 relative" id="left-plot{{ loop.index }}" data-component="plot-left">
+                <div class="w-full visible opacity-100 relative border-y-2 border-gray-200 shadow-lg rounded-lg transition-all duration-300" id="left-plot{{ loop.index }}" data-component="plot-left">
                   {{ plot }}
                 </div>
               {% else %}
-                <div class="invisible opacity-0 w-full [transition:opacity_0.3s_ease-in-out]" id="left-plot{{ loop.index }}" data-component="plot-left">
+                <div class="invisible opacity-0 w-full [transition:opacity_0.3s_ease-in-out] border-y-2 border-gray-200 shadow-lg rounded-lg transition-all duration-300" id="left-plot{{ loop.index }}" data-component="plot-left">
                   {{ plot }}
                 </div>
               {% endif %}
@@ -457,11 +417,11 @@
         <div id="right-plots"  class="grid grid-cols-[1fr] grid-rows-[1fr] [direction:ltr] gap-[8px] flex-wrap w-[50%] bg-[#111111]">
             {% for plot in vcfs.repository[1].variants.plots.as_html() %}
               {% if loop.index == 1 %}
-                <div class="w-full visible opacity-100 relative" id="right-plot{{ loop.index }}" data-component="plot-right">
+                <div class="w-full visible opacity-100 relative border-y-2 border-gray-600 shadow-lg shadow-white/10 rounded-lg transition-all duration-300" id="right-plot{{ loop.index }}" data-component="plot-right">
                   {{ plot }}
                 </div>
               {% else %}
-                <div class="invisible opacity-0 w-full [transition:opacity_0.3s_ease-in-out]" id="right-plot{{ loop.index }}" data-component="plot-right">
+                <div class="invisible opacity-0 w-full [transition:opacity_0.3s_ease-in-out] border-y-2 border-gray-600 shadow-lg shadow-white/10 rounded-lg transition-all duration-300" id="right-plot{{ loop.index }}" data-component="plot-right">
                   {{ plot }}
                 </div>
               {% endif %}
@@ -525,8 +485,8 @@
 
           const newHeight = Math.max(150, plotHeight + deltaY);
 
-          activeCurrentPlot.classList.add("border-2", "border-dashed", "border-red-500");
-          inactiveCurrentPlot.classList.add("border-2", "border-dashed", "border-red-500");
+          activeCurrentPlot.classList.add("border-dashed");
+          inactiveCurrentPlot.classList.add("border-dashed");
             
           activePlotContainer.style.height = `${newHeight}px`;
           inactivePlotContainer.style.height = `${newHeight}px`;
@@ -542,8 +502,8 @@
         function onMouseUp() {
           document.removeEventListener('mousemove', onDrag);
           document.removeEventListener('mouseup', onMouseUp);
-          activeCurrentPlot.classList.remove("border-2", "border-dashed", "border-red-500");
-          inactiveCurrentPlot.classList.remove("border-2", "border-dashed", "border-red-500");
+          activeCurrentPlot.classList.remove("border-dashed");
+          inactiveCurrentPlot.classList.remove("border-dashed");
         }
 
         document.addEventListener('mousemove', onDrag);
@@ -1392,7 +1352,7 @@
                     </div>
                   </div>
                   <!-- Filter summary and tags -->
-                  <div class="flex flex-row mt-2 w-full mb-[5px] ml-[5px]">
+                  <div class="flex flex-row mt-2 w-full mb-[5px] ml-[5px] gap-2">
                     <!-- Filter summary -->
                     <div class="flex flex-col items-center border-solid border-1 border-black rounded-lg px-4 py-1">
                       <div class="flex flex-row items-center gap-2">
@@ -1408,14 +1368,26 @@
                       </div>
                       <progress id="summary-bar-left" class="progress progress-success w-full max-w-full overflow-x-hidden h-[4px]" value="0" max="100"></progress>
                     </div>
+                    {% if table is not none %}
+                    <!-- Reference information -->
+                    <div data-component="info-popup" class="w-[320px] px-4 py-1 flex flex-row items-center bg-[#D7F1FD] rounded-lg border-solid border-1 border-black">
+                        <div class="w-[20px] h-[20px] -translate-y-[2px] mr-[8px]">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" height="24" fill="none">
+                            <path fill="#59cafc" d="m12 1.5c-5.79844 0-10.5 4.70156-10.5 10.5 0 5.7984 4.70156 10.5 10.5 10.5 5.7984 0 10.5-4.7016 10.5-10.5 0-5.79844-4.7016-10.5-10.5-10.5zm.75 15.5625c0 .1031-.0844.1875-.1875.1875h-1.125c-.1031 0-.1875-.0844-.1875-.1875v-6.375c0-.1031.0844-.1875.1875-.1875h1.125c.1031 0 .1875.0844.1875.1875zm-.75-8.0625c-.2944-.00601-.5747-.12718-.7808-.3375-.206-.21032-.3215-.49305-.3215-.7875s.1155-.57718.3215-.7875c.2061-.21032.4864-.33149.7808-.3375.2944.00601.5747.12718.7808.3375.206.21032.3215.49305.3215.7875s-.1155.57718-.3215.7875c-.2061.21032-.4864.33149-.7808.3375z">
+                            </path>
+                          </svg>
+                        </div>
+                        <div class="font-[Ubuntu] font-medium text-[14px] text-[#0C2A75]">This VCF has been set as <strong>reference</strong>.</div>
+                    </div>
+                    {% endif %}
                     <!-- Tags container -->
                     {% if tags[0] %}
-                      <div class="flex flex-row w-1/2 justify-center gap-1">
+                    <div class="flex flex-row w-1/2 justify-center gap-1">
                         {% for tag in tags[0] %}
-                          <span class="text-[0.875rem] font-bold px-2.5 py-0.5 mb-[5px] rounded-full inline-block bg-[#dbeafe] text-[#1e40af] border-solid border border-[#60A5FA] font-[Ubuntu]">{{ tag | trim }}</span>
+                        <span class="text-[0.875rem] font-bold px-2.5 py-0.5 mb-[5px] rounded-full inline-block bg-[#dbeafe] text-[#1e40af] border-solid border border-[#60A5FA] font-[Ubuntu]">{{ tag | trim }}</span>
                         {% endfor %}
-                      </div>
-                    {% endif %}  
+                    </div>
+                    {% endif %}
                   </div>
                 </div>
 
@@ -1529,7 +1501,7 @@
                     </div>
                   </div>
                   <!-- Filter summary and tags -->
-                  <div class="flex flex-row mt-2 w-full mb-[5px] ml-[5px]">
+                  <div class="flex flex-row mt-2 w-full mb-[5px] ml-[5px] gap-2">
                     <div class="flex flex-col items-center border-solid border-1 border-white rounded-lg px-4 py-1">
                       <div class="flex flex-row items-center gap-2">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
@@ -1544,13 +1516,25 @@
                       </div>
                       <progress id="summary-bar-right" class="progress progress-success w-full max-w-full overflow-x-hidden h-[4px]" value="0" max="100"></progress>
                     </div>
+                    {% if table is not none %}
+                    <!-- Query information -->
+                    <div data-component="info-popup" class="w-[320px] px-4 py-1 flex flex-row items-center bg-[#D7F1FD] rounded-lg border-solid border-1 border-white">
+                        <div class="w-[20px] h-[20px] -translate-y-[2px] mr-[8px]">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" height="24" fill="none">
+                            <path fill="#59cafc" d="m12 1.5c-5.79844 0-10.5 4.70156-10.5 10.5 0 5.7984 4.70156 10.5 10.5 10.5 5.7984 0 10.5-4.7016 10.5-10.5 0-5.79844-4.7016-10.5-10.5-10.5zm.75 15.5625c0 .1031-.0844.1875-.1875.1875h-1.125c-.1031 0-.1875-.0844-.1875-.1875v-6.375c0-.1031.0844-.1875.1875-.1875h1.125c.1031 0 .1875.0844.1875.1875zm-.75-8.0625c-.2944-.00601-.5747-.12718-.7808-.3375-.206-.21032-.3215-.49305-.3215-.7875s.1155-.57718.3215-.7875c.2061-.21032.4864-.33149.7808-.3375.2944.00601.5747.12718.7808.3375.206.21032.3215.49305.3215.7875s-.1155.57718-.3215.7875c-.2061.21032-.4864.33149-.7808.3375z">
+                            </path>
+                          </svg>
+                        </div>
+                        <div class="font-[Ubuntu] font-medium text-[14px] text-[#0C2A75]">This VCF has been set as <strong>query</strong>.</div>
+                    </div>
+                    {% endif %}
                     <!-- Tags container -->
                     {% if tags[1] %}
-                      <div class="flex flex-row w-1/2 justify-center gap-1">
+                    <div class="flex flex-row w-1/2 justify-center gap-1">
                         {% for tag in tags[1] %}
-                          <span class="text-[0.875rem] font-bold px-2.5 py-0.5 mb-[5px] rounded-full inline-block bg-[#dbeafe] text-[#1e40af] border-solid border border-[#60A5FA] font-[Ubuntu]">{{ tag | trim }}</span>
+                        <span class="text-[0.875rem] font-bold px-2.5 py-0.5 mb-[5px] rounded-full inline-block bg-[#dbeafe] text-[#1e40af] border-solid border border-[#60A5FA] font-[Ubuntu]">{{ tag | trim }}</span>
                         {% endfor %}
-                      </div>
+                    </div>
                     {% endif %}
                   </div>
                 </div>
