@@ -35,7 +35,7 @@
         <!-- Left header -->
         <div id="header-left" class="flex w-1/2 bg-[white]">
           <!-- File name-->
-          <h2 class="mt-[20px] mb-[10px] font-[Ubuntu] font-bold italic text-center text-2xl w-full text-[#111111] max-w-full overflow-hidden text-ellipsis whitespace-nowrap">
+          <h2 class="mt-[20px] mb-[10px] font-mono font-bold italic text-center text-2xl w-full text-[#111111] max-w-full overflow-hidden text-ellipsis whitespace-nowrap">
             {{ vcfs.repository[0].informations().basename|default("VCF.L") }}
           </h2>
         </div>
@@ -43,7 +43,7 @@
         <!-- Right header -->
         <div id="header-right" class="flex w-1/2 bg-[#111111]">
           <!-- File name-->
-          <h2 class="mt-[20px] mb-[10px] font-[Ubuntu] font-bold italic text-center text-2xl w-full text-[white] max-w-full truncate overflow-hidden whitespace-nowrap">
+          <h2 class="mt-[20px] mb-[10px] font-mono font-bold italic text-center text-2xl w-full text-[white] max-w-full truncate overflow-hidden whitespace-nowrap">
             {{ vcfs.repository[1].informations().basename|default("VCF.R") }}
           </h2>
         </div>
@@ -57,7 +57,7 @@
             <!-- Metadatas container -->
             <div class="flex justify-center items-center flex-wrap w-full pt-[5px] overflow-x-auto" id="metadatas-container-left">
               <div id="table-metadata-left-container" class="overflow-x-auto rounded-box mx-[5%] w-[90%]">
-                <table id="table-metadata-left" class="table font-[Ubuntu] w-full">
+                <table id="table-metadata-left" class="table font-sans w-full">
                   <!-- head -->
                   <thead class="text-black bg-[#EEF0F1]">
                     <tr class="border-b border-gray-200">
@@ -127,7 +127,7 @@
             <!-- Metadatas container -->
             <div class="flex justify-center items-center flex-wrap w-full pt-[5px] overflow-x-auto" id="metadatas-container-right">
               <div id="table-metadata-right-container" class="overflow-x-auto rounded-box mx-[5%] w-[90%]">
-                <table id="table-metadata-right" class="table font-[Ubuntu] w-full">
+                <table id="table-metadata-right" class="table font-sans w-full">
                   <!-- head -->
                   <thead class="text-white bg-[#333333]">
                     <tr class="border-b border-gray-200">
@@ -217,8 +217,8 @@
         <!-- Command container -->
         <div class="overflow-x-auto">
           <!-- Command -->
-          <pre data-prefix="$" class="font-[Ubuntu]"><code>{{ cmd }}</code></pre>
-          <pre data-prefix=">" class="text-success font-[Ubuntu] !text-green-200"><code>Done!</code></pre>
+          <pre data-prefix="$" class="font-sans"><code>{{ cmd }}</code></pre>
+          <pre data-prefix=">" class="text-success font-sans !text-green-200"><code>Done!</code></pre>
         </div>
       </div>
 
@@ -371,11 +371,11 @@
     <div class="flex flex-row w-full">
       <!-- Left plots divider -->
       <div class="flex flex-col w-[50%] bg-[white] justify-center">
-          <div class="divider w-[90%] self-center ![--color-base-content:black]"><span class="text-black font-[Ubuntu]">Plots</span></div>
+          <div class="divider w-[90%] self-center ![--color-base-content:black]"><span class="text-black font-mono">Plots</span></div>
       </div>
       <!-- Right plots divider -->
       <div class="flex flex-col w-[50%] bg-[#111111] justify-center">
-          <div class="divider w-[90%] self-center ![--color-base-content:white]"><span class="text-white font-[Ubuntu]">Plots</span></div>
+          <div class="divider w-[90%] self-center ![--color-base-content:white]"><span class="text-white font-mono">Plots</span></div>
       </div>
     </div>
 
@@ -406,9 +406,9 @@
             <!-- Left plot navigation -->
             <div id="plot-navigation-left" class="flex justify-between items-center w-full max-w-full min-w-0 mx-[0] my-[10px]">
               <div class="flex justify-center w-full pl-[20px] max-w-full min-w-0">
-                  <div class="cursor-pointer text-[24px] bg-[rgba(200,_200,_200,_0.3)] rounded-[50%] flex items-center justify-center w-[40px] min-w-[40px] h-[40px] min-h-[40px] [transition:all_0.3s_ease] mb-[5px] text-[black] font-[Ubuntu] hover:bg-[rgba(150,_150,_150,_0.7)] hover:scale-110" id="leftPrevArrow">&#8592;</div>
+                  <div class="cursor-pointer text-[24px] bg-[rgba(200,_200,_200,_0.3)] rounded-[50%] flex items-center justify-center w-[40px] min-w-[40px] h-[40px] min-h-[40px] [transition:all_0.3s_ease] mb-[5px] text-[black] font-mono hover:bg-[rgba(150,_150,_150,_0.7)] hover:scale-110" id="leftPrevArrow">&#8592;</div>
                   <div class="flex gap-[5px] mx-[15px] my-[0] items-center min-w-0" id="leftPlotIndicator"></div>
-                  <div class="cursor-pointer text-[24px] bg-[rgba(200,_200,_200,_0.3)] rounded-[50%] flex items-center justify-center w-[40px] min-w-[40px] h-[40px] min-h-[40px] [transition:all_0.3s_ease] mb-[5px] text-[black] font-[Ubuntu] hover:bg-[rgba(150,_150,_150,_0.7)] hover:scale-110" id="leftNextArrow">&#8594;</div>
+                  <div class="cursor-pointer text-[24px] bg-[rgba(200,_200,_200,_0.3)] rounded-[50%] flex items-center justify-center w-[40px] min-w-[40px] h-[40px] min-h-[40px] [transition:all_0.3s_ease] mb-[5px] text-[black] font-mono hover:bg-[rgba(150,_150,_150,_0.7)] hover:scale-110" id="leftNextArrow">&#8594;</div>
               </div>
             </div>
         </div>
@@ -437,9 +437,9 @@
             <!-- Right plot navigation -->
             <div id="plot-navigation-right" class="flex justify-between items-center w-full max-w-full min-w-0 mx-[0] my-[10px]">
               <div class="flex justify-center w-full max-w-full min-w-0 pl-[20px]">
-                <div class="cursor-pointer text-[24px] bg-[rgba(200,_200,_200,_0.3)] rounded-[50%] flex items-center justify-center w-[40px] min-w-[40px] h-[40px] min-h-[40px] [transition:all_0.3s_ease] mb-[5px] text-[white] font-[Ubuntu] hover:bg-[rgba(150,_150,_150,_0.7)] hover:scale-110" id="rightPrevArrow">&#8592;</div>
+                <div class="cursor-pointer text-[24px] bg-[rgba(200,_200,_200,_0.3)] rounded-[50%] flex items-center justify-center w-[40px] min-w-[40px] h-[40px] min-h-[40px] [transition:all_0.3s_ease] mb-[5px] text-[white] font-mono hover:bg-[rgba(150,_150,_150,_0.7)] hover:scale-110" id="rightPrevArrow">&#8592;</div>
                 <div class="flex gap-[5px] mx-[15px] my-[0] items-center min-w-0" id="rightPlotIndicator"></div>
-                <div class="cursor-pointer text-[24px] bg-[rgba(200,_200,_200,_0.3)] rounded-[50%] flex items-center justify-center w-[40px] min-w-[40px] h-[40px] min-h-[40px] [transition:all_0.3s_ease] mb-[5px] text-[white] font-[Ubuntu] hover:bg-[rgba(150,_150,_150,_0.7)] hover:scale-110" id="rightNextArrow">&#8594;</div>
+                <div class="cursor-pointer text-[24px] bg-[rgba(200,_200,_200,_0.3)] rounded-[50%] flex items-center justify-center w-[40px] min-w-[40px] h-[40px] min-h-[40px] [transition:all_0.3s_ease] mb-[5px] text-[white] font-mono hover:bg-[rgba(150,_150,_150,_0.7)] hover:scale-110" id="rightNextArrow">&#8594;</div>
               </div>
             </div>
         </div>
@@ -715,11 +715,11 @@
     <div class="flex flex-row w-full">
         <!-- Left filters divider -->
         <div class="flex flex-col w-[50%] bg-[white] justify-center">
-            <div class="divider w-[90%] self-center ![--color-base-content:black]"><span class="text-black font-[Ubuntu]">Filters</span></div>
+            <div class="divider w-[90%] self-center ![--color-base-content:black]"><span class="text-black font-mono">Filters</span></div>
         </div>
         <!-- Right filters divider -->
         <div class="flex flex-col w-[50%] bg-[#111111] justify-center">
-            <div class="divider w-[90%] self-center ![--color-base-content:white]"><span class="text-white font-[Ubuntu]">Filters</span></div>
+            <div class="divider w-[90%] self-center ![--color-base-content:white]"><span class="text-white font-mono">Filters</span></div>
         </div>
     </div>
 
@@ -762,8 +762,8 @@
               <!-- Chromosome input -->
               <div id="filter-chromosome" class="h-[45px] mr-[5%] border-[1px] border-[solid] border-[#3d444d] rounded-xl px-[15px] py-[5px] bg-[#0d1117] [transition:150ms_cubic-bezier(0.4,0,0.2,1)] flex flew-row items-center hover:border-[#999999] min-w-[180px] flex-shrink">
                 <div class="relative w-full h-full flex items-center min-w-0">
-                  <input id="query-chromosome" placeholder="" class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-white bg-transparent appearance-none focus:outline-none focus:ring-0 peer font-[Ubuntu]" type="text">
-                  <label for="query-chromosome" class="absolute text-sm text-white duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-[#0d1117] px-2 peer-focus:px-2 peer-focus:text-white peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1 font-[Ubuntu]">Search chromosome</label>
+                  <input id="query-chromosome" placeholder="" class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-white bg-transparent appearance-none focus:outline-none focus:ring-0 peer font-sans" type="text">
+                  <label for="query-chromosome" class="absolute text-sm text-white duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-[#0d1117] px-2 peer-focus:px-2 peer-focus:text-white peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1 font-sans">Search chromosome</label>
                 </div>
               </div>
 
@@ -783,7 +783,7 @@
               <!-- Status select -->
               <div class="relative w-fit">
                 <span id="status-filter-set-indicator" data-component="filter-set-indicator" class="flex w-3 h-3 bg-green-400 rounded-full absolute -translate-y-1/2 translate-x-1/2 left-auto top-0 right-0 z-999 border-1 border-solid border-white"></span>
-                <select id="query-status" class="select select-md ![--input-color:black] px-[10px] py-[10px] rounded-[5px] border-[none] min-w-[150px] max-w-full text-[14px] font-[Ubuntu] bg-neutral text-[white] cursor-pointer" onchange="animateStatusSVG(this.value)">
+                <select id="query-status" class="select select-md ![--input-color:black] px-[10px] py-[10px] rounded-[5px] border-[none] min-w-[150px] max-w-full text-[14px] font-sans bg-neutral text-[white] cursor-pointer" onchange="animateStatusSVG(this.value)">
                     <option selected disabled>Select a status...</option>
                     <option>ALL</option>
                     <option>MATCH</option>
@@ -839,7 +839,7 @@
               <!-- Variant FILTER select -->
               <div class="relative w-fit">
                 <span id="filter-filter-set-indicator" data-component="filter-set-indicator" class="flex w-3 h-3 bg-green-400 rounded-full absolute -translate-y-1/2 translate-x-1/2 left-auto top-0 right-0 z-999 border-1 border-solid border-[#111111]"></span>
-                <select id="query-filter" class="select select-md ![--input-color:white] px-[10px] py-[10px] rounded-[5px] border-[none] min-w-[150px] max-w-full text-[14px] font-[Ubuntu] text-[black] bg-white cursor-pointer" onchange="animateFunnelSVG(this.value)">
+                <select id="query-filter" class="select select-md ![--input-color:white] px-[10px] py-[10px] rounded-[5px] border-[none] min-w-[150px] max-w-full text-[14px] font-sans text-[black] bg-white cursor-pointer" onchange="animateFunnelSVG(this.value)">
                     <option selected disabled>Select a filter...</option>
                     <option>ALL</option>
                     <option>PASS</option>
@@ -891,7 +891,7 @@
               <!-- Variant type select -->
               <div class="relative w-fit">
                 <span id="variant-filter-set-indicator" data-component="filter-set-indicator" class="flex w-3 h-3 bg-green-400 rounded-full absolute -translate-y-1/2 translate-x-1/2 left-auto top-0 right-0 z-999 border-1 border-solid border-[#111111]"></span>
-                <select id="query-variant" class="select select-md ![--input-color:white] px-[10px] py-[10px] rounded-[5px] border-[none] min-w-[150px] max-w-full text-[14px] font-[Ubuntu] text-[black] bg-white cursor-pointer" onchange="animateVariantSVG(this.value)">
+                <select id="query-variant" class="select select-md ![--input-color:white] px-[10px] py-[10px] rounded-[5px] border-[none] min-w-[150px] max-w-full text-[14px] font-sans text-[black] bg-white cursor-pointer" onchange="animateVariantSVG(this.value)">
                     <option selected disabled>Select a variant...</option>
                     <option>ALL</option>
                     <option>SNP</option>
@@ -996,7 +996,7 @@
             <!-- Reset filters button -->
             <div class="flex flex-col items-center justify-center gap-2">
               <div class="flex h-[50px] items-center justify-center">
-                <button id="reset-button" title="Reset filters" class="relative self-center bg-[rgba(79,_70,_229,_0.9)] border-[none] px-[20px] py-[10px] mx-[3%] cursor-pointer text-[14px] text-white rounded-[16px] font-[Ubuntu] font-bold hover:bg-[rgba(67,_56,_202,_0.9)] flex-shrink-0 whitespace-nowrap" onclick="resetFilters()">
+                <button id="reset-button" title="Reset filters" class="relative self-center bg-[rgba(79,_70,_229,_0.9)] border-[none] px-[20px] py-[10px] mx-[3%] cursor-pointer text-[14px] text-white rounded-[16px] font-sans font-bold hover:bg-[rgba(67,_56,_202,_0.9)] flex-shrink-0 whitespace-nowrap" onclick="resetFilters()">
                   Reset
                   <!-- Reset icon -->
                   <svg xmlns="http://www.w3.org/2000/svg" class="absolute -top-2 -right-2" width="24" height="24" viewBox="0 0 24 24">
@@ -1047,7 +1047,7 @@
         <div id="keywords-terminal-left" class="flex flex-row flex-wrap w-[50%] gap-2 justify-center mb-[10px] mr-[10px]">
           {% if vcfs.repository[0].variants.format -%}
             {% for key in vcfs.repository[0].variants.format -%}
-            <div class="badge badge-primary text-white cursor-pointer font-[Ubuntu] hover:bg-[rgba(67,_56,_202,_0.9)]" onclick="addKeyword(this)">{{ key }}</div>
+            <div class="badge badge-primary text-white cursor-pointer font-sans hover:bg-[rgba(67,_56,_202,_0.9)]" onclick="addKeyword(this)">{{ key }}</div>
             {%- endfor %}
           {%- endif %}
           <!-- Left keywords click icon -->
@@ -1059,7 +1059,7 @@
         <div id="keywords-terminal-right" class="flex flex-row flex-wrap w-[50%] gap-2 justify-center mb-[10px] ml-[10px]">
           {% if vcfs.repository[1].variants.format -%}
             {% for key in vcfs.repository[1].variants.format -%}
-            <div class="badge badge-primary text-white cursor-pointer font-[Ubuntu] hover:bg-[rgba(67,_56,_202,_0.9)]" onclick="addKeyword(this)">{{ key }}</div>
+            <div class="badge badge-primary text-white cursor-pointer font-sans hover:bg-[rgba(67,_56,_202,_0.9)]" onclick="addKeyword(this)">{{ key }}</div>
             {%- endfor %}
           {%- endif %}
           <!-- Right keywords click icon -->
@@ -1109,7 +1109,7 @@
       <div id="terminal" class="bg-[rgba(217,_217,_217,_0.18)] backdrop-filter backdrop-blur rounded-[12px] [box-shadow:0_4px_6px_rgba(0,_0,_0,_0.1)] overflow-hidden w-[90%] ml-[5%] mr-[5%] h-[250px] hidden">
         <!-- Terminal header -->
         <div class="bg-[#202425] px-[15px] py-[10px] flex items-center">
-          <span class="text-[#ffffff] text-[14px] font-semibold flex items-center gap-[8px] font-[Ubuntu]">
+          <span class="text-[#ffffff] text-[14px] font-semibold flex items-center gap-[8px] font-mono">
             <svg
               class="text-[#006adc]"
               width="16"
@@ -1131,11 +1131,11 @@
           <div class="flex items-center">
             <div class="w-full flex flex-col gap-2">
               <div class="w-full flex flex-row gap-2">
-                <p class="py-1 whitespace-nowrap font-[Ubuntu]">SELECT * FROM VCFS WHERE</p>
+                <p class="py-1 whitespace-nowrap font-sans">SELECT * FROM VCFS WHERE</p>
                 <input
                   id="terminal-input"
                   type="text"
-                  class="border-[#202425] text-[white] [font-family:inherit] outline-[#202425] w-full placeholder-[rgba(255,_255,_255,_0.5)] transition-all duration-500 font-[Ubuntu]"
+                  class="border-[#202425] text-[white] [font-family:inherit] outline-[#202425] w-full placeholder-[rgba(255,_255,_255,_0.5)] transition-all duration-500 font-sans"
                   placeholder="Enter condition(s)..."
                   onfocus="stopAnimation()"
                 />
@@ -1245,9 +1245,9 @@
                 </script>
               </div>
               <!-- Stdout container -->
-              <p id="stdout" class="hidden text-[black] border-2 border-solid border-green-200 rounded-lg p-1 bg-green-200 font-[Ubuntu]"></p>
+              <p id="stdout" class="hidden text-[black] border-2 border-solid border-green-200 rounded-lg p-1 bg-green-200 font-sans"></p>
               <!-- Stderr container -->
-              <p id="stderr" class="hidden text-[black] border-2 border-solid border-red-200 rounded-lg p-1 bg-red-200 font-[Ubuntu]"></p>
+              <p id="stderr" class="hidden text-[black] border-2 border-solid border-red-200 rounded-lg p-1 bg-red-200 font-sans"></p>
             </div>
           </div>
         </div>
@@ -1262,7 +1262,7 @@
           <div class="w-[20px] h-[20px] -translate-y-[2px] mr-[8px]">
               <svg xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" height="24" fill="none"><path fill="#393a37" d="m13 13h-2v-6h2zm0 4h-2v-2h2zm-1-15c-1.3132 0-2.61358.25866-3.82683.7612-1.21326.50255-2.31565 1.23915-3.24424 2.16773-1.87536 1.87537-2.92893 4.41891-2.92893 7.07107 0 2.6522 1.05357 5.1957 2.92893 7.0711.92859.9286 2.03098 1.6651 3.24424 2.1677 1.21325.5025 2.51363.7612 3.82683.7612 2.6522 0 5.1957-1.0536 7.0711-2.9289 1.8753-1.8754 2.9289-4.4189 2.9289-7.0711 0-1.3132-.2587-2.61358-.7612-3.82683-.5026-1.21326-1.2391-2.31565-2.1677-3.24424-.9286-.92858-2.031-1.66518-3.2443-2.16773-1.2132-.50254-2.5136-.7612-3.8268-.7612z"></path></svg>
           </div>
-          <div class="text-[14px] text-black font-[Ubuntu]">No variants were found with these filters.</div>
+          <div class="text-[14px] text-black font-sans">No variants were found with these filters.</div>
         </div>
       </div>
       <!-- Right error popup -->
@@ -1271,7 +1271,7 @@
           <div class="w-[20px] h-[20px] -translate-y-[2px] mr-[8px]">
               <svg xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" height="24" fill="none"><path fill="#393a37" d="m13 13h-2v-6h2zm0 4h-2v-2h2zm-1-15c-1.3132 0-2.61358.25866-3.82683.7612-1.21326.50255-2.31565 1.23915-3.24424 2.16773-1.87536 1.87537-2.92893 4.41891-2.92893 7.07107 0 2.6522 1.05357 5.1957 2.92893 7.0711.92859.9286 2.03098 1.6651 3.24424 2.1677 1.21325.5025 2.51363.7612 3.82683.7612 2.6522 0 5.1957-1.0536 7.0711-2.9289 1.8753-1.8754 2.9289-4.4189 2.9289-7.0711 0-1.3132-.2587-2.61358-.7612-3.82683-.5026-1.21326-1.2391-2.31565-2.1677-3.24424-.9286-.92858-2.031-1.66518-3.2443-2.16773-1.2132-.50254-2.5136-.7612-3.8268-.7612z"></path></svg>
           </div>
-          <div class="text-[14px] text-black font-[Ubuntu]">No variants were found with these filters.</div>
+          <div class="text-[14px] text-black font-sans">No variants were found with these filters.</div>
         </div>
       </div>
     </div>
@@ -1280,11 +1280,11 @@
     <div class="flex flex-row w-full">
       <!-- Left view divider -->
       <div class="flex flex-col w-[50%] bg-[white] justify-center">
-          <div class="divider w-[90%] self-center ![--color-base-content:black]"><span class="text-black font-[Ubuntu]">File view</span></div>
+          <div class="divider w-[90%] self-center ![--color-base-content:black]"><span class="text-black font-mono">File view</span></div>
       </div>
       <!-- Right view divider -->
       <div class="flex flex-col w-[50%] bg-[#111111] justify-center">
-          <div class="divider w-[90%] self-center ![--color-base-content:white]"><span class="text-white font-[Ubuntu]">File view</span></div>
+          <div class="divider w-[90%] self-center ![--color-base-content:white]"><span class="text-white font-mono">File view</span></div>
       </div>
     </div>
 
@@ -1296,7 +1296,7 @@
               <!-- Left file panel -->
               <div id="left-file-panel" class="flex-[1] overflow-hidden relative border-r-[2px_solid_#888]">
                 <!-- File Header -->
-                <div class="pt-4 text-center text-black border-b-[2px_solid_#ccc] font-[Ubuntu] font-bold bg-[#EEF0F1] flex flex-col">
+                <div class="pt-4 text-center text-black border-b-[2px_solid_#ccc] font-sans font-bold bg-[#EEF0F1] flex flex-col">
                   <div class="flex items-center justify-between px-4">
                     <div class="flex items-center gap-2">
                       <!-- File icon -->
@@ -1362,7 +1362,7 @@
                             <path fill="black" d="M2.5 5A1.5 1.5 0 0 1 4 3.5h16a1.5 1.5 0 0 1 0 3H4A1.5 1.5 0 0 1 2.5 5M4 10.5a1.5 1.5 0 0 0 0 3h6a1.5 1.5 0 0 0 0-3zM2.5 19A1.5 1.5 0 0 1 4 17.5h1a1.5 1.5 0 0 1 0 3H4A1.5 1.5 0 0 1 2.5 19m10 0a1.5 1.5 0 0 1 1.5-1.5h1a1.5 1.5 0 0 1 0 3h-1a1.5 1.5 0 0 1-1.5-1.5M9 17.5a1.5 1.5 0 0 0 0 3h1a1.5 1.5 0 0 0 0-3zm8.5 1.5a1.5 1.5 0 0 1 1.5-1.5h1a1.5 1.5 0 0 1 0 3h-1a1.5 1.5 0 0 1-1.5-1.5m.446-10.323a1 1 0 0 0-1.892 0l-.13.378a3 3 0 0 1-1.869 1.87l-.378.129a1 1 0 0 0 0 1.892l.378.13a3 3 0 0 1 1.87 1.869l.129.378a1 1 0 0 0 1.892 0l.13-.378a3 3 0 0 1 1.869-1.87l.378-.129a1 1 0 0 0 0-1.892l-.378-.13a3 3 0 0 1-1.87-1.869z" />
                           </g>
                         </svg>
-                        <p class="text-[15px] text-black mb-0 font-normal font-[Ubuntu]" id="filterSummaryL">
+                        <p class="text-[15px] text-black mb-0 font-normal font-sans" id="filterSummaryL">
                           All variants are shown
                         </p>
                       </div>
@@ -1377,14 +1377,14 @@
                             </path>
                           </svg>
                         </div>
-                        <div class="font-[Ubuntu] font-medium text-[14px] text-[#0C2A75]">This VCF has been set as <strong>reference</strong>.</div>
+                        <div class="font-sans font-medium text-[14px] text-[#0C2A75]">This VCF has been set as <strong>reference</strong>.</div>
                     </div>
                     {% endif %}
                     <!-- Tags container -->
                     {% if tags[0] %}
                     <div class="flex flex-row w-1/2 justify-center gap-1">
                         {% for tag in tags[0] %}
-                        <span class="text-[0.875rem] font-bold px-2.5 py-0.5 mb-[5px] rounded-full inline-block bg-[#dbeafe] text-[#1e40af] border-solid border border-[#60A5FA] font-[Ubuntu]">{{ tag | trim }}</span>
+                        <span class="text-[0.875rem] font-bold px-2.5 py-0.5 mb-[5px] rounded-full inline-block bg-[#dbeafe] text-[#1e40af] border-solid border border-[#60A5FA] font-sans">{{ tag | trim }}</span>
                         {% endfor %}
                     </div>
                     {% endif %}
@@ -1442,7 +1442,7 @@
               <!-- Right file panel -->
               <div id="right-file-panel" class="flex-[1] overflow-hidden relative border-[#ccc]">
                 <!-- File Header -->
-                <div class="pt-4 text-center border-b-[2px_solid_#ccc] font-[Ubuntu] font-bold bg-[#333333] text-white flex flex-col">
+                <div class="pt-4 text-center border-b-[2px_solid_#ccc] font-sans font-bold bg-[#333333] text-white flex flex-col">
                   <div class="flex items-center justify-between px-4">
                     <div class="flex items-center gap-2">
                       <!-- File icon -->
@@ -1510,7 +1510,7 @@
                             <path fill="white" d="M2.5 5A1.5 1.5 0 0 1 4 3.5h16a1.5 1.5 0 0 1 0 3H4A1.5 1.5 0 0 1 2.5 5M4 10.5a1.5 1.5 0 0 0 0 3h6a1.5 1.5 0 0 0 0-3zM2.5 19A1.5 1.5 0 0 1 4 17.5h1a1.5 1.5 0 0 1 0 3H4A1.5 1.5 0 0 1 2.5 19m10 0a1.5 1.5 0 0 1 1.5-1.5h1a1.5 1.5 0 0 1 0 3h-1a1.5 1.5 0 0 1-1.5-1.5M9 17.5a1.5 1.5 0 0 0 0 3h1a1.5 1.5 0 0 0 0-3zm8.5 1.5a1.5 1.5 0 0 1 1.5-1.5h1a1.5 1.5 0 0 1 0 3h-1a1.5 1.5 0 0 1-1.5-1.5m.446-10.323a1 1 0 0 0-1.892 0l-.13.378a3 3 0 0 1-1.869 1.87l-.378.129a1 1 0 0 0 0 1.892l.378.13a3 3 0 0 1 1.87 1.869l.129.378a1 1 0 0 0 1.892 0l.13-.378a3 3 0 0 1 1.869-1.87l.378-.129a1 1 0 0 0 0-1.892l-.378-.13a3 3 0 0 1-1.87-1.869z" />
                           </g>
                         </svg>
-                        <p class="text-[15px] text-white mb-0 font-normal font-[Ubuntu]" id="filterSummaryR">
+                        <p class="text-[15px] text-white mb-0 font-normal font-sans" id="filterSummaryR">
                           All variants are shown
                         </p>
                       </div>
@@ -1525,14 +1525,14 @@
                             </path>
                           </svg>
                         </div>
-                        <div class="font-[Ubuntu] font-medium text-[14px] text-[#0C2A75]">This VCF has been set as <strong>query</strong>.</div>
+                        <div class="font-sans font-medium text-[14px] text-[#0C2A75]">This VCF has been set as <strong>query</strong>.</div>
                     </div>
                     {% endif %}
                     <!-- Tags container -->
                     {% if tags[1] %}
                     <div class="flex flex-row w-1/2 justify-center gap-1">
                         {% for tag in tags[1] %}
-                        <span class="text-[0.875rem] font-bold px-2.5 py-0.5 mb-[5px] rounded-full inline-block bg-[#dbeafe] text-[#1e40af] border-solid border border-[#60A5FA] font-[Ubuntu]">{{ tag | trim }}</span>
+                        <span class="text-[0.875rem] font-bold px-2.5 py-0.5 mb-[5px] rounded-full inline-block bg-[#dbeafe] text-[#1e40af] border-solid border border-[#60A5FA] font-sans">{{ tag | trim }}</span>
                         {% endfor %}
                     </div>
                     {% endif %}
@@ -1681,18 +1681,18 @@
                 <!-- Statistics divider -->
                 <div class="flex flex-row w-full">
                   <div class="flex flex-col w-full bg-[#f3f4f6] justify-center">
-                      <div class="divider w-[90%] self-center ![--color-base-content:black]"><span class="text-black font-[Ubuntu]">Statistics</span></div>
+                      <div class="divider w-[90%] self-center ![--color-base-content:black]"><span class="text-black font-mono">Statistics</span></div>
                   </div>
                 </div>
 
                 <!-- General statistics -->
-                <div id="general-statistics" class="w-full flex justify-center items-center bg-[#f3f4f6] overflow-x-auto overflow-y-visible">
+                <div id="general-statistics" class="w-full flex justify-center items-center bg-[#f3f4f6] p-4 overflow-x-auto overflow-y-visible">
                   <button id="move-button-left" state="moveTop" title="Move to top" class="cursor-pointer hover:bg-gray-300 rounded" onclick="moveGeneralStatistics()">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
                       <path fill="black" d="m11.852 2.011l.058-.007L12 2l.075.003l.126.017l.111.03l.111.044l.098.052l.104.074l.082.073l3 3a1 1 0 1 1-1.414 1.414L13 5.415V13a1 1 0 0 1-2 0V5.415L9.707 6.707a1 1 0 0 1-1.32.083l-.094-.083a1 1 0 0 1 0-1.414l3-3q.053-.054.112-.097l.11-.071l.114-.054l.105-.035zM12 16a3 3 0 1 1 0 6a3 3 0 0 1 0-6"/>
                     </svg>
                   </button>
-                  <div id="cards" class="w-auto max-w-[1200px] mx-[auto] my-[0] grid grid-cols-[1fr] sm:grid-cols-[1fr_1fr] lg:grid-cols-[1fr_1fr_1fr] place-items-center gap-2 overflow-x-auto overflow-y-visible">
+                  <div id="cards" class="w-auto max-w-[1200px] mx-[auto] my-[0] grid grid-cols-[1fr] sm:grid-cols-[1fr_1fr] lg:grid-cols-[1fr_1fr_1fr] place-items-center gap-2 overflow-y-visible">
                     
                     <!-- Matching lines statistic -->
                     <div class="w-fit flex p-4 rounded-lg bg-[#fafafa] gap-4 hover:scale-103 transition-all duration-300">
@@ -1707,7 +1707,7 @@
                           </div>
                           <div data-component="general-card-datas" class="flex flex-col justify-center">
                             <p class="text-[1.875rem] text-black font-semibold leading-none">{{ view["common"] }}</p>
-                            <p class="text-black text-nowrap capitalize font-[Ubuntu]">Matching lines</p>
+                            <p class="text-black text-nowrap capitalize font-sans">Matching lines</p>
                           </div>
                           <div class="flex flex-row gap-1 h-fit w-fit">
                             <button class="w-fit h-fit cursor-pointer hover:bg-gray-200 rounded" onclick="toggleCardSupplementaryInformation('match')">
@@ -1723,7 +1723,7 @@
                               </svg>
                               <div class="absolute left-full ml-2 w-[300px] hidden group-hover:block group-hover:z-10000">
                                 <!-- Information content -->
-                                <p class="text-info-content !bg-[#D7F1FD] rounded-2xl pt-[0.1em] pr-[16px] pb-[0.1em] pl-[16px] font-[Ubuntu] shadow-lg border-1 border-solid border-[rgba(89,_202,_252,_0.3)]"><strong>Matching</strong> criteria is based on: <strong>chromosome - position - reference allele - alternative allele</strong></p>
+                                <p class="text-info-content !bg-[#D7F1FD] rounded-2xl pt-[0.1em] pr-[16px] pb-[0.1em] pl-[16px] font-sans shadow-lg border-1 border-solid border-[rgba(89,_202,_252,_0.3)]"><strong>Matching</strong> criteria is based on: <strong>chromosome - position - reference allele - alternative allele</strong></p>
                               </div>
                             </div>
                           </div>
@@ -1888,7 +1888,7 @@
                           </div>
                           <div data-component="general-card-datas" class="flex flex-col justify-center">
                             <p class="text-[1.875rem] text-black font-semibold leading-none">{{ view["unique"].values() | sum }}</p>
-                            <p class="text-black text-nowrap capitalize font-[Ubuntu]">Different lines</p>
+                            <p class="text-black text-nowrap capitalize font-sans">Different lines</p>
                           </div>
                           <div class="flex flex-row gap-1 h-fit w-fit">
                             <button class="w-fit h-fit cursor-pointer hover:bg-gray-200 rounded" onclick="toggleCardSupplementaryInformation('mismatch')">
@@ -1904,7 +1904,7 @@
                               </svg>
                               <div class="absolute left-full ml-2 w-[300px] hidden group-hover:block group-hover:z-10000">
                                 <!-- Information content -->
-                                <p class="text-info-content !bg-[#D7F1FD] rounded-2xl pt-[0.1em] pr-[16px] pb-[0.1em] pl-[16px] font-[Ubuntu] shadow-lg border-1 border-solid border-[rgba(89,_202,_252,_0.3)]"><strong>Mismatch</strong> criteria is based on: <strong>chromosome - position - reference allele - alternative allele</strong></p>
+                                <p class="text-info-content !bg-[#D7F1FD] rounded-2xl pt-[0.1em] pr-[16px] pb-[0.1em] pl-[16px] font-sans shadow-lg border-1 border-solid border-[rgba(89,_202,_252,_0.3)]"><strong>Mismatch</strong> criteria is based on: <strong>chromosome - position - reference allele - alternative allele</strong></p>
                               </div>
                             </div>
                           </div>
@@ -2071,7 +2071,7 @@
                           </div>
                           <div data-component="general-card-datas" class="flex flex-col justify-center">
                             <p class="text-[1.875rem] text-black font-semibold leading-none">{{ view["jaccard"] }}</p>
-                            <p class="text-black text-nowrap capitalize font-[Ubuntu]">Jaccard index</p>
+                            <p class="text-black text-nowrap capitalize font-sans">Jaccard index</p>
                           </div>
                           <div class="flex flex-row gap-1 h-fit w-fit">
                             <button class="w-fit h-fit cursor-pointer hover:bg-gray-200 rounded" onclick="toggleCardSupplementaryInformation('jaccard')">
@@ -2087,7 +2087,7 @@
                               </svg>
                               <div class="absolute left-full ml-2 w-[300px] hidden group-hover:block group-hover:z-10000">
                                 <!-- Information content -->
-                                <p class="text-info-content !bg-[#D7F1FD] rounded-2xl pt-[0.1em] pr-[16px] pb-[0.1em] pl-[16px] font-[Ubuntu] shadow-lg border-1 border-solid border-[rgba(89,_202,_252,_0.3)]"><strong>Jaccard Index</strong> calculated as: <strong>common variant / total unique variants</strong></p>
+                                <p class="text-info-content !bg-[#D7F1FD] rounded-2xl pt-[0.1em] pr-[16px] pb-[0.1em] pl-[16px] font-sans shadow-lg border-1 border-solid border-[rgba(89,_202,_252,_0.3)]"><strong>Jaccard Index</strong> calculated as: <strong>common variant / total unique variants</strong></p>
                               </div>
                             </div>
                           </div>
@@ -2436,7 +2436,7 @@
                 </div> 
 
                 <!-- Variant statistics -->
-                <div id="variant-statistics" class="flex flex-row bg-[#f3f4f6] mt-[10px] overflow-x-auto">
+                <div id="variant-statistics" class="flex flex-row bg-[#f3f4f6] p-4 overflow-x-auto">
                   <div class="w-full grid grid-cols-[1fr] lg:grid-cols-[1fr_1fr] 2xl:grid-cols-[1fr_1fr_1fr] gap-[1.0rem]">
 
                     <!-- SNP (Single Nucleotide Polymorphism) -->
@@ -2465,7 +2465,7 @@
                               <svg class="inline-block mr-[0.5rem] flex-shrink-0" fill="currentColor" height="16" width="16" viewBox="0 0 16 16">
                                 <path fill="#2C7A7B" d="M8 4a4 4 0 1 1 0 8 4 4 0 0 1 0-8Z"></path>
                               </svg>
-                              <span class="text-black mr-[0.25rem] truncate max-w-full whitespace-nowrap block font-[Ubuntu]" title="{{ vcfs.repository[0].informations().basename }}">
+                              <span class="text-black mr-[0.25rem] truncate max-w-full whitespace-nowrap block font-sans" title="{{ vcfs.repository[0].informations().basename }}">
                                 {{ vcfs.repository[0].informations().basename }}
                               </span>
                               <span data-component="file-legend-value-left" class="text-black font-semibold">NA</span>
@@ -2476,7 +2476,7 @@
                               <svg class="inline-block mr-[0.5rem] flex-shrink-0" fill="currentColor" height="16" width="16" viewBox="0 0 16 16">
                                 <path fill="#822E4A" d="M8 4a4 4 0 1 1 0 8 4 4 0 0 1 0-8Z"></path>
                               </svg>
-                              <span class="text-black mr-[0.25rem] truncate max-w-full whitespace-nowrap block font-[Ubuntu]" title="{{ vcfs.repository[1].informations().basename }}">
+                              <span class="text-black mr-[0.25rem] truncate max-w-full whitespace-nowrap block font-sans" title="{{ vcfs.repository[1].informations().basename }}">
                                 {{ vcfs.repository[1].informations().basename }}
                               </span>
                               <span data-component="file-legend-value-right" class="text-black font-semibold">NA</span>
@@ -2500,7 +2500,7 @@
                           </path>
                         </svg>
                         <div class="absolute left-full ml-2 w-[300px] hidden group-hover:block z-10">
-                          <p class="text-info-content !bg-[#D7F1FD] rounded-2xl pt-[0.1em] pr-[16px] pb-[0.1em] pl-[16px] font-[Ubuntu] shadow-lg border-1 border-solid border-[rgba(89,_202,_252,_0.3)]">A single base change in the DNA sequence.</p>
+                          <p class="text-info-content !bg-[#D7F1FD] rounded-2xl pt-[0.1em] pr-[16px] pb-[0.1em] pl-[16px] font-sans shadow-lg border-1 border-solid border-[rgba(89,_202,_252,_0.3)]">A single base change in the DNA sequence.</p>
                         </div>
                       </div>
                     </div>
@@ -2532,7 +2532,7 @@
                               <svg class="inline-block mr-[0.5rem] flex-shrink-0" fill="currentColor" height="16" width="16" viewBox="0 0 16 16">
                                 <path fill="#2C7A7B" d="M8 4a4 4 0 1 1 0 8 4 4 0 0 1 0-8Z"></path>
                               </svg>
-                              <span class="text-black mr-[0.25rem] truncate max-w-full whitespace-nowrap block font-[Ubuntu]" title="{{ vcfs.repository[0].informations().basename }}">
+                              <span class="text-black mr-[0.25rem] truncate max-w-full whitespace-nowrap block font-sans" title="{{ vcfs.repository[0].informations().basename }}">
                                 {{ vcfs.repository[0].informations().basename }}
                               </span>
                               <span data-component="file-legend-value-left" class="text-black font-semibold">NA</span>
@@ -2543,7 +2543,7 @@
                               <svg class="inline-block mr-[0.5rem] flex-shrink-0" fill="currentColor" height="16" width="16" viewBox="0 0 16 16">
                                 <path fill="#822E4A" d="M8 4a4 4 0 1 1 0 8 4 4 0 0 1 0-8Z"></path>
                               </svg>
-                              <span class="text-black mr-[0.25rem] truncate max-w-full whitespace-nowrap block font-[Ubuntu]" title="{{ vcfs.repository[1].informations().basename }}">
+                              <span class="text-black mr-[0.25rem] truncate max-w-full whitespace-nowrap block font-sans" title="{{ vcfs.repository[1].informations().basename }}">
                                 {{ vcfs.repository[1].informations().basename }}
                               </span>
                               <span data-component="file-legend-value-right" class="text-black font-semibold">NA</span>
@@ -2567,7 +2567,7 @@
                           </path>
                         </svg>
                         <div class="absolute left-full ml-2 w-[300px] hidden group-hover:block z-10">
-                          <p class="text-info-content !bg-[#D7F1FD] rounded-2xl pt-[0.1em] pr-[16px] pb-[0.1em] pl-[16px] font-[Ubuntu] shadow-lg border-1 border-solid border-[rgba(89,_202,_252,_0.3)]">A substitution of two or more adjacent bases.</p>
+                          <p class="text-info-content !bg-[#D7F1FD] rounded-2xl pt-[0.1em] pr-[16px] pb-[0.1em] pl-[16px] font-sans shadow-lg border-1 border-solid border-[rgba(89,_202,_252,_0.3)]">A substitution of two or more adjacent bases.</p>
                         </div>
                       </div>
                     </div>
@@ -2602,7 +2602,7 @@
                               <svg class="inline-block mr-[0.5rem] flex-shrink-0" fill="currentColor" height="16" width="16" viewBox="0 0 16 16">
                                 <path fill="#2C7A7B" d="M8 4a4 4 0 1 1 0 8 4 4 0 0 1 0-8Z"></path>
                               </svg>
-                              <span class="text-black mr-[0.25rem] truncate max-w-full whitespace-nowrap block font-[Ubuntu]" title="{{ vcfs.repository[0].informations().basename }}">
+                              <span class="text-black mr-[0.25rem] truncate max-w-full whitespace-nowrap block font-sans" title="{{ vcfs.repository[0].informations().basename }}">
                                 {{ vcfs.repository[0].informations().basename }}
                               </span>
                               <span data-component="file-legend-value-left" class="text-black font-semibold">NA</span>
@@ -2613,7 +2613,7 @@
                               <svg class="inline-block mr-[0.5rem] flex-shrink-0" fill="currentColor" height="16" width="16" viewBox="0 0 16 16">
                                 <path fill="#822E4A" d="M8 4a4 4 0 1 1 0 8 4 4 0 0 1 0-8Z"></path>
                               </svg>
-                              <span class="text-black mr-[0.25rem] truncate max-w-full whitespace-nowrap block font-[Ubuntu]" title="{{ vcfs.repository[1].informations().basename }}">
+                              <span class="text-black mr-[0.25rem] truncate max-w-full whitespace-nowrap block font-sans" title="{{ vcfs.repository[1].informations().basename }}">
                                 {{ vcfs.repository[1].informations().basename }}
                               </span>
                               <span data-component="file-legend-value-right" class="text-black font-semibold">NA</span>
@@ -2637,7 +2637,7 @@
                           </path>
                         </svg>
                         <div class="absolute -right-full ml-2 w-[300px] hidden group-hover:block z-10">
-                          <p class="text-info-content !bg-[#D7F1FD] rounded-2xl pt-[0.1em] pr-[16px] pb-[0.1em] pl-[16px] font-[Ubuntu] shadow-lg border-1 border-solid border-[rgba(89,_202,_252,_0.3)]">A large-scale genomic alteration such as deletions, duplications, insertions, inversions, or translocations.</p>
+                          <p class="text-info-content !bg-[#D7F1FD] rounded-2xl pt-[0.1em] pr-[16px] pb-[0.1em] pl-[16px] font-sans shadow-lg border-1 border-solid border-[rgba(89,_202,_252,_0.3)]">A large-scale genomic alteration such as deletions, duplications, insertions, inversions, or translocations.</p>
                         </div>
                       </div>
                     </div>
@@ -2677,7 +2677,7 @@
                               <svg class="inline-block mr-[0.5rem] flex-shrink-0" fill="currentColor" height="16" width="16" viewBox="0 0 16 16">
                                 <path fill="#2C7A7B" d="M8 4a4 4 0 1 1 0 8 4 4 0 0 1 0-8Z"></path>
                               </svg>
-                              <span class="text-black mr-[0.25rem] truncate max-w-full whitespace-nowrap block font-[Ubuntu]" title="{{ vcfs.repository[0].informations().basename }}">
+                              <span class="text-black mr-[0.25rem] truncate max-w-full whitespace-nowrap block font-sans" title="{{ vcfs.repository[0].informations().basename }}">
                                 {{ vcfs.repository[0].informations().basename }}
                               </span>
                               <span data-component="file-legend-value-left" class="text-black font-semibold">NA</span>
@@ -2688,7 +2688,7 @@
                               <svg class="inline-block mr-[0.5rem] flex-shrink-0" fill="currentColor" height="16" width="16" viewBox="0 0 16 16">
                                 <path fill="#822E4A" d="M8 4a4 4 0 1 1 0 8 4 4 0 0 1 0-8Z"></path>
                               </svg>
-                              <span class="text-black mr-[0.25rem] truncate max-w-full whitespace-nowrap block font-[Ubuntu]" title="{{ vcfs.repository[1].informations().basename }}">
+                              <span class="text-black mr-[0.25rem] truncate max-w-full whitespace-nowrap block font-sans" title="{{ vcfs.repository[1].informations().basename }}">
                                 {{ vcfs.repository[1].informations().basename }}
                               </span>
                               <span data-component="file-legend-value-right" class="text-black font-semibold">NA</span>
@@ -2712,7 +2712,7 @@
                           </path>
                         </svg>
                         <div class="absolute left-full ml-2 w-[300px] hidden group-hover:block z-10">
-                          <p class="text-info-content !bg-[#D7F1FD] rounded-2xl pt-[0.1em] pr-[16px] pb-[0.1em] pl-[16px] font-[Ubuntu] shadow-lg border-1 border-solid border-[rgba(89,_202,_252,_0.3)]">A small insertion or deletion of bases in the DNA sequence.</p>
+                          <p class="text-info-content !bg-[#D7F1FD] rounded-2xl pt-[0.1em] pr-[16px] pb-[0.1em] pl-[16px] font-sans shadow-lg border-1 border-solid border-[rgba(89,_202,_252,_0.3)]">A small insertion or deletion of bases in the DNA sequence.</p>
                         </div>
                       </div>
                     </div>
@@ -2766,7 +2766,7 @@
                               <svg class="inline-block mr-[0.5rem] flex-shrink-0" fill="currentColor" height="16" width="16" viewBox="0 0 16 16">
                                 <path fill="#2C7A7B" d="M8 4a4 4 0 1 1 0 8 4 4 0 0 1 0-8Z"></path>
                               </svg>
-                              <span class="text-black mr-[0.25rem] truncate max-w-full whitespace-nowrap block font-[Ubuntu]" title="{{ vcfs.repository[0].informations().basename }}">
+                              <span class="text-black mr-[0.25rem] truncate max-w-full whitespace-nowrap block font-sans" title="{{ vcfs.repository[0].informations().basename }}">
                                 {{ vcfs.repository[0].informations().basename }}
                               </span>
                               <span data-component="file-legend-value-left" class="text-black font-semibold">NA</span>
@@ -2777,7 +2777,7 @@
                               <svg class="inline-block mr-[0.5rem] flex-shrink-0" fill="currentColor" height="16" width="16" viewBox="0 0 16 16">
                                 <path fill="#822E4A" d="M8 4a4 4 0 1 1 0 8 4 4 0 0 1 0-8Z"></path>
                               </svg>
-                              <span class="text-black mr-[0.25rem] truncate max-w-full whitespace-nowrap block font-[Ubuntu]" title="{{ vcfs.repository[1].informations().basename }}">
+                              <span class="text-black mr-[0.25rem] truncate max-w-full whitespace-nowrap block font-sans" title="{{ vcfs.repository[1].informations().basename }}">
                                 {{ vcfs.repository[1].informations().basename }}
                               </span>
                               <span data-component="file-legend-value-right" class="text-black font-semibold">NA</span>
@@ -2801,7 +2801,7 @@
                           </path>
                         </svg>
                         <div class="absolute left-full ml-2 w-[300px] hidden group-hover:block z-10">
-                          <p class="text-info-content !bg-[#D7F1FD] rounded-2xl pt-[0.1em] pr-[16px] pb-[0.1em] pl-[16px] font-[Ubuntu] shadow-lg border-1 border-solid border-[rgba(89,_202,_252,_0.3)]">A segment of DNA that is reversed end to end.</p>
+                          <p class="text-info-content !bg-[#D7F1FD] rounded-2xl pt-[0.1em] pr-[16px] pb-[0.1em] pl-[16px] font-sans shadow-lg border-1 border-solid border-[rgba(89,_202,_252,_0.3)]">A segment of DNA that is reversed end to end.</p>
                         </div>
                       </div>
                     </div>
@@ -2853,7 +2853,7 @@
                               <svg class="inline-block mr-[0.5rem] flex-shrink-0" fill="currentColor" height="16" width="16" viewBox="0 0 16 16">
                                 <path fill="#2C7A7B" d="M8 4a4 4 0 1 1 0 8 4 4 0 0 1 0-8Z"></path>
                               </svg>
-                              <span class="text-black mr-[0.25rem] truncate max-w-full whitespace-nowrap block font-[Ubuntu]" title="{{ vcfs.repository[0].informations().basename }}">
+                              <span class="text-black mr-[0.25rem] truncate max-w-full whitespace-nowrap block font-sans" title="{{ vcfs.repository[0].informations().basename }}">
                                 {{ vcfs.repository[0].informations().basename }}
                               </span>
                               <span data-component="file-legend-value-left" class="text-black font-semibold">NA</span>
@@ -2864,7 +2864,7 @@
                               <svg class="inline-block mr-[0.5rem] flex-shrink-0" fill="currentColor" height="16" width="16" viewBox="0 0 16 16">
                                 <path fill="#822E4A" d="M8 4a4 4 0 1 1 0 8 4 4 0 0 1 0-8Z"></path>
                               </svg>
-                              <span class="text-black mr-[0.25rem] truncate max-w-full whitespace-nowrap block font-[Ubuntu]" title="{{ vcfs.repository[1].informations().basename }}">
+                              <span class="text-black mr-[0.25rem] truncate max-w-full whitespace-nowrap block font-sans" title="{{ vcfs.repository[1].informations().basename }}">
                                 {{ vcfs.repository[1].informations().basename }}
                               </span>
                               <span data-component="file-legend-value-right" class="text-black font-semibold">NA</span>
@@ -2888,7 +2888,7 @@
                           </path>
                         </svg>
                         <div class="absolute -right-full mr-2 w-[300px] hidden group-hover:block z-10">
-                          <p class="text-info-content !bg-[#D7F1FD] rounded-2xl pt-[0.1em] pr-[16px] pb-[0.1em] pl-[16px] font-[Ubuntu] shadow-lg border-1 border-solid border-[rgba(89,_202,_252,_0.3)]">A combination of multiple variant types (e.g., SNPs and INDELs) occurring close together or overlapping.</p>
+                          <p class="text-info-content !bg-[#D7F1FD] rounded-2xl pt-[0.1em] pr-[16px] pb-[0.1em] pl-[16px] font-sans shadow-lg border-1 border-solid border-[rgba(89,_202,_252,_0.3)]">A combination of multiple variant types (e.g., SNPs and INDELs) occurring close together or overlapping.</p>
                         </div>
                       </div>
                     </div>
@@ -3740,11 +3740,11 @@
             <!-- Benchmarking divider -->
             <div class="flex flex-row w-full">
                 <div class="flex flex-col w-full bg-[#f3f4f6] justify-center">
-                    <div class="divider w-[90%] self-center ![--color-base-content:black]"><span class="text-black font-[Ubuntu]">Benchmark table</span></div>
+                    <div class="divider w-[90%] self-center ![--color-base-content:black]"><span class="text-black font-mono">Benchmark table</span></div>
                 </div>
             </div>
             <!-- Benchmarking info -->
-            <div class="tooltip tooltip-info tooltip-right ![--tt-bg:#D7F1FD] w-fit ml-[5%] font-[Ubuntu]" data-tip="Benchmarking is carried out on exact equality in terms of chromosome, position, reference and alternative allele.">
+            <div class="tooltip tooltip-info tooltip-right ![--tt-bg:#D7F1FD] w-fit ml-[5%] font-sans" data-tip="Benchmarking is carried out on exact equality in terms of chromosome, position, reference and alternative allele.">
               <button class="btn btn-info !bg-[#f3f4f6] !border-[#f3f4f6] !outline-[#f3f4f6] !shadow-none ![--btn-p:0rem]">
                 <svg class="relative" xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" height="24" fill="none">
                   <path fill="#59cafc" d="m12 1.5c-5.79844 0-10.5 4.70156-10.5 10.5 0 5.7984 4.70156 10.5 10.5 10.5 5.7984 0 10.5-4.7016 10.5-10.5 0-5.79844-4.7016-10.5-10.5-10.5zm.75 15.5625c0 .1031-.0844.1875-.1875.1875h-1.125c-.1031 0-.1875-.0844-.1875-.1875v-6.375c0-.1031.0844-.1875.1875-.1875h1.125c.1031 0 .1875.0844.1875.1875zm-.75-8.0625c-.2944-.00601-.5747-.12718-.7808-.3375-.206-.21032-.3215-.49305-.3215-.7875s.1155-.57718.3215-.7875c.2061-.21032.4864-.33149.7808-.3375.2944.00601.5747.12718.7808.3375.206.21032.3215.49305.3215.7875s-.1155.57718-.3215.7875c-.2061.21032-.4864.33149-.7808.3375z"></path>
@@ -3752,8 +3752,8 @@
               </button>
             </div>
             <!-- Benchmarking table -->
-            <div class="w-full overflow-x-auto">
-              <table id="benchmark-table" class="w-[90%] ml-[5%] mr-[5%] min-w-[900px] self-center [box-shadow:0_4px_6px_-1px_rgba(0,_0,_0,_0.1),_0_2px_4px_-1px_rgba(0,_0,_0,_0.06)] font-[Ubuntu] text-[#6B7280]">
+            <div class="w-full overflow-x-auto p-2">
+              <table id="benchmark-table" class="w-[90%] ml-[5%] mr-[5%] min-w-[900px] self-center [box-shadow:0_4px_6px_-1px_rgba(0,_0,_0,_0.1),_0_2px_4px_-1px_rgba(0,_0,_0,_0.06)] font-sans text-[#6B7280]">
                 <tbody>
                   <!-- Benchmarking table header -->
                   <tr class="flex flex-row w-full border-b border-gray-200 bg-[#E5E7EB] h-[50px] items-center">
@@ -6070,7 +6070,7 @@
             BBBAAAEEEEAAAQQQQAABBBBAAAEEEEAAAQQQQAABBBBAAAEEEEAAgbIL/H9JpKGucvJJ1wAAAABJ
             RU5ErkJggg==" class="w-25 h-25">
             <!-- Program version -->
-            <p class="font-bold font-[Ubuntu]">
+            <p class="font-bold font-mono">
               DIVV v{{ version }}
             </p>
             <!-- Report creation date container -->
@@ -6081,7 +6081,7 @@
                 <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16m7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0"/>
               </svg>
               <!-- Report creation date -->
-              <p class="font-[Ubuntu]">Report generated on {{ date }}</p>
+              <p class="font-sans">Report generated on {{ date }}</p>
             </div>
           </aside>
           <nav>

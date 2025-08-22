@@ -26,7 +26,7 @@ class Plot:
         self.fig.update_layout(
             font=dict(
                 size = 15,
-                family = "Ubuntu",
+                family = "ui-sans-serif, system-ui, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji",
                 weight = 400
             ),
             title=dict(
