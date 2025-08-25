@@ -85,7 +85,15 @@
                       </th>
                       <td id="file-name-left" class="text-black px-2 py-2 w-24 sm:w-32 md:w-40 truncate">{{ vcfs.repository[0].informations().basename|default("VCF.L") }}</td>
                       <td id="file-path-left" class="px-2 py-2 w-32 sm:w-48 md:w-72 max-w-[12rem] sm:max-w-[18rem] md:max-w-[28rem] overflow-x-auto whitespace-nowrap text-black">
-                        <span class="block truncate">{{ vcfs.repository[0].informations().path|default("Na") }}</span>
+                        <div class="breadcrumbs max-w-xs">
+                            <ul>
+                            {% for breadcrumb in vcfs.repository[0].get_breadcrumbs() %}
+                                <li>
+                                    <span class="block truncate">{{ breadcrumb }}</span>
+                                </li>
+                            {% endfor %}
+                            </ul>
+                        </div>
                       </td>
                       <td id="file-size-left" class="text-black px-2 py-2 w-16 sm:w-20 md:w-24 text-right">{{ vcfs.repository[0].informations().size|default('NaN') }} Mo</td>
                       <td id="file-last-modified-left" class="text-black px-2 py-2 w-24 sm:w-32 md:w-40 truncate">{{ vcfs.repository[0].informations().mtime|default('NA') }}</td>
@@ -155,11 +163,19 @@
                       </th>
                       <td id="file-name-right" class="text-black px-2 py-2 w-24 sm:w-32 md:w-40 truncate">{{ vcfs.repository[1].informations().basename|default("VCF.R") }}</td>
                       <td id="file-path-right" class="px-2 py-2 w-32 sm:w-48 md:w-72 max-w-[12rem] sm:max-w-[18rem] md:max-w-[28rem] overflow-x-auto whitespace-nowrap text-black">
-                        <span class="block truncate">{{ vcfs.repository[1].informations().path|default("Na") }}</span>
+                        <div class="breadcrumbs max-w-xs">
+                            <ul>
+                            {% for breadcrumb in vcfs.repository[1].get_breadcrumbs() %}
+                                <li>
+                                    <span class="block truncate">{{ breadcrumb }}</span>
+                                </li>
+                            {% endfor %}
+                            </ul>
+                        </div>
                       </td>
                       <td id="file-size-right" class="text-black px-2 py-2 w-16 sm:w-20 md:w-24 text-right">{{ vcfs.repository[1].informations().size|default('NaN') }} Mo</td>
                       <td id="file-last-modified-right" class="text-black px-2 py-2 w-24 sm:w-32 md:w-40 truncate">{{ vcfs.repository[1].informations().mtime|default('NA') }}</td>
-                      <td id="file-state-right" class="text-black px-2 py-2 w-20 sm:w-28 md:w-32"">
+                      <td id="file-state-right" class="text-black px-2 py-2 w-20 sm:w-28 md:w-32">
                         <div class="flex items-center">
                           {% if table is not none %}
                           <div class="w-2 h-2 rounded-full bg-green-500"></div>

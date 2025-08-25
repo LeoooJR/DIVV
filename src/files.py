@@ -54,15 +54,32 @@ class GenomicFile():
         return os.path.isfile(self.path)
 
     def get_path(self) -> pathlib.Path:
+        """Get the path to the file"""
 
         return self.path
     
+    def get_breadcrumbs(self) -> list[str]:
+        """Get the breadcrumbs of the file"""
+
+        if self.path.is_absolute():
+
+            breadcrumbs = list(self.path.parts)
+        
+        else:
+
+            breadcrumbs = ["."]
+
+            breadcrumbs.extend(list(self.path.parts))
+
+        return breadcrumbs
+    
     def basename(self) -> str:
+        """Get the basename of the file"""
 
         return os.path.basename(self.path)
     
     def informations(self) -> dict:
-
+        """Get informations about the file"""
         return utils.file_infos(self.path)
     
     def __str__(self):
