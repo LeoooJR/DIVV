@@ -32,7 +32,7 @@ cd DIVV
 
 ```bash
 # Compile htslib
-./install.sh
+./install.sh ./src
 
 # Get help about DIVV
 python src/main.py --help
@@ -48,10 +48,10 @@ python src/main.py --vcfs <VCF1> <VCF2> --report --output <PATH>
 docker build -t divv .
 
 # Run the container
-docker run divv --vcfs <VCF1> <VCF2> --report --output <PATH>
+docker run --rm divv --vcfs <VCF1> <VCF2> --report --output <PATH>
 
 # Get help about DIVV
-docker run divv --help
+docker run --rm divv --help
 ```
 
 ## 🗨️ Contacts <a name="contacts"></a>
