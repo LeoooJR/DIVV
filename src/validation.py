@@ -1,6 +1,9 @@
 from argparse import Action
 
 class ValidateProcessAction(Action):
+    """
+    A class to validate the number of processes allocated.
+    """
 
     def __call__(self, parser, namespace, values, option_string = None):
         

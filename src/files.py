@@ -29,8 +29,12 @@ import _pickle as cPickle
 from __init__ import __version__
 
 class GenomicFile():
+    """
+    Base class for genomic files
 
-    """Base class for genomic files"""
+    Args:
+        path: The path to the genomic file
+    """
 
     def __init__(self, path: str):
 
@@ -50,15 +54,32 @@ class GenomicFile():
         return os.path.isfile(self.path)
 
     def get_path(self) -> pathlib.Path:
+        """Get the path to the file"""
 
         return self.path
     
+    def get_breadcrumbs(self) -> list[str]:
+        """Get the breadcrumbs of the file"""
+
+        if self.path.is_absolute():
+
+            breadcrumbs = list(self.path.parts)
+        
+        else:
+
+            breadcrumbs = ["."]
+
+            breadcrumbs.extend(list(self.path.parts))
+
+        return breadcrumbs
+    
     def basename(self) -> str:
+        """Get the basename of the file"""
 
         return os.path.basename(self.path)
     
     def informations(self) -> dict:
-
+        """Get informations about the file"""
         return utils.file_infos(self.path)
     
     def __str__(self):
@@ -106,8 +127,16 @@ class GenomicFile():
         return False
 
 class VCF(GenomicFile):
+    """
+    Class for a VCF file
 
-    """Class for VCF files"""
+    Args:
+        path: The path to the VCF file
+        reference: Whether the VCF file is the reference
+        index: The path to the index file
+        filters: The filters to apply to the VCF file
+        lazy: Whether to verify the VCF file at initialization
+    """
 
     # Keywords used to extract the FORMAT values
     FORMAT: dict = {
@@ -564,8 +593,14 @@ class VCF(GenomicFile):
                                    start=0)
 
 class VCFIndex(GenomicFile):
+    """
+    Class for a VCF index file
 
-    """Class for VCF index files"""
+    Args:
+        path: The path to the index file
+        vcf: The VCF file associated with the index file
+        lazy: Whether to verify the index file at initialization
+    """
 
     def __init__(self, path: str, vcf: VCF, lazy: bool = True):
         
@@ -605,6 +640,7 @@ class VCFIndex(GenomicFile):
                 raise errors.IndexError(f"{self.path} does not allow fast lookup for {self.vcf.path}")
             
 class VCFProcessor:
+    """Class to process VCF files"""
 
     def __init__(self):
 
@@ -972,6 +1008,12 @@ class VCFProcessor:
 class VCFRepository():
     """
     A class to represent a repository of VCF files
+
+    Args:
+        vcfs: The list of VCF files
+        index: The list of index files
+        reference: Whether the first VCF file is the reference
+        filters: The filters to apply to the VCF files
     """
 
     # Class to process VCF files
@@ -1282,14 +1324,17 @@ class VCFRepository():
 class Report:
     """
     A class to represent a report
+
+    Args:
         vcfs: The list of VCF files
-        prefix: The prefix of the report
+        tags: Tags provided by user about VCFs
         cmd: The command used to generate the report
         view: The view object as a DataFrame
         table: The benchmark table (truth metrics) object as a DataFrame
+        archive: Whether to archive the report
     """
     # Make use of __slots__ to avoid the creation of __dict__ and __weakref__ for each instance, reducing the memory footprint
-    __slots__ = ('vcfs', 'tags', 'cmd', 'view', 'table', 'archive', 'date')
+    __slots__ = ('vcfs', 'tags', 'cmd', 'view', 'table', 'archive', 'date', 'deps')
 
     def __init__(self, vcfs: VCFRepository, tags: list[str], cmd: str, view: dict, table: DataFrame = None, archive: bool = False):
 
@@ -1314,20 +1359,42 @@ class Report:
         # How to save the outputs
         self.archive = archive
 
-    def create(self, output: pathlib.Path = pathlib.Path.cwd()) -> pathlib.Path:
+        # Index all the dependencies
+        self.deps = {"scripts": ["alasql-4.6.5.js", "plotly-3.0.0.min.js", "shepherd-11.2.0.js"], "stylesheets": ["build.css", "shepherd-13.0.0.css"]}
+
+    @staticmethod
+    def open(file: pathlib.Path):
+        """
+        Open the report in the default web browser
+
+        Args:
+            file: The path to the report
+        """
+
+        # Try to open the report in the default web browser
+        if os.path.exists(file):
+            return webbrowser.open(str(file))
+        else:
+            raise errors.ReportError("Report not found on filesystem.")
+
+    def create(self, output: pathlib.Path = pathlib.Path.cwd(), bundle: bool = True) -> pathlib.Path:
         """
         Create the report
 
         Args:
             output: The output directory
+            bundle: Inline everything in the HTML
         """
         # Report creation time
         self.date = datetime.datetime.now().strftime("%Y-%m-%d, %X")
 
         # Custom filter to check if a value is NaN with Jinja2
+        # This is used to check if a value is NaN in the HTML report
         def is_nan(value):
             return isna(value)
         
+        # A function passed to Jinja2 to format the variant type
+        # This is used to format the variant type in the HTML report
         def format_variant_type(value:str):
 
             if value in ["ins", "del"]:
@@ -1340,6 +1407,7 @@ class Report:
 
             return vt
         
+        # A function passed to Jinja2 to format the variant to HTML
         def format_to_html(value:str):
 
             html_tags = {}
@@ -1356,6 +1424,7 @@ class Report:
 
             return html_tags
 
+        # A function passed to Jinja2 to format the variant info to HTML
         def info_to_html(value:str):
 
             pass
@@ -1366,8 +1435,11 @@ class Report:
         # Path to look for the assets
         assets = os.path.join(ressources, "assets")
 
-        # Path to look for the CSS stylesheets
-        stylesheets = os.path.join(ressources, "*.css")
+        # Stylesheets to be used in the HTML report
+        stylesheets: dict[str:str] = {} if bundle else None
+
+        # Scripts to be used in the HTML report
+        scripts: dict[str:str] = {} if bundle else None
 
         # Path to look for the statics
         statics = os.path.join(ressources, 'statics', "*.png")
@@ -1385,62 +1457,101 @@ class Report:
         # Load the template
         template = env.get_template("template.html")
 
-        # Render the template
-        html = template.render(vcfs=self.vcfs, tags=self.tags, cmd=self.cmd, view=self.view, table=self.table, date=self.date, version=__version__)
+        # If bundle option is True, load the dependencies in memory
+        if bundle:
 
+            # Iterate over the dependencies (Js and CSS)
+            for dep in self.deps:
+
+                # Iterate over the sources
+                for source in self.deps[dep]:
+
+                    # If the dependency is a stylesheet
+                    if dep == "stylesheets":
+                        # Load stylesheet in memory
+                        with open(os.path.join(assets, "css", source), mode='r') as dist:
+
+                            stylesheets[source] = dist.read()
+
+                    # If the dependency is a script
+                    else:
+                        # Load script in memory
+                        with open(os.path.join(assets, "js", source), mode='r') as dist:
+
+                            scripts[source] = dist.read()
+
+        # Render the template
+        html = template.render(vcfs=self.vcfs, tags=self.tags, cmd=self.cmd, view=self.view, table=self.table, date=self.date, stylesheets=stylesheets, scripts=scripts, version=__version__)
+
+        # If the archive option is True, create a ZIP file
         if self.archive:
+
             # If the output has no suffix, add a .zip suffix
             if not output.suffix:
                 output: pathlib.Path = output.with_suffix(".zip")
 
             # Open data stream with context manager to create a ZIP file
             with zipfile.ZipFile(output, mode='w') as zip:
-                zip.writestr("delta.html", html)
-                # Copy the stylesheets to the ZIP file
-                for stylesheet in glob(stylesheets):
-                    zip.write(stylesheet, arcname=os.path.relpath(path=stylesheet, start=ressources))
-                # Copy the statics to the ZIP file
-                for static in glob(statics):
-                    zip.write(static, arcname=os.path.relpath(path=static, start=ressources))
-                # Copy the assets to the ZIP file
-                for root, dirs, files in os.walk(assets):
-                    for file in files:
-                        file_path = os.path.join(root, file)
-                        zip.write(file_path, arcname=os.path.relpath(path=file_path, start=ressources))
+                zip.writestr("report.html", html)
+
+                # If the bundle option is False, copy the statics and assets to the ZIP file
+                if not bundle:
+
+                    # Copy the statics to the ZIP file
+                    for static in glob(statics):
+                        zip.write(static, arcname=os.path.relpath(path=static, start=ressources))
+                    # Copy the assets to the ZIP file
+                    for root, dirs, files in os.walk(assets):
+                        for file in files:
+                            file_path = os.path.join(root, file)
+                            zip.write(file_path, arcname=os.path.relpath(path=file_path, start=ressources))
                     
         else:
 
-            output = output.joinpath("delta")
+            # If the bundle option is True, create a HTML file
+            if bundle:
 
-            # Create the output directory
-            try:
-                output.mkdir(exist_ok=True)
-            except (PermissionError, FileNotFoundError, FileExistsError) as e:
-                raise errors.ReportError(f"Report cannot be created: {e}")
-            except Exception as e:
-                if isinstance(e,(PermissionError, FileNotFoundError, FileExistsError)):
-                    raise
-                else:
-                    raise errors.ReportError(f"An unexpected error has occurred when creating the output directory: {e}")
+                # If the output has no suffix, add a .html suffix
+                if not output.suffix:
+                    output: pathlib.Path = output.with_suffix(".html")
 
-            # Write the HTML report to the output directory
-            with open(output.joinpath("delta.html"),'w') as f:
-                f.writelines(html)
+                # Write the HTML report to the output directory
+                with open(output, mode='w') as f:
+                    f.writelines(html)
 
-            # Copy the assets and statics files next to the report
-            for f in glob(stylesheets):
-                copy(f, output)
-            # Copy the assets to the output directory
-            copytree(assets, os.path.join(output, "assets"), dirs_exist_ok=True)
-            # Copy the statics to the output directory
-            copytree(os.path.dirname(statics), os.path.join(output,'statics'), dirs_exist_ok=True)
+                Report.open(output)
 
-            # Try to open the report in the default web browser
-            if os.path.exists(output.joinpath("delta.html")):
-                webbrowser.open(str(output.joinpath("delta.html")))
+            # If the bundle option is False, create directory structure
             else:
-                raise errors.ReportError("Report not found on filesystem.")
-            
+
+                # Create the output directory
+                output: pathlib.Path = output.joinpath("divv")
+
+                # Create the output directory
+                try:
+                    output.mkdir(exist_ok=True)
+                except (PermissionError, FileNotFoundError, FileExistsError) as e:
+                    raise errors.ReportError(f"Report cannot be created: {e}")
+                except Exception as e:
+                    if isinstance(e,(PermissionError, FileNotFoundError, FileExistsError)):
+                        raise
+                    else:
+                        raise errors.ReportError(f"An unexpected error has occurred when creating the output directory: {e}")
+
+                # Write the HTML report to the output directory
+                with open(output.joinpath("report.html"),'w') as f:
+                    f.writelines(html)
+
+                # Copy the assets and statics files next to the report
+                # Copy the assets to the output directory
+                copytree(assets, os.path.join(output, "assets"), dirs_exist_ok=True)
+                # Copy the statics to the output directory
+                copytree(os.path.dirname(statics), os.path.join(output,'statics'), dirs_exist_ok=True)
+
+                # Open the report in the default web browser
+                Report.open(output.joinpath("report.html"))
+
+        # Return the output path
         return output
             
     def __str__(self):

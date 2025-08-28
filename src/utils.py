@@ -49,14 +49,14 @@ def run_as_user():
             try:
                 target_uid = target_infos.pw_uid
             except KeyError as e:
-                logger.warning(f"Cannot retrieve {target} uid.")
-                raise RuntimeError(f"Cannot retrieve {target} uid.")
+                logger.warning(f"Cannot retrieve {target} uid. Exception: {e}")
+                raise RuntimeError(f"Cannot retrieve {target} uid. Exception: {e}")
 
             try:
                 target_gid = target_infos.pw_gid
             except KeyError as e:
-                logger.warning(f"Cannot retrieve {target} gid.")
-                raise RuntimeError(f"Cannot retrieve {target} gid.")
+                logger.warning(f"Cannot retrieve {target} gid. Exception: {e}")
+                raise RuntimeError(f"Cannot retrieve {target} gid. Exception: {e}")
         
             try:
                 os.setgid(target_gid)
@@ -65,7 +65,7 @@ def run_as_user():
                 logger.debug(f"Successfully dropped privileges as {target} (uid: {target_uid}, gid: {target_gid})")
             except OSError as e:
                 if e.errno == errno.EPERM:
-                    raise PermissionError(f"failed to run as user {target} (uid: {target_uid}, gid: {target_gid}): Permission denied.")
+                    raise PermissionError(f"failed to run as user {target} (uid: {target_uid}, gid: {target_gid}): Permission denied. Exception: {e}")
                 raise
         
         else:
@@ -184,7 +184,7 @@ def suppress_warnings():
         yield
 
 # ===========================================================================================
-# Filsystem
+# Filesystem
 # ===========================================================================================
 
 # ===========================================================================================

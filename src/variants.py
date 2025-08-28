@@ -9,7 +9,12 @@ from sortedcontainers import SortedSet
 from utils import suppress_warnings, convert
 
 class VariantRepository():
-    """ A class to store variants and perform operations on them """
+    """ 
+    A class to store variants and perform operations on them 
+
+    Args:
+        filters: The filters to apply to the variants
+    """
 
     INDEX: dict[str:int] = {
                 "CHROM": 0,
@@ -329,20 +334,20 @@ class VariantRepository():
             data.append({"Chromosome": k, "Type": "INV", "Count": self.profile[k]["variant"]["inv"]})
             data.append({"Chromosome": k, "Type": "CSV", "Count": self.profile[k]["variant"]["csv"]})
 
-        self.plots.barplot(data, "Chromosome","Count", "Type", "Variant by Chromosome", "VariantByChromosome")
+        self.plots.barplot(data, "Chromosome","Count", "Type", "Variant counts per chromosome", "VariantCountsPerChromosome")
 
         data: DataFrame = DataFrame([{"Chromosome": k, "Genotype": genotype, "Count": self.profile[k][code]} 
                                     for k in chromosomes 
                                     for genotype, code in [("Homozygous", "hom"), ("Heterozygous", "het")]])
 
-        self.plots.barplot(data, "Chromosome", "Count", "Genotype", "Genotype by Chromosome","GenotypeByChromosome")
+        self.plots.barplot(data, "Chromosome", "Count", "Genotype", "Genotype distribution per chromosome","GenotypeDistributionPerChromosome")
 
         data: DataFrame = DataFrame([{"Chromosome": k, "SNP": snp, "Count": self.profile[k]["variant"]["snp"][snp]} for k in chromosomes for snp in ["transition", "transversion"]])
 
         # Are there any SNPs in the VCF?
         if data["Count"].values.any():
 
-            self.plots.barplot(data, "Chromosome", "Count", "SNP", "SNP Type by Chromosome", "SNPTypeByChrom")
+            self.plots.barplot(data, "Chromosome", "Count", "SNP", "SNP classification per chromosome", "SNPClassificationPerChromosome")
 
         chromosome: str = list(chromosomes)[0]
         
@@ -357,16 +362,16 @@ class VariantRepository():
             with suppress_warnings():       
                 data: DataFrame = DataFrame(list(map(lambda k: Series([k, numpy.mean(self.profile[k]["depth"])], index=["Chromosome", "Depth"]), chromosomes)))
             
-            self.plots.barplot(data, "Chromosome", "Depth", color="Chromosome", title="Mean Depth by Chromosome", prefix="DepthByChromosomeBarPlot")
+            self.plots.barplot(data, "Chromosome", "Depth", color="Chromosome", title="Mean sequencing depth per chromosome", prefix="MeanSequencingDepthPerChromosome")
 
             data: list[DataFrame] = list(map(lambda k: DataFrame({"Chromosome": [k] * self.profile[k]["depth"].size,
                                     "Depth": self.profile[k]["depth"].flatten()}), chromosomes))
 
             df: DataFrame = concat(data, ignore_index=True).astype({"Chromosome": "category", "Depth": "int"})
 
-            self.plots.boxplot(df, "Chromosome", "Depth", "Chromosome", "Depth by Chromosome", "DepthByChromosomeBoxPlot")
+            self.plots.boxplot(df, "Chromosome", "Depth", "Chromosome", "Read depth by chromosome", "ReadDepthByChromosome")
 
-            self.plots.histogram(df, "Depth", None, "Depth distribution", "DepthHist")
+            self.plots.histogram(df, "Depth", None, "Depth distribution across VCF", "DepthDistributionAcrossVCF")
 
             data.clear()
 
@@ -379,6 +384,13 @@ class VariantRepository():
         return len(self.repository)
     
 class Chromosome():
+    """
+    A class to represent a chromosome
+
+    Args:
+        name: The name of the chromosome
+        length: The length of the chromosome
+    """
 
     def __init__(self, name: str, length: int):
 

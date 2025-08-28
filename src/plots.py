@@ -6,7 +6,12 @@ import plotly.io as pio
 from pandas import DataFrame, concat
 
 class Plot:
-    """ A class representing a plot """
+    """ 
+    A class representing a plot 
+
+    Args:
+        fig: The figure object
+    """
 
     __slots__ = ('fig')
 
@@ -21,7 +26,7 @@ class Plot:
         self.fig.update_layout(
             font=dict(
                 size = 15,
-                family = "Ubuntu",
+                family = "ui-sans-serif, system-ui, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji",
                 weight = 400
             ),
             title=dict(
@@ -41,6 +46,11 @@ class Plot:
         pass
     
 class PlotLibrary:
+    """ A class representing a library of plots
+    
+    Args:
+        file: The path to the file associated with the plots
+    """
 
     __slots__ = ('file', 'plots')
 
@@ -60,7 +70,9 @@ class PlotLibrary:
     def as_html(self):
         """ Return the plots as HTML """
 
-        return list(map(lambda p: pio.to_html(p.fig, full_html=False, include_plotlyjs=False),self.plots))
+        return list(map(lambda p: pio.to_html(p.fig, full_html=False, include_plotlyjs=False, config={
+            "displayModeBar":"hover",
+            "displaylogo":False}),self.plots))
 
     def barplot(self, data, nominal: str, y: str, color: str, title: str, prefix: str) -> Plot:
         """ Create a bar plot """

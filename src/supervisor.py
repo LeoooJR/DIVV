@@ -1,5 +1,6 @@
 from console import stdout_console
 import contextlib
+import enum
 import errors
 import files
 from itertools import repeat
@@ -12,12 +13,51 @@ from rich.errors import NotRenderableError
 from rich.panel import Panel
 from sys import argv
 
+class RunningMode(enum.Enum):
+    """Running mode enum."""
+    # Production mode
+    production = (1, ('prod',), ['false', '0', 'no', ''])
+    # Development mode
+    development = (0, ('dev',), ['true', '1', 'yes'])
+
+    def __init__(self, num: int, aliases: tuple[str], env_values: list[str]):
+        """Initialize the RunningMode object."""
+        # Id of the running mode
+        self.num: int = num
+        # Aliases of the running mode
+        self.aliases: tuple[str] = aliases
+        # Environment values of the running mode
+        self.env_values: list[str] = env_values
+
+    @classmethod
+    def from_env(cls) -> "RunningMode":
+        """Determine the running mode from the DIVV_DEV environment variable."""
+        # Get the value of the DIVV_DEV environment variable
+        value = os.getenv("DIVV_DEV", '').lower()
+        # If the env value matches any of the development values, return development
+        if value in cls.development.env_values:
+            return cls.development
+        # Otherwise, treat as production (default)
+        return cls.production
+
+    def is_production(self) -> bool:
+        """Check if the running mode is production."""
+        return self is RunningMode.production
+
 
 def supervisor(params: object) -> int:
     """ 
     Main function to compute the delta between two VCF files 
             params: Namespace containing the command line parameters parsed.
     """
+
+    running_mode = RunningMode.from_env()
+    in_production: bool = running_mode.is_production()
+
+    if in_production:
+        logger.debug("Running in production mode.")
+    else:
+        logger.debug("Running in development mode.")
 
     assert len(params.vcfs) == 2, "Two VCF files are required."
 
@@ -51,29 +91,32 @@ def supervisor(params: object) -> int:
 
         logger.debug(f"Output a report: {params.report}")
 
-        # if a archive is requested, the output path must link to a file
-        if params.archive:
+        # If a archive | file (prod) is requested, the output path must link to a single file
+        if params.archive or in_production:
 
-            logger.debug(f"Generated report will be archived as ZIP file.")
+            if params.archive:
+                logger.debug("Generated report will be archived as ZIP file.")
+            else:
+                logger.debug("Generated report is a single HTML file.")
 
-            # if the output path is a directory, raise an error
+            # If the output path is a directory, raise an error
             if os.path.isdir(params.output):
 
-                logger.error(f"Output path '{params.output}' is a directory, expected a file with --archive option.")
+                logger.error(f"Output path '{params.output}' is a directory, expected a file {'with --archive option' if params.archive else ''}.")
 
-                raise SystemExit(f"Output path '{params.output}' is a directory, expected a file with --archive option.")
+                raise SystemExit(f"Output path '{params.output}' is a directory, expected a file {'with --archive option' if params.archive else ''}.")
 
-            # if the output path is a file, check the parent directory
+            # If the output path is a file, check the parent directory
             else:
 
                 parent_dir = os.path.dirname(params.output)
 
-                # if there is no parent directory, it is a relative path in the current directory
+                # If there is no parent directory, it is a relative path in the current directory
                 if not parent_dir:
 
                     parent_dir = os.getcwd()
 
-                # if the parent directory does not exist, raise an error
+                # If the parent directory does not exist, raise an error
                 if not os.path.isdir(parent_dir):
 
                     logger.error(f"No such parent directory: '{parent_dir}'")
@@ -82,37 +125,39 @@ def supervisor(params: object) -> int:
                 
                 else:
 
-                    # if the parent directory is not writable, raise an error
+                    # If the parent directory is not writable, raise an error
                     if not os.access(parent_dir, os.W_OK):
 
                         logger.error(f"Write permissions are not granted for the parent directory: {parent_dir}")
 
                         raise SystemExit(f"Write permissions are not granted for the parent directory: {parent_dir}")
         
-        # A plain directory is expected        
+        # A plain directory (dev) is expected 
         else:
 
-            # if the output path is a directory, check if it exists
+            # If the output path is a directory, check if it exists
             if not (os.path.isdir(params.output)):
-
+                # Log the error
                 logger.error(f"No such output directory: '{params.output}'")
-
+                # Raise an error
                 raise SystemExit(f"No such output directory: '{params.output}'")
-                
+                    
             else:
 
-                # if the output directory is not writable, raise an error
+                # If the output directory is not writable, raise an error
                 if not os.access(params.output, os.W_OK):
-
+                    # Log the error
                     logger.error(f"Write permissions are not granted for the output directory: {params.output}")
-
+                    # Raise an error
                     raise SystemExit(f"Write permissions are not granted for the output directory: {params.output}")
             
     # Convert the output path to a Path object allowing easier manipulation
     params.output = Path(params.output)
 
+    # Trace
     logger.debug(f"Serialize output: {params.serialize}")
 
+    # Try to create a VCFRepository object from the input VCF files and indexes
     try:
 
         # Create a VCFRepository object from the input VCF files and indexes
@@ -127,10 +172,12 @@ def supervisor(params: object) -> int:
     # Preprocess the VCF files
     for vcf in vcfs.repository:
 
+        # Try to preprocess the VCF file
         try:
 
             vcfs.processor.preprocessing(vcf, bins="env" if params.env_binaries else "project")
 
+        # If an error occurs while preprocessing the VCF file, raise an error
         except (errors.CompressionIndexError, errors.VCFError) as e:
 
             logger.error(e)
@@ -140,6 +187,7 @@ def supervisor(params: object) -> int:
     # Create a TasksManager object to manage the tasks
     manager: processes.TasksManager = processes.TasksManager(vcfs, params.process)
 
+    # Schedule the chromosomes processing tasks
     manager.scheduling(tasks=[vcf.variants.chromosomes for vcf in vcfs.repository])
 
     # Commit the tasks to the TasksManager
@@ -165,21 +213,21 @@ def supervisor(params: object) -> int:
 
     # If a serialization is requested, serialize the output
     if params.serialize:
-
+        # Trace
         logger.debug(f"Serializing output as {params.serialize} to {params.output}.")
-
+        # If the serialization format is VCF or VCF.GZ
         if params.serialize in ["vcf", "vcf.gz"]:
-
+            # Schedule the tasks
             manager.scheduling(tasks=[[params.output], [params.output]])
-
+            # Try to serialize the output
             try:
-
+                # Commit the tasks
                 manager.commit(job=vcfs.processor.serialize, jobargs=[comparaisons[(vcfs.repository[0],vcfs.repository[1])], params.serialize])
-
+            # If an error occurs while serializing the output, raise an error
             except errors.ProcessError as e:
-
+                # Log the error
                 logger.error(e)
-
+                # Raise an error
                 raise SystemExit(e)
             
         else:
@@ -189,15 +237,17 @@ def supervisor(params: object) -> int:
 
     # If a report is requested, generate the report
     if params.report:
-
+        # Trace
         logger.debug(f"Generating a HTML report to {params.output}.")
-
+        # Create figures for the first VCF
         vcfs.repository[0].variants.visualization()
-
+        # Create figures for the second VCF
         vcfs.repository[1].variants.visualization()
 
+        # Initialize a list of tags
         tags = list(repeat(None, 2))
 
+        # If tags are provided, parse them
         if isinstance(params.tags, list):
 
             for i in range(len(params.tags[:2])):
@@ -215,29 +265,53 @@ def supervisor(params: object) -> int:
                 view=comparaisons[(vcfs.repository[0],vcfs.repository[1])],
                 table=comparaisons[(vcfs.repository[0],vcfs.repository[1])]["benchmark"] if params.benchmark else None,
                 archive=params.archive
-            ).create(output=params.output)
-
+            ).create(output=params.output, bundle=in_production)
+            # Print a success message
             stdout_console.print(Panel.fit(f"Report successfully generated at '{dest}'.", title="Success", highlight=True), style="result")
+        # If an error occurs while generating the report, raise an error
         except errors.ReportError as e:
             raise SystemExit(e)
 
     # Print the results to the CLI
     else:
+
+        # If filters have been applied, print the summary of the filtering steps
         if vcfs.repository[0].variants.is_filtered() or vcfs.repository[1].variants.is_filtered():
+            # Divider
             stdout_console.rule("[bold sky_blue3] Filters")
-            stdout_console.print(f":magnifying_glass_tilted_right: {vcfs.repository[0]}({vcfs.repository[0].variants.filtered.total()}) {dict(vcfs.repository[0].variants.filtered)}", style="info")
-            stdout_console.print(f":magnifying_glass_tilted_right: {vcfs.repository[1]}({vcfs.repository[1].variants.filtered.total()}) {dict(vcfs.repository[1].variants.filtered)}", style="info")
+            stdout_console.print("The following variants have been filtered out:")
+            # Print the summary of the filtering steps for the first VCF
+            stdout_console.print(f"{vcfs.repository[0]} ({vcfs.repository[0].variants.filtered.total()}) {", ".join(f"{item[0].upper()} {item[1]}" for item in dict(vcfs.repository[0].variants.filtered).items())}", style="info")
+            # Print the summary of the filtering steps for the second VCF
+            stdout_console.print(f"{vcfs.repository[1]} ({vcfs.repository[1].variants.filtered.total()}) {", ".join(f"{item[0].upper()} {item[1]}" for item in dict(vcfs.repository[1].variants.filtered).items())}", style="info")
+        
+        # Print the results of the comparison
+        # Divider
         stdout_console.rule("[bold sky_blue3] Results")
-        stdout_console.print(f":vs: Comparaison: {vcfs.repository[0]} [{comparaisons[(vcfs.repository[0],vcfs.repository[1])]['unique'][vcfs.repository[0]]} unique]────[{comparaisons[(vcfs.repository[0],vcfs.repository[1])]['common']} common]────[{comparaisons[(vcfs.repository[0],vcfs.repository[1])]['unique'][vcfs.repository[1]]} unique] {vcfs.repository[1]}", style="result")
-        stdout_console.print(f":heavy_large_circle: Jaccard index: {comparaisons[(vcfs.repository[0],vcfs.repository[1])]['jaccard']}", style="result")
+        # Print the comparison results
+        stdout_console.print("Comparison produced the following results:")
+        stdout_console.print(f":vs: {vcfs.repository[0]} ", style="info", end='', no_wrap=True)
+        stdout_console.print(f"[{comparaisons[(vcfs.repository[0],vcfs.repository[1])]['unique'][vcfs.repository[0]]} unique]────[{comparaisons[(vcfs.repository[0],vcfs.repository[1])]['common']} common]────[{comparaisons[(vcfs.repository[0],vcfs.repository[1])]['unique'][vcfs.repository[1]]} unique]", style="result", end='')
+        stdout_console.print(f" {vcfs.repository[1]}", style="info")
+        # Print the Jaccard index
+        stdout_console.print(f"Jaccard index: {comparaisons[(vcfs.repository[0],vcfs.repository[1])]['jaccard']}", style="info")
+        
+        # If a benchmark is requested, print the benchmark results
         if params.benchmark:
+            # Divider
             stdout_console.rule("[bold sky_blue3] Benchmark")
+            stdout_console.print("States of the VCF files:")
+            # Print the reference VCF
             stdout_console.print(f":bookmark: Reference: {vcfs.repository[0]}", style="info")
+            # Print the query VCF
             stdout_console.print(f":dart: Query: {vcfs.repository[1]}", style="info")            
+            # Create a table to print the benchmark results
             table = Table(title="Benchmark table", style="bold")
             df = comparaisons[(vcfs.repository[0],vcfs.repository[1])]["benchmark"].astype(str)
+            # Add the columns to the table
             for col in df.columns:
                 table.add_column(col, justify="center", vertical="middle")
+            # Add the rows to the table
             for row in df.values:
                 with contextlib.suppress(NotRenderableError):
                     table.add_row(*row)

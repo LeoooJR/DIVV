@@ -13,7 +13,7 @@ RUN apt-get update \
 WORKDIR /${project}
 
 RUN git clone --depth 1 --branch ${branch} https://github.com/LeoooJR/DIVV.git /${project} \
-&& ./install.sh /${project} \
+&& ./install.sh /${project}/src/ \
 && pip install --upgrade pip \
 && pip install --no-cache-dir -r /${project}/requirements.txt \
 && pip install --no-cache-dir pyinstaller \
