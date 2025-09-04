@@ -36,7 +36,7 @@
         <div id="header-left" class="flex w-1/2 bg-[white]">
           <!-- File name-->
           <h2 class="mt-[20px] mb-[10px] font-mono font-bold italic text-center text-2xl w-full text-[#111111] max-w-full overflow-hidden text-ellipsis whitespace-nowrap">
-            {{ vcfs.repository[0].informations().basename|default("VCF.L") }}
+            {{ vcfs.repository[0].informations().basename|default("VCFa.vcf") }}
           </h2>
         </div>
 
@@ -44,7 +44,7 @@
         <div id="header-right" class="flex w-1/2 bg-[#111111]">
           <!-- File name-->
           <h2 class="mt-[20px] mb-[10px] font-mono font-bold italic text-center text-2xl w-full text-[white] max-w-full truncate overflow-hidden whitespace-nowrap">
-            {{ vcfs.repository[1].informations().basename|default("VCF.R") }}
+            {{ vcfs.repository[1].informations().basename|default("VCFb.vcf") }}
           </h2>
         </div>
     </div>
@@ -58,7 +58,7 @@
             <div class="flex justify-center items-center flex-wrap w-full pt-[5px] overflow-x-auto" id="metadatas-container-left">
               <div id="table-metadata-left-container" class="overflow-x-auto rounded-box mx-[5%] w-[90%]">
                 <table id="table-metadata-left" class="table font-sans w-full">
-                  <!-- head -->
+                  <!-- Table head -->
                   <thead class="text-black bg-[#EEF0F1]">
                     <tr class="border-b border-gray-200">
                       <th class="w-8 sm:w-10 md:w-12 px-1 sm:px-2 text-center">
@@ -68,13 +68,19 @@
                           <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/>
                         </svg>
                       </th>
+                      <!-- Header filename -->
                       <th class="text-zinc-500 text-left px-2 py-2 w-24 sm:w-32 md:w-40 truncate">Name</th>
+                      <!-- Header path -->
                       <th class="text-zinc-500 text-left px-2 py-2 w-32 sm:w-48 md:w-72 truncate">Path</th>
+                      <!-- Header file size -->
                       <th class="text-zinc-500 text-left px-2 py-2 w-16 sm:w-20 md:w-24">Size</th>
+                      <!-- Header last modified -->
                       <th class="text-zinc-500 text-left px-2 py-2 w-24 sm:w-32 md:w-40 truncate">Last modified</th>
+                      <!-- Header state -->
                       <th class="text-zinc-500 text-left px-2 py-2 w-20 sm:w-28 md:w-32">State</th>
                     </tr>
                   </thead>
+                  <!-- Table body -->
                   <tbody class="text-black bg-white">
                     <tr class="border-b border-gray-200">
                       <th class="w-8 sm:w-10 md:w-12 px-1 sm:px-2 text-center">
@@ -83,7 +89,9 @@
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                         </svg>
                       </th>
-                      <td id="file-name-left" class="text-black px-2 py-2 w-24 sm:w-32 md:w-40 truncate">{{ vcfs.repository[0].informations().basename|default("VCF.L") }}</td>
+                      <!-- Table cell filename -->
+                      <td id="file-name-left" class="text-black px-2 py-2 w-24 sm:w-32 md:w-40 truncate">{{ vcfs.repository[0].informations().basename|default("VCFa.vcf") }}</td>
+                      <!-- Table cell path -->
                       <td id="file-path-left" class="px-2 py-2 w-32 sm:w-48 md:w-72 max-w-[12rem] sm:max-w-[18rem] md:max-w-[28rem] overflow-x-auto whitespace-nowrap text-black">
                         <div class="breadcrumbs max-w-xs">
                             <ul>
@@ -95,8 +103,11 @@
                             </ul>
                         </div>
                       </td>
+                      <!-- Table cell file size -->
                       <td id="file-size-left" class="text-black px-2 py-2 w-16 sm:w-20 md:w-24 text-right">{{ vcfs.repository[0].informations().size|default('NaN') }} Mo</td>
+                      <!-- Table cell last modified -->
                       <td id="file-last-modified-left" class="text-black px-2 py-2 w-24 sm:w-32 md:w-40 truncate">{{ vcfs.repository[0].informations().mtime|default('NA') }}</td>
+                      <!-- Table cell state -->
                       <td id="file-state-left" class="text-black px-2 py-2 w-20 sm:w-28 md:w-32">
                         <div class="flex items-center">
                           {% if table is not none %}
@@ -136,7 +147,7 @@
             <div class="flex justify-center items-center flex-wrap w-full pt-[5px] overflow-x-auto" id="metadatas-container-right">
               <div id="table-metadata-right-container" class="overflow-x-auto rounded-box mx-[5%] w-[90%]">
                 <table id="table-metadata-right" class="table font-sans w-full">
-                  <!-- head -->
+                  <!-- Table head -->
                   <thead class="text-white bg-[#333333]">
                     <tr class="border-b border-gray-200">
                       <th class="w-8 sm:w-10 md:w-12 px-1 sm:px-2 text-center">
@@ -146,13 +157,19 @@
                           <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/>
                         </svg>
                       </th>
+                      <!-- Header filename -->
                       <th class="text-white text-left px-2 py-2 w-24 sm:w-32 md:w-40 truncate">Name</th>
+                      <!-- Header path -->
                       <th class="text-white text-left px-2 py-2 w-32 sm:w-48 md:w-72 truncate">Path</th>
+                      <!-- Header file size -->
                       <th class="text-white text-left px-2 py-2 w-16 sm:w-20 md:w-24">Size</th>
+                      <!-- Header last modified -->
                       <th class="text-white text-left px-2 py-2 w-24 sm:w-32 md:w-40 truncate">Last modified</th>
+                      <!-- Header state -->
                       <th class="text-white text-left px-2 py-2 w-20 sm:w-28 md:w-32">State</th>
                     </tr>
                   </thead>
+                  <!-- Table body -->
                   <tbody class="text-black bg-white">
                     <tr class="border-b border-gray-200">
                       <th class="w-8 sm:w-10 md:w-12 px-1 sm:px-2 text-center">
@@ -161,7 +178,9 @@
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                         </svg>
                       </th>
-                      <td id="file-name-right" class="text-black px-2 py-2 w-24 sm:w-32 md:w-40 truncate">{{ vcfs.repository[1].informations().basename|default("VCF.R") }}</td>
+                      <!-- Table cell filename -->
+                      <td id="file-name-right" class="text-black px-2 py-2 w-24 sm:w-32 md:w-40 truncate">{{ vcfs.repository[1].informations().basename|default("VCFb.vcf") }}</td>
+                      <!-- Table cell path -->
                       <td id="file-path-right" class="px-2 py-2 w-32 sm:w-48 md:w-72 max-w-[12rem] sm:max-w-[18rem] md:max-w-[28rem] overflow-x-auto whitespace-nowrap text-black">
                         <div class="breadcrumbs max-w-xs">
                             <ul>
@@ -173,8 +192,11 @@
                             </ul>
                         </div>
                       </td>
+                      <!-- Table cell file size -->
                       <td id="file-size-right" class="text-black px-2 py-2 w-16 sm:w-20 md:w-24 text-right">{{ vcfs.repository[1].informations().size|default('NaN') }} Mo</td>
+                      <!-- Table cell last modified -->
                       <td id="file-last-modified-right" class="text-black px-2 py-2 w-24 sm:w-32 md:w-40 truncate">{{ vcfs.repository[1].informations().mtime|default('NA') }}</td>
+                      <!-- Table cell state -->
                       <td id="file-state-right" class="text-black px-2 py-2 w-20 sm:w-28 md:w-32">
                         <div class="flex items-center">
                           {% if table is not none %}
@@ -465,63 +487,91 @@
     <!-- Plot resizing logic -->
     <script type="text/javascript">
       function resizePlot(e, element) {
+        // Capture event
         e = e || window.event;
         e.preventDefault();
+        // Initialize variables for active and inactive plot containers
         let activePlotContainer;
         let inactivePlotContainer;
+        // If the resize button dragged is the right one
         if (element.id === 'resize-button-right') {
+          // Set active plot container to right plots
           activePlotContainer = document.getElementById("right-plots");
+          // Set inactive plot container to left plots
           inactivePlotContainer = document.getElementById("left-plots");
         }
+        // If the resize button dragged is the left one
         else {
+          // Set active plot container to left plots
           activePlotContainer = document.getElementById("left-plots");
+          // Set inactive plot container to right plots
           inactivePlotContainer = document.getElementById("right-plots");
         }
+        // If the active plot container is not found, return
+        if (!activePlotContainer) return;
+        // Find the active current plot
         const activeCurrentPlot = Array.from(activePlotContainer.children).find(child => {
           if (!child.classList.contains('hidden')) {
             return child;
           }
         });
+        // Find the inactive current plot
         const inactiveCurrentPlot = Array.from(inactivePlotContainer.children).find(child => {
           if (!child.classList.contains('hidden')) {
             return child;
           }
         });
-        if (!activePlotContainer) return;
+        // Get the plot width and height
         const plotWidth = activePlotContainer.offsetWidth;
         const plotHeight = activePlotContainer.offsetHeight;
           
+        // Get the start y position
         const startY = e.clientY;
-
+        
+        // Function to handle the mouse being clicked and dragged
         function onDrag(e) {
-          e = e || window.event;
-          e.preventDefault();
-          const currentY = e.clientY;
-          const deltaY = currentY - startY;
-
-          const newHeight = Math.max(150, plotHeight + deltaY);
-
+          // Add border to active and inactive current plots
+          // Highlight the fact that the plot is currently being resized
           activeCurrentPlot.classList.add("border-dashed");
           inactiveCurrentPlot.classList.add("border-dashed");
+
+          // Capture event
+          e = e || window.event;
+          e.preventDefault();
+          // Get the current y position
+          const currentY = e.clientY;
+          // Get the delta y position
+          const deltaY = currentY - startY;
+
+          // Get the new height
+          const newHeight = Math.max(150, plotHeight + deltaY);
             
+          // Set the new height for active and inactive plot containers
           activePlotContainer.style.height = `${newHeight}px`;
           inactivePlotContainer.style.height = `${newHeight}px`;
 
+          // Relayout the active current plot
           Plotly.relayout(activeCurrentPlot.querySelector('.plotly-graph-div'), {
             height: newHeight - (element.offsetHeight + document.getElementById('plot-navigation-right').offsetHeight) - 30
           });
+          // Relayout the inactive current plot
           Plotly.relayout(inactiveCurrentPlot.querySelector('.plotly-graph-div'), {
             height: newHeight - (element.offsetHeight + document.getElementById('plot-navigation-right').offsetHeight) - 30
           });
         }
 
+        // Function to handle the mouse being released
         function onMouseUp() {
-          document.removeEventListener('mousemove', onDrag);
-          document.removeEventListener('mouseup', onMouseUp);
+          // Remove the border from active and inactive current plots
+          // Highlight the fact that the plot is no longer being resized
           activeCurrentPlot.classList.remove("border-dashed");
           inactiveCurrentPlot.classList.remove("border-dashed");
+          // Remove the event listeners for the mouse move and mouse up
+          document.removeEventListener('mousemove', onDrag);
+          document.removeEventListener('mouseup', onMouseUp);
         }
 
+        // Add the event listeners for the mouse move and mouse up
         document.addEventListener('mousemove', onDrag);
         document.addEventListener('mouseup', onMouseUp);
       }
@@ -530,6 +580,8 @@
     <!-- Plots navigation logic -->
     <script type="text/javascript">
       function collectPlots() {
+        // Create the repository object
+        // Save the left and right plot elements
         const repository = {
           left: {
             // Left side plot elements
@@ -744,9 +796,8 @@
       <div class="flex flex-row w-[50%] bg-[white] justify-center max-w-[50%] overflow-hidden">
         <div class="flex flex-row items-center justify-center m-[1%] w-full gap-[10px] min-w-0 flex-wrap">
 
-              <!-- Chromosome search -->
-               <!-- Chromosome icon-->
-              <svg height="50px" width="50px" fill="black" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512">
+            <!-- Chromosome icon-->
+            <svg height="50px" width="50px" fill="black" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512">
                 <path d="M431.614,477.49c-0.558-5.762-1.359-11.36-2.24-16.639c-2.799-17.201-7.199-34.078-13.039-50.158
                   c-2.16-5.759-4.48-11.439-6.881-16.799c-7.76-17.358-17.279-33.838-29.119-50.316c-4-5.6-8.24-11.199-12.641-16.558
                   c-21.279-26.238-45.92-49.197-70.718-71.036c-6.561-5.678-13.041-11.358-19.522-16.958l-0.133-0.1l-0.186-0.154
@@ -773,15 +824,16 @@
                   C167.765,391.09,174.403,380.009,182.333,368.945z M141.79,464.196c2.39-13.409,5.857-26.548,10.432-39.028
                   c0.914-2.476,1.965-4.821,2.951-7.235h201.623c0.984,2.417,2.028,4.758,2.979,7.239c4.576,12.473,8.012,25.577,10.41,39.024H141.79
                   z"/>
-              </svg>
+            </svg>
 
-              <!-- Chromosome input -->
-              <div id="filter-chromosome" class="h-[45px] mr-[5%] border-[1px] border-[solid] border-[#3d444d] rounded-xl px-[15px] py-[5px] bg-[#0d1117] [transition:150ms_cubic-bezier(0.4,0,0.2,1)] flex flew-row items-center hover:border-[#999999] min-w-[180px] flex-shrink">
+            <!-- Chromosome filter -->
+            <div id="filter-chromosome" class="h-[45px] mr-[5%] border-[1px] border-[solid] border-[#3d444d] rounded-xl px-[15px] py-[5px] bg-[#0d1117] [transition:150ms_cubic-bezier(0.4,0,0.2,1)] flex flew-row items-center hover:border-[#999999] min-w-[180px] flex-shrink">
                 <div class="relative w-full h-full flex items-center min-w-0">
+                  <!-- Chromosome input -->
                   <input id="query-chromosome" placeholder="" class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-white bg-transparent appearance-none focus:outline-none focus:ring-0 peer font-sans" type="text">
                   <label for="query-chromosome" class="absolute text-sm text-white duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-[#0d1117] px-2 peer-focus:px-2 peer-focus:text-white peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1 font-sans">Search chromosome</label>
                 </div>
-              </div>
+            </div>
 
             <!-- Status filter -->
             <div class="w-fit min-w-0 flex-shrink flex flew-row gap-2 items-center">
@@ -975,8 +1027,9 @@
               }
             </script>
 
-            <!-- Terminal icon -->
+            <!-- Terminal button -->
             <div class="flex flex-col items-center gap-2 mr-[5%]">
+              <!-- Terminal icon -->
               <svg xmlns="http://www.w3.org/2000/svg" state="close" fill="white" class="w-[50px] h-[50px] cursor-pointer flex-shrink-0" id="terminal-icon" viewBox="0 0 16 16">
                 <title>Open terminal</title>
                 <path shape="border" d="M2 3a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h5.5a.5.5 0 0 1 0 1H2a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h11a2 2 0 0 1 2 2v4a.5.5 0 0 1-1 0V4a1 1 0 0 0-1-1z"/>
@@ -991,27 +1044,37 @@
             <script type="text/javascript">
               // Open terminal on Shift+T
               document.addEventListener('keydown', function(event) {
+                // Get the active element
                 const activeElement = document.activeElement;
+                // Check if the active element is an input, textarea or content editable
                 const isInputFocused = activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA' || activeElement.contentEditable === 'true';
+                // If T and shift keys are pressed and the active element is not an input, textarea or content editable
                 if (event.shiftKey && event.key.toLowerCase() === 't' && !isInputFocused) {
+                  // Get the terminal element
                   let element = document.getElementById("terminal");
+                  // Get the keywords element
                   let keywords = document.getElementById("keywords-terminal");
                   if (element.classList.contains('hidden')) {
+                    // Show the terminal element
                     element.classList.replace('hidden', 'block');
+                    // Show the keywords element
                     keywords.classList.remove('hidden');
                   }
                   else {
+                    // Hide the terminal element
                     element.classList.replace('block', 'hidden');
+                    // Hide the keywords element
                     keywords.classList.add('hidden');
                   }
+                  // Update the terminal icon
                   updateTerminal(document.getElementById("terminal-icon"));
                 }
               });
             </script>
 
-            <!-- Reset filters button -->
             <div class="flex flex-col items-center justify-center gap-2">
               <div class="flex h-[50px] items-center justify-center">
+                <!-- Reset filters button -->
                 <button id="reset-button" title="Reset filters" class="relative self-center bg-[rgba(79,_70,_229,_0.9)] border-[none] px-[20px] py-[10px] mx-[3%] cursor-pointer text-[14px] text-white rounded-[16px] font-sans font-bold hover:bg-[rgba(67,_56,_202,_0.9)] flex-shrink-0 whitespace-nowrap" onclick="resetFilters()">
                   Reset
                   <!-- Reset icon -->
@@ -1029,25 +1092,36 @@
             <script type="text/javascript">
               // Reset filters on Shift+R
               document.addEventListener('keydown', function(event) {
+                // Get the active element
                 const activeElement = document.activeElement;
+                // Check if the active element is an input, textarea or content editable
                 const isInputFocused = activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA' || activeElement.contentEditable === 'true';
+                // If R and shift keys are pressed and the active element is not an input, textarea or content editable
                 if (event.shiftKey && event.key.toLowerCase() === 'r' && !isInputFocused) {
+                  // Reset filters
                   resetFilters();
                 }
               });
             </script>
         </div>
         <div id="toggle-keyboard-shortcut" class="top-0 right-0 mr-[5px]">
+          <!-- Toggle display of keyboard shortcuts button -->
           <button class="cursor-pointer self-center hover:bg-gray-600 rounded p-1" title="Toggle keyboard shortcuts" onclick="toggleKeyboardShortcut()">
+            <!-- Keyboard icon -->
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="white" viewBox="0 0 16 16">
               <path d="M0 6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm13 .25v.5c0 .138.112.25.25.25h.5a.25.25 0 0 0 .25-.25v-.5a.25.25 0 0 0-.25-.25h-.5a.25.25 0 0 0-.25.25M2.25 8a.25.25 0 0 0-.25.25v.5c0 .138.112.25.25.25h.5A.25.25 0 0 0 3 8.75v-.5A.25.25 0 0 0 2.75 8zM4 8.25v.5c0 .138.112.25.25.25h.5A.25.25 0 0 0 5 8.75v-.5A.25.25 0 0 0 4.75 8h-.5a.25.25 0 0 0-.25.25M6.25 8a.25.25 0 0 0-.25.25v.5c0 .138.112.25.25.25h.5A.25.25 0 0 0 7 8.75v-.5A.25.25 0 0 0 6.75 8zM8 8.25v.5c0 .138.112.25.25.25h.5A.25.25 0 0 0 9 8.75v-.5A.25.25 0 0 0 8.75 8h-.5a.25.25 0 0 0-.25.25M13.25 8a.25.25 0 0 0-.25.25v.5c0 .138.112.25.25.25h.5a.25.25 0 0 0 .25-.25v-.5a.25.25 0 0 0-.25-.25zm0 2a.25.25 0 0 0-.25.25v.5c0 .138.112.25.25.25h.5a.25.25 0 0 0 .25-.25v-.5a.25.25 0 0 0-.25-.25zm-3-2a.25.25 0 0 0-.25.25v.5c0 .138.112.25.25.25h1.5a.25.25 0 0 0 .25-.25v-.5a.25.25 0 0 0-.25-.25zm.75 2.25v.5c0 .138.112.25.25.25h.5a.25.25 0 0 0 .25-.25v-.5a.25.25 0 0 0-.25-.25h-.5a.25.25 0 0 0-.25.25M11.25 6a.25.25 0 0 0-.25.25v.5c0 .138.112.25.25.25h.5a.25.25 0 0 0 .25-.25v-.5a.25.25 0 0 0-.25-.25zM9 6.25v.5c0 .138.112.25.25.25h.5a.25.25 0 0 0 .25-.25v-.5A.25.25 0 0 0 9.75 6h-.5a.25.25 0 0 0-.25.25M7.25 6a.25.25 0 0 0-.25.25v.5c0 .138.112.25.25.25h.5A.25.25 0 0 0 8 6.75v-.5A.25.25 0 0 0 7.75 6zM5 6.25v.5c0 .138.112.25.25.25h.5A.25.25 0 0 0 6 6.75v-.5A.25.25 0 0 0 5.75 6h-.5a.25.25 0 0 0-.25.25M2.25 6a.25.25 0 0 0-.25.25v.5c0 .138.112.25.25.25h1.5A.25.25 0 0 0 4 6.75v-.5A.25.25 0 0 0 3.75 6zM2 10.25v.5c0 .138.112.25.25.25h.5a.25.25 0 0 0 .25-.25v-.5a.25.25 0 0 0-.25-.25h-.5a.25.25 0 0 0-.25.25M4.25 10a.25.25 0 0 0-.25.25v.5c0 .138.112.25.25.25h5.5a.25.25 0 0 0 .25-.25v-.5a.25.25 0 0 0-.25-.25z"/>
             </svg>
           </button>
+          <!-- Toggle display of keyboard shortcuts logic -->
           <script type="text/javascript">
             function toggleKeyboardShortcut() {
+              // Get the terminal keyboard shortcut element
               const terminalShortcut = document.getElementById("terminal-shortcut");
+              // Get the reset keyboard shortcut element
               const resetShortcut = document.getElementById("reset-shortcut");
+              // Toggle the display of the terminal keyboard shortcut
               terminalShortcut.classList.toggle("hidden");
+              // Toggle the display of the reset keyboard shortcut
               resetShortcut.classList.toggle("hidden");
             }
           </script>
@@ -1147,7 +1221,9 @@
           <div class="flex items-center">
             <div class="w-full flex flex-col gap-2">
               <div class="w-full flex flex-row gap-2">
+                <!-- Query prefix -->
                 <p class="py-1 whitespace-nowrap font-sans">SELECT * FROM VCFS WHERE</p>
+                <!-- Terminal input -->
                 <input
                   id="terminal-input"
                   type="text"
@@ -1155,6 +1231,7 @@
                   placeholder="Enter condition(s)..."
                   onfocus="stopAnimation()"
                 />
+                <!-- Terminal placeholder style -->
                 <style>
                   /* Tailwind can't style ::placeholder directly, so we add this for smooth opacity transition */
                   #terminal-input::placeholder {
@@ -1165,6 +1242,7 @@
                     opacity: 0;
                   }
                 </style>
+                <!-- Terminal placeholder display logic -->
                 <script type="text/javascript">
                   // Animation controller
                   let animationController = null;
@@ -1208,9 +1286,11 @@
                         await new Promise((res, reject) => {const timeout = setTimeout(res, 2800); signal.addEventListener('abort', () => {clearTimeout(timeout); reject(new Error('Animation aborted'));});});
                       }
                     } catch (error) {
+                      // If the animation is aborted, log the error
                       if (error.name === 'AbortError') {
                         console.log('Animation aborted');
                       } else {
+                        // If the animation is not properly handled, throw the error
                         throw error;
                       }
                     }
@@ -1345,23 +1425,38 @@
                       </button>
                       <!-- Fullscreen button -->
                       <button id="fullscreen-left-button" title="Fullscreen" state="enter" class="hover:bg-gray-300 rounded cursor-pointer">
+                        <!-- Fullscreen icon -->
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="black" viewBox="0 0 16 16">
                             <path d="M1.5 1a.5.5 0 0 0-.5.5v4a.5.5 0 0 1-1 0v-4A1.5 1.5 0 0 1 1.5 0h4a.5.5 0 0 1 0 1zM10 .5a.5.5 0 0 1 .5-.5h4A1.5 1.5 0 0 1 16 1.5v4a.5.5 0 0 1-1 0v-4a.5.5 0 0 0-.5-.5h-4a.5.5 0 0 1-.5-.5M.5 10a.5.5 0 0 1 .5.5v4a.5.5 0 0 0 .5.5h4a.5.5 0 0 1 0 1h-4A1.5 1.5 0 0 1 0 14.5v-4a.5.5 0 0 1 .5-.5m15 0a.5.5 0 0 1 .5.5v4a1.5 1.5 0 0 1-1.5 1.5h-4a.5.5 0 0 1 0-1h4a.5.5 0 0 0 .5-.5v-4a.5.5 0 0 1 .5-.5"/>
                         </svg>
                       </button>
+                      <!-- Fullscreen button logic -->
                       <script type="text/javascript">
+                        // Get the fullscreen button
                         const fullscreenLeftButton = document.getElementById('fullscreen-left-button');
+                        // Add a click event listener to the fullscreen button
                         fullscreenLeftButton.addEventListener('click', function() {
+                          // If the element is not in fullscreen mode, request fullscreen
                           if (fullscreenLeftButton.getAttribute('state') === 'enter') {
+                            // Request fullscreen
                             document.getElementById('left-file-panel').requestFullscreen();
-                            fullscreenLeftButton.querySelector('path').setAttribute('d', "M5.5 0a.5.5 0 0 1 .5.5v4A1.5 1.5 0 0 1 4.5 6h-4a.5.5 0 0 1 0-1h4a.5.5 0 0 0 .5-.5v-4a.5.5 0 0 1 .5-.5m5 0a.5.5 0 0 1 .5.5v4a.5.5 0 0 0 .5.5h4a.5.5 0 0 1 0 1h-4A1.5 1.5 0 0 1 10 4.5v-4a.5.5 0 0 1 .5-.5M0 10.5a.5.5 0 0 1 .5-.5h4A1.5 1.5 0 0 1 6 11.5v4a.5.5 0 0 1-1 0v-4a.5.5 0 0 0-.5-.5h-4a.5.5 0 0 1-.5-.5m10 1a1.5 1.5 0 0 1 1.5-1.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 0-.5.5v4a.5.5 0 0 1-1 0z")
+                            // Set the path of the icon to the exit fullscreen path
+                            fullscreenLeftButton.querySelector('path').setAttribute('d', "M5.5 0a.5.5 0 0 1 .5.5v4A1.5 1.5 0 0 1 4.5 6h-4a.5.5 0 0 1 0-1h4a.5.5 0 0 0 .5-.5v-4a.5.5 0 0 1 .5-.5m5 0a.5.5 0 0 1 .5.5v4a.5.5 0 0 0 .5.5h4a.5.5 0 0 1 0 1h-4A1.5 1.5 0 0 1 10 4.5v-4a.5.5 0 0 1 .5-.5M0 10.5a.5.5 0 0 1 .5-.5h4A1.5 1.5 0 0 1 6 11.5v4a.5.5 0 0 1-1 0v-4a.5.5 0 0 0-.5-.5h-4a.5.5 0 0 1-.5-.5m10 1a1.5 1.5 0 0 1 1.5-1.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 0-.5.5v4a.5.5 0 0 1-1 0z");
+                            // Set the state of the button to exit fullscreen
                             fullscreenLeftButton.setAttribute('state', 'exit');
+                            // Set the title of the button to exit fullscreen
                             fullscreenLeftButton.setAttribute('title', "Exit fullscreen");
-                          } else {
+                          } 
+                          // If the element is in fullscreen mode, exit fullscreen
+                          else {
+                            // Exit fullscreen
                             document.exitFullscreen();
-                            fullscreenLeftButton.querySelector('path').setAttribute('d', "M1.5 1a.5.5 0 0 0-.5.5v4a.5.5 0 0 1-1 0v-4A1.5 1.5 0 0 1 1.5 0h4a.5.5 0 0 1 0 1zM10 .5a.5.5 0 0 1 .5-.5h4A1.5 1.5 0 0 1 16 1.5v4a.5.5 0 0 1-1 0v-4a.5.5 0 0 0-.5-.5h-4a.5.5 0 0 1-.5-.5M.5 10a.5.5 0 0 1 .5.5v4a.5.5 0 0 0 .5.5h4a.5.5 0 0 1 0 1h-4A1.5 1.5 0 0 1 0 14.5v-4a.5.5 0 0 1 .5-.5m15 0a.5.5 0 0 1 .5.5v4a1.5 1.5 0 0 1-1.5 1.5h-4a.5.5 0 0 1 0-1h4a.5.5 0 0 0 .5-.5v-4a.5.5 0 0 1 .5-.5")
+                            // Set the path of the icon to the enter fullscreen path
+                            fullscreenLeftButton.querySelector('path').setAttribute('d', "M1.5 1a.5.5 0 0 0-.5.5v4a.5.5 0 0 1-1 0v-4A1.5 1.5 0 0 1 1.5 0h4a.5.5 0 0 1 0 1zM10 .5a.5.5 0 0 1 .5-.5h4A1.5 1.5 0 0 1 16 1.5v4a.5.5 0 0 1-1 0v-4a.5.5 0 0 0-.5-.5h-4a.5.5 0 0 1-.5-.5M.5 10a.5.5 0 0 1 .5.5v4a.5.5 0 0 0 .5.5h4a.5.5 0 0 1 0 1h-4A1.5 1.5 0 0 1 0 14.5v-4a.5.5 0 0 1 .5-.5m15 0a.5.5 0 0 1 .5.5v4a1.5 1.5 0 0 1-1.5 1.5h-4a.5.5 0 0 1 0-1h4a.5.5 0 0 0 .5-.5v-4a.5.5 0 0 1 .5-.5");
+                            // Set the state of the button to enter fullscreen
                             fullscreenLeftButton.setAttribute('state', 'enter');
-                            fullscreenLeftButton.setAttribute('title', "Fullscreen")
+                            // Set the title of the button to fullscreen
+                            fullscreenLeftButton.setAttribute('title', "Fullscreen");
                           }
                         });
                       </script>
@@ -1499,17 +1594,28 @@
                         </svg>
                       </button>
                       <script type="text/javascript">
+                        // Get the fullscreen button
                         const fullscreenRightButton = document.getElementById('fullscreen-right-button');
+                        // Add a click event listener to the fullscreen button
                         fullscreenRightButton.addEventListener('click', function() {
+                          // If the element is not in fullscreen mode, request fullscreen
                           if (fullscreenRightButton.getAttribute('state') === 'enter') {
+                            // Request fullscreen
                             document.getElementById('right-file-panel').requestFullscreen();
-                            fullscreenRightButton.querySelector('path').setAttribute('d', "M5.5 0a.5.5 0 0 1 .5.5v4A1.5 1.5 0 0 1 4.5 6h-4a.5.5 0 0 1 0-1h4a.5.5 0 0 0 .5-.5v-4a.5.5 0 0 1 .5-.5m5 0a.5.5 0 0 1 .5.5v4a.5.5 0 0 0 .5.5h4a.5.5 0 0 1 0 1h-4A1.5 1.5 0 0 1 10 4.5v-4a.5.5 0 0 1 .5-.5M0 10.5a.5.5 0 0 1 .5-.5h4A1.5 1.5 0 0 1 6 11.5v4a.5.5 0 0 1-1 0v-4a.5.5 0 0 0-.5-.5h-4a.5.5 0 0 1-.5-.5m10 1a1.5 1.5 0 0 1 1.5-1.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 0-.5.5v4a.5.5 0 0 1-1 0z")
+                            // Set the path of the icon to the exit fullscreen path
+                            fullscreenRightButton.querySelector('path').setAttribute('d', "M5.5 0a.5.5 0 0 1 .5.5v4A1.5 1.5 0 0 1 4.5 6h-4a.5.5 0 0 1 0-1h4a.5.5 0 0 0 .5-.5v-4a.5.5 0 0 1 .5-.5m5 0a.5.5 0 0 1 .5.5v4a.5.5 0 0 0 .5.5h4a.5.5 0 0 1 0 1h-4A1.5 1.5 0 0 1 10 4.5v-4a.5.5 0 0 1 .5-.5M0 10.5a.5.5 0 0 1 .5-.5h4A1.5 1.5 0 0 1 6 11.5v4a.5.5 0 0 1-1 0v-4a.5.5 0 0 0-.5-.5h-4a.5.5 0 0 1-.5-.5m10 1a1.5 1.5 0 0 1 1.5-1.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 0-.5.5v4a.5.5 0 0 1-1 0z");
+                            // Set the state of the button to exit fullscreen
                             fullscreenRightButton.setAttribute('state', 'exit');
+                            // Set the title of the button to exit fullscreen
                             fullscreenRightButton.setAttribute('title', "Exit fullscreen");
                           } else {
+                            // Exit fullscreen
                             document.exitFullscreen();
-                            fullscreenRightButton.querySelector('path').setAttribute('d', "M1.5 1a.5.5 0 0 0-.5.5v4a.5.5 0 0 1-1 0v-4A1.5 1.5 0 0 1 1.5 0h4a.5.5 0 0 1 0 1zM10 .5a.5.5 0 0 1 .5-.5h4A1.5 1.5 0 0 1 16 1.5v4a.5.5 0 0 1-1 0v-4a.5.5 0 0 0-.5-.5h-4a.5.5 0 0 1-.5-.5M.5 10a.5.5 0 0 1 .5.5v4a.5.5 0 0 0 .5.5h4a.5.5 0 0 1 0 1h-4A1.5 1.5 0 0 1 0 14.5v-4a.5.5 0 0 1 .5-.5m15 0a.5.5 0 0 1 .5.5v4a1.5 1.5 0 0 1-1.5 1.5h-4a.5.5 0 0 1 0-1h4a.5.5 0 0 0 .5-.5v-4a.5.5 0 0 1 .5-.5")
+                            // Set the path of the icon to the enter fullscreen path
+                            fullscreenRightButton.querySelector('path').setAttribute('d', "M1.5 1a.5.5 0 0 0-.5.5v4a.5.5 0 0 1-1 0v-4A1.5 1.5 0 0 1 1.5 0h4a.5.5 0 0 1 0 1zM10 .5a.5.5 0 0 1 .5-.5h4A1.5 1.5 0 0 1 16 1.5v4a.5.5 0 0 1-1 0v-4a.5.5 0 0 0-.5-.5h-4a.5.5 0 0 1-.5-.5M.5 10a.5.5 0 0 1 .5.5v4a.5.5 0 0 0 .5.5h4a.5.5 0 0 1 0 1h-4A1.5 1.5 0 0 1 0 14.5v-4a.5.5 0 0 1 .5-.5m15 0a.5.5 0 0 1 .5.5v4a1.5 1.5 0 0 1-1.5 1.5h-4a.5.5 0 0 1 0-1h4a.5.5 0 0 0 .5-.5v-4a.5.5 0 0 1 .5-.5");
+                            // Set the state of the button to enter fullscreen
                             fullscreenRightButton.setAttribute('state', 'enter');
+                            // Set the title of the button to fullscreen
                             fullscreenRightButton.setAttribute('title', "Fullscreen");
                           }
                         });
@@ -1644,39 +1750,44 @@
             </script>
 
             <script type="text/javascript">
+              // Add a listener for the fullscreenchange event
               addEventListener("fullscreenchange", function() {
+                // If the element is not in fullscreen mode anymore, meaning the user has exited fullscreen
                 if (!document.fullscreenElement) {
                   // Reset buttons in case exit fullscreen is triggered by escape key instead of fullscreen buttons
-                  const fullscreenRightButton = document.getElementById('fullscreen-right-button');
-                  fullscreenRightButton.querySelector('path').setAttribute('d', "M1.5 1a.5.5 0 0 0-.5.5v4a.5.5 0 0 1-1 0v-4A1.5 1.5 0 0 1 1.5 0h4a.5.5 0 0 1 0 1zM10 .5a.5.5 0 0 1 .5-.5h4A1.5 1.5 0 0 1 16 1.5v4a.5.5 0 0 1-1 0v-4a.5.5 0 0 0-.5-.5h-4a.5.5 0 0 1-.5-.5M.5 10a.5.5 0 0 1 .5.5v4a.5.5 0 0 0 .5.5h4a.5.5 0 0 1 0 1h-4A1.5 1.5 0 0 1 0 14.5v-4a.5.5 0 0 1 .5-.5m15 0a.5.5 0 0 1 .5.5v4a1.5 1.5 0 0 1-1.5 1.5h-4a.5.5 0 0 1 0-1h4a.5.5 0 0 0 .5-.5v-4a.5.5 0 0 1 .5-.5");
-                  fullscreenRightButton.setAttribute('state', 'enter');
-                  const fullscreenLeftButton = document.getElementById('fullscreen-left-button');
-                  fullscreenLeftButton.querySelector('path').setAttribute('d', "M1.5 1a.5.5 0 0 0-.5.5v4a.5.5 0 0 1-1 0v-4A1.5 1.5 0 0 1 1.5 0h4a.5.5 0 0 1 0 1zM10 .5a.5.5 0 0 1 .5-.5h4A1.5 1.5 0 0 1 16 1.5v4a.5.5 0 0 1-1 0v-4a.5.5 0 0 0-.5-.5h-4a.5.5 0 0 1-.5-.5M.5 10a.5.5 0 0 1 .5.5v4a.5.5 0 0 0 .5.5h4a.5.5 0 0 1 0 1h-4A1.5 1.5 0 0 1 0 14.5v-4a.5.5 0 0 1 .5-.5m15 0a.5.5 0 0 1 .5.5v4a1.5 1.5 0 0 1-1.5 1.5h-4a.5.5 0 0 1 0-1h4a.5.5 0 0 0 .5-.5v-4a.5.5 0 0 1 .5-.5");
-                  fullscreenLeftButton.setAttribute('state', 'enter');
+                  const fullScreenButtons = Array.from(document.getElementById('fullscreen-right-button'), document.getElementById('fullscreen-left-button'));
+                  fullScreenButtons.forEach(button => {
+                    // Set the path of the icon to the enter fullscreen path
+                    button.querySelector('path').setAttribute('d', "M1.5 1a.5.5 0 0 0-.5.5v4a.5.5 0 0 1-1 0v-4A1.5 1.5 0 0 1 1.5 0h4a.5.5 0 0 1 0 1zM10 .5a.5.5 0 0 1 .5-.5h4A1.5 1.5 0 0 1 16 1.5v4a.5.5 0 0 1-1 0v-4a.5.5 0 0 0-.5-.5h-4a.5.5 0 0 1-.5-.5M.5 10a.5.5 0 0 1 .5.5v4a.5.5 0 0 0 .5.5h4a.5.5 0 0 1 0 1h-4A1.5 1.5 0 0 1 0 14.5v-4a.5.5 0 0 1 .5-.5m15 0a.5.5 0 0 1 .5.5v4a1.5 1.5 0 0 1-1.5 1.5h-4a.5.5 0 0 1 0-1h4a.5.5 0 0 0 .5-.5v-4a.5.5 0 0 1 .5-.5");
+                    // Set the state of the button to enter fullscreen
+                    button.setAttribute('state', 'enter');
+                    // Set the title of the button to fullscreen
+                    button.setAttribute('title', "Fullscreen");
+                  });
                 }
               })
             </script>
 
             <!-- Scrolling logic -->
             <script type="text/javascript">
-              const content1El = document.getElementById('content1');
-              const content2El = document.getElementById('content2');
+              const leftFile = document.getElementById('content1');
+              const rightFile = document.getElementById('content2');
               
               // Sync scrolling between panels
-              content1El.addEventListener('scroll', () => {
-              content2El.scrollTop = content1El.scrollTop;
+              leftFile.addEventListener('scroll', () => {
+                rightFile.scrollTop = leftFile.scrollTop;
               });
               
-              content2El.addEventListener('scroll', () => {
-              content1El.scrollTop = content2El.scrollTop;
+              rightFile.addEventListener('scroll', () => {
+                leftFile.scrollTop = rightFile.scrollTop;
               });
 
-              content1El.addEventListener('scroll', () => {
-              content2El.scrollLeft = content1El.scrollLeft;
+              leftFile.addEventListener('scroll', () => {
+                rightFile.scrollLeft = leftFile.scrollLeft;
               });
               
-              content2El.addEventListener('scroll', () => {
-              content1El.scrollLeft = content2El.scrollLeft;
+              rightFile.addEventListener('scroll', () => {
+                leftFile.scrollLeft = rightFile.scrollLeft;
               });
               
               function interpretTabs(component) {
@@ -1711,7 +1822,7 @@
                   <div id="cards" class="w-auto max-w-[1200px] mx-[auto] my-[0] grid grid-cols-[1fr] sm:grid-cols-[1fr_1fr] lg:grid-cols-[1fr_1fr_1fr] place-items-center gap-2 overflow-y-visible">
                     
                     <!-- Matching lines statistic -->
-                    <div class="w-fit flex p-4 rounded-lg bg-[#fafafa] gap-4 hover:scale-103 transition-all duration-300">
+                    <div class="w-fit flex p-4 rounded-lg bg-[#fafafa] gap-4 hover:scale-103 hover:shadow-lg transition-all duration-300">
                       <div class="flex flex-col gap-2">
                         <div class="flex flex-row gap-4">
                           <div class="flex justify-center items-center p-2 rounded-lg bg-green-400">
@@ -1891,7 +2002,7 @@
                     </div>
 
                     <!-- Different lines statistic -->
-                    <div class="w-fit flex p-4 rounded-lg bg-[#fafafa] gap-4 hover:scale-103 transition-all duration-300">
+                    <div class="w-fit flex p-4 rounded-lg bg-[#fafafa] gap-4 hover:scale-103 hover:shadow-lg transition-all duration-300">
                       <div class="flex flex-col gap-2">
                         <div class="flex flex-row gap-4">
                           <div class="flex justify-center items-center p-2 rounded-lg bg-red-400">
@@ -2073,7 +2184,7 @@
                     </div>
 
                     <!-- Jaccard index -->
-                    <div class="w-fit flex p-4 rounded-lg bg-[#fafafa] gap-4 hover:scale-103 transition-all duration-300">
+                    <div class="w-fit flex p-4 rounded-lg bg-[#fafafa] gap-4 hover:scale-103 hover:shadow-lg transition-all duration-300">
                       <div class="flex flex-col gap-2">
                         <div class="flex flex-row gap-4">
                           <div class="flex justify-center items-center p-2 rounded-lg bg-purple-400">
@@ -2219,7 +2330,8 @@
                                     font-size="16" 
                                     font-weight="600"
                                     fill="#FFFFFF">0.42</text>
-                              <script type="text/javascript">
+                            </svg>
+                            <script type="text/javascript">
                                 // Function to update Jaccard value
                                 function updateJaccardIndex(setASize, setBSize, intersectionSize) {
                                   // Calculate the union size
@@ -2232,8 +2344,7 @@
                                   // Update size displays
                                   // TODO: Update size displays
                                 }
-                              </script>
-                            </svg>
+                            </script>
                           </div>
                         </div>                      
                       </div>
@@ -2459,7 +2570,7 @@
                   <div class="w-full grid grid-cols-[1fr] lg:grid-cols-[1fr_1fr] 2xl:grid-cols-[1fr_1fr_1fr] gap-[1.0rem]">
 
                     <!-- SNP (Single Nucleotide Polymorphism) -->
-                    <div variant="SNP" class="flex p-4 rounded-lg bg-[#fafafa] gap-4 min-w-0 hover:scale-103 transition-all duration-300">
+                    <div variant="SNP" class="flex p-4 rounded-lg bg-[#fafafa] gap-4 min-w-0 hover:scale-103 hover:shadow-lg transition-all duration-300">
                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 250" width="125" height="150">
                         <g transform="translate(100, 100)">
                         <!-- SNP (Single Nucleotide Polymorphism) Icon -->
@@ -2526,7 +2637,7 @@
                     </div>
 
                     <!-- MNP (Multiple Nucleotide Polymorphism) -->
-                    <div variant="MNP" class="flex p-4 rounded-lg bg-[#fafafa] gap-4 min-w-0 hover:scale-103 transition-all duration-300">
+                    <div variant="MNP" class="flex p-4 rounded-lg bg-[#fafafa] gap-4 min-w-0 hover:scale-103 hover:shadow-lg transition-all duration-300">
                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 250" width="125" height="150">
                         <g transform="translate(100, 100)">
                           <circle cx="0" cy="0" r="70" fill="#f8f9fa" stroke="#6c757d" stroke-width="3"/>
@@ -2594,7 +2705,7 @@
                     </div>
 
                     <!-- SV (Structural Variation) -->
-                    <div variant="SV" class="flex p-4 rounded-lg bg-[#fafafa] gap-4 min-w-0 hover:scale-103 transition-all duration-300">
+                    <div variant="SV" class="flex p-4 rounded-lg bg-[#fafafa] gap-4 min-w-0 hover:scale-103 hover:shadow-lg transition-all duration-300">
                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 250" width="125" height="150">
                         <g transform="translate(100, 100)">
                           <circle cx="0" cy="0" r="70" fill="#f8f9fa" stroke="#6c757d" stroke-width="3"/>
@@ -2665,7 +2776,7 @@
                     </div>
 
                     <!-- INDEL (Insertion/Deletion) -->
-                    <div variant="INDEL" class="flex p-4 rounded-lg bg-[#fafafa] gap-4 min-w-0 hover:scale-103 transition-all duration-300">
+                    <div variant="INDEL" class="flex p-4 rounded-lg bg-[#fafafa] gap-4 min-w-0 hover:scale-103 hover:shadow-lg transition-all duration-300">
                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 250" width="125" height="150">
                         <g transform="translate(100, 100)">
                           <circle cx="0" cy="0" r="70" fill="#f8f9fa" stroke="#6c757d" stroke-width="3"/>
@@ -2741,7 +2852,7 @@
                     </div>
 
                     <!-- INV (Inversion) -->
-                    <div variant="INV" class="flex p-4 rounded-lg bg-[#fafafa] gap-4 min-w-0 hover:scale-103 transition-all duration-300">
+                    <div variant="INV" class="flex p-4 rounded-lg bg-[#fafafa] gap-4 min-w-0 hover:scale-103 hover:shadow-lg transition-all duration-300">
                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 250" width="125" height="150">
                         <g transform="translate(100, 100)">
                           <circle cx="0" cy="0" r="70" fill="#f8f9fa" stroke="#6c757d" stroke-width="3"/>
@@ -2832,7 +2943,7 @@
                     
 
                     <!-- CSV (Complex) -->
-                    <div variant="CSV" class="flex p-4 rounded-lg bg-[#fafafa] gap-4 min-w-0 hover:scale-103 transition-all duration-300">
+                    <div variant="CSV" class="flex p-4 rounded-lg bg-[#fafafa] gap-4 min-w-0 hover:scale-103 hover:shadow-lg transition-all duration-300">
                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 250" width="125" height="150">
                         <g transform="translate(100, 100)">
                           <circle cx="0" cy="0" r="70" fill="#f8f9fa" stroke="#6c757d" stroke-width="3"/>
@@ -3009,14 +3120,18 @@
                   // Remove highlight from all stats cards to avoid displaying multiple highlights
                   variants.forEach(variant => {
                     const card = statsCards.querySelector(`[variant="${variant === "INS" || variant === "DEL" ? "INDEL" : variant}"]`);
+                    // Remove highlight effects
                     card.classList.remove("border-2", "border-solid", "border-green-500", "shadow-xl", "shadow-green-300/40", "overflow-visible");
-                    card.classList.add("hover:scale-103");
+                    // Add default hover effects
+                    card.classList.add("hover:scale-103", "hover:shadow-lg");
                   });
                   {% if table is not none -%}
                   // Remove highlight from all benchmark table rows to avoid displaying multiple highlights
                   benchmarkRows.forEach(row => {
                     const cell = row.getElementsByTagName("td")[0];
+                    // Remove highlight effects
                     cell.parentElement.classList.remove("border-2", "border-solid", "border-green-500", "shadow-xl", "shadow-green-300/40", "scale-103", "transition-all", "duration-300", "overflow-visible");
+                    // Add default border classes
                     cell.parentElement.classList.add("border-b", "border-gray-200");
                   });
                   {%- endif %}
@@ -3027,7 +3142,9 @@
                     ++numberFiltersApplied;
                     // Highlight specific stats card
                     const highlightedCard = statsCards.querySelector(`[variant="${variantTypeQuery === "INS" || variantTypeQuery === "DEL" ? "INDEL" : variantTypeQuery}"]`);
-                    highlightedCard.classList.remove("hover:scale-103");
+                    // Remove default hover effects
+                    highlightedCard.classList.remove("hover:scale-103", "hover:shadow-lg");
+                    // Add highlight effects
                     highlightedCard.classList.add(
                       "border-2", "border-solid", "border-green-500",
                       "shadow-xl", "shadow-green-300/40", "overflow-visible"
@@ -3037,7 +3154,9 @@
                     benchmarkRows.forEach(row => {
                       const cell = row.getElementsByTagName("td")[0];
                       if (cell.textContent.trim() === (variantTypeQuery === "INS" || variantTypeQuery === "DEL" ? "INDEL" : variantTypeQuery)) {
+                        // Remove default border classes
                         cell.parentElement.classList.remove("border-b", "border-gray-200");
+                        // Add highlight effects
                         cell.parentElement.classList.add("border-2", "border-solid", "border-green-500", "shadow-xl", "shadow-green-300/40", "scale-103", "transition-all", "duration-300", "overflow-visible");
                       }
                     });
@@ -3058,7 +3177,7 @@
                   if (numberFiltersApplied > 0) {
                     leftFilterNumberIcon.classList.remove("hidden");
                     rightFilterNumberIcon.classList.remove("hidden");
-                    // Set the number of filters applied icons according to the number of filters applied
+                    // Update icons according to the number of filters applied
                     if (numberFiltersApplied === 1) {
                       leftFilterNumberIcon.querySelector('path[element="number"]').setAttribute('d', "M9.283 4.002V12H7.971V5.338h-.065L6.072 6.656V5.385l1.899-1.383z");
                       rightFilterNumberIcon.querySelector('path[element="number"]').setAttribute('d', "M9.283 4.002V12H7.971V5.338h-.065L6.072 6.656V5.385l1.899-1.383z");
